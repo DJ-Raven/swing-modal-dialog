@@ -3,9 +3,13 @@
 Java swing library build with flatlaf look and feel for desktop application. This library include more custom components
 and support animation
 
--[x] Modal dialog
--[x] Drawer
--[x] Toast Notification
+- [x] Modal dialog
+- [x] Drawer
+- [x] Toast Notification
+
+<img src="https://github.com/DJ-Raven/swing-modal-dialog/blob/main/screenshot/simple 1.jpg" alt="simple 1"/>
+<img src="https://github.com/DJ-Raven/swing-modal-dialog/blob/main/screenshot/simple 2.jpg" alt="simple 2"/>
+<img src="https://github.com/DJ-Raven/swing-modal-dialog/blob/main/screenshot/simple 3.jpg" alt="simple 3"/>
 
 ## Installation
 
