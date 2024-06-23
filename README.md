@@ -16,7 +16,7 @@ and support animation
 This project library do not available in maven central. so you can install with the jar library
 
 - Get jar library or demo
-  here: [latest-releases](https://github.com/DJ-Raven/swing-modal-dialog/releases/releases/latest)
+  here: [latest-releases](https://github.com/DJ-Raven/swing-modal-dialog/releases/latest)
 - Copy jar library file to the root project. exp: `library/modal-dialog-1.0.0.jar`
 - Add this code to `pom.xml`
 
