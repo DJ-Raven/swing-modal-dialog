@@ -1,0 +1,111 @@
+package raven.modal.toast.option;
+
+import raven.modal.Toast;
+
+/**
+ * @author Raven
+ */
+public class ToastStyle {
+
+    public static ToastStyle getDefault() {
+        return new ToastStyle();
+    }
+
+    public BackgroundType getBackgroundType() {
+        return backgroundType;
+    }
+
+    public BorderType getBorderType() {
+        return borderType;
+    }
+
+    public boolean isShowLabel() {
+        return showLabel;
+    }
+
+    public boolean isIconSeparateLine() {
+        return iconSeparateLine;
+    }
+
+    public int getLineSize() {
+        return lineSize;
+    }
+
+    public String getPromiseLabel() {
+        return promiseLabel;
+    }
+
+    public String getLabelText(Toast.Type type) {
+        if (type == null) {
+            return promiseLabel;
+        } else {
+            String text = type.toString().toLowerCase();
+            return text.substring(0, 1).toUpperCase() + text.substring(1);
+        }
+    }
+
+    public int getOutlineSize() {
+        return 1;
+    }
+
+    public ToastStyle(BackgroundType backgroundType, BorderType borderType, boolean showLabel, boolean iconSeparateLine, int lineSize, String promiseLabel) {
+        this.backgroundType = backgroundType;
+        this.borderType = borderType;
+        this.showLabel = showLabel;
+        this.iconSeparateLine = iconSeparateLine;
+        this.lineSize = lineSize;
+        this.promiseLabel = promiseLabel;
+    }
+
+    public ToastStyle() {
+    }
+
+    private BackgroundType backgroundType = BackgroundType.DEFAULT;
+    private BorderType borderType = BorderType.NONE;
+    private boolean showLabel;
+    private boolean iconSeparateLine;
+    private int lineSize = 3;
+    private String promiseLabel = "Loading";
+
+    public ToastStyle setBackgroundType(BackgroundType backgroundType) {
+        this.backgroundType = backgroundType;
+        return this;
+    }
+
+    public ToastStyle setBorderType(BorderType borderType) {
+        this.borderType = borderType;
+        return this;
+    }
+
+    public ToastStyle setShowLabel(boolean showLabel) {
+        this.showLabel = showLabel;
+        return this;
+    }
+
+    public ToastStyle setIconSeparateLine(boolean iconSeparateLine) {
+        this.iconSeparateLine = iconSeparateLine;
+        return this;
+    }
+
+    public ToastStyle setLineSize(int lineSize) {
+        this.lineSize = lineSize;
+        return this;
+    }
+
+    public ToastStyle setPromiseLabel(String promiseLabel) {
+        this.promiseLabel = promiseLabel;
+        return this;
+    }
+
+    public ToastStyle copy() {
+        return new ToastStyle(backgroundType, borderType, showLabel, iconSeparateLine, lineSize, promiseLabel);
+    }
+
+    public enum BackgroundType {
+        DEFAULT, GRADIENT, NONE
+    }
+
+    public enum BorderType {
+        OUTLINE, TRAILING_LINE, LEADING_LINE, TOP_LINE, BOTTOM_LINE, NONE
+    }
+}

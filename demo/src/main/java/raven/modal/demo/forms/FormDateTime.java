@@ -1,0 +1,113 @@
+package raven.modal.demo.forms;
+
+import com.formdev.flatlaf.FlatClientProperties;
+import net.miginfocom.swing.MigLayout;
+import raven.datetime.component.date.DatePicker;
+import raven.datetime.component.time.TimePicker;
+import raven.modal.demo.system.Form;
+
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
+
+public class FormDateTime extends Form {
+
+    public FormDateTime() {
+        init();
+    }
+
+    private void init() {
+        setLayout(new MigLayout("wrap,fillx,insets 7 15 7 15", "[fill]"));
+        add(createInfo());
+        add(createOptions());
+    }
+
+    @Override
+    public void formInit() {
+        datePicker.now();
+        timePicker.now();
+    }
+
+    private JPanel createInfo() {
+        JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[fill]"));
+        JLabel title = new JLabel("DateTime Picker");
+        JTextArea text = new JTextArea();
+        text.setText("A DateTime picker is a user interface component that allows users to select both a date and a time from a graphical interface.\nIt simplifies date and time input, ensuring accuracy and consistency.");
+        text.setEditable(false);
+        text.setBorder(BorderFactory.createEmptyBorder());
+        title.putClientProperty(FlatClientProperties.STYLE, "" +
+                "font:bold +3");
+
+        panel.add(title);
+        panel.add(text);
+        return panel;
+    }
+
+    private Component createOptions() {
+        JPanel panel = new JPanel(new MigLayout("wrap 2,fillx", "[grow 0,fill][fill]", "[fill]"));
+        panel.add(createDateOption());
+        panel.add(createTimeOption());
+        panel.add(createDateTimePicker(), "span 2");
+        return panel;
+    }
+
+    private Component createDateOption() {
+        JPanel panel = new JPanel(new MigLayout("wrap"));
+        panel.setBorder(new TitledBorder("Date option"));
+        JCheckBox chDateBetween = new JCheckBox("Date between");
+        JCheckBox chUsePanelOption = new JCheckBox("Use panel option");
+        JCheckBox chCloseAfterSelected = new JCheckBox("Close after selected");
+
+        chDateBetween.addActionListener(e -> {
+            datePicker.setDateSelectionMode(chDateBetween.isSelected() ? DatePicker.DateSelectionMode.BETWEEN_DATE_SELECTED
+                    : DatePicker.DateSelectionMode.SINGLE_DATE_SELECTED);
+        });
+        chUsePanelOption.addActionListener(e -> datePicker.setUsePanelOption(chUsePanelOption.isSelected()));
+        chCloseAfterSelected.addActionListener(e -> datePicker.setCloseAfterSelected(chCloseAfterSelected.isSelected()));
+
+        panel.add(chDateBetween);
+        panel.add(chUsePanelOption);
+        panel.add(chCloseAfterSelected);
+
+        return panel;
+    }
+
+    private Component createTimeOption() {
+        JPanel panel = new JPanel(new MigLayout("wrap"));
+        panel.setBorder(new TitledBorder("Time option"));
+        JCheckBox ch24HourView = new JCheckBox("24 hour view");
+        JCheckBox chHorizontal = new JCheckBox("Horizontal");
+
+        ch24HourView.addActionListener(e -> {
+            timePicker.set24HourView(ch24HourView.isSelected());
+        });
+        chHorizontal.addActionListener(e -> timePicker.setOrientation(chHorizontal.isSelected() ? SwingConstants.HORIZONTAL
+                : SwingConstants.VERTICAL));
+
+        panel.add(ch24HourView);
+        panel.add(chHorizontal);
+
+        return panel;
+    }
+
+    private Component createDateTimePicker() {
+        JPanel panel = new JPanel(new MigLayout());
+        panel.setBorder(new TitledBorder("Example"));
+
+        datePicker = new DatePicker();
+        timePicker = new TimePicker();
+
+        JFormattedTextField dateEditor = new JFormattedTextField();
+        JFormattedTextField timeEditor = new JFormattedTextField();
+
+        datePicker.setEditor(dateEditor);
+        timePicker.setEditor(timeEditor);
+
+        panel.add(dateEditor, "width 220");
+        panel.add(timeEditor, "width 220");
+        return panel;
+    }
+
+    private DatePicker datePicker;
+    private TimePicker timePicker;
+}
