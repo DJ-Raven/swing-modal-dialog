@@ -59,6 +59,8 @@ public class FormManager {
         frame.getContentPane().add(getMainForm());
 
         showForm(AllForms.getFormDashboard());
+        frame.repaint();
+        frame.revalidate();
     }
 
     public static void logout() {
