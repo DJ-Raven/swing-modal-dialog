@@ -225,8 +225,16 @@ public class SimpleModalBorder extends Modal {
 
     public static class Option {
 
-        String text;
-        int type;
+        public String getText() {
+            return text;
+        }
+
+        public int getType() {
+            return type;
+        }
+
+        private final String text;
+        private final int type;
 
         public Option(String text, int type) {
             this.text = text;
