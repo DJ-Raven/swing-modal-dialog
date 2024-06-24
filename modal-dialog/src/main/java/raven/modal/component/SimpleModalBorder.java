@@ -23,6 +23,7 @@ public class SimpleModalBorder extends Modal {
     private final ModalBorderOption option;
     private final String title;
     private final int optionType;
+    private Option[] optionsType;
     private final ModalCallback callback;
     private JComponent header;
 
@@ -34,10 +35,10 @@ public class SimpleModalBorder extends Modal {
 
     // return options
     public static final int YES_OPTION = 0;
-    private static final int NO_OPTION = 1;
-    private static final int CANCEL_OPTION = 2;
-    private static final int OK_OPTION = 0;
-    private static final int CLOSE_OPTION = -1;
+    public static final int NO_OPTION = 1;
+    public static final int CANCEL_OPTION = 2;
+    public static final int OK_OPTION = 0;
+    public static final int CLOSE_OPTION = -1;
 
     public SimpleModalBorder(Component component, String title) {
         this(component, title, new ModalBorderOption());
@@ -51,13 +52,29 @@ public class SimpleModalBorder extends Modal {
         this(component, title, new ModalBorderOption(), optionType, callback);
     }
 
+    public SimpleModalBorder(Component component, String title, Option[] optionsType, ModalCallback callback) {
+        this(component, title, new ModalBorderOption(), -1, optionsType, callback);
+    }
+
     public SimpleModalBorder(Component component, String title, ModalBorderOption option, int optionType, ModalCallback callback) {
+        this(component, title, option, optionType, null, callback);
+    }
+
+    public SimpleModalBorder(Component component, String title, ModalBorderOption option, Option[] optionsType, ModalCallback callback) {
+        this(component, title, option, -1, optionsType, callback);
+    }
+
+    private SimpleModalBorder(Component component, String title, ModalBorderOption option, int optionType, Option[] optionsType, ModalCallback callback) {
         this.component = component;
         this.option = option;
         this.title = title;
         this.optionType = optionType;
         this.callback = callback;
-        checkOptionType(optionType);
+        if (optionType == -1) {
+            this.optionsType = optionsType;
+        } else {
+            this.optionsType = createOptions(optionType);
+        }
         init();
     }
 
@@ -72,9 +89,9 @@ public class SimpleModalBorder extends Modal {
         } else {
             add(component);
         }
-        Component optionButton = createOptionButton(optionType);
+        Component optionButton = createOptionButton(optionsType);
         if (optionButton != null) {
-            add(createOptionButton(optionType));
+            add(optionButton);
         }
         setOpaque(false);
     }
@@ -120,11 +137,19 @@ public class SimpleModalBorder extends Modal {
         return buttonClose;
     }
 
-    protected JComponent createOptionButton(int optionType) {
-        if (optionType == DEFAULT_OPTION) {
+    protected JComponent createOptionButton(Option[] optionsType) {
+        if (optionsType == null || optionsType.length == 0) {
             return null;
         }
         JPanel panel = new JPanel(new MigLayout("insets 2 35 2 35,al trailing"));
+        for (Option option : optionsType) {
+            panel.add(createButtonOption(option));
+        }
+        return panel;
+    }
+
+    public Option[] createOptions(int optionType) {
+        checkOptionType(optionType);
         Option[] options = null;
         if (optionType == YES_NO_OPTION) {
             options = new Option[]{new Option("Yes", YES_OPTION), new Option("No", NO_OPTION)};
@@ -133,10 +158,7 @@ public class SimpleModalBorder extends Modal {
         } else if (optionType == OK_CANCEL_OPTION) {
             options = new Option[]{new Option("Ok", OK_OPTION), new Option("Cancel", CANCEL_OPTION)};
         }
-        for (Option option : options) {
-            panel.add(createButtonOption(option));
-        }
-        return panel;
+        return options;
     }
 
     protected JButton createButtonOption(Option option) {
@@ -201,12 +223,12 @@ public class SimpleModalBorder extends Modal {
         }
     }
 
-    private class Option {
+    public static class Option {
 
         String text;
         int type;
 
-        private Option(String text, int type) {
+        public Option(String text, int type) {
             this.text = text;
             this.type = type;
         }
