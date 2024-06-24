@@ -7,6 +7,11 @@
 - Modal dialog
     - SimpleModalBorder: add constructor to custom action type
 
+### Changed
+
+- Drawer
+    - Method `closeDrawer()` now close with animation
+
 ### Fixed bugs
 
 - Modal dialog

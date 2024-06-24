@@ -60,7 +60,7 @@ public class Drawer {
 
     public static void closeDrawer() {
         if (ModalDialog.isIdExist(DRAWER_ID)) {
-            ModalDialog.closeModalAsRemove(DRAWER_ID);
+            ModalDialog.closeModal(DRAWER_ID);
         }
     }
 
@@ -69,7 +69,9 @@ public class Drawer {
             instance.drawerLayoutResponsive.setShowing(visible);
         }
         if (!visible) {
-            closeDrawer();
+            if (ModalDialog.isIdExist(DRAWER_ID)) {
+                ModalDialog.closeModalAsRemove(DRAWER_ID);
+            }
         }
     }
 
