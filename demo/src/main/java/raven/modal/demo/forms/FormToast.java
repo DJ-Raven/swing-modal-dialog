@@ -180,9 +180,13 @@ public class FormToast extends Form {
 
         chShowLabel = new JCheckBox("Show label");
         chIconSeparateLine = new JCheckBox("Icon separate line");
+        chShowCloseButton = new JCheckBox("Show close button");
+
+        chShowCloseButton.setSelected(true);
 
         panel.add(chShowLabel);
         panel.add(chIconSeparateLine);
+        panel.add(chShowCloseButton);
 
         return panel;
     }
@@ -285,6 +289,7 @@ public class FormToast extends Form {
                 .setBorderType(borderType)
                 .setShowLabel(chShowLabel.isSelected())
                 .setIconSeparateLine(chIconSeparateLine.isSelected())
+                .setShowCloseButton(chShowCloseButton.isSelected())
                 .setPromiseLabel("Saving...");
         return option;
     }
@@ -320,4 +325,5 @@ public class FormToast extends Form {
     // other style
     private JCheckBox chShowLabel;
     private JCheckBox chIconSeparateLine;
+    private JCheckBox chShowCloseButton;
 }
