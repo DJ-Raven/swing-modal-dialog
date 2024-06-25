@@ -146,22 +146,27 @@ public class ToastPanel extends JPanel {
 
     private String getLayoutColumn(ThemesData themesData) {
         String columnLayout;
+        boolean isShowCloseButton = toastData.getOption().getStyle().isShowCloseButton();
+        String closeButtonLayout = isShowCloseButton ? "[]" : "8";
         if (themesData.icon == null && toastPromise == null) {
-            columnLayout = "10[grow][]";
+            columnLayout = "10[grow]";
         } else {
             if (toastData.getOption().getStyle().isIconSeparateLine()) {
-                columnLayout = "[][center][grow][]";
+                columnLayout = "[][center][grow]";
             } else {
-                columnLayout = "[][grow][]";
+                columnLayout = "[][grow]";
             }
         }
+        columnLayout += closeButtonLayout;
         return columnLayout;
     }
 
     private void installDefault(ThemesData themesData) {
         content = new ToastContent(new MigLayout("filly", getLayoutColumn(themesData), "[center]"), toastData);
         content.add(createTextMessage());
-        content.add(createCloseButton());
+        if (toastData.getOption().getStyle().isShowCloseButton()) {
+            content.add(createCloseButton());
+        }
         setBorder(new ToastBorder(content, toastData));
         installStyle(themesData);
         add(content);

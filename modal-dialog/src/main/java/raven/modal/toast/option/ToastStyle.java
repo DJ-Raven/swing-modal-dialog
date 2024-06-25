@@ -27,6 +27,10 @@ public class ToastStyle {
         return iconSeparateLine;
     }
 
+    public boolean isShowCloseButton() {
+        return showCloseButton;
+    }
+
     public int getLineSize() {
         return lineSize;
     }
@@ -48,11 +52,12 @@ public class ToastStyle {
         return 1;
     }
 
-    public ToastStyle(BackgroundType backgroundType, BorderType borderType, boolean showLabel, boolean iconSeparateLine, int lineSize, String promiseLabel) {
+    public ToastStyle(BackgroundType backgroundType, BorderType borderType, boolean showLabel, boolean iconSeparateLine, boolean showCloseButton, int lineSize, String promiseLabel) {
         this.backgroundType = backgroundType;
         this.borderType = borderType;
         this.showLabel = showLabel;
         this.iconSeparateLine = iconSeparateLine;
+        this.showCloseButton = showCloseButton;
         this.lineSize = lineSize;
         this.promiseLabel = promiseLabel;
     }
@@ -64,6 +69,7 @@ public class ToastStyle {
     private BorderType borderType = BorderType.NONE;
     private boolean showLabel;
     private boolean iconSeparateLine;
+    private boolean showCloseButton = true;
     private int lineSize = 3;
     private String promiseLabel = "Loading";
 
@@ -87,6 +93,11 @@ public class ToastStyle {
         return this;
     }
 
+    public ToastStyle setShowCloseButton(boolean showCloseButton) {
+        this.showCloseButton = showCloseButton;
+        return this;
+    }
+
     public ToastStyle setLineSize(int lineSize) {
         this.lineSize = lineSize;
         return this;
@@ -98,7 +109,7 @@ public class ToastStyle {
     }
 
     public ToastStyle copy() {
-        return new ToastStyle(backgroundType, borderType, showLabel, iconSeparateLine, lineSize, promiseLabel);
+        return new ToastStyle(backgroundType, borderType, showLabel, iconSeparateLine, showCloseButton, lineSize, promiseLabel);
     }
 
     public enum BackgroundType {

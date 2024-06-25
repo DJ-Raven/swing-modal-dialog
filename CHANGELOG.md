@@ -6,6 +6,8 @@
 
 - Modal dialog
     - SimpleModalBorder: add constructor to custom action type
+- Toast
+    - ToastStyle: add new option `showCloseButton`
 
 ### Changed
 
