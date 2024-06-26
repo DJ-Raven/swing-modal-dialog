@@ -17,7 +17,7 @@ import java.util.function.Consumer;
  *
  * @author Raven
  */
-public class SimpleModalBorder extends Modal {
+public class SimpleModalBorder extends Modal implements ModalBorderAction {
 
     private final Component component;
     private final ModalBorderOption option;
@@ -211,7 +211,8 @@ public class SimpleModalBorder extends Modal {
         };
     }
 
-    private void doAction(int action) {
+    @Override
+    public void doAction(int action) {
         if (callback == null) {
             getController().getModalContainer().closeModal();
         } else {
