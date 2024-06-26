@@ -78,8 +78,8 @@ public class ToastPanel extends JPanel {
     public Component createToast() {
         ThemesData themesData = toastData.getThemes();
         installDefault(themesData);
-        if (toastData.getThemes().icon != null) {
-            Icon icon = createIcon(themesData);
+        Icon icon = createIcon(themesData);
+        if (icon != null) {
             content.add(new JLabel(icon), 0);
             if (toastData.getOption().getStyle().isIconSeparateLine()) {
                 separator = new JSeparator(JSeparator.VERTICAL);
@@ -148,7 +148,7 @@ public class ToastPanel extends JPanel {
         String columnLayout;
         boolean isShowCloseButton = toastData.getOption().getStyle().isShowCloseButton();
         String closeButtonLayout = isShowCloseButton ? "[]" : "8";
-        if (themesData.icon == null && toastPromise == null) {
+        if (themesData.icon == null && toastPromise == null && toastData.getOption().getStyle().getCustomIcon() == null) {
             columnLayout = "10[grow]";
         } else {
             if (toastData.getOption().getStyle().isIconSeparateLine()) {
@@ -235,8 +235,8 @@ public class ToastPanel extends JPanel {
         content.remove(labelIcon);
         ThemesData data = Toast.getThemesData().get(type);
         toastData.themes = data;
-        if (data.icon != null) {
-            Icon icon = createIcon(data);
+        Icon icon = createIcon(data);
+        if (icon != null) {
             content.add(new JLabel(icon), 0);
         } else {
             if (separator != null) {
@@ -261,6 +261,12 @@ public class ToastPanel extends JPanel {
     }
 
     private Icon createIcon(ThemesData themesData) {
+        if (toastData.getOption().getStyle().getCustomIcon() != null) {
+            return toastData.getOption().getStyle().getCustomIcon();
+        }
+        if (toastData.getThemes().icon == null) {
+            return null;
+        }
         FlatSVGIcon svgIcon = new FlatSVGIcon(themesData.icon, 0.5f);
         FlatSVGIcon.ColorFilter colorFilter = new FlatSVGIcon.ColorFilter();
         colorFilter.add(Color.decode("#969696"), Color.decode(themesData.colors[0]), Color.decode(themesData.colors[1]));

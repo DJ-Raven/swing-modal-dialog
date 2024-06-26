@@ -5,9 +5,13 @@
 ### New features and improvements
 
 - Modal dialog
-    - SimpleModalBorder: add constructor to custom action type
+    - SimpleModalBorder
+        - add constructor to custom action type
+        - add modal action (PR #1)
 - Toast
-    - ToastStyle: add new option `showCloseButton`
+    - ToastStyle
+        - add new option `showCloseButton`
+        - add new `customIcon`
 
 ### Changed
 
