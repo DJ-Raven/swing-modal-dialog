@@ -2,6 +2,8 @@ package raven.modal.toast.option;
 
 import raven.modal.Toast;
 
+import javax.swing.*;
+
 /**
  * @author Raven
  */
@@ -39,6 +41,10 @@ public class ToastStyle {
         return promiseLabel;
     }
 
+    public Icon getCustomIcon() {
+        return customIcon;
+    }
+
     public String getLabelText(Toast.Type type) {
         if (type == null) {
             return promiseLabel;
@@ -52,7 +58,7 @@ public class ToastStyle {
         return 1;
     }
 
-    public ToastStyle(BackgroundType backgroundType, BorderType borderType, boolean showLabel, boolean iconSeparateLine, boolean showCloseButton, int lineSize, String promiseLabel) {
+    public ToastStyle(BackgroundType backgroundType, BorderType borderType, boolean showLabel, boolean iconSeparateLine, boolean showCloseButton, int lineSize, String promiseLabel, Icon icon) {
         this.backgroundType = backgroundType;
         this.borderType = borderType;
         this.showLabel = showLabel;
@@ -60,6 +66,7 @@ public class ToastStyle {
         this.showCloseButton = showCloseButton;
         this.lineSize = lineSize;
         this.promiseLabel = promiseLabel;
+        this.customIcon = icon;
     }
 
     public ToastStyle() {
@@ -72,6 +79,7 @@ public class ToastStyle {
     private boolean showCloseButton = true;
     private int lineSize = 3;
     private String promiseLabel = "Loading";
+    private Icon customIcon;
 
     public ToastStyle setBackgroundType(BackgroundType backgroundType) {
         this.backgroundType = backgroundType;
@@ -108,8 +116,13 @@ public class ToastStyle {
         return this;
     }
 
+    public ToastStyle setCustomIcon(Icon icon) {
+        this.customIcon = icon;
+        return this;
+    }
+
     public ToastStyle copy() {
-        return new ToastStyle(backgroundType, borderType, showLabel, iconSeparateLine, showCloseButton, lineSize, promiseLabel);
+        return new ToastStyle(backgroundType, borderType, showLabel, iconSeparateLine, showCloseButton, lineSize, promiseLabel, customIcon);
     }
 
     public enum BackgroundType {

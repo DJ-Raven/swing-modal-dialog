@@ -2,8 +2,12 @@ package raven.modal.demo.simple;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import net.miginfocom.swing.MigLayout;
+import raven.modal.component.ModalBorderAction;
+import raven.modal.component.SimpleModalBorder;
 
 import javax.swing.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class SimpleInputForms extends JPanel {
 
@@ -46,6 +50,18 @@ public class SimpleInputForms extends JPanel {
 
         add(new JLabel("Address"), "gapy 5 0");
         add(scroll, "height 150,grow,pushy");
+
+        txtAddress.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if (e.isControlDown() && e.getKeyChar() == 10) {
+                    ModalBorderAction modalBorderAction = ModalBorderAction.getModalBorderAction(SimpleInputForms.this);
+                    if (modalBorderAction != null) {
+                        modalBorderAction.doAction(SimpleModalBorder.YES_OPTION);
+                    }
+                }
+            }
+        });
         initComboItem(comboCountry);
     }
 
