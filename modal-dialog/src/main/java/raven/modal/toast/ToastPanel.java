@@ -126,16 +126,21 @@ public class ToastPanel extends JPanel {
         if (promiseCallback == null) {
             promiseCallback = new ToastPromise.PromiseCallback() {
                 @Override
+                public void update(String message) {
+                    if (available && !toastPromise.isDone()) {
+                        textMessage.setText(message);
+                    }
+                }
+
+                @Override
                 public void done(Toast.Type type, String message) {
-                    if (available) {
-                        if (!toastPromise.isDone()) {
-                            toastPromise.setDone(true);
-                            promiseIcon.stop();
-                            toastPromise = null;
-                            changeType(type, message);
-                            if (toastData.getOption().isAutoClose()) {
-                                delayStop();
-                            }
+                    if (available && !toastPromise.isDone()) {
+                        toastPromise.setDone(true);
+                        promiseIcon.stop();
+                        toastPromise = null;
+                        changeType(type, message);
+                        if (toastData.getOption().isAutoClose()) {
+                            delayStop();
                         }
                     }
                 }

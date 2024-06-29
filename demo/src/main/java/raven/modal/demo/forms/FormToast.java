@@ -249,6 +249,13 @@ public class FormToast extends Form {
             @Override
             public void execute(PromiseCallback callback) {
                 try {
+                    for (int i = 0; i <= 100; i++) {
+                        callback.update(String.format("Downloading %d%%", i));
+                        Thread.sleep((new Random().nextInt(7) + 1) * 10);
+                    }
+
+                    callback.update("Finishing operations...");
+
                     int type = sleepAndRandomCallback(2000);
                     if (type == 1) {
                         callback.done(Toast.Type.SUCCESS, "Promise has done with success");
