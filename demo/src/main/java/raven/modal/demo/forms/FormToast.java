@@ -253,10 +253,7 @@ public class FormToast extends Form {
                         callback.update(String.format("Downloading %d%%", i));
                         Thread.sleep((new Random().nextInt(7) + 1) * 10);
                     }
-
-                    callback.update("Finishing operations...");
-
-                    int type = sleepAndRandomCallback(2000);
+                    int type = sleepAndRandomCallback(0);
                     if (type == 1) {
                         callback.done(Toast.Type.SUCCESS, "Promise has done with success");
                     } else if (type == 2) {
@@ -276,7 +273,9 @@ public class FormToast extends Form {
     }
 
     private int sleepAndRandomCallback(int m) throws InterruptedException {
-        Thread.sleep(m);
+        if (m > 0) {
+            Thread.sleep(m);
+        }
         Random ran = new Random();
         return ran.nextInt(5) + 1;
     }

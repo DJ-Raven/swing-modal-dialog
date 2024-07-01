@@ -12,6 +12,7 @@
     - ToastStyle
         - add new option `showCloseButton`
         - add new `customIcon`
+    - add method to update the message in toast promise callback (PR #2)
 
 ### Changed
 
