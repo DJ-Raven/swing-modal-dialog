@@ -23,6 +23,8 @@
 
 - Modal dialog
     - SimpleModalBorder: fixed some code to customizable
+- Extras
+    - AvatarIcon: fixed image not painted center and size not affect when round value is 0
 
 ## [1.0.0] - 2024-06-23
 

@@ -83,7 +83,7 @@ public class AvatarIcon implements Icon {
             // resize height
             img = new ImageIcon(icon.getScaledInstance(-1, height, Image.SCALE_SMOOTH)).getImage();
         }
-        return round > 0 ? roundImage(img, width, height, round) : img;
+        return roundImage(img, width, height, round);
     }
 
     private Image roundImage(Image image, float width, float height, float round) {
@@ -107,7 +107,9 @@ public class AvatarIcon implements Icon {
             g.fill(mask);
             g.setComposite(AlphaComposite.SrcIn);
         }
-        g.drawImage(image, 0, 0, null);
+        int x = (imageWidth - image.getWidth(null)) / 2;
+        int y = (imageHeight - image.getHeight(null)) / 2;
+        g.drawImage(image, x, y, null);
         g.dispose();
         image.flush();
         return buff;
