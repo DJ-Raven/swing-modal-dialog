@@ -6,6 +6,7 @@ import raven.modal.ModalDialog;
 import raven.modal.component.SimpleModalBorder;
 import raven.modal.demo.component.LabelButton;
 import raven.modal.demo.simple.SimpleInputForms;
+import raven.modal.demo.simple.SimpleMessageModal;
 import raven.modal.demo.system.Form;
 import raven.modal.option.Location;
 import raven.modal.option.Option;
@@ -48,6 +49,7 @@ public class FormModal extends Form {
         panel.add(createModalOptions());
         panel.add(createModalOptionsClickType());
         panel.add(createSampleModal(), "span 2");
+        panel.add(createCustomModal(), "span 2");
         return panel;
     }
 
@@ -150,6 +152,30 @@ public class FormModal extends Form {
         return panel;
     }
 
+    private Component createCustomModal() {
+        JPanel panel = new JPanel(new MigLayout());
+        panel.setBorder(new TitledBorder("Custom message modal"));
+
+        LabelButton lbDefault = new LabelButton("Show default");
+        LabelButton lbSuccess = new LabelButton("Show success");
+        LabelButton lbInfo = new LabelButton("Show info");
+        LabelButton lbWarning = new LabelButton("Show warning");
+        LabelButton lbError = new LabelButton("Show error");
+
+        lbDefault.addOnClick(o -> showCustomModal(SimpleMessageModal.Type.DEFAULT, getSelectedOption()));
+        lbSuccess.addOnClick(o -> showCustomModal(SimpleMessageModal.Type.SUCCESS, getSelectedOption()));
+        lbInfo.addOnClick(o -> showCustomModal(SimpleMessageModal.Type.INFO, getSelectedOption()));
+        lbWarning.addOnClick(o -> showCustomModal(SimpleMessageModal.Type.WARNING, getSelectedOption()));
+        lbError.addOnClick(o -> showCustomModal(SimpleMessageModal.Type.ERROR, getSelectedOption()));
+
+        panel.add(lbDefault);
+        panel.add(lbSuccess);
+        panel.add(lbInfo);
+        panel.add(lbWarning);
+        panel.add(lbError);
+        return panel;
+    }
+
     private void showModal(Option option) {
         JTextArea txt = new JTextArea();
         txt.setEditable(false);
@@ -158,6 +184,16 @@ public class FormModal extends Form {
         txt.setText("Sets the default hide mode for the layout. This hide mode can be overridden by the component constraint." +
                 "\nThe hide mode specified how the layout manager should handle a component that isn't visible.");
         ModalDialog.showModal(this, new SimpleModalBorder(txt, "Sample Message", SimpleModalBorder.YES_NO_OPTION, null), option);
+    }
+
+    private void showCustomModal(SimpleMessageModal.Type type, Option option) {
+        String message = "Hello! I hope you're having a wonderful day." +
+                "\nI wanted to take a moment to check in and see how you're doing." +
+                "\nWhether you've been working on any exciting projects," +
+                "\nencountered any interesting challenges," +
+                "\nor simply had a good time relaxing, I'd love to hear about it." +
+                "\nIt's always great to catch up and share our experiences.";
+        ModalDialog.showModal(this, new SimpleMessageModal(type, message, "This is a modal custom message", SimpleModalBorder.YES_NO_OPTION, null), option);
     }
 
     private void showModalSlide(Option option) {
