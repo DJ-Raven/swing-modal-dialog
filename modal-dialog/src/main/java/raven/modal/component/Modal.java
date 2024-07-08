@@ -17,6 +17,14 @@ public class Modal extends JPanel {
         this.id = id;
     }
 
+    public boolean isInstalled() {
+        return installed;
+    }
+
+    public void setInstalled(boolean installed) {
+        this.installed = installed;
+    }
+
     public ModalController getController() {
         return controller;
     }
@@ -28,12 +36,9 @@ public class Modal extends JPanel {
 
     private ModalController controller;
     private String id;
+    private boolean installed;
 
-    public Modal() {
-        init();
-    }
-
-    private void init() {
+    public void installComponent() {
     }
 
     protected void controllerInit() {

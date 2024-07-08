@@ -16,6 +16,9 @@
 
 ### Changed
 
+- Modal dialog
+    - Modal
+        - change method `init()` to `installComponent()` and it called when modal show
 - Drawer
     - Method `closeDrawer()` now close with animation
 

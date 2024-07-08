@@ -75,10 +75,14 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
         } else {
             this.optionsType = createOptions(optionType);
         }
-        init();
     }
 
-    private void init() {
+    /**
+     * This method work when show modal dialog
+     * To be able custom new model border with new constructor argument and override the other method
+     */
+    @Override
+    public void installComponent() {
         setLayout(new MigLayout("wrap,fillx,insets 10 0 10 0", "[fill]", "[][fill,grow][]"));
         header = createHeader();
         add(header);
@@ -148,7 +152,7 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
         return panel;
     }
 
-    public Option[] createOptions(int optionType) {
+    protected Option[] createOptions(int optionType) {
         checkOptionType(optionType);
         Option[] options = null;
         if (optionType == YES_NO_OPTION) {

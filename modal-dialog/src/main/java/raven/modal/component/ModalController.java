@@ -90,6 +90,11 @@ public class ModalController extends JPanel {
 
     public void showModal() {
         setFocusCycleRoot(true);
+        // install the modal component for the first show
+        if (!modal.isInstalled()) {
+            modal.installComponent();
+            modal.setInstalled(true);
+        }
         modal.grabFocus();
         startAnimator(true);
     }

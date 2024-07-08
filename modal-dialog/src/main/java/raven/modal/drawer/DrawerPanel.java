@@ -15,10 +15,14 @@ public class DrawerPanel extends Modal {
 
     public DrawerPanel(DrawerBuilder drawerBuilder) {
         this.drawerBuilder = drawerBuilder;
-        init();
+
+        // drawer we need install component. because drawer use auto responsive embed to the frame before show modal dialog
+        setInstalled(true);
+        installComponent();
     }
 
-    private void init() {
+    @Override
+    public void installComponent() {
         String layoutRow = "";
         if (drawerBuilder.getHeader() != null) {
             layoutRow = "[grow 0]";
