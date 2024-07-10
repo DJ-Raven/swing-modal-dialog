@@ -2,6 +2,8 @@ package raven.modal.demo.system;
 
 import raven.modal.demo.forms.*;
 
+import javax.swing.*;
+
 public class AllForms {
 
     private static AllForms instance;
@@ -13,6 +15,7 @@ public class AllForms {
     private FormDateTime formDateTime;
     private FormInput formInput;
     private FormTable formTable;
+    private FormResponsiveLayout formResponsiveLayout;
 
     private static AllForms getInstance() {
         if (instance == null) {
@@ -24,10 +27,14 @@ public class AllForms {
     private AllForms() {
     }
 
+    public static void formInit(Form form) {
+        SwingUtilities.invokeLater(() -> form.formInit());
+    }
+
     public static Form getFormDashboard() {
         if (getInstance().formDashboard == null) {
             getInstance().formDashboard = new FormDashboard();
-            getInstance().formDashboard.formInit();
+            formInit(getInstance().formDashboard);
         }
         return getInstance().formDashboard;
     }
@@ -35,7 +42,7 @@ public class AllForms {
     public static Form getFormSetting() {
         if (getInstance().formSetting == null) {
             getInstance().formSetting = new FormSetting();
-            getInstance().formSetting.formInit();
+            formInit(getInstance().formSetting);
         }
         return getInstance().formSetting;
     }
@@ -43,7 +50,7 @@ public class AllForms {
     public static Form getFormModal() {
         if (getInstance().formModal == null) {
             getInstance().formModal = new FormModal();
-            getInstance().formModal.formInit();
+            formInit(getInstance().formModal);
         }
         return getInstance().formModal;
     }
@@ -51,7 +58,7 @@ public class AllForms {
     public static Form getFormToast() {
         if (getInstance().formToast == null) {
             getInstance().formToast = new FormToast();
-            getInstance().formToast.formInit();
+            formInit(getInstance().formToast);
         }
         return getInstance().formToast;
     }
@@ -59,7 +66,7 @@ public class AllForms {
     public static Form getFormDateTime() {
         if (getInstance().formDateTime == null) {
             getInstance().formDateTime = new FormDateTime();
-            getInstance().formDateTime.formInit();
+            formInit(getInstance().formDateTime);
         }
         return getInstance().formDateTime;
     }
@@ -67,7 +74,7 @@ public class AllForms {
     public static Form getFormInput() {
         if (getInstance().formInput == null) {
             getInstance().formInput = new FormInput();
-            getInstance().formInput.formInit();
+            formInit(getInstance().formInput);
         }
         return getInstance().formInput;
     }
@@ -75,8 +82,16 @@ public class AllForms {
     public static Form getFormTable() {
         if (getInstance().formTable == null) {
             getInstance().formTable = new FormTable();
-            getInstance().formTable.formInit();
+            formInit(getInstance().formTable);
         }
         return getInstance().formTable;
+    }
+
+    public static Form getFormResponsiveLayout() {
+        if (getInstance().formResponsiveLayout == null) {
+            getInstance().formResponsiveLayout = new FormResponsiveLayout();
+            formInit(getInstance().formResponsiveLayout);
+        }
+        return getInstance().formResponsiveLayout;
     }
 }

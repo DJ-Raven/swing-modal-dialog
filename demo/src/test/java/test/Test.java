@@ -1,7 +1,7 @@
 package test;
 
+import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
-import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.ModalDialog;
 import raven.modal.component.SimpleModalBorder;
@@ -29,7 +29,7 @@ public class Test extends JFrame {
 
     public static void main(String[] args) {
         FlatRobotoFont.install();
-        FlatMacLightLaf.setup();
+        FlatDarculaLaf.setup();
         UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN, 13));
         EventQueue.invokeLater(() -> new Test().setVisible(true));
     }

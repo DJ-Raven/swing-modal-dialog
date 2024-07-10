@@ -10,16 +10,16 @@ import java.util.List;
 
 public class SampleData {
 
-    public static List<ModelEmployee> getSampleEmployeeData() {
+    public static List<ModelEmployee> getSampleEmployeeData(boolean defaultIcon) {
         List<ModelEmployee> list = new ArrayList<>();
-        list.add(new ModelEmployee("20-August-2024", 1750, "Business Analyst", "Analytical thinker with experience in business process improvement.", new ModelProfile(getProfileIcon("profile_1.jpg"), "Hannah Scott", "Washington, D.C.")));
-        list.add(new ModelEmployee("15-May-2024", 1200, "Marketing Manager", "Experienced marketing professional with a focus on digital advertising.", new ModelProfile(getProfileIcon("profile_2.jpg"), "Samantha Smith", "New York City")));
-        list.add(new ModelEmployee("20-May-2024", 1500, "Software Engineer", "Skilled developer proficient in Java, Python, and JavaScript.", new ModelProfile(getProfileIcon("profile_3.jpg"), "John Johnson", "Los Angeles")));
-        list.add(new ModelEmployee("25-May-2024", 1300, "Graphic Designer", "Creative designer with expertise in Adobe Creative Suite.", new ModelProfile(getProfileIcon("profile_4.jpg"), "Emily Brown", "Chicago")));
-        list.add(new ModelEmployee("30-May-2024", 1800, "Financial Analyst", "Analytical thinker with a background in financial modeling and forecasting.", new ModelProfile(getProfileIcon("profile_5.jpg"), "Michael Davis", "San Francisco")));
-        list.add(new ModelEmployee("5-June-2024", 1600, "HR Manager", "Human resources professional specializing in recruitment and employee relations.", new ModelProfile(getProfileIcon("profile_6.jpg"), "Jessica Miller", "Seattle")));
-        list.add(new ModelEmployee("10-June-2024", 1700, "Sales Representative", "Proven track record in sales and client relationship management.", new ModelProfile(getProfileIcon("profile_7.jpg"), "David Martinez", "Miami")));
-        list.add(new ModelEmployee("15-June-2024", 1400, "Content Writer", "Versatile writer capable of producing engaging content across various platforms.", new ModelProfile(getProfileIcon("profile_8.jpg"), "Sarah Thompson", "Boston")));
+        list.add(new ModelEmployee("20-August-2024", 1750, "Business Analyst", "Analytical thinker with experience in business process improvement.", new ModelProfile(getProfileIcon("profile_1.jpg", defaultIcon), "Hannah Scott", "Washington, D.C.")));
+        list.add(new ModelEmployee("15-May-2024", 1200, "Marketing Manager", "Experienced marketing professional with a focus on digital advertising.", new ModelProfile(getProfileIcon("profile_2.jpg", defaultIcon), "Samantha Smith", "New York City")));
+        list.add(new ModelEmployee("20-May-2024", 1500, "Software Engineer", "Skilled developer proficient in Java, Python, and JavaScript.", new ModelProfile(getProfileIcon("profile_3.jpg", defaultIcon), "John Johnson", "Los Angeles")));
+        list.add(new ModelEmployee("25-May-2024", 1300, "Graphic Designer", "Creative designer with expertise in Adobe Creative Suite.", new ModelProfile(getProfileIcon("profile_4.jpg", defaultIcon), "Emily Brown", "Chicago")));
+        list.add(new ModelEmployee("30-May-2024", 1800, "Financial Analyst", "Analytical thinker with a background in financial modeling and forecasting.", new ModelProfile(getProfileIcon("profile_5.jpg", defaultIcon), "Michael Davis", "San Francisco")));
+        list.add(new ModelEmployee("5-June-2024", 1600, "HR Manager", "Human resources professional specializing in recruitment and employee relations.", new ModelProfile(getProfileIcon("profile_6.jpg", defaultIcon), "Jessica Miller", "Seattle")));
+        list.add(new ModelEmployee("10-June-2024", 1700, "Sales Representative", "Proven track record in sales and client relationship management.", new ModelProfile(getProfileIcon("profile_7.jpg", defaultIcon), "David Martinez", "Miami")));
+        list.add(new ModelEmployee("15-June-2024", 1400, "Content Writer", "Versatile writer capable of producing engaging content across various platforms.", new ModelProfile(getProfileIcon("profile_8.jpg", defaultIcon), "Sarah Thompson", "Boston")));
         return list;
     }
 
@@ -48,9 +48,13 @@ public class SampleData {
         return list;
     }
 
-    private static Icon getProfileIcon(String name) {
-        AvatarIcon avatarIcon = new AvatarIcon(SampleData.class.getResource("/raven/modal/demo/images/" + name), 55, 55, 3f);
-        avatarIcon.setType(AvatarIcon.Type.MASK_SQUIRCLE);
-        return avatarIcon;
+    private static Icon getProfileIcon(String name, boolean defaultIcon) {
+        if (defaultIcon) {
+            return new ImageIcon(SampleData.class.getResource("/raven/modal/demo/images/" + name));
+        } else {
+            AvatarIcon avatarIcon = new AvatarIcon(SampleData.class.getResource("/raven/modal/demo/images/" + name), 55, 55, 3f);
+            avatarIcon.setType(AvatarIcon.Type.MASK_SQUIRCLE);
+            return avatarIcon;
+        }
     }
 }

@@ -122,18 +122,18 @@ public class FormModal extends Form {
 
         jrClose = new JRadioButton("Close modal");
         jrBlock = new JRadioButton("Block");
-        jrNon = new JRadioButton("Non");
+        jrNone = new JRadioButton("None");
 
         ButtonGroup group = new ButtonGroup();
         group.add(jrClose);
         group.add(jrBlock);
-        group.add(jrNon);
+        group.add(jrNone);
 
         jrClose.setSelected(true);
 
         panel.add(jrClose);
         panel.add(jrBlock);
-        panel.add(jrNon);
+        panel.add(jrNone);
 
         return panel;
     }
@@ -238,5 +238,5 @@ public class FormModal extends Form {
     // background click option
     private JRadioButton jrClose;
     private JRadioButton jrBlock;
-    private JRadioButton jrNon;
+    private JRadioButton jrNone;
 }

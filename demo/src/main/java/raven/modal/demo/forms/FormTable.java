@@ -56,7 +56,7 @@ public class FormTable extends Form {
     }
 
     private Component createBorder(Component component) {
-        JPanel panel = new JPanel(new MigLayout("fill,insets 7 0 7 0", "[fill]","[fill]"));
+        JPanel panel = new JPanel(new MigLayout("fill,insets 7 0 7 0", "[fill]", "[fill]"));
         panel.add(component);
         return panel;
     }
@@ -159,7 +159,7 @@ public class FormTable extends Form {
         panel.add(scrollPane);
 
         // sample data
-        for (ModelEmployee d : SampleData.getSampleEmployeeData()) {
+        for (ModelEmployee d : SampleData.getSampleEmployeeData(false)) {
             model.addRow(d.toTableRowCustom(table.getRowCount() + 1));
         }
         return panel;
