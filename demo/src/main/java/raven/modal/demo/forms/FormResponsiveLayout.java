@@ -51,15 +51,15 @@ public class FormResponsiveLayout extends Form {
     }
 
     private Component createOptions() {
-        JPanel panel = new JPanel(new MigLayout("wrap 2,fillx", "[grow 0,fill][fill]", "[fill]"));
-        panel.add(createLayoutOption(), "width 250::");
-        panel.add(createOtherOption());
-        panel.add(createExample(), "span 2");
+        JPanel panel = new JPanel(new MigLayout("wrap 2,fillx", "[grow 0,fill][fill]0", "[fill]"));
+        panel.add(createLayoutOption(), "width 300::");
+        panel.add(createOtherOption(), ",gapx 0 7");
+        panel.add(createExample(), "span 2,gapx 0 2");
         return panel;
     }
 
     private Component createLayoutOption() {
-        JPanel panel = new JPanel(new MigLayout("wrap"));
+        JPanel panel = new JPanel(new MigLayout("wrap 2"));
         panel.setBorder(new TitledBorder("Justify content"));
 
         JRadioButton jrStart = new JRadioButton("Start");
@@ -125,12 +125,19 @@ public class FormResponsiveLayout extends Form {
         scrollPane.getHorizontalScrollBar().setUnitIncrement(10);
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);
         scrollPane.getHorizontalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" +
-                "trackArc:$ScrollBar.thumbArc;");
+                "trackArc:$ScrollBar.thumbArc;" +
+                "thumbInsets:0,0,0,0;" +
+                "width:5;");
         scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" +
-                "trackArc:$ScrollBar.thumbArc;");
+                "trackArc:$ScrollBar.thumbArc;" +
+                "thumbInsets:0,0,0,0;" +
+                "width:5;");
         scrollPane.setBorder(new TitledBorder("Example"));
-
-        return scrollPane;
+        JSplitPane splitPane = new JSplitPane();
+        splitPane.setLeftComponent(scrollPane);
+        splitPane.setRightComponent(Box.createGlue());
+        splitPane.setResizeWeight(1);
+        return splitPane;
     }
 
     private JPanel panelCard;
