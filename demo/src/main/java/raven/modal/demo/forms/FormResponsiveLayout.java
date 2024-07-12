@@ -19,7 +19,7 @@ public class FormResponsiveLayout extends Form {
     }
 
     private void init() {
-        setLayout(new MigLayout("wrap,fillx,insets 7 15 7 15", "[fill]"));
+        setLayout(new MigLayout("wrap,fill,insets 7 15 7 15", "[fill]", "[grow 0][fill]"));
         add(createInfo());
         add(createOptions());
     }
@@ -51,7 +51,7 @@ public class FormResponsiveLayout extends Form {
     }
 
     private Component createOptions() {
-        JPanel panel = new JPanel(new MigLayout("wrap 2,fillx", "[grow 0,fill][fill]0", "[fill]"));
+        JPanel panel = new JPanel(new MigLayout("wrap 2,fill", "[grow 0,fill][fill]0", "[fill,grow 0][fill]"));
         panel.add(createLayoutOption(), "width 300::");
         panel.add(createOtherOption(), ",gapx 0 7");
         panel.add(createExample(), "span 2,gapx 0 2");
@@ -113,6 +113,32 @@ public class FormResponsiveLayout extends Form {
         JPanel panel = new JPanel(new MigLayout("wrap"));
         panel.setBorder(new TitledBorder("Other option"));
 
+        JCheckBox chColumn = new JCheckBox("Set column");
+        JSpinner spColumn = new JSpinner();
+        spColumn.setValue(1);
+        SpinnerNumberModel numberModel = (SpinnerNumberModel) spColumn.getModel();
+        numberModel.setMinimum(1);
+        numberModel.setMaximum(20);
+
+        chColumn.setSelected(false);
+        spColumn.setVisible(false);
+
+        chColumn.addActionListener(e -> {
+            if (chColumn.isSelected()) {
+                responsiveLayout.setColumn(Integer.parseInt(spColumn.getValue().toString()));
+            } else {
+                responsiveLayout.setColumn(-1);
+            }
+            spColumn.setVisible(chColumn.isSelected());
+            panelCard.revalidate();
+        });
+        spColumn.addChangeListener(e -> {
+            responsiveLayout.setColumn(Integer.parseInt(spColumn.getValue().toString()));
+            panelCard.revalidate();
+        });
+
+        panel.add(chColumn, "split 2");
+        panel.add(spColumn);
         return panel;
     }
 
