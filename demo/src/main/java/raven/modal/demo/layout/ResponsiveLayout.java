@@ -92,7 +92,7 @@ public class ResponsiveLayout implements LayoutManager {
             int width = (insets.left + insets.right);
             Dimension itemSize = getItemSize(parent);
             int count = getVisibleComponentCount(parent);
-            int column = getColumn(parent, itemSize.width);
+            int column = getColumn(parent, itemSize.width, count);
             if (count == 0) {
                 return new Dimension(width, height);
             }
@@ -127,7 +127,7 @@ public class ResponsiveLayout implements LayoutManager {
             }
             Dimension itemSize = getItemSize(parent);
             int count = parent.getComponentCount();
-            int column = getColumn(parent, itemSize.width);
+            int column = getColumn(parent, itemSize.width, count);
             LayoutOption layoutOption = getLayoutOption(itemSize, width, column);
             int startX = insets.left + layoutOption.startX;
             int startY = insets.top + layoutOption.startY;
@@ -217,12 +217,12 @@ public class ResponsiveLayout implements LayoutManager {
         return itemSize;
     }
 
-    private int getColumn(Container parent, int itemWidth) {
+    private int getColumn(Container parent, int itemWidth, int itemCount) {
         Insets insets = parent.getInsets();
         int width = parent.getWidth() - (insets.left + insets.right);
         int height = parent.getHeight() - (insets.top + insets.bottom);
         int hGap = UIScale.scale(horizontalGap);
-        return Math.max(calculateColumns(width, itemWidth, hGap), 1);
+        return Math.max(Math.min(calculateColumns(width, itemWidth, hGap), itemCount), 1);
     }
 
     public int calculateColumns(int width, int itemWidth, int gap) {
