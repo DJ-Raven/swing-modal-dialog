@@ -6,13 +6,16 @@ import raven.extras.AvatarIcon;
 import raven.modal.demo.model.ModelEmployee;
 
 import javax.swing.*;
+import java.util.function.Consumer;
 
 public class Card extends JPanel {
 
     private final ModelEmployee employee;
+    private final Consumer<ModelEmployee> event;
 
-    public Card(ModelEmployee employee) {
+    public Card(ModelEmployee employee, Consumer<ModelEmployee> event) {
         this.employee = employee;
+        this.event = event;
         init();
     }
 
@@ -59,6 +62,7 @@ public class Card extends JPanel {
         description.setText(employee.getDescription());
 
         JButton button = new JButton("View");
+        button.addActionListener(e -> event.accept(employee));
         button.putClientProperty(FlatClientProperties.STYLE, "" +
                 "arc:999;" +
                 "margin:3,25,3,25;" +

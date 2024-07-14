@@ -11,6 +11,7 @@ import raven.modal.demo.system.Form;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.util.function.Consumer;
 
 public class FormResponsiveLayout extends Form {
 
@@ -29,10 +30,16 @@ public class FormResponsiveLayout extends Form {
         // add sample data
         panelCard.removeAll();
         for (ModelEmployee employee : SampleData.getSampleEmployeeData(true)) {
-            panelCard.add(new Card(employee));
+            panelCard.add(new Card(employee, createEventCard()));
         }
         panelCard.repaint();
         panelCard.revalidate();
+    }
+
+    private Consumer<ModelEmployee> createEventCard() {
+        return e -> {
+            JOptionPane.showMessageDialog(this, e.getProfile().getName());
+        };
     }
 
     private JPanel createInfo() {
