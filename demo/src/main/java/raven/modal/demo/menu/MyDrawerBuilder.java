@@ -51,7 +51,8 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 new Item.Label("SWING UI"),
                 new Item("Forms", "forms.svg")
                         .subMenu("Input")
-                        .subMenu("Table"),
+                        .subMenu("Table")
+                        .subMenu("Responsive Layout"),
                 new Item("Components", "components.svg")
                         .subMenu("Modal")
                         .subMenu("Toast")
@@ -117,6 +118,8 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                             FormManager.showForm(AllForms.getFormInput());
                         } else if (j == 1) {
                             FormManager.showForm(AllForms.getFormTable());
+                        } else if (j == 2) {
+                            FormManager.showForm(AllForms.getFormResponsiveLayout());
                         }
                     } else if (i == 2) {
                         if (j == 0) {
