@@ -58,10 +58,11 @@ public class FormResponsiveLayout extends Form {
     }
 
     private Component createOptions() {
-        JPanel panel = new JPanel(new MigLayout("wrap 2,fill", "[grow 0,fill][fill]0", "[fill,grow 0][fill]"));
+        JPanel panel = new JPanel(new MigLayout("wrap 3,fill", "[grow 0,fill][grow 0,fill][fill]0", "[fill,grow 0][fill]"));
         panel.add(createLayoutOption(), "width 300::");
-        panel.add(createOtherOption(), ",gapx 0 7");
-        panel.add(createExample(), "span 2,gapx 0 2");
+        panel.add(createOtherOption());
+        panel.add(createGapOption(), "gapx 0 7");
+        panel.add(createExample(), "span 3,gapx 0 2");
         return panel;
     }
 
@@ -117,36 +118,136 @@ public class FormResponsiveLayout extends Form {
     }
 
     private Component createOtherOption() {
-        JPanel panel = new JPanel(new MigLayout("wrap"));
-        panel.setBorder(new TitledBorder("Other option"));
+        JPanel panel = new JPanel(new MigLayout("wrap 2"));
+        panel.setBorder(new TitledBorder("Column and Item option"));
 
         JCheckBox chColumn = new JCheckBox("Set column");
-        JSpinner spColumn = new JSpinner();
-        spColumn.setValue(1);
-        SpinnerNumberModel numberModel = (SpinnerNumberModel) spColumn.getModel();
-        numberModel.setMinimum(1);
-        numberModel.setMaximum(20);
+        JCheckBox chWidth = new JCheckBox("Set item width");
+        JCheckBox chHeight = new JCheckBox("Set item height");
 
-        chColumn.setSelected(false);
+        JSpinner spColumn = createSpinner(20, 1);
+        JSpinner spWidth = createSpinner(1000, 300);
+        JSpinner spHeight = createSpinner(1000, 150);
+
+        JLabel lbColumnStatus = new JLabel("( auto wrap )");
+        JLabel lbWidthStatus = new JLabel("( preferred size )");
+        JLabel lbHeightStatus = new JLabel("( preferred size )");
+
+        lbColumnStatus.putClientProperty(FlatClientProperties.STYLE, "" +
+                "foreground:$Label.disabledForeground;");
+        lbWidthStatus.putClientProperty(FlatClientProperties.STYLE, "" +
+                "foreground:$Label.disabledForeground;");
+        lbHeightStatus.putClientProperty(FlatClientProperties.STYLE, "" +
+                "foreground:$Label.disabledForeground;");
+
         spColumn.setVisible(false);
+        spWidth.setVisible(false);
+        spHeight.setVisible(false);
 
         chColumn.addActionListener(e -> {
             if (chColumn.isSelected()) {
                 responsiveLayout.setColumn(Integer.parseInt(spColumn.getValue().toString()));
+                lbColumnStatus.setText("");
             } else {
                 responsiveLayout.setColumn(-1);
+                lbColumnStatus.setText("( auto wrap )");
             }
             spColumn.setVisible(chColumn.isSelected());
+            panelCard.revalidate();
+        });
+        chWidth.addActionListener(e -> {
+            if (chWidth.isSelected()) {
+                lbWidthStatus.setText("");
+                Dimension size = responsiveLayout.getSize();
+                size.width = Integer.parseInt(spWidth.getValue().toString());
+                responsiveLayout.setSize(size);
+            } else {
+                Dimension size = responsiveLayout.getSize();
+                size.width = -1;
+                responsiveLayout.setSize(size);
+                lbWidthStatus.setText("( preferred size )");
+            }
+            spWidth.setVisible(chWidth.isSelected());
+            panelCard.revalidate();
+        });
+        chHeight.addActionListener(e -> {
+            if (chHeight.isSelected()) {
+                lbHeightStatus.setText("");
+                Dimension size = responsiveLayout.getSize();
+                size.height = Integer.parseInt(spHeight.getValue().toString());
+                responsiveLayout.setSize(size);
+            } else {
+                Dimension size = responsiveLayout.getSize();
+                size.height = -1;
+                responsiveLayout.setSize(size);
+                lbHeightStatus.setText("( preferred size )");
+            }
+            spHeight.setVisible(chHeight.isSelected());
             panelCard.revalidate();
         });
         spColumn.addChangeListener(e -> {
             responsiveLayout.setColumn(Integer.parseInt(spColumn.getValue().toString()));
             panelCard.revalidate();
         });
+        spWidth.addChangeListener(e -> {
+            Dimension size = responsiveLayout.getSize();
+            size.width = Integer.parseInt(spWidth.getValue().toString());
+            responsiveLayout.setSize(size);
+            panelCard.revalidate();
+        });
+        spHeight.addChangeListener(e -> {
+            Dimension size = responsiveLayout.getSize();
+            size.height = Integer.parseInt(spHeight.getValue().toString());
+            responsiveLayout.setSize(size);
+            panelCard.revalidate();
+        });
 
-        panel.add(chColumn, "split 2");
+        panel.add(chColumn);
+        panel.add(lbColumnStatus, "split 2");
         panel.add(spColumn);
+
+        panel.add(chWidth);
+        panel.add(lbWidthStatus, "split 2");
+        panel.add(spWidth);
+
+        panel.add(chHeight);
+        panel.add(lbHeightStatus, "split 2");
+        panel.add(spHeight);
+
         return panel;
+    }
+
+    private Component createGapOption() {
+        JPanel panel = new JPanel(new MigLayout("wrap 2"));
+        panel.setBorder(new TitledBorder("Gap option"));
+
+        JSpinner spHGap = createSpinner(500, 10);
+        JSpinner spVGap = createSpinner(500, 10);
+
+        spHGap.addChangeListener(e -> {
+            responsiveLayout.setHorizontalGap(Integer.parseInt(spHGap.getValue().toString()));
+            panelCard.revalidate();
+        });
+        spVGap.addChangeListener(e -> {
+            responsiveLayout.setVerticalGap(Integer.parseInt(spVGap.getValue().toString()));
+            panelCard.revalidate();
+        });
+
+        panel.add(new JLabel("Horizontal"));
+        panel.add(spHGap);
+        panel.add(new JLabel("Vertical"));
+        panel.add(spVGap);
+
+        return panel;
+    }
+
+    private JSpinner createSpinner(int max, int init) {
+        JSpinner spinner = new JSpinner();
+        spinner.setValue(init);
+        SpinnerNumberModel numberModel = (SpinnerNumberModel) spinner.getModel();
+        numberModel.setMinimum(1);
+        numberModel.setMaximum(max);
+        return spinner;
     }
 
     private Component createExample() {
