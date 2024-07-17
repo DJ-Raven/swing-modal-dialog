@@ -29,6 +29,11 @@
 - Extras
     - AvatarIcon: fixed image not painted center and size not affect when round value is 0
 
+### Demo
+
+- Add custom modal message (PR #3)
+- Add responsive layout (PR #4)
+
 ## [1.0.0] - 2024-06-23
 
 - Initial release
