@@ -13,6 +13,7 @@ public class AllForms {
     private FormModal formModal;
     private FormToast formToast;
     private FormDateTime formDateTime;
+    private FormAvatarIcon formAvatarIcon;
     private FormInput formInput;
     private FormTable formTable;
     private FormResponsiveLayout formResponsiveLayout;
@@ -69,6 +70,14 @@ public class AllForms {
             formInit(getInstance().formDateTime);
         }
         return getInstance().formDateTime;
+    }
+
+    public static Form getFormAvatarIcon() {
+        if (getInstance().formAvatarIcon == null) {
+            getInstance().formAvatarIcon = new FormAvatarIcon();
+            formInit(getInstance().formAvatarIcon);
+        }
+        return getInstance().formAvatarIcon;
     }
 
     public static Form getFormInput() {

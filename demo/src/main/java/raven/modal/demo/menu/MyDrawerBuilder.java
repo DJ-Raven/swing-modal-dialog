@@ -56,7 +56,8 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 new Item("Components", "components.svg")
                         .subMenu("Modal")
                         .subMenu("Toast")
-                        .subMenu("Date Time"),
+                        .subMenu("Date Time")
+                        .subMenu("Avatar Icon"),
                 new Item("Email", "email.svg")
                         .subMenu("Inbox")
                         .subMenu(
@@ -128,6 +129,8 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                             FormManager.showForm(AllForms.getFormToast());
                         } else if (j == 2) {
                             FormManager.showForm(AllForms.getFormDateTime());
+                        } else if (j == 3) {
+                            FormManager.showForm(AllForms.getFormAvatarIcon());
                         }
                     }
                 }
