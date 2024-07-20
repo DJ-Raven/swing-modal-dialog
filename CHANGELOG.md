@@ -13,6 +13,8 @@
         - add new option `showCloseButton`
         - add new `customIcon`
     - add method to update the message in toast promise callback (PR #2)
+- Extras
+    - AvatarIcon: now support border option (PR #5)
 
 ### Changed
 
@@ -33,6 +35,7 @@
 
 - Add custom modal message (PR #3)
 - Add responsive layout (PR #4)
+- Add form avatar icon (PR #5)
 
 ## [1.0.0] - 2024-06-23
 
