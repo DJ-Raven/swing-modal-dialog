@@ -15,7 +15,12 @@ public class FormManager {
 
     public static void install(JFrame f) {
         frame = f;
+        install();
         logout();
+    }
+
+    private static void install() {
+        FormSearch.getInstance().installKeyMap(getMainForm());
     }
 
     public static void showForm(Form form) {

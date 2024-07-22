@@ -1,8 +1,10 @@
 package raven.modal.demo.system;
 
+import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.Drawer;
+import raven.modal.demo.component.FormSearchButton;
 import raven.modal.demo.component.RefreshLine;
 
 import javax.swing.*;
@@ -22,7 +24,7 @@ public class MainForm extends JPanel {
     }
 
     private JPanel createHeader() {
-        JPanel panel = new JPanel(new MigLayout("insets 3"));
+        JPanel panel = new JPanel(new MigLayout("insets 3", "[]push[]push", "[fill]"));
         JToolBar toolBar = new JToolBar();
         JButton buttonDrawer = new JButton(new FlatSVGIcon("raven/modal/demo/icons/menu.svg", 0.5f));
         buttonUndo = new JButton(new FlatSVGIcon("raven/modal/demo/icons/undo.svg", 0.5f));
@@ -44,6 +46,15 @@ public class MainForm extends JPanel {
         toolBar.add(buttonRedo);
         toolBar.add(buttonRefresh);
         panel.add(toolBar);
+        panel.add(createSearchBox(), "gapx n 135");
+        return panel;
+    }
+
+    private JPanel createSearchBox() {
+        JPanel panel = new JPanel(new MigLayout("fill", "[fill,center,160:200:]", "[fill]"));
+        FormSearchButton button = new FormSearchButton();
+        button.addActionListener(e -> FormSearch.getInstance().showSearch());
+        panel.add(button);
         return panel;
     }
 
