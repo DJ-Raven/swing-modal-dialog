@@ -8,6 +8,7 @@ import raven.modal.demo.component.LabelButton;
 import raven.modal.demo.simple.SimpleInputForms;
 import raven.modal.demo.simple.SimpleMessageModal;
 import raven.modal.demo.system.Form;
+import raven.modal.demo.utils.SystemForm;
 import raven.modal.option.Location;
 import raven.modal.option.Option;
 
@@ -15,6 +16,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
+@SystemForm(name = "Modal", description = "modal dialog user interface element", tags = {"dialog", "popup"})
 public class FormModal extends Form {
 
     public FormModal() {

@@ -4,14 +4,25 @@ import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatMenuArrowIcon;
 import net.miginfocom.swing.MigLayout;
+import raven.modal.ModalDialog;
+import raven.modal.component.ModalContainer;
 import raven.modal.demo.layout.ResponsiveLayout;
+import raven.modal.demo.system.*;
+import raven.modal.demo.utils.SystemForm;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.util.Arrays;
+import java.util.Map;
 
 public class FormSearchPanel extends JPanel {
 
-    public FormSearchPanel() {
+    private final Map<SystemForm, Class<? extends Form>> formsMap;
+
+    public FormSearchPanel(Map<SystemForm, Class<? extends Form>> formsMap) {
+        this.formsMap = formsMap;
         init();
     }
 
@@ -31,23 +42,73 @@ public class FormSearchPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(panelResult);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);
-        panelResult.add(new Item("Test 1"));
-        panelResult.add(new Item("Test 2"));
-        panelResult.add(new Item("Test 3"));
-        panelResult.add(new Item("Test 4"));
-
+        for (Map.Entry<SystemForm, Class<? extends Form>> entry : formsMap.entrySet()) {
+            panelResult.add(new Item(entry.getKey(), entry.getValue()));
+        }
         add(scrollPane);
+        installSearchField();
+    }
+
+    private void installSearchField() {
+        textSearch.getDocument().addDocumentListener(new DocumentListener() {
+            private String text;
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                search();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                search();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                search();
+            }
+
+            private void search() {
+                String st = textSearch.getText().trim();
+                if (!st.equals(text)) {
+                    text = st;
+                    panelResult.removeAll();
+                    for (Map.Entry<SystemForm, Class<? extends Form>> entry : formsMap.entrySet()) {
+                        SystemForm s = entry.getKey();
+                        if (s.name().toLowerCase().contains(st)
+                                || s.description().toLowerCase().contains(st)
+                                || checkTags(s.tags(), st)) {
+                            panelResult.add(new Item(s, entry.getValue()));
+                        }
+                    }
+                    panelResult.repaint();
+                    SwingUtilities.getAncestorOfClass(ModalContainer.class, FormSearchPanel.this).revalidate();
+                }
+            }
+
+            private boolean checkTags(String tags[], String st) {
+                if (tags.length == 0) return false;
+                boolean contains = Arrays.stream(tags).anyMatch(s -> s.contains(st));
+                return contains;
+            }
+        });
     }
 
     private JTextField textSearch;
     private JPanel panelResult;
 
+    public void searchGrabFocus() {
+        textSearch.grabFocus();
+    }
+
     private static class Item extends JButton {
 
-        private String text;
+        private final SystemForm data;
+        private final Class<? extends Form> form;
 
-        public Item(String text) {
-            this.text = text;
+        public Item(SystemForm data, Class<? extends Form> form) {
+            this.data = data;
+            this.form = form;
             init();
         }
 
@@ -60,12 +121,16 @@ public class FormSearchPanel extends JPanel {
                     "borderWidth:0;" +
                     "focusWidth:0;" +
                     "innerFocusWidth:0;");
-            JLabel labelDescription = new JLabel("description");
+            JLabel labelDescription = new JLabel(data.description());
             labelDescription.putClientProperty(FlatClientProperties.STYLE, "" +
                     "foreground:$Label.disabledForeground;");
-            add(new JLabel(text), "cell 0 0");
+            add(new JLabel(data.name()), "cell 0 0");
             add(labelDescription, "cell 0 1");
             add(new JLabel(new FlatMenuArrowIcon()), "cell 1 0,span 1 2");
+            addActionListener(e -> {
+                ModalDialog.closeModal(FormSearch.ID);
+                FormManager.showForm(AllForms.getForm(form));
+            });
         }
     }
 }
