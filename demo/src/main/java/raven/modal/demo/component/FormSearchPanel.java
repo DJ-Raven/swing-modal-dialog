@@ -21,6 +21,7 @@ import java.util.Map;
 
 public class FormSearchPanel extends JPanel {
 
+    private LookAndFeel oldTheme = UIManager.getLookAndFeel();
     private final Map<SystemForm, Class<? extends Form>> formsMap;
 
     public FormSearchPanel(Map<SystemForm, Class<? extends Form>> formsMap) {
@@ -61,6 +62,13 @@ public class FormSearchPanel extends JPanel {
         }
         add(scrollPane);
         installSearchField();
+    }
+
+    public final void formCheck() {
+        if (oldTheme != UIManager.getLookAndFeel()) {
+            oldTheme = UIManager.getLookAndFeel();
+            SwingUtilities.updateComponentTreeUI(this);
+        }
     }
 
     private void installSearchField() {
@@ -144,6 +152,9 @@ public class FormSearchPanel extends JPanel {
         for (int i = 0; i < components.length; i++) {
             if (components[i] instanceof JButton) {
                 ((JButton) components[i]).setSelected(index == i);
+                if (i == index) {
+                    panelResult.scrollRectToVisible(components[i].getBounds());
+                }
             }
         }
     }
@@ -228,7 +239,8 @@ public class FormSearchPanel extends JPanel {
                     "arc:10;" +
                     "borderWidth:0;" +
                     "focusWidth:0;" +
-                    "innerFocusWidth:0;");
+                    "innerFocusWidth:0;" +
+                    "[light]selectedBackground:lighten($Button.selectedBackground,9%)");
             JLabel labelDescription = new JLabel(data.description());
             labelDescription.putClientProperty(FlatClientProperties.STYLE, "" +
                     "foreground:$Label.disabledForeground;");

@@ -72,6 +72,7 @@ public class FormSearch {
         if (searchPanel == null) {
             searchPanel = new FormSearchPanel(formsMap);
         }
+        searchPanel.formCheck();
         return searchPanel;
     }
 }
