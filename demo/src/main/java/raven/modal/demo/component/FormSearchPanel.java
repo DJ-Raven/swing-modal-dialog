@@ -31,19 +31,21 @@ public class FormSearchPanel extends JPanel {
     private void init() {
         setLayout(new MigLayout("fillx,insets 0,wrap", "[fill,500]"));
         textSearch = new JTextField();
-        panelResult = new JPanel(new ResponsiveLayout(ResponsiveLayout.JustifyContent.FIT_CONTENT, new Dimension(-1, -1), 10, 0, 1));
+        panelResult = new JPanel(new ResponsiveLayout(ResponsiveLayout.JustifyContent.FIT_CONTENT, new Dimension(-1, -1), 10, 3, 1));
         panelResult.putClientProperty(FlatClientProperties.STYLE, "" +
                 "border:0,10,0,10;");
         textSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Search...");
         textSearch.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, new FlatSVGIcon("raven/modal/demo/icons/search.svg", 0.4f));
         textSearch.putClientProperty(FlatClientProperties.STYLE, "" +
-                "border:3,20,3,20;" +
-                "background:null;");
-        add(textSearch);
+                "border:3,3,3,3;" +
+                "background:null;" +
+                "showClearButton:true;");
+        add(textSearch, "gap 17 17 0 0");
         add(new JSeparator(), "height 2!");
         JScrollPane scrollPane = new JScrollPane(panelResult);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         for (Map.Entry<SystemForm, Class<? extends Form>> entry : formsMap.entrySet()) {
             panelResult.add(new Item(entry.getKey(), entry.getValue()));
         }
@@ -88,6 +90,8 @@ public class FormSearchPanel extends JPanel {
                     }
                     if (panelResult.getComponentCount() > 0) {
                         setSelected(0);
+                    } else {
+                        panelResult.add(createNoResult(st));
                     }
                     panelResult.repaint();
                     SwingUtilities.getAncestorOfClass(ModalContainer.class, FormSearchPanel.this).revalidate();
@@ -172,6 +176,22 @@ public class FormSearchPanel extends JPanel {
                 }
             }
         }
+    }
+
+    private Component createNoResult(String text) {
+        JPanel panel = new JPanel(new MigLayout("al center,gapx 1"));
+        JLabel label = new JLabel("No result for \"");
+        JLabel labelEnd = new JLabel("\"");
+        label.putClientProperty(FlatClientProperties.STYLE, "" +
+                "foreground:$Label.disabledForeground;");
+        labelEnd.putClientProperty(FlatClientProperties.STYLE, "" +
+                "foreground:$Label.disabledForeground;");
+        JLabel labelText = new JLabel(text);
+
+        panel.add(label);
+        panel.add(labelText);
+        panel.add(labelEnd);
+        return panel;
     }
 
     private JTextField textSearch;
