@@ -46,6 +46,13 @@ public class FormSearchPanel extends JPanel {
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" +
+                "trackArc:$ScrollBar.thumbArc;" +
+                "thumbInsets:0,3,0,3;" +
+                "trackInsets:0,3,0,3;" +
+                "width:12;");
+
         for (Map.Entry<SystemForm, Class<? extends Form>> entry : formsMap.entrySet()) {
             panelResult.add(new Item(entry.getKey(), entry.getValue()));
         }
