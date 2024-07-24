@@ -11,7 +11,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-@SystemForm(name = "Avatar Icon", description = "avatar icon graphical element", tags = {"profile", "photo"})
+@SystemForm(name = "Avatar Icon", description = "avatar icon graphical element", tags = {"profile", "photo", "image", "circle", "picture"})
 public class FormAvatarIcon extends Form {
 
     public FormAvatarIcon() {

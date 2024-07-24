@@ -10,6 +10,7 @@ import raven.modal.demo.model.ModelProfile;
 import raven.modal.demo.sample.SampleData;
 import raven.modal.demo.simple.SimpleInputForms;
 import raven.modal.demo.system.Form;
+import raven.modal.demo.utils.SystemForm;
 import raven.modal.demo.utils.table.CheckBoxTableHeaderRenderer;
 import raven.modal.demo.utils.table.TableHeaderAlignment;
 import raven.modal.demo.utils.table.TableProfileCellRenderer;
@@ -20,6 +21,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
+@SystemForm(name = "Table", description = "table is a user interface component", tags = {"list"})
 public class FormTable extends Form {
 
     public FormTable() {

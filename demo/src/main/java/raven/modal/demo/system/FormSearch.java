@@ -44,7 +44,11 @@ public class FormSearch {
                 FormAvatarIcon.class,
                 FormDateTime.class,
                 FormModal.class,
-                FormInput.class
+                FormToast.class,
+                FormInput.class,
+                FormTable.class,
+                FormResponsiveLayout.class,
+                FormSetting.class
         };
     }
 

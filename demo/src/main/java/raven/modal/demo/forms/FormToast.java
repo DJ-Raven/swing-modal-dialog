@@ -6,6 +6,7 @@ import raven.modal.Toast;
 import raven.modal.demo.component.LabelButton;
 import raven.modal.demo.simple.SimpleCustomToast;
 import raven.modal.demo.system.Form;
+import raven.modal.demo.utils.SystemForm;
 import raven.modal.option.Location;
 import raven.modal.toast.option.ToastLocation;
 import raven.modal.toast.option.ToastOption;
@@ -17,6 +18,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.Random;
 
+@SystemForm(name = "Toast", description = "toast notification message", tags = {"alert"})
 public class FormToast extends Form {
 
     public FormToast() {

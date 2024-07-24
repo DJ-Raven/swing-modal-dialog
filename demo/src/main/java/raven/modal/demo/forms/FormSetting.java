@@ -11,6 +11,7 @@ import raven.modal.demo.component.AccentColorIcon;
 import raven.modal.demo.system.Form;
 import raven.modal.demo.system.FormManager;
 import raven.modal.demo.themes.PanelThemes;
+import raven.modal.demo.utils.SystemForm;
 import raven.modal.drawer.DrawerBuilder;
 import raven.modal.option.LayoutOption;
 import raven.modal.option.Location;
@@ -20,6 +21,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
+@SystemForm(name = "Setting", description = "application setting and configuration", tags = {"themes", "options"})
 public class FormSetting extends Form {
 
     public FormSetting() {
