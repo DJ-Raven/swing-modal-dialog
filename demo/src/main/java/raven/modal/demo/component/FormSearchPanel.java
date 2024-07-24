@@ -14,6 +14,8 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -38,12 +40,15 @@ public class FormSearchPanel extends JPanel {
                 "border:3,20,3,20;" +
                 "background:null;");
         add(textSearch);
-        add(new JSeparator(), "height 2");
+        add(new JSeparator(), "height 2!");
         JScrollPane scrollPane = new JScrollPane(panelResult);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);
         for (Map.Entry<SystemForm, Class<? extends Form>> entry : formsMap.entrySet()) {
             panelResult.add(new Item(entry.getKey(), entry.getValue()));
+        }
+        if (panelResult.getComponentCount() > 0) {
+            setSelected(0);
         }
         add(scrollPane);
         installSearchField();
@@ -81,6 +86,9 @@ public class FormSearchPanel extends JPanel {
                             panelResult.add(new Item(s, entry.getValue()));
                         }
                     }
+                    if (panelResult.getComponentCount() > 0) {
+                        setSelected(0);
+                    }
                     panelResult.repaint();
                     SwingUtilities.getAncestorOfClass(ModalContainer.class, FormSearchPanel.this).revalidate();
                 }
@@ -92,6 +100,78 @@ public class FormSearchPanel extends JPanel {
                 return contains;
             }
         });
+        textSearch.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_UP:
+                        move(true);
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        move(false);
+                        break;
+                    case KeyEvent.VK_ENTER:
+                        showForm();
+                        break;
+                }
+            }
+        });
+    }
+
+    private void showForm() {
+        int index = getSelectedIndex();
+        if (index >= 0 && index <= panelResult.getComponentCount() - 1) {
+            Component com = panelResult.getComponent(index);
+            if (com instanceof Item) {
+                ((Item) com).showForm();
+            }
+        }
+    }
+
+    private void setSelected(int index) {
+        Component[] components = panelResult.getComponents();
+        for (int i = 0; i < components.length; i++) {
+            if (components[i] instanceof JButton) {
+                ((JButton) components[i]).setSelected(index == i);
+            }
+        }
+    }
+
+    private int getSelectedIndex() {
+        for (Component com : panelResult.getComponents()) {
+            if (com instanceof JButton) {
+                if (((JButton) com).isSelected()) {
+                    return panelResult.getComponentZOrder(com);
+                }
+            }
+        }
+        return -1;
+    }
+
+    private void move(boolean up) {
+        int index = getSelectedIndex();
+        if (index == -1) {
+            if (up) {
+                setSelected(panelResult.getComponentCount() - 1);
+            } else {
+                setSelected(0);
+            }
+        } else {
+            int count = panelResult.getComponentCount();
+            if (up) {
+                if (index == 0) {
+                    setSelected(count - 1);
+                } else {
+                    setSelected(index - 1);
+                }
+            } else {
+                if (index == count - 1) {
+                    setSelected(0);
+                } else {
+                    setSelected(index + 1);
+                }
+            }
+        }
     }
 
     private JTextField textSearch;
@@ -113,6 +193,7 @@ public class FormSearchPanel extends JPanel {
         }
 
         private void init() {
+            setFocusable(false);
             setHorizontalAlignment(JButton.LEADING);
             setLayout(new MigLayout("insets 3 3 3 0,filly,gapy 2", "[]push[]"));
             putClientProperty(FlatClientProperties.STYLE, "" +
@@ -128,9 +209,23 @@ public class FormSearchPanel extends JPanel {
             add(labelDescription, "cell 0 1");
             add(new JLabel(new FlatMenuArrowIcon()), "cell 1 0,span 1 2");
             addActionListener(e -> {
-                ModalDialog.closeModal(FormSearch.ID);
-                FormManager.showForm(AllForms.getForm(form));
+                clearSelected();
+                setSelected(true);
+                showForm();
             });
+        }
+
+        private void clearSelected() {
+            for (Component com : getParent().getComponents()) {
+                if (com instanceof JButton) {
+                    ((JButton) com).setSelected(false);
+                }
+            }
+        }
+
+        protected void showForm() {
+            ModalDialog.closeModal(FormSearch.ID);
+            FormManager.showForm(AllForms.getForm(form));
         }
     }
 }
