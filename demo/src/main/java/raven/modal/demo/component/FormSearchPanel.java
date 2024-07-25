@@ -2,12 +2,14 @@ package raven.modal.demo.component;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.icons.FlatClearIcon;
 import com.formdev.flatlaf.icons.FlatMenuArrowIcon;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.ModalDialog;
 import raven.modal.component.ModalContainer;
 import raven.modal.demo.layout.ResponsiveLayout;
 import raven.modal.demo.system.*;
+import raven.modal.demo.utils.DemoPreferences;
 import raven.modal.demo.utils.SystemForm;
 
 import javax.swing.*;
@@ -16,6 +18,8 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -53,13 +57,7 @@ public class FormSearchPanel extends JPanel {
                 "thumbInsets:0,3,0,3;" +
                 "trackInsets:0,3,0,3;" +
                 "width:12;");
-
-        for (Map.Entry<SystemForm, Class<? extends Form>> entry : formsMap.entrySet()) {
-            panelResult.add(new Item(entry.getKey(), entry.getValue()));
-        }
-        if (panelResult.getComponentCount() > 0) {
-            setSelected(0);
-        }
+        showRecentResult();
         add(scrollPane);
         installSearchField();
     }
@@ -95,21 +93,25 @@ public class FormSearchPanel extends JPanel {
                 if (!st.equals(text)) {
                     text = st;
                     panelResult.removeAll();
-                    for (Map.Entry<SystemForm, Class<? extends Form>> entry : formsMap.entrySet()) {
-                        SystemForm s = entry.getKey();
-                        if (s.name().toLowerCase().contains(st)
-                                || s.description().toLowerCase().contains(st)
-                                || checkTags(s.tags(), st)) {
-                            panelResult.add(new Item(s, entry.getValue()));
-                        }
-                    }
-                    if (panelResult.getComponentCount() > 0) {
-                        setSelected(0);
+                    if (st.isEmpty()) {
+                        showRecentResult();
                     } else {
-                        panelResult.add(createNoResult(st));
+                        for (Map.Entry<SystemForm, Class<? extends Form>> entry : formsMap.entrySet()) {
+                            SystemForm s = entry.getKey();
+                            if (s.name().toLowerCase().contains(st)
+                                    || s.description().toLowerCase().contains(st)
+                                    || checkTags(s.tags(), st)) {
+                                panelResult.add(new Item(s, entry.getValue(), false));
+                            }
+                        }
+                        if (panelResult.getComponentCount() > 0) {
+                            setSelected(0);
+                        } else {
+                            panelResult.add(createNoResult(st));
+                        }
+                        panelResult.repaint();
+                        SwingUtilities.getAncestorOfClass(ModalContainer.class, FormSearchPanel.this).revalidate();
                     }
-                    panelResult.repaint();
-                    SwingUtilities.getAncestorOfClass(ModalContainer.class, FormSearchPanel.this).revalidate();
                 }
             }
 
@@ -172,23 +174,24 @@ public class FormSearchPanel extends JPanel {
 
     private void move(boolean up) {
         int index = getSelectedIndex();
+        boolean isShowRecent = panelResult.getComponentCount() > 0 && panelResult.getComponent(0) instanceof JLabel;
         if (index == -1) {
             if (up) {
                 setSelected(panelResult.getComponentCount() - 1);
             } else {
-                setSelected(0);
+                setSelected(isShowRecent ? 1 : 0);
             }
         } else {
             int count = panelResult.getComponentCount();
             if (up) {
-                if (index == 0) {
+                if (index == 0 || (isShowRecent && index == 1)) {
                     setSelected(count - 1);
                 } else {
                     setSelected(index - 1);
                 }
             } else {
                 if (index == count - 1) {
-                    setSelected(0);
+                    setSelected(isShowRecent ? 1 : 0);
                 } else {
                     setSelected(index + 1);
                 }
@@ -196,8 +199,44 @@ public class FormSearchPanel extends JPanel {
         }
     }
 
+    private void showRecentResult() {
+        String[] recentSearch = DemoPreferences.getRecentSearch();
+        panelResult.removeAll();
+        if (recentSearch == null || recentSearch.length == 0) {
+            panelResult.add(new NoRecentResult());
+        } else {
+            for (String r : recentSearch) {
+                Item item = createRecentItem(r);
+                if (item != null) {
+                    panelResult.add(item);
+                }
+            }
+            if (panelResult.getComponentCount() > 0) {
+                JLabel label = new JLabel("Recent");
+                label.putClientProperty(FlatClientProperties.STYLE, "" +
+                        "font:bold +1;" +
+                        "border:0,18,0,18;");
+                panelResult.add(label, 0);
+                setSelected(1);
+            }
+        }
+        Container container = SwingUtilities.getAncestorOfClass(ModalContainer.class, FormSearchPanel.this);
+        if (container != null) {
+            container.revalidate();
+        }
+    }
+
+    private Item createRecentItem(String name) {
+        for (Map.Entry<SystemForm, Class<? extends Form>> entry : formsMap.entrySet()) {
+            if (entry.getKey().name().equals(name)) {
+                return new Item(entry.getKey(), entry.getValue(), true);
+            }
+        }
+        return null;
+    }
+
     private Component createNoResult(String text) {
-        JPanel panel = new JPanel(new MigLayout("al center,gapx 1"));
+        JPanel panel = new JPanel(new MigLayout("insets 15 5 15 5,al center,gapx 1"));
         JLabel label = new JLabel("No result for \"");
         JLabel labelEnd = new JLabel("\"");
         label.putClientProperty(FlatClientProperties.STYLE, "" +
@@ -212,6 +251,10 @@ public class FormSearchPanel extends JPanel {
         return panel;
     }
 
+    public void clearSearch() {
+        textSearch.setText("");
+    }
+
     private JTextField textSearch;
     private JPanel panelResult;
 
@@ -219,14 +262,34 @@ public class FormSearchPanel extends JPanel {
         textSearch.grabFocus();
     }
 
+    private static class NoRecentResult extends JPanel {
+
+        public NoRecentResult() {
+            init();
+        }
+
+        private void init() {
+            setLayout(new MigLayout("insets 15 5 15 5,al center"));
+            JLabel label = new JLabel("No recent searches");
+            label.putClientProperty(FlatClientProperties.STYLE, "" +
+                    "foreground:$Label.disabledForeground;" +
+                    "font:bold;");
+            add(label);
+        }
+    }
+
     private static class Item extends JButton {
 
         private final SystemForm data;
         private final Class<? extends Form> form;
+        private final boolean isRecent;
+        private JLabel labelRemove;
+        private boolean removeHoverButton;
 
-        public Item(SystemForm data, Class<? extends Form> form) {
+        public Item(SystemForm data, Class<? extends Form> form, boolean isRecent) {
             this.data = data;
             this.form = form;
+            this.isRecent = isRecent;
             init();
         }
 
@@ -246,12 +309,54 @@ public class FormSearchPanel extends JPanel {
                     "foreground:$Label.disabledForeground;");
             add(new JLabel(data.name()), "cell 0 0");
             add(labelDescription, "cell 0 1");
-            add(new JLabel(new FlatMenuArrowIcon()), "cell 1 0,span 1 2");
+            if (!isRecent) {
+                add(new JLabel(new FlatMenuArrowIcon()), "cell 1 0,span 1 2");
+            } else {
+                add(createRecentOption(), "cell 1 0,span 1 2");
+            }
             addActionListener(e -> {
-                clearSelected();
-                setSelected(true);
-                showForm();
+                if (!removeHoverButton) {
+                    clearSelected();
+                    setSelected(true);
+                    showForm();
+                } else {
+                    removeRecent();
+                }
             });
+            if (isRecent) {
+                addMouseMotionListener(new MouseAdapter() {
+                    @Override
+                    public void mouseMoved(MouseEvent e) {
+                        boolean h = SwingUtilities.convertRectangle(labelRemove.getParent(), labelRemove.getBounds(), Item.this).contains(e.getPoint());
+                        changeHover(h);
+                    }
+
+                    @Override
+                    public void mouseDragged(MouseEvent e) {
+                        boolean h = SwingUtilities.convertRectangle(labelRemove.getParent(), labelRemove.getBounds(), Item.this).contains(e.getPoint());
+                        changeHover(h);
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        changeHover(false);
+                    }
+
+                    private void changeHover(boolean hover) {
+                        if (removeHoverButton != hover) {
+                            removeHoverButton = hover;
+                            if (removeHoverButton) {
+                                labelRemove.putClientProperty(FlatClientProperties.STYLE, "" +
+                                        "background:$Button.toolbar.hoverBackground;" +
+                                        "border:3,3,3,3,#FFFFFF,0,999");
+                            } else {
+                                labelRemove.putClientProperty(FlatClientProperties.STYLE, "" +
+                                        "border:3,3,3,3;");
+                            }
+                        }
+                    }
+                });
+            }
         }
 
         private void clearSelected() {
@@ -265,6 +370,28 @@ public class FormSearchPanel extends JPanel {
         protected void showForm() {
             ModalDialog.closeModal(FormSearch.ID);
             FormManager.showForm(AllForms.getForm(form));
+            DemoPreferences.addRecentSearch(data.name());
+        }
+
+        protected Component createRecentOption() {
+            JPanel panel = new JPanel(new MigLayout());
+            panel.setOpaque(false);
+            labelRemove = new JLabel(new FlatClearIcon());
+            labelRemove.putClientProperty(FlatClientProperties.STYLE, "" +
+                    "border:3,3,3,3;");
+            panel.add(labelRemove);
+            return panel;
+        }
+
+        protected void removeRecent() {
+            DemoPreferences.removeRecentSearch(data.name());
+            Container parent = getParent();
+            parent.remove(this);
+            if (parent.getComponentCount() <= 1) {
+                parent.removeAll();
+                parent.add(new NoRecentResult());
+            }
+            SwingUtilities.getAncestorOfClass(ModalContainer.class, parent).revalidate();
         }
     }
 }
