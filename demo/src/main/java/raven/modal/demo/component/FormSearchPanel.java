@@ -15,6 +15,9 @@ import raven.modal.demo.utils.SystemForm;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -26,6 +29,7 @@ import java.util.Map;
 public class FormSearchPanel extends JPanel {
 
     private LookAndFeel oldTheme = UIManager.getLookAndFeel();
+    private final int SEARCH_MAX_LENGTH = 50;
     private final Map<SystemForm, Class<? extends Form>> formsMap;
 
     public FormSearchPanel(Map<SystemForm, Class<? extends Form>> formsMap) {
@@ -70,6 +74,14 @@ public class FormSearchPanel extends JPanel {
     }
 
     private void installSearchField() {
+        textSearch.setDocument(new PlainDocument() {
+            @Override
+            public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+                if (getLength() + str.length() <= SEARCH_MAX_LENGTH) {
+                    super.insertString(offs, str, a);
+                }
+            }
+        });
         textSearch.getDocument().addDocumentListener(new DocumentListener() {
             private String text;
 
