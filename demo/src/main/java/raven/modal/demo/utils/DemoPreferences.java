@@ -58,9 +58,9 @@ public class DemoPreferences {
     }
 
     public static String[] getRecentSearch() {
-        String stringArr = state.get(KEY_RECENT_SEARCH, null).trim();
-        if (stringArr == null || stringArr.isEmpty()) return null;
-        return stringArr.split(",");
+        String stringArr = state.get(KEY_RECENT_SEARCH, null);
+        if (stringArr == null || stringArr.trim().isEmpty()) return null;
+        return stringArr.trim().split(",");
     }
 
     public static void addRecentSearch(String value) {
