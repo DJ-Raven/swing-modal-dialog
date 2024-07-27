@@ -17,16 +17,16 @@ This project library do not available in maven central. so you can install with 
 
 - Get jar library or demo
   here: [latest-releases](https://github.com/DJ-Raven/swing-modal-dialog/releases/latest)
-- Copy jar library file to the root project. exp: `library/modal-dialog-1.0.0.jar`
+- Copy jar library file to the root project. exp: `library/modal-dialog-1.1.0.jar`
 - Add this code to `pom.xml`
 
 ``` xml
 <dependency>
     <groupId>raven.modaldialog</groupId>
     <artifactId>modal-dialog</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <scope>system</scope>
-    <systemPath>${basedir}/library/modal-dialog-1.0.0.jar</systemPath>
+    <systemPath>${basedir}/library/modal-dialog-1.1.0.jar</systemPath>
 </dependency>
 ```
 
@@ -36,13 +36,13 @@ This project library do not available in maven central. so you can install with 
 <dependency>
   <groupId>com.formdev</groupId>
   <artifactId>flatlaf</artifactId>
-  <version>3.4.1</version>
+  <version>3.5</version>
 </dependency>
 
 <dependency>
   <groupId>com.formdev</groupId>
   <artifactId>flatlaf-extras</artifactId>
-  <version>3.4.1</version>
+  <version>3.5</version>
 </dependency>
 
 <dependency>
