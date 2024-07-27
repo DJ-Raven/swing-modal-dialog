@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.1.0]
+## [1.1.0] - 2024-07-27
 
 ### New features and improvements
 
@@ -36,6 +36,7 @@
 - Add custom modal message (PR #3)
 - Add responsive layout (PR #4)
 - Add form avatar icon (PR #5)
+- Add quick form search (PR #6)
 
 ## [1.0.0] - 2024-06-23
 
