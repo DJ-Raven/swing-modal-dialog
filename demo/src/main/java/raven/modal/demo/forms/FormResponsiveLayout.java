@@ -7,12 +7,14 @@ import raven.modal.demo.layout.ResponsiveLayout;
 import raven.modal.demo.model.ModelEmployee;
 import raven.modal.demo.sample.SampleData;
 import raven.modal.demo.system.Form;
+import raven.modal.demo.utils.SystemForm;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.function.Consumer;
 
+@SystemForm(name = "Responsive Layout", description = "responsive layout user interface", tags = {"card"})
 public class FormResponsiveLayout extends Form {
 
     public FormResponsiveLayout() {

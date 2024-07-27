@@ -5,11 +5,13 @@ import net.miginfocom.swing.MigLayout;
 import raven.datetime.component.date.DatePicker;
 import raven.datetime.component.time.TimePicker;
 import raven.modal.demo.system.Form;
+import raven.modal.demo.utils.SystemForm;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
+@SystemForm(name = "DateTime", description = "date time picker user interface component")
 public class FormDateTime extends Form {
 
     public FormDateTime() {

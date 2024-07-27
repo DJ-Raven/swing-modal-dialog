@@ -5,6 +5,7 @@ import com.formdev.flatlaf.util.LoggingFacade;
 import raven.modal.demo.themes.PanelThemes;
 
 import javax.swing.*;
+import java.util.*;
 import java.util.prefs.Preferences;
 
 public class DemoPreferences {
@@ -12,6 +13,7 @@ public class DemoPreferences {
     public static final String PREFERENCES_ROOT_PATH = "/raven-flatlaf-demo";
     public static final String KEY_LAF = "laf";
     public static final String KEY_LAF_THEME = "lafTheme";
+    public static final String KEY_RECENT_SEARCH = "recentSearch";
 
     public static final String RESOURCE_PREFIX = "res:";
 
@@ -53,5 +55,32 @@ public class DemoPreferences {
                 state.put(KEY_LAF, UIManager.getLookAndFeel().getClass().getName());
             }
         });
+    }
+
+    public static String[] getRecentSearch() {
+        String stringArr = state.get(KEY_RECENT_SEARCH, null);
+        if (stringArr == null || stringArr.trim().isEmpty()) return null;
+        return stringArr.trim().split(",");
+    }
+
+    public static void addRecentSearch(String value) {
+        String[] oldRecent = getRecentSearch();
+        if (oldRecent == null) {
+            state.put(KEY_RECENT_SEARCH, value);
+        } else {
+            List<String> list = new ArrayList<>(Arrays.asList(oldRecent));
+            list.remove(value);
+            list.add(0, value);
+            state.put(KEY_RECENT_SEARCH, String.join(",", list));
+        }
+    }
+
+    public static void removeRecentSearch(String value) {
+        String[] oldRecent = getRecentSearch();
+        if (oldRecent != null) {
+            List<String> list = new ArrayList<>(Arrays.asList(oldRecent));
+            list.remove(value);
+            state.put(KEY_RECENT_SEARCH, String.join(",", list));
+        }
     }
 }

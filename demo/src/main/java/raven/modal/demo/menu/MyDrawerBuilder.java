@@ -1,6 +1,7 @@
 package raven.modal.demo.menu;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import raven.modal.demo.forms.*;
 import raven.modal.demo.system.AllForms;
 import raven.modal.demo.system.FormManager;
 import raven.modal.drawer.DrawerPanel;
@@ -105,9 +106,9 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 if (index.length == 1) {
                     int i = index[0];
                     if (i == 0) {
-                        FormManager.showForm(AllForms.getFormDashboard());
+                        FormManager.showForm(AllForms.getForm(FormDashboard.class));
                     } else if (i == 7) {
-                        FormManager.showForm(AllForms.getFormSetting());
+                        FormManager.showForm(AllForms.getForm(FormSetting.class));
                     } else if (i == 8) {
                         FormManager.logout();
                     }
@@ -116,21 +117,21 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                     int j = index[1];
                     if (i == 1) {
                         if (j == 0) {
-                            FormManager.showForm(AllForms.getFormInput());
+                            FormManager.showForm(AllForms.getForm(FormInput.class));
                         } else if (j == 1) {
-                            FormManager.showForm(AllForms.getFormTable());
+                            FormManager.showForm(AllForms.getForm(FormTable.class));
                         } else if (j == 2) {
-                            FormManager.showForm(AllForms.getFormResponsiveLayout());
+                            FormManager.showForm(AllForms.getForm(FormResponsiveLayout.class));
                         }
                     } else if (i == 2) {
                         if (j == 0) {
-                            FormManager.showForm(AllForms.getFormModal());
+                            FormManager.showForm(AllForms.getForm(FormModal.class));
                         } else if (j == 1) {
-                            FormManager.showForm(AllForms.getFormToast());
+                            FormManager.showForm(AllForms.getForm(FormToast.class));
                         } else if (j == 2) {
-                            FormManager.showForm(AllForms.getFormDateTime());
+                            FormManager.showForm(AllForms.getForm(FormDateTime.class));
                         } else if (j == 3) {
-                            FormManager.showForm(AllForms.getFormAvatarIcon());
+                            FormManager.showForm(AllForms.getForm(FormAvatarIcon.class));
                         }
                     }
                 }

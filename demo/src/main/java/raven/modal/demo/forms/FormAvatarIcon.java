@@ -5,11 +5,13 @@ import net.miginfocom.swing.MigLayout;
 import raven.extras.AvatarIcon;
 import raven.modal.demo.component.AvatarBorderColorIcon;
 import raven.modal.demo.system.Form;
+import raven.modal.demo.utils.SystemForm;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
+@SystemForm(name = "Avatar Icon", description = "avatar icon graphical element", tags = {"profile", "photo", "image", "circle", "picture"})
 public class FormAvatarIcon extends Form {
 
     public FormAvatarIcon() {

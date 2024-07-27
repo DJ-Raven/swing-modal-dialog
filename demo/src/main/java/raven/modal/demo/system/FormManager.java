@@ -2,6 +2,7 @@ package raven.modal.demo.system;
 
 import raven.modal.Drawer;
 import raven.modal.demo.auth.Login;
+import raven.modal.demo.forms.FormDashboard;
 import raven.modal.demo.utils.UndoRedo;
 
 import javax.swing.*;
@@ -15,7 +16,12 @@ public class FormManager {
 
     public static void install(JFrame f) {
         frame = f;
+        install();
         logout();
+    }
+
+    private static void install() {
+        FormSearch.getInstance().installKeyMap(getMainForm());
     }
 
     public static void showForm(Form form) {
@@ -58,7 +64,7 @@ public class FormManager {
         frame.getContentPane().removeAll();
         frame.getContentPane().add(getMainForm());
 
-        showForm(AllForms.getFormDashboard());
+        showForm(AllForms.getForm(FormDashboard.class));
         frame.repaint();
         frame.revalidate();
     }
