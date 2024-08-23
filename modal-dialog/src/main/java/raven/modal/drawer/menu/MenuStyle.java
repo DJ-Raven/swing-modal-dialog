@@ -1,11 +1,24 @@
 package raven.modal.drawer.menu;
 
+import raven.modal.drawer.renderer.DrawerCurvedLineStyle;
+import raven.modal.drawer.renderer.AbstractDrawerLineStyleRenderer;
+
 import javax.swing.*;
 
 /**
  * @author Raven
  */
 public class MenuStyle {
+
+    public AbstractDrawerLineStyleRenderer getDrawerLineStyleRenderer() {
+        return drawerLineStyleRenderer;
+    }
+
+    public void setDrawerLineStyleRenderer(AbstractDrawerLineStyleRenderer drawerLineStyleRenderer) {
+        this.drawerLineStyleRenderer = drawerLineStyleRenderer;
+    }
+
+    private AbstractDrawerLineStyleRenderer drawerLineStyleRenderer = new DrawerCurvedLineStyle();
 
     public void styleMenu(JComponent component) {
     }

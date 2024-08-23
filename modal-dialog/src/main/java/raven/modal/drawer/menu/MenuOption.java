@@ -14,7 +14,7 @@ public class MenuOption {
 
     protected List<MenuEvent> events = new ArrayList<>();
     protected MenuValidation menuValidation = new MenuValidation();
-    protected MenuStyle menuStyle;
+    protected MenuStyle menuStyle = new MenuStyle();
     protected MenuItem menus[];
     protected float iconScale[] = {1f};
 

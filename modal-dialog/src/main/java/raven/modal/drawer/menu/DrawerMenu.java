@@ -1,16 +1,15 @@
 package raven.modal.drawer.menu;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
-import com.formdev.flatlaf.util.ColorFunctions;
 import com.formdev.flatlaf.util.UIScale;
 import raven.modal.drawer.data.Item;
 import raven.modal.drawer.data.MenuItem;
+import raven.modal.drawer.renderer.AbstractDrawerLineStyleRenderer;
 import raven.modal.layout.DrawerMenuLayout;
 import raven.modal.utils.FlatLafStyleUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Path2D;
 import java.util.Arrays;
 
 /**
@@ -329,39 +328,37 @@ public class DrawerMenu extends JPanel {
         protected void paintChildren(Graphics g) {
             super.paintChildren(g);
             if (getComponentCount() > 0) {
-                boolean ltr = getComponentOrientation().isLeftToRight();
-                Color foreground = getComponent(0).getForeground();
-                int menuHeight = getComponent(0).getHeight();
-                int width = getWidth();
-                int height = getHeight();
-                Graphics2D g2 = (Graphics2D) g.create();
-                FlatUIUtils.setRenderingHints(g2);
-                // create submenu line
-                int last = getLastLocation();
-                int round = UIScale.scale(8);
-                int gap = UIScale.scale((20 + (iconWidth / 2)) + (levelSpace * menuLevel));
-                Path2D.Double p = new Path2D.Double();
-                int x = ltr ? gap : width - gap;
-                p.moveTo(x, menuHeight);
-                p.lineTo(x, last - round);
-                int count = getComponentCount();
-                for (int i = 1; i < count; i++) {
-                    Component com = getComponent(i);
-                    int y;
-                    if (com instanceof SubMenuItem) {
-                        y = com.getY() + ((SubMenuItem) com).getFirstItemLocation();
-                    } else {
-                        y = com.getY() + (com.getHeight() / 2);
+                if (menuOption != null && menuOption.menuStyle != null) {
+                    AbstractDrawerLineStyleRenderer lineStyleRenderer = menuOption.menuStyle.getDrawerLineStyleRenderer();
+                    if (lineStyleRenderer != null) {
+                        boolean ltr = getComponentOrientation().isLeftToRight();
+                        int menuHeight = getComponent(0).getHeight();
+                        int width = getWidth();
+                        Graphics2D g2 = (Graphics2D) g.create();
+                        FlatUIUtils.setRenderingHints(g2);
+
+                        // create submenu line
+                        int last = getLastLocation();
+                        int gap = UIScale.scale((20 + (iconWidth / 2)) + (levelSpace * menuLevel));
+                        int x = ltr ? gap : width - gap;
+                        int count = getComponentCount();
+                        int subMenuLocation[] = new int[count - 1];
+                        for (int i = 1; i < count; i++) {
+                            Component com = getComponent(i);
+                            int y;
+                            if (com instanceof SubMenuItem) {
+                                y = com.getY() + ((SubMenuItem) com).getFirstItemLocation();
+                            } else {
+                                y = com.getY() + (com.getHeight() / 2);
+                            }
+                            subMenuLocation[i - 1] = y;
+                        }
+                        lineStyleRenderer.draw(g2, this, x, menuHeight, x, last, subMenuLocation, ltr);
+                        // create arrow
+                        lineStyleRenderer.drawArrow(g2, this, width, menuHeight, menuLayout.getAnimate(), ltr);
+                        g2.dispose();
                     }
-                    p.append(createCurve(round, x, y, ltr), false);
                 }
-                Color color = ColorFunctions.mix(getBackground(), foreground, 0.7f);
-                g2.setColor(color);
-                g2.setStroke(new BasicStroke(UIScale.scale(1f)));
-                g2.draw(p);
-                // create arrow
-                paintArrow(g2, width, menuHeight, menuLayout.getAnimate(), ltr);
-                g2.dispose();
             }
         }
 
@@ -380,28 +377,6 @@ public class DrawerMenu extends JPanel {
                 return 0;
             }
             return getComponent(0).getHeight() / 2;
-        }
-
-        private Shape createCurve(int round, int x, int y, boolean ltr) {
-            Path2D p2 = new Path2D.Double();
-            p2.moveTo(x, y - round);
-            p2.curveTo(x, y - round, x, y, x + (ltr ? round : -round), y);
-            return p2;
-        }
-
-        private void paintArrow(Graphics2D g2, int width, int height, float animate, boolean ltr) {
-            int arrowWidth = UIScale.scale(10);
-            int arrowHeight = UIScale.scale(4);
-            int gap = UIScale.scale(15);
-            int x = ltr ? (width - arrowWidth - gap) : gap;
-            int y = (height - arrowHeight) / 2;
-            Path2D p = new Path2D.Double();
-            p.moveTo(0, animate * arrowHeight);
-            p.lineTo(arrowWidth / 2, (1f - animate) * arrowHeight);
-            p.lineTo(arrowWidth, animate * arrowHeight);
-            g2.translate(x, y);
-            g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-            g2.draw(p);
         }
 
         protected class SubmenuLayout implements LayoutManager {
