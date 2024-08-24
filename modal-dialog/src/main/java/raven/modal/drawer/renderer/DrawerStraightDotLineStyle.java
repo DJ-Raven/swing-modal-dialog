@@ -14,6 +14,13 @@ import java.awt.geom.Path2D;
  */
 public class DrawerStraightDotLineStyle extends AbstractDrawerLineStyleRenderer {
 
+    public DrawerStraightDotLineStyle() {
+    }
+
+    public DrawerStraightDotLineStyle(Color lineColor) {
+        super(lineColor);
+    }
+
     @Override
     public void draw(Graphics2D g2, JComponent component, int startX, int startY, int endX, int endY, int[] subMenuLocation, boolean isLeftToRight) {
         float dotSize = UIScale.scale(6f);

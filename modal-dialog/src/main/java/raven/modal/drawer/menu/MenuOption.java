@@ -60,4 +60,8 @@ public class MenuOption {
         FlatSVGIcon icon = new FlatSVGIcon(path, scale);
         return icon;
     }
+
+    public MenuStyle getMenuStyle() {
+        return menuStyle;
+    }
 }

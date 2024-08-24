@@ -12,6 +12,15 @@ import java.awt.geom.Path2D;
  */
 public abstract class AbstractDrawerLineStyleRenderer {
 
+    private Color lineColor;
+
+    public AbstractDrawerLineStyleRenderer() {
+    }
+
+    public AbstractDrawerLineStyleRenderer(Color lineColor) {
+        this.lineColor = lineColor;
+    }
+
     public abstract void draw(Graphics2D g2, JComponent component, int startX, int startY, int endX, int endY, int[] subMenuLocation, boolean isLeftToRight);
 
     public void drawArrow(Graphics2D g2, JComponent component, int width, int height, float animate, boolean isLeftToRight) {
@@ -31,12 +40,30 @@ public abstract class AbstractDrawerLineStyleRenderer {
     }
 
     public Color getLineColor(JComponent component) {
-        Color color = ColorFunctions.mix(component.getBackground(), component.getForeground(), 0.7f);
-        return color;
+        if (lineColor != null) {
+            return lineColor;
+        }
+        return getDefaultColor(component);
     }
 
     public Color getArrwoColor(JComponent component) {
-        Color color = ColorFunctions.mix(component.getBackground(), component.getForeground(), 0.7f);
+        if (lineColor != null) {
+            return lineColor;
+        }
+        return getDefaultColor(component);
+    }
+
+    protected Color getDefaultColor(JComponent component) {
+        Component com = component.getComponentCount() > 0 ? component.getComponent(0) : component;
+        Color color = ColorFunctions.mix(component.getBackground(), com.getForeground(), 0.7f);
         return color;
+    }
+
+    public Color getLineColor() {
+        return lineColor;
+    }
+
+    public void setLineColor(Color lineColor) {
+        this.lineColor = lineColor;
     }
 }

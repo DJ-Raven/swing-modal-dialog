@@ -13,6 +13,13 @@ import java.awt.geom.Path2D;
  */
 public class DrawerCurvedLineStyle extends AbstractDrawerLineStyleRenderer {
 
+    public DrawerCurvedLineStyle() {
+    }
+
+    public DrawerCurvedLineStyle(Color lineColor) {
+        super(lineColor);
+    }
+
     @Override
     public void draw(Graphics2D g2, JComponent component, int startX, int startY, int endX, int endY, int[] subMenuLocation, boolean isLeftToRight) {
         int round = UIScale.scale(8);
