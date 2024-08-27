@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
 
 /**
  * This class for draw straight dot line style
@@ -14,11 +15,19 @@ import java.awt.geom.Path2D;
  */
 public class DrawerStraightDotLineStyle extends AbstractDrawerLineStyleRenderer {
 
+    private final boolean useRound;
+
     public DrawerStraightDotLineStyle() {
+        this(true);
     }
 
-    public DrawerStraightDotLineStyle(Color lineColor) {
+    public DrawerStraightDotLineStyle(boolean useRound) {
+        this.useRound = useRound;
+    }
+
+    public DrawerStraightDotLineStyle(boolean useRound, Color lineColor) {
         super(lineColor);
+        this.useRound = useRound;
     }
 
     @Override
@@ -39,6 +48,10 @@ public class DrawerStraightDotLineStyle extends AbstractDrawerLineStyleRenderer 
     }
 
     private Shape createDot(float x, float y, float dotSize) {
-        return new Ellipse2D.Float(x - dotSize / 2f, y - dotSize / 2f, dotSize, dotSize);
+        if (useRound) {
+            return new Ellipse2D.Float(x - dotSize / 2f, y - dotSize / 2f, dotSize, dotSize);
+        } else {
+            return new Rectangle2D.Float(x - dotSize / 2f, y - dotSize / 2f, dotSize, dotSize);
+        }
     }
 }

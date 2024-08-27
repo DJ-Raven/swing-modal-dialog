@@ -4,6 +4,7 @@ import com.formdev.flatlaf.util.UIScale;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 
 /**
@@ -13,11 +14,19 @@ import java.awt.geom.Path2D;
  */
 public class DrawerCurvedLineStyle extends AbstractDrawerLineStyleRenderer {
 
+    private final boolean useRound;
+
     public DrawerCurvedLineStyle() {
+        this(true);
     }
 
-    public DrawerCurvedLineStyle(Color lineColor) {
+    public DrawerCurvedLineStyle(boolean useRound) {
+        this.useRound = useRound;
+    }
+
+    public DrawerCurvedLineStyle(boolean useRound, Color lineColor) {
         super(lineColor);
+        this.useRound = useRound;
     }
 
     @Override
@@ -25,7 +34,7 @@ public class DrawerCurvedLineStyle extends AbstractDrawerLineStyleRenderer {
         int round = UIScale.scale(8);
         Path2D.Double p = new Path2D.Double();
         p.moveTo(startX, startY);
-        p.lineTo(startX, endY - round);
+        p.lineTo(startX, endY - (useRound ? round : 0));
         for (int l : subMenuLocation) {
             p.append(createCurve(round, startX, l, isLeftToRight), false);
         }
@@ -35,9 +44,14 @@ public class DrawerCurvedLineStyle extends AbstractDrawerLineStyleRenderer {
     }
 
     private Shape createCurve(int round, int x, int y, boolean ltr) {
-        Path2D p2 = new Path2D.Double();
-        p2.moveTo(x, y - round);
-        p2.curveTo(x, y - round, x, y, x + (ltr ? round : -round), y);
-        return p2;
+        float size = ltr ? round : -round;
+        if (this.useRound) {
+            Path2D p2 = new Path2D.Float();
+            p2.moveTo(x, y - round);
+            p2.curveTo(x, y - round, x, y, x + size, y);
+            return p2;
+        } else {
+            return new Line2D.Float(x, y, x + size, y);
+        }
     }
 }
