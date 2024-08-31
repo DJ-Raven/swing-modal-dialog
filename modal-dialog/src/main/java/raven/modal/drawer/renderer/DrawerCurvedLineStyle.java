@@ -30,17 +30,35 @@ public class DrawerCurvedLineStyle extends AbstractDrawerLineStyleRenderer {
     }
 
     @Override
-    public void draw(Graphics2D g2, JComponent component, int startX, int startY, int endX, int endY, int[] subMenuLocation, boolean isLeftToRight) {
+    public void draw(Graphics2D g2, JComponent component, int startX, int startY, int endX, int endY, int[] subMenuLocation, int selectedIndex, boolean isLeftToRight) {
         int round = UIScale.scale(8);
-        Path2D.Double p = new Path2D.Double();
-        p.moveTo(startX, startY);
-        p.lineTo(startX, endY - (useRound ? round : 0));
-        for (int l : subMenuLocation) {
-            p.append(createCurve(round, startX, l, isLeftToRight), false);
+        Path2D.Double defaultLine = new Path2D.Double();
+        Path2D.Double selectedLine = selectedIndex >= 0 ? new Path2D.Double() : null;
+        defaultLine.moveTo(startX, startY);
+        defaultLine.lineTo(startX, endY - (useRound ? round : 0));
+        if (selectedLine != null) {
+            selectedLine.moveTo(startX, startY);
+            selectedLine.lineTo(startX, subMenuLocation[selectedIndex] - (useRound ? round : 0));
         }
-        g2.setColor(getLineColor(component));
+        for (int i = 0; i < subMenuLocation.length; i++) {
+            int l = subMenuLocation[i];
+            Shape curve = createCurve(round, startX, l, isLeftToRight);
+            defaultLine.append(curve, false);
+            if (selectedLine != null && i <= selectedIndex) {
+                selectedLine.append(curve, false);
+            }
+        }
+
+        // draw default
+        g2.setColor(getLineColor(component, false));
         g2.setStroke(new BasicStroke(UIScale.scale(1f)));
-        g2.draw(p);
+        g2.draw(defaultLine);
+
+        // draw selected
+        if (selectedLine != null) {
+            g2.setColor(getLineColor(component, true));
+            g2.draw(selectedLine);
+        }
     }
 
     private Shape createCurve(int round, int x, int y, boolean ltr) {

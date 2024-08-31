@@ -19,7 +19,7 @@ public class MenuOption {
     protected float iconScale[] = {1f};
 
     protected String baseIconPath;
-    protected boolean menuItemAutoSelect = true;
+    protected MenuItemAutoSelectionMode menuItemAutoSelectionMode = MenuItemAutoSelectionMode.SELECT_ALL;
 
     public MenuOption setMenus(MenuItem menus[]) {
         this.menus = menus;
@@ -36,8 +36,8 @@ public class MenuOption {
         return this;
     }
 
-    public MenuOption setMenuItemAutoSelect(boolean menuItemAutoSelect) {
-        this.menuItemAutoSelect = menuItemAutoSelect;
+    public MenuOption setMenuItemAutoSelectionMode(MenuItemAutoSelectionMode menuItemAutoSelectionMode) {
+        this.menuItemAutoSelectionMode = menuItemAutoSelectionMode;
         return this;
     }
 
@@ -63,5 +63,9 @@ public class MenuOption {
 
     public MenuStyle getMenuStyle() {
         return menuStyle;
+    }
+
+    public enum MenuItemAutoSelectionMode {
+        NONE, SELECT_ALL, SELECT_MAIN_MENU_LEVEL, SELECT_SUB_MENU_LEVEL
     }
 }

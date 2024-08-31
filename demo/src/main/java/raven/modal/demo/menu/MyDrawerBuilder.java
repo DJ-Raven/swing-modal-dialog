@@ -8,6 +8,7 @@ import raven.modal.drawer.DrawerPanel;
 import raven.modal.drawer.data.Item;
 import raven.modal.drawer.data.MenuItem;
 import raven.modal.drawer.menu.*;
+import raven.modal.drawer.renderer.DrawerStraightDotLineStyle;
 import raven.modal.drawer.simple.SimpleDrawerBuilder;
 import raven.modal.drawer.simple.footer.SimpleFooterData;
 import raven.modal.drawer.simple.header.SimpleHeaderData;
@@ -91,6 +92,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
         };
 
         MenuOption simpleMenuOption = new MenuOption();
+
         simpleMenuOption.setMenuStyle(new MenuStyle() {
 
             @Override
@@ -98,7 +100,18 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 component.putClientProperty(FlatClientProperties.STYLE, ""
                         + "background:$Drawer.background");
             }
+
+            @Override
+            public void styleMenuItem(JButton menu, int[] index, boolean isMainItem) {
+                if (isMainItem) {
+                    menu.putClientProperty(FlatClientProperties.STYLE, "" +
+                            "selectedForeground:$Component.accentColor;" +
+                            "selectedBackground:null;");
+                }
+            }
         });
+        simpleMenuOption.getMenuStyle().setDrawerLineStyleRenderer(new DrawerStraightDotLineStyle());
+        simpleMenuOption.setMenuItemAutoSelectionMode(MenuOption.MenuItemAutoSelectionMode.SELECT_SUB_MENU_LEVEL);
         simpleMenuOption.addMenuEvent(new MenuEvent() {
             @Override
             public void selected(MenuAction action, int[] index) {
@@ -111,6 +124,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                         FormManager.showForm(AllForms.getForm(FormSetting.class));
                     } else if (i == 8) {
                         FormManager.logout();
+                        action.consume();
                     }
                 } else if (index.length == 2) {
                     int i = index[0];

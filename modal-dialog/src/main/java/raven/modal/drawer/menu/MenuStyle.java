@@ -26,7 +26,7 @@ public class MenuStyle {
     public void styleMenuPanel(JPanel panel, int[] index) {
     }
 
-    public void styleMenuItem(JButton menu, int[] index) {
+    public void styleMenuItem(JButton menu, int[] index, boolean isMainItem) {
     }
 
     public void styleLabel(JLabel label) {

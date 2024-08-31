@@ -4,6 +4,7 @@ import raven.modal.Drawer;
 import raven.modal.demo.auth.Login;
 import raven.modal.demo.forms.FormDashboard;
 import raven.modal.demo.utils.UndoRedo;
+import raven.modal.drawer.simple.SimpleDrawerBuilder;
 
 import javax.swing.*;
 
@@ -65,6 +66,7 @@ public class FormManager {
         frame.getContentPane().add(getMainForm());
 
         showForm(AllForms.getForm(FormDashboard.class));
+        setSelectedMenuIndex(new int[]{0});
         frame.repaint();
         frame.revalidate();
     }
@@ -82,6 +84,11 @@ public class FormManager {
 
     public static JFrame getFrame() {
         return frame;
+    }
+
+    public static void setSelectedMenuIndex(int[] index) {
+        SimpleDrawerBuilder simpleDrawerBuilder = (SimpleDrawerBuilder) Drawer.getDrawerBuilder();
+        simpleDrawerBuilder.getDrawerMenu().setMenuSelectedIndex(index);
     }
 
     private static MainForm getMainForm() {

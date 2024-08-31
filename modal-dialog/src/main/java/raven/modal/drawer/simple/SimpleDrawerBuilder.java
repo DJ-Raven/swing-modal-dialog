@@ -120,6 +120,10 @@ public abstract class SimpleDrawerBuilder implements DrawerBuilder {
         }
     }
 
+    public DrawerMenu getDrawerMenu() {
+        return menu;
+    }
+
     public abstract MenuOption getSimpleMenuOption();
 
     public abstract SimpleHeaderData getSimpleHeaderData();

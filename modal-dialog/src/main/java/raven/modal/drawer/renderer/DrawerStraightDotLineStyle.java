@@ -4,9 +4,7 @@ import com.formdev.flatlaf.util.UIScale;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Path2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.*;
 
 /**
  * This class for draw straight dot line style
@@ -31,20 +29,42 @@ public class DrawerStraightDotLineStyle extends AbstractDrawerLineStyleRenderer 
     }
 
     @Override
-    public void draw(Graphics2D g2, JComponent component, int startX, int startY, int endX, int endY, int[] subMenuLocation, boolean isLeftToRight) {
+    public void draw(Graphics2D g2, JComponent component, int startX, int startY, int endX, int endY, int[] subMenuLocation, int selectedIndex, boolean isLeftToRight) {
         float dotSize = UIScale.scale(6f);
         float stroke = UIScale.scale(1f);
-        Path2D.Double p = new Path2D.Double();
-        p.moveTo(startX, startY);
-        p.lineTo(startX, endY);
+        float cut = UIScale.scale(2.5f);
+        Path2D.Double defaultLine = new Path2D.Double();
+        Path2D.Double selectedLine = selectedIndex >= 0 ? new Path2D.Double() : null;
+        float moveY = startY;
         Path2D.Double dot = new Path2D.Double();
-        for (int l : subMenuLocation) {
-            dot.append(createDot(startX + stroke / 2f, l, dotSize), false);
+        for (int i = 0; i < subMenuLocation.length; i++) {
+            float l = subMenuLocation[i];
+            float x = startX + stroke / 2f;
+            dot.append(createDot(x, l, dotSize), false);
+            Shape line = new Line2D.Double(startX, moveY, startX, l - dotSize / 2f - cut);
+            defaultLine.append(line, false);
+            if (selectedLine != null && i <= selectedIndex) {
+                selectedLine.append(line, false);
+            }
+            moveY = l + dotSize / 2f + cut;
         }
-        g2.setColor(getLineColor(component));
+
+        // draw default
+        Color color = getLineColor(component, false);
+        g2.setColor(color);
         g2.setStroke(new BasicStroke(stroke));
-        g2.draw(p);
+        g2.draw(defaultLine);
         g2.fill(dot);
+
+        // draw selected
+        if (selectedIndex >= 0) {
+            Color selectedColor = getLineColor(component, true);
+            g2.setColor(selectedColor);
+            if (selectedLine != null) {
+                g2.draw(selectedLine);
+            }
+            g2.fill(createDot(startX + stroke / 2f, subMenuLocation[selectedIndex], dotSize));
+        }
     }
 
     private Shape createDot(float x, float y, float dotSize) {
