@@ -15,18 +15,25 @@ import java.awt.geom.Path2D;
 public class DrawerCurvedLineStyle extends AbstractDrawerLineStyleRenderer {
 
     private final boolean useRound;
+    private final boolean lineSelectedPaint;
 
     public DrawerCurvedLineStyle() {
         this(true);
     }
 
     public DrawerCurvedLineStyle(boolean useRound) {
-        this.useRound = useRound;
+        this(useRound, false);
     }
 
-    public DrawerCurvedLineStyle(boolean useRound, Color lineColor) {
+    public DrawerCurvedLineStyle(boolean useRound, boolean lineSelectedPaint) {
+        this.useRound = useRound;
+        this.lineSelectedPaint = lineSelectedPaint;
+    }
+
+    public DrawerCurvedLineStyle(boolean useRound, boolean lineSelectedPaint, Color lineColor) {
         super(lineColor);
         this.useRound = useRound;
+        this.lineSelectedPaint = lineSelectedPaint;
     }
 
     @Override
@@ -55,7 +62,7 @@ public class DrawerCurvedLineStyle extends AbstractDrawerLineStyleRenderer {
         g2.draw(defaultLine);
 
         // draw selected
-        if (selectedLine != null) {
+        if (lineSelectedPaint && selectedLine != null) {
             g2.setColor(getLineColor(component, true));
             g2.draw(selectedLine);
         }

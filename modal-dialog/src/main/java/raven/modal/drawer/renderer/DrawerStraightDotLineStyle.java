@@ -14,18 +14,25 @@ import java.awt.geom.*;
 public class DrawerStraightDotLineStyle extends AbstractDrawerLineStyleRenderer {
 
     private final boolean useRound;
+    private final boolean lineSelectedPaint;
 
     public DrawerStraightDotLineStyle() {
         this(true);
     }
 
     public DrawerStraightDotLineStyle(boolean useRound) {
-        this.useRound = useRound;
+        this(useRound, false);
     }
 
-    public DrawerStraightDotLineStyle(boolean useRound, Color lineColor) {
+    public DrawerStraightDotLineStyle(boolean useRound, boolean lineSelectedPaint) {
+        this.useRound = useRound;
+        this.lineSelectedPaint = lineSelectedPaint;
+    }
+
+    public DrawerStraightDotLineStyle(boolean useRound, boolean lineSelectedPaint, Color lineColor) {
         super(lineColor);
         this.useRound = useRound;
+        this.lineSelectedPaint = lineSelectedPaint;
     }
 
     @Override
@@ -60,7 +67,7 @@ public class DrawerStraightDotLineStyle extends AbstractDrawerLineStyleRenderer 
         if (selectedIndex >= 0) {
             Color selectedColor = getLineColor(component, true);
             g2.setColor(selectedColor);
-            if (selectedLine != null) {
+            if (lineSelectedPaint && selectedLine != null) {
                 g2.draw(selectedLine);
             }
             g2.fill(createDot(startX + stroke / 2f, subMenuLocation[selectedIndex], dotSize));
