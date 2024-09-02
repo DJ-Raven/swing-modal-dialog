@@ -13,6 +13,10 @@ import raven.modal.demo.system.FormManager;
 import raven.modal.demo.themes.PanelThemes;
 import raven.modal.demo.utils.SystemForm;
 import raven.modal.drawer.DrawerBuilder;
+import raven.modal.drawer.renderer.AbstractDrawerLineStyleRenderer;
+import raven.modal.drawer.renderer.DrawerCurvedLineStyle;
+import raven.modal.drawer.renderer.DrawerStraightDotLineStyle;
+import raven.modal.drawer.simple.SimpleDrawerBuilder;
 import raven.modal.option.LayoutOption;
 import raven.modal.option.Location;
 
@@ -165,6 +169,7 @@ public class FormSetting extends Form {
     private JPanel createStyleOption() {
         JPanel panel = new JPanel(new MigLayout("wrap,fillx", "[fill]"));
         panel.add(createAccentColor());
+        panel.add(createDrawerStyle());
         return panel;
     }
 
@@ -203,6 +208,97 @@ public class FormSetting extends Form {
         updateAccentColorButtons();
         panel.add(toolBar);
         return panel;
+    }
+
+    private Component createDrawerStyle() {
+        JPanel panel = new JPanel(new MigLayout("insets 0,filly", "[][][grow,fill]", "[fill]"));
+        JPanel lineStyle = new JPanel(new MigLayout("wrap", "[200]"));
+        JPanel lineStyleOption = new JPanel(new MigLayout("wrap", "[200]"));
+        JPanel lineColorOption = new JPanel(new MigLayout("wrap", "[200]"));
+
+        lineStyle.setBorder(new TitledBorder("Drawer line style"));
+        lineStyleOption.setBorder(new TitledBorder("Line style option"));
+        lineColorOption.setBorder(new TitledBorder("Color option"));
+
+        ButtonGroup groupStyle = new ButtonGroup();
+        JRadioButton jrCurvedStyle = new JRadioButton("Curved line style");
+        JRadioButton jrStraightDotStyle = new JRadioButton("Straight dot line style", true);
+        groupStyle.add(jrCurvedStyle);
+        groupStyle.add(jrStraightDotStyle);
+
+        ButtonGroup groupStyleOption = new ButtonGroup();
+        JRadioButton jrStyleOption1 = new JRadioButton("Rectangle");
+        JRadioButton jrStyleOption2 = new JRadioButton("Ellipse", true);
+        groupStyleOption.add(jrStyleOption1);
+        groupStyleOption.add(jrStyleOption2);
+
+        JCheckBox chPaintLineColor = new JCheckBox("Paint selected line color");
+
+        jrCurvedStyle.addActionListener(e -> {
+            if (jrCurvedStyle.isSelected()) {
+                jrStyleOption1.setText("Line");
+                jrStyleOption2.setText("Curved");
+                boolean round = jrStyleOption2.isSelected();
+                boolean paintSelectedLine = chPaintLineColor.isSelected();
+                setDrawerLineStyle(true, round, paintSelectedLine);
+            }
+        });
+        jrStraightDotStyle.addActionListener(e -> {
+            if (jrStraightDotStyle.isSelected()) {
+                jrStyleOption1.setText("Rectangle");
+                jrStyleOption2.setText("Ellipse");
+                boolean round = jrStyleOption2.isSelected();
+                boolean paintSelectedLine = chPaintLineColor.isSelected();
+                setDrawerLineStyle(false, round, paintSelectedLine);
+            }
+        });
+
+        jrStyleOption1.addActionListener(e -> {
+            if (jrStyleOption1.isSelected()) {
+                boolean curved = jrCurvedStyle.isSelected();
+                boolean paintSelectedLine = chPaintLineColor.isSelected();
+                setDrawerLineStyle(curved, false, paintSelectedLine);
+            }
+        });
+
+        jrStyleOption2.addActionListener(e -> {
+            if (jrStyleOption2.isSelected()) {
+                boolean curved = jrCurvedStyle.isSelected();
+                boolean paintSelectedLine = chPaintLineColor.isSelected();
+                setDrawerLineStyle(curved, true, paintSelectedLine);
+            }
+        });
+
+        chPaintLineColor.addActionListener(e -> {
+            boolean curved = jrCurvedStyle.isSelected();
+            boolean round = jrStyleOption2.isSelected();
+            boolean paintSelectedLine = chPaintLineColor.isSelected();
+            setDrawerLineStyle(curved, round, paintSelectedLine);
+        });
+
+        lineStyle.add(jrCurvedStyle);
+        lineStyle.add(jrStraightDotStyle);
+
+        lineStyleOption.add(jrStyleOption1);
+        lineStyleOption.add(jrStyleOption2);
+
+        lineColorOption.add(chPaintLineColor);
+
+        panel.add(lineStyle);
+        panel.add(lineStyleOption);
+        panel.add(lineColorOption);
+        return panel;
+    }
+
+    private void setDrawerLineStyle(boolean curved, boolean round, boolean color) {
+        AbstractDrawerLineStyleRenderer style;
+        if (curved) {
+            style = new DrawerCurvedLineStyle(round, color);
+        } else {
+            style = new DrawerStraightDotLineStyle(round, color);
+        }
+        ((SimpleDrawerBuilder) Drawer.getDrawerBuilder()).getSimpleMenuOption().getMenuStyle().setDrawerLineStyleRenderer(style);
+        ((SimpleDrawerBuilder) Drawer.getDrawerBuilder()).getDrawerMenu().repaint();
     }
 
     private void accentColorChanged(ActionEvent e) {
