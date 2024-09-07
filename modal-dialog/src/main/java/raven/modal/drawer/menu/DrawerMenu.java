@@ -1,16 +1,15 @@
 package raven.modal.drawer.menu;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
-import com.formdev.flatlaf.util.ColorFunctions;
 import com.formdev.flatlaf.util.UIScale;
 import raven.modal.drawer.data.Item;
 import raven.modal.drawer.data.MenuItem;
+import raven.modal.drawer.renderer.AbstractDrawerLineStyleRenderer;
 import raven.modal.layout.DrawerMenuLayout;
 import raven.modal.utils.FlatLafStyleUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Path2D;
 import java.util.Arrays;
 
 /**
@@ -18,7 +17,21 @@ import java.util.Arrays;
  */
 public class DrawerMenu extends JPanel {
 
+    public int[] getMenuSelectedIndex() {
+        return menuSelectedIndex == null ? null : copyArray(menuSelectedIndex);
+    }
+
+    public void setMenuSelectedIndex(int[] menuSelectedIndex) {
+        if (menuSelectedIndex == null) {
+            this.menuSelectedIndex = null;
+        } else {
+            this.menuSelectedIndex = copyArray(menuSelectedIndex);
+        }
+        repaint();
+    }
+
     private final MenuOption menuOption;
+    private int[] menuSelectedIndex;
 
     public DrawerMenu(MenuOption menuOption) {
         this.menuOption = menuOption;
@@ -43,6 +56,7 @@ public class DrawerMenu extends JPanel {
     }
 
     private void buildMenu() {
+        menuSelectedIndex = null;
         MenuItem[] menus = menuOption.menus;
         if (menus != null) {
             int index = 0;
@@ -67,7 +81,7 @@ public class DrawerMenu extends JPanel {
                         int[] arrValidationIndex = {++validationIndex};
                         boolean validation = menuOption.menuValidation.menuValidation(arrValidationIndex);
                         if (validation) {
-                            JButton button = createMenuItem(item.getName(), item.getIcon(), arrIndex, 0);
+                            ButtonItem button = createMenuItem(item.getName(), item.getIcon(), arrIndex, 0, false);
                             applyMenuEvent(button, arrIndex);
                             add(button);
                         }
@@ -88,6 +102,21 @@ public class DrawerMenu extends JPanel {
 
     private int[] copyArray(int[] arr) {
         return Arrays.copyOf(arr, arr.length);
+    }
+
+    private boolean isMenuSelected(int[] itemIndex) {
+        if (menuSelectedIndex == null) {
+            return false;
+        }
+        if (itemIndex.length > menuSelectedIndex.length) {
+            return false;
+        }
+        for (int i = 0; i < itemIndex.length; i++) {
+            if (itemIndex[i] != menuSelectedIndex[i]) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private String getBasePath() {
@@ -117,15 +146,15 @@ public class DrawerMenu extends JPanel {
         }
     }
 
-    protected JButton createMenuItem(String name, String icon, int[] index, int menuLevel) {
-        JButton button = new JButton(name);
+    protected ButtonItem createMenuItem(String name, String icon, int[] index, int menuLevel, boolean isMainItem) {
+        ButtonItem button = new ButtonItem(name, index, isMainItem);
         Icon iconObject = getIcon(icon, menuLevel);
         if (iconObject != null) {
             button.setIcon(iconObject);
         }
         button.setHorizontalAlignment(JButton.LEADING);
         if (menuOption.menuStyle != null) {
-            menuOption.menuStyle.styleMenuItem(button, copyArray(index));
+            menuOption.menuStyle.styleMenuItem(button, copyArray(index), isMainItem);
         }
         FlatLafStyleUtils.appendStyleIfAbsent(button, "" +
                 "arc:0;" +
@@ -138,21 +167,40 @@ public class DrawerMenu extends JPanel {
         return button;
     }
 
-    protected void applyMenuEvent(JButton button, int[] index) {
+    protected void applyMenuEvent(ButtonItem button, int[] index) {
         button.addActionListener(e -> {
             MenuAction action = runEvent(index);
             if (action != null) {
-                // next update on action menu selected
+                if (action.getConsume() == false) {
+                    if (isMenuAutoSelection(button.isMainItem())) {
+                        menuSelectedIndex = index;
+                        repaint();
+                    }
+                }
             }
         });
+    }
+
+    private boolean isMenuAutoSelection(boolean isMainMenu) {
+        MenuOption.MenuItemAutoSelectionMode mode = menuOption.menuItemAutoSelectionMode;
+        if (mode == null || mode == MenuOption.MenuItemAutoSelectionMode.NONE) {
+            return false;
+        }
+        if (mode == MenuOption.MenuItemAutoSelectionMode.SELECT_ALL) {
+            return true;
+        }
+        if (mode == MenuOption.MenuItemAutoSelectionMode.SELECT_MAIN_MENU_LEVEL && isMainMenu) {
+            return true;
+        }
+        if (mode == MenuOption.MenuItemAutoSelectionMode.SELECT_SUB_MENU_LEVEL && !isMainMenu) {
+            return true;
+        }
+        return false;
     }
 
     private MenuAction runEvent(int[] index) {
         if (!menuOption.events.isEmpty()) {
             MenuAction action = new MenuAction();
-            if (menuOption.menuItemAutoSelect) {
-                action.selected();
-            }
             for (MenuEvent event : menuOption.events) {
                 event.selected(action, copyArray(index));
             }
@@ -161,7 +209,7 @@ public class DrawerMenu extends JPanel {
         return null;
     }
 
-    protected Component createSubmenuItem(Item menu, int index[], int[] validationIndex, int menuLevel) {
+    protected Component createSubmenuItem(Item menu, int[] index, int[] validationIndex, int menuLevel) {
         JPanel panelItem = new SubMenuItem(menu, index, validationIndex, menuLevel);
         return panelItem;
     }
@@ -215,6 +263,27 @@ public class DrawerMenu extends JPanel {
         }
     }
 
+    protected class ButtonItem extends JButton {
+
+        public boolean isMainItem() {
+            return isMainItem;
+        }
+
+        private final int[] itemIndex;
+        private final boolean isMainItem;
+
+        public ButtonItem(String name, int[] itemIndex, boolean isMainItem) {
+            super(name);
+            this.itemIndex = itemIndex;
+            this.isMainItem = isMainItem;
+        }
+
+        @Override
+        public boolean isSelected() {
+            return isMenuSelected(itemIndex);
+        }
+    }
+
     protected class SubMenuItem extends JPanel {
 
         private int menuLevel;
@@ -254,13 +323,13 @@ public class DrawerMenu extends JPanel {
             int validationIndex = -1;
             int nextMenuLevel = menuLevel + 1;
             // create menu item
-            JButton mainButton;
+            ButtonItem mainButton;
             if (menuLevel == 0) {
                 // create first level menu item
-                mainButton = createMenuItem(menu.getName(), menu.getIcon(), this.index, menuLevel);
+                mainButton = createMenuItem(menu.getName(), menu.getIcon(), this.index, menuLevel, true);
             } else {
                 int addSpace = menuLevel > 1 ? (menuLevel - 1) * levelSpace : 0;
-                mainButton = createSubMenuItem(menu.getName(), this.index, iconWidth + addSpace);
+                mainButton = createSubMenuItem(menu.getName(), this.index, iconWidth + addSpace, true);
             }
             if (mainButton.getIcon() != null) {
                 iconWidth = UIScale.unscale(mainButton.getIcon().getIconWidth());
@@ -279,7 +348,7 @@ public class DrawerMenu extends JPanel {
                     } else {
                         // create single menu item
                         int addSpace = menuLevel * levelSpace;
-                        JButton button = createSubMenuItem(item.getName(), arrIndex, iconWidth + addSpace);
+                        ButtonItem button = createSubMenuItem(item.getName(), arrIndex, iconWidth + addSpace, false);
                         applyMenuEvent(button, arrIndex);
                         add(button);
                     }
@@ -307,11 +376,11 @@ public class DrawerMenu extends JPanel {
         }
 
 
-        protected JButton createSubMenuItem(String name, int[] index, int gap) {
-            JButton button = new JButton(name);
+        protected ButtonItem createSubMenuItem(String name, int[] index, int gap, boolean isMainItem) {
+            ButtonItem button = new ButtonItem(name, index, isMainItem);
             button.setHorizontalAlignment(JButton.LEADING);
             if (menuOption.menuStyle != null) {
-                menuOption.menuStyle.styleMenuItem(button, copyArray(index));
+                menuOption.menuStyle.styleMenuItem(button, copyArray(index), isMainItem);
             }
             boolean isRightToLeft = !DrawerMenu.this.getComponentOrientation().isLeftToRight();
             String margin = isRightToLeft ? ("7,30,7," + (gap + 25)) : ("7," + (gap + 25) + ",7,30");
@@ -329,40 +398,51 @@ public class DrawerMenu extends JPanel {
         protected void paintChildren(Graphics g) {
             super.paintChildren(g);
             if (getComponentCount() > 0) {
-                boolean ltr = getComponentOrientation().isLeftToRight();
-                Color foreground = getComponent(0).getForeground();
-                int menuHeight = getComponent(0).getHeight();
-                int width = getWidth();
-                int height = getHeight();
-                Graphics2D g2 = (Graphics2D) g.create();
-                FlatUIUtils.setRenderingHints(g2);
-                // create submenu line
-                int last = getLastLocation();
-                int round = UIScale.scale(8);
-                int gap = UIScale.scale((20 + (iconWidth / 2)) + (levelSpace * menuLevel));
-                Path2D.Double p = new Path2D.Double();
-                int x = ltr ? gap : width - gap;
-                p.moveTo(x, menuHeight);
-                p.lineTo(x, last - round);
-                int count = getComponentCount();
-                for (int i = 1; i < count; i++) {
-                    Component com = getComponent(i);
-                    int y;
-                    if (com instanceof SubMenuItem) {
-                        y = com.getY() + ((SubMenuItem) com).getFirstItemLocation();
-                    } else {
-                        y = com.getY() + (com.getHeight() / 2);
+                if (menuOption != null && menuOption.menuStyle != null) {
+                    AbstractDrawerLineStyleRenderer lineStyleRenderer = menuOption.menuStyle.getDrawerLineStyleRenderer();
+                    if (lineStyleRenderer != null) {
+                        boolean ltr = getComponentOrientation().isLeftToRight();
+                        int menuHeight = getComponent(0).getHeight();
+                        int width = getWidth();
+                        Graphics2D g2 = (Graphics2D) g.create();
+                        FlatUIUtils.setRenderingHints(g2);
+
+                        // create submenu line
+                        int last = getLastLocation();
+                        int gap = UIScale.scale((20 + (iconWidth / 2)) + (levelSpace * menuLevel));
+                        int x = ltr ? gap : width - gap;
+                        int count = getComponentCount();
+                        int subMenuLocation[] = new int[count - 1];
+                        int selectedIndex = -1;
+                        for (int i = 1; i < count; i++) {
+                            Component com = getComponent(i);
+                            int y;
+                            if (com instanceof SubMenuItem) {
+                                y = com.getY() + ((SubMenuItem) com).getFirstItemLocation();
+                                if (((SubMenuItem) com).isHasMenuSelected()) {
+                                    selectedIndex = i - 1;
+                                }
+                            } else {
+                                if (com instanceof ButtonItem) {
+                                    if (((ButtonItem) com).isSelected()) {
+                                        selectedIndex = i - 1;
+                                    }
+                                }
+                                y = com.getY() + (com.getHeight() / 2);
+                            }
+                            subMenuLocation[i - 1] = y;
+                        }
+                        lineStyleRenderer.draw(g2, this, x, menuHeight, x, last, subMenuLocation, selectedIndex, ltr);
+                        // create arrow
+                        lineStyleRenderer.drawArrow(g2, this, width, menuHeight, menuLayout.getAnimate(), isHasMenuSelected(), ltr);
+                        g2.dispose();
                     }
-                    p.append(createCurve(round, x, y, ltr), false);
                 }
-                Color color = ColorFunctions.mix(getBackground(), foreground, 0.7f);
-                g2.setColor(color);
-                g2.setStroke(new BasicStroke(UIScale.scale(1f)));
-                g2.draw(p);
-                // create arrow
-                paintArrow(g2, width, menuHeight, menuLayout.getAnimate(), ltr);
-                g2.dispose();
             }
+        }
+
+        private boolean isHasMenuSelected() {
+            return isMenuSelected(index);
         }
 
         private int getLastLocation() {
@@ -380,28 +460,6 @@ public class DrawerMenu extends JPanel {
                 return 0;
             }
             return getComponent(0).getHeight() / 2;
-        }
-
-        private Shape createCurve(int round, int x, int y, boolean ltr) {
-            Path2D p2 = new Path2D.Double();
-            p2.moveTo(x, y - round);
-            p2.curveTo(x, y - round, x, y, x + (ltr ? round : -round), y);
-            return p2;
-        }
-
-        private void paintArrow(Graphics2D g2, int width, int height, float animate, boolean ltr) {
-            int arrowWidth = UIScale.scale(10);
-            int arrowHeight = UIScale.scale(4);
-            int gap = UIScale.scale(15);
-            int x = ltr ? (width - arrowWidth - gap) : gap;
-            int y = (height - arrowHeight) / 2;
-            Path2D p = new Path2D.Double();
-            p.moveTo(0, animate * arrowHeight);
-            p.lineTo(arrowWidth / 2, (1f - animate) * arrowHeight);
-            p.lineTo(arrowWidth, animate * arrowHeight);
-            g2.translate(x, y);
-            g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-            g2.draw(p);
         }
 
         protected class SubmenuLayout implements LayoutManager {

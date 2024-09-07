@@ -14,12 +14,12 @@ public class MenuOption {
 
     protected List<MenuEvent> events = new ArrayList<>();
     protected MenuValidation menuValidation = new MenuValidation();
-    protected MenuStyle menuStyle;
+    protected MenuStyle menuStyle = new MenuStyle();
     protected MenuItem menus[];
     protected float iconScale[] = {1f};
 
     protected String baseIconPath;
-    protected boolean menuItemAutoSelect = true;
+    protected MenuItemAutoSelectionMode menuItemAutoSelectionMode = MenuItemAutoSelectionMode.SELECT_ALL;
 
     public MenuOption setMenus(MenuItem menus[]) {
         this.menus = menus;
@@ -36,8 +36,8 @@ public class MenuOption {
         return this;
     }
 
-    public MenuOption setMenuItemAutoSelect(boolean menuItemAutoSelect) {
-        this.menuItemAutoSelect = menuItemAutoSelect;
+    public MenuOption setMenuItemAutoSelectionMode(MenuItemAutoSelectionMode menuItemAutoSelectionMode) {
+        this.menuItemAutoSelectionMode = menuItemAutoSelectionMode;
         return this;
     }
 
@@ -59,5 +59,13 @@ public class MenuOption {
     public Icon buildMenuIcon(String path, float scale) {
         FlatSVGIcon icon = new FlatSVGIcon(path, scale);
         return icon;
+    }
+
+    public MenuStyle getMenuStyle() {
+        return menuStyle;
+    }
+
+    public enum MenuItemAutoSelectionMode {
+        NONE, SELECT_ALL, SELECT_MAIN_MENU_LEVEL, SELECT_SUB_MENU_LEVEL
     }
 }

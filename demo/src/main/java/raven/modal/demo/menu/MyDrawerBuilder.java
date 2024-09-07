@@ -8,6 +8,7 @@ import raven.modal.drawer.DrawerPanel;
 import raven.modal.drawer.data.Item;
 import raven.modal.drawer.data.MenuItem;
 import raven.modal.drawer.menu.*;
+import raven.modal.drawer.renderer.DrawerStraightDotLineStyle;
 import raven.modal.drawer.simple.SimpleDrawerBuilder;
 import raven.modal.drawer.simple.footer.SimpleFooterData;
 import raven.modal.drawer.simple.header.SimpleHeaderData;
@@ -18,6 +19,8 @@ import javax.swing.*;
 import java.util.Arrays;
 
 public class MyDrawerBuilder extends SimpleDrawerBuilder {
+
+    private MenuOption menuOption;
 
     @Override
     public SimpleHeaderData getSimpleHeaderData() {
@@ -45,103 +48,119 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
     @Override
     public MenuOption getSimpleMenuOption() {
+        if (menuOption == null) {
+            MenuItem items[] = new MenuItem[]{
+                    new Item.Label("MAIN"),
+                    new Item("Dashboard", "dashboard.svg"),
+                    new Item.Label("SWING UI"),
+                    new Item("Forms", "forms.svg")
+                            .subMenu("Input")
+                            .subMenu("Table")
+                            .subMenu("Responsive Layout"),
+                    new Item("Components", "components.svg")
+                            .subMenu("Modal")
+                            .subMenu("Toast")
+                            .subMenu("Date Time")
+                            .subMenu("Avatar Icon"),
+                    new Item("Email", "email.svg")
+                            .subMenu("Inbox")
+                            .subMenu(
+                                    new Item("Group Read")
+                                            .subMenu("Read 1")
+                                            .subMenu("Read 2")
+                                            .subMenu(
+                                                    new Item("Group Item")
+                                                            .subMenu("Item 1")
+                                                            .subMenu("Item 2")
+                                                            .subMenu("Item 3")
+                                                            .subMenu("Item 4")
+                                                            .subMenu("Item 5")
+                                                            .subMenu("Item 6")
+                                            )
+                                            .subMenu("Read 3")
+                                            .subMenu("Read 4")
+                                            .subMenu("Read 5")
+                            )
+                            .subMenu("Compost"),
+                    new Item("Chat", "chat.svg"),
+                    new Item("Calendar", "calendar.svg"),
+                    new Item.Label("OTHER"),
+                    new Item("Plugin", "plugin.svg")
+                            .subMenu("Plugin 1")
+                            .subMenu("Plugin 2")
+                            .subMenu("Plugin 3"),
+                    new Item("Setting", "setting.svg"),
+                    new Item("Logout", "logout.svg")
+            };
 
-        MenuItem items[] = new MenuItem[]{
-                new Item.Label("MAIN"),
-                new Item("Dashboard", "dashboard.svg"),
-                new Item.Label("SWING UI"),
-                new Item("Forms", "forms.svg")
-                        .subMenu("Input")
-                        .subMenu("Table")
-                        .subMenu("Responsive Layout"),
-                new Item("Components", "components.svg")
-                        .subMenu("Modal")
-                        .subMenu("Toast")
-                        .subMenu("Date Time")
-                        .subMenu("Avatar Icon"),
-                new Item("Email", "email.svg")
-                        .subMenu("Inbox")
-                        .subMenu(
-                                new Item("Group Read")
-                                        .subMenu("Read 1")
-                                        .subMenu("Read 2")
-                                        .subMenu(
-                                                new Item("Group Item")
-                                                        .subMenu("Item 1")
-                                                        .subMenu("Item 2")
-                                                        .subMenu("Item 3")
-                                                        .subMenu("Item 4")
-                                                        .subMenu("Item 5")
-                                                        .subMenu("Item 6")
-                                        )
-                                        .subMenu("Read 3")
-                                        .subMenu("Read 4")
-                                        .subMenu("Read 5")
-                        )
-                        .subMenu("Compost"),
-                new Item("Chat", "chat.svg"),
-                new Item("Calendar", "calendar.svg"),
-                new Item.Label("OTHER"),
-                new Item("Plugin", "plugin.svg")
-                        .subMenu("Plugin 1")
-                        .subMenu("Plugin 2")
-                        .subMenu("Plugin 3"),
-                new Item("Setting", "setting.svg"),
-                new Item("Logout", "logout.svg")
-        };
+            MenuOption simpleMenuOption = new MenuOption();
 
-        MenuOption simpleMenuOption = new MenuOption();
-        simpleMenuOption.setMenuStyle(new MenuStyle() {
+            simpleMenuOption.setMenuStyle(new MenuStyle() {
 
-            @Override
-            public void styleMenu(JComponent component) {
-                component.putClientProperty(FlatClientProperties.STYLE, ""
-                        + "background:$Drawer.background");
-            }
-        });
-        simpleMenuOption.addMenuEvent(new MenuEvent() {
-            @Override
-            public void selected(MenuAction action, int[] index) {
-                System.out.println("Drawer menu selected " + Arrays.toString(index));
-                if (index.length == 1) {
-                    int i = index[0];
-                    if (i == 0) {
-                        FormManager.showForm(AllForms.getForm(FormDashboard.class));
-                    } else if (i == 7) {
-                        FormManager.showForm(AllForms.getForm(FormSetting.class));
-                    } else if (i == 8) {
-                        FormManager.logout();
+                @Override
+                public void styleMenu(JComponent component) {
+                    component.putClientProperty(FlatClientProperties.STYLE, ""
+                            + "background:$Drawer.background");
+                }
+
+                @Override
+                public void styleMenuItem(JButton menu, int[] index, boolean isMainItem) {
+                    if (isMainItem) {
+                        menu.putClientProperty(FlatClientProperties.STYLE, "" +
+                                "selectedForeground:$Component.accentColor;" +
+                                "selectedBackground:null;");
                     }
-                } else if (index.length == 2) {
-                    int i = index[0];
-                    int j = index[1];
-                    if (i == 1) {
-                        if (j == 0) {
-                            FormManager.showForm(AllForms.getForm(FormInput.class));
-                        } else if (j == 1) {
-                            FormManager.showForm(AllForms.getForm(FormTable.class));
-                        } else if (j == 2) {
-                            FormManager.showForm(AllForms.getForm(FormResponsiveLayout.class));
+                }
+            });
+            simpleMenuOption.getMenuStyle().setDrawerLineStyleRenderer(new DrawerStraightDotLineStyle());
+            simpleMenuOption.setMenuItemAutoSelectionMode(MenuOption.MenuItemAutoSelectionMode.SELECT_SUB_MENU_LEVEL);
+            simpleMenuOption.addMenuEvent(new MenuEvent() {
+                @Override
+                public void selected(MenuAction action, int[] index) {
+                    System.out.println("Drawer menu selected " + Arrays.toString(index));
+                    if (index.length == 1) {
+                        int i = index[0];
+                        if (i == 0) {
+                            FormManager.showForm(AllForms.getForm(FormDashboard.class));
+                        } else if (i == 7) {
+                            FormManager.showForm(AllForms.getForm(FormSetting.class));
+                        } else if (i == 8) {
+                            FormManager.logout();
+                            action.consume();
                         }
-                    } else if (i == 2) {
-                        if (j == 0) {
-                            FormManager.showForm(AllForms.getForm(FormModal.class));
-                        } else if (j == 1) {
-                            FormManager.showForm(AllForms.getForm(FormToast.class));
-                        } else if (j == 2) {
-                            FormManager.showForm(AllForms.getForm(FormDateTime.class));
-                        } else if (j == 3) {
-                            FormManager.showForm(AllForms.getForm(FormAvatarIcon.class));
+                    } else if (index.length == 2) {
+                        int i = index[0];
+                        int j = index[1];
+                        if (i == 1) {
+                            if (j == 0) {
+                                FormManager.showForm(AllForms.getForm(FormInput.class));
+                            } else if (j == 1) {
+                                FormManager.showForm(AllForms.getForm(FormTable.class));
+                            } else if (j == 2) {
+                                FormManager.showForm(AllForms.getForm(FormResponsiveLayout.class));
+                            }
+                        } else if (i == 2) {
+                            if (j == 0) {
+                                FormManager.showForm(AllForms.getForm(FormModal.class));
+                            } else if (j == 1) {
+                                FormManager.showForm(AllForms.getForm(FormToast.class));
+                            } else if (j == 2) {
+                                FormManager.showForm(AllForms.getForm(FormDateTime.class));
+                            } else if (j == 3) {
+                                FormManager.showForm(AllForms.getForm(FormAvatarIcon.class));
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
 
-        simpleMenuOption.setMenus(items)
-                .setBaseIconPath("raven/modal/demo/drawer/icon")
-                .setIconScale(0.45f);
-        return simpleMenuOption;
+            simpleMenuOption.setMenus(items)
+                    .setBaseIconPath("raven/modal/demo/drawer/icon")
+                    .setIconScale(0.45f);
+
+            menuOption = simpleMenuOption;
+        }
+        return menuOption;
     }
 
     @Override
