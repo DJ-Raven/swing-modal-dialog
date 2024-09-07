@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0]
+
+### New features and improvements
+
+- Drawer
+    - add line style and menu selected color (PR #7)
+
 ## [1.1.0] - 2024-07-27
 
 ### New features and improvements
