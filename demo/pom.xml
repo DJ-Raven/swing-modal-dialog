@@ -17,6 +17,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>${parent.groupId}</groupId>
@@ -25,11 +32,9 @@
         </dependency>
 
         <dependency>
-            <groupId>raven.datetime</groupId>
+            <groupId>com.github.DJ-Raven</groupId>
             <artifactId>swing-datetime-picker</artifactId>
-            <version>1.2.3</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/library/swing-datetime-picker-1.2.3.jar</systemPath>
+            <version>1.4.0</version>
         </dependency>
 
         <dependency>
@@ -64,7 +69,7 @@
                             <mainClass>raven.modal.demo.Demo</mainClass>
                         </manifest>
                     </archive>
-                    <finalName>${artifactId}-${project.version}</finalName>
+                    <finalName>modal-dialog-demo-${project.version}</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
                 <executions>
