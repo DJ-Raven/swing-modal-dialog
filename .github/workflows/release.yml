@@ -45,7 +45,7 @@ jobs:
         with:
           files: |
             ./modal-dialog/target/*.jar
-            ./demo/target/*.jar
+            ./demo/target/modal-dialog-demo-*.jar
           tag_name: ${{ github.ref_name }}
           name: ${{ github.ref_name }}
           body: ${{ steps.changelog_reader.outputs.changes }}
