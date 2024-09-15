@@ -101,7 +101,7 @@ public class FormSearchPanel extends JPanel {
             }
 
             private void search() {
-                String st = textSearch.getText().trim();
+                String st = textSearch.getText().trim().toLowerCase(); // Convert search term to lowercase
                 if (!st.equals(text)) {
                     text = st;
                     panelResult.removeAll();
@@ -110,6 +110,7 @@ public class FormSearchPanel extends JPanel {
                     } else {
                         for (Map.Entry<SystemForm, Class<? extends Form>> entry : formsMap.entrySet()) {
                             SystemForm s = entry.getKey();
+                            // Compare both name and description with lowercased search term
                             if (s.name().toLowerCase().contains(st)
                                     || s.description().toLowerCase().contains(st)
                                     || checkTags(s.tags(), st)) {
