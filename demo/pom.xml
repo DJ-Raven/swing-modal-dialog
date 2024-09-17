@@ -17,13 +17,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>${parent.groupId}</groupId>
@@ -32,7 +25,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.DJ-Raven</groupId>
+            <groupId>io.github.dj-raven</groupId>
             <artifactId>swing-datetime-picker</artifactId>
             <version>1.4.0</version>
         </dependency>
