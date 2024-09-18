@@ -54,11 +54,13 @@ public class FormDateTime extends Form {
     }
 
     private Component createDateOption() {
-        JPanel panel = new JPanel(new MigLayout("wrap"));
+        JPanel panel = new JPanel(new MigLayout("wrap","[200]"));
         panel.setBorder(new TitledBorder("Date option"));
         JCheckBox chDateBetween = new JCheckBox("Date between");
         JCheckBox chUsePanelOption = new JCheckBox("Use panel option");
         JCheckBox chCloseAfterSelected = new JCheckBox("Close after selected");
+        JCheckBox chEditorValidation = new JCheckBox("Editor validation", true);
+        JCheckBox chValidationOnNull = new JCheckBox("Validation on null");
 
         chDateBetween.addActionListener(e -> {
             datePicker.setDateSelectionMode(chDateBetween.isSelected() ? DatePicker.DateSelectionMode.BETWEEN_DATE_SELECTED
@@ -66,10 +68,17 @@ public class FormDateTime extends Form {
         });
         chUsePanelOption.addActionListener(e -> datePicker.setUsePanelOption(chUsePanelOption.isSelected()));
         chCloseAfterSelected.addActionListener(e -> datePicker.setCloseAfterSelected(chCloseAfterSelected.isSelected()));
+        chEditorValidation.addActionListener(e -> {
+            datePicker.setEditorValidation(chEditorValidation.isSelected());
+            chValidationOnNull.setEnabled(chEditorValidation.isSelected());
+        });
+        chValidationOnNull.addActionListener(e -> datePicker.setValidationOnNull(chValidationOnNull.isSelected()));
 
         panel.add(chDateBetween);
         panel.add(chUsePanelOption);
         panel.add(chCloseAfterSelected);
+        panel.add(chEditorValidation);
+        panel.add(chValidationOnNull);
 
         return panel;
     }

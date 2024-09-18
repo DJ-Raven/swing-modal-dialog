@@ -110,7 +110,7 @@ public class FormSearchPanel extends JPanel {
                     } else {
                         for (Map.Entry<SystemForm, Class<? extends Form>> entry : formsMap.entrySet()) {
                             SystemForm s = entry.getKey();
-                            // Compare both name and description with lowercased search term
+                            // Compare both name and description with lower cased search term
                             if (s.name().toLowerCase().contains(st)
                                     || s.description().toLowerCase().contains(st)
                                     || checkTags(s.tags(), st)) {

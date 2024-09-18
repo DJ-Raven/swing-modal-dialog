@@ -43,7 +43,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
     public SimpleFooterData getSimpleFooterData() {
         return new SimpleFooterData()
                 .setTitle("Swing Modal Dialog")
-                .setDescription("Version 1.1.1");
+                .setDescription("Version 1.1.2");
     }
 
     @Override
