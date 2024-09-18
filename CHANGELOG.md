@@ -7,6 +7,10 @@
 - Drawer
     - add line style and menu selected color (PR #7)
 
+### Demo
+
+- Fixed form search inconsistent search case-insensitive (issues #9) (PR #10)
+
 ## [1.1.0] - 2024-07-27
 
 ### New features and improvements
