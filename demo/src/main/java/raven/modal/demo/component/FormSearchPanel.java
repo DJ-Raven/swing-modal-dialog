@@ -5,6 +5,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatClearIcon;
 import com.formdev.flatlaf.icons.FlatMenuArrowIcon;
 import net.miginfocom.swing.MigLayout;
+import raven.modal.Drawer;
 import raven.modal.ModalDialog;
 import raven.modal.component.ModalContainer;
 import raven.modal.demo.layout.ResponsiveLayout;
@@ -382,7 +383,7 @@ public class FormSearchPanel extends JPanel {
 
         protected void showForm() {
             ModalDialog.closeModal(FormSearch.ID);
-            FormManager.showForm(AllForms.getForm(form));
+            Drawer.setSelectedItemClass(form);
             DemoPreferences.addRecentSearch(data.name());
         }
 

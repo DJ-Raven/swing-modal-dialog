@@ -3,6 +3,7 @@ package raven.modal.demo.menu;
 import com.formdev.flatlaf.FlatClientProperties;
 import raven.modal.demo.forms.*;
 import raven.modal.demo.system.AllForms;
+import raven.modal.demo.system.Form;
 import raven.modal.demo.system.FormManager;
 import raven.modal.drawer.DrawerPanel;
 import raven.modal.drawer.data.Item;
@@ -51,17 +52,17 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
         if (menuOption == null) {
             MenuItem items[] = new MenuItem[]{
                     new Item.Label("MAIN"),
-                    new Item("Dashboard", "dashboard.svg"),
+                    new Item("Dashboard", "dashboard.svg", FormDashboard.class),
                     new Item.Label("SWING UI"),
                     new Item("Forms", "forms.svg")
-                            .subMenu("Input")
-                            .subMenu("Table")
-                            .subMenu("Responsive Layout"),
+                            .subMenu("Input", FormInput.class)
+                            .subMenu("Table", FormTable.class)
+                            .subMenu("Responsive Layout", FormResponsiveLayout.class),
                     new Item("Components", "components.svg")
-                            .subMenu("Modal")
-                            .subMenu("Toast")
-                            .subMenu("Date Time")
-                            .subMenu("Avatar Icon"),
+                            .subMenu("Modal", FormModal.class)
+                            .subMenu("Toast", FormToast.class)
+                            .subMenu("Date Time", FormDateTime.class)
+                            .subMenu("Avatar Icon", FormAvatarIcon.class),
                     new Item("Email", "email.svg")
                             .subMenu("Inbox")
                             .subMenu(
@@ -89,7 +90,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                             .subMenu("Plugin 1")
                             .subMenu("Plugin 2")
                             .subMenu("Plugin 3"),
-                    new Item("Setting", "setting.svg"),
+                    new Item("Setting", "setting.svg", FormSetting.class),
                     new Item("Logout", "logout.svg")
             };
 
@@ -118,39 +119,19 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 @Override
                 public void selected(MenuAction action, int[] index) {
                     System.out.println("Drawer menu selected " + Arrays.toString(index));
-                    if (index.length == 1) {
-                        int i = index[0];
-                        if (i == 0) {
-                            FormManager.showForm(AllForms.getForm(FormDashboard.class));
-                        } else if (i == 7) {
-                            FormManager.showForm(AllForms.getForm(FormSetting.class));
-                        } else if (i == 8) {
-                            FormManager.logout();
-                            action.consume();
-                        }
-                    } else if (index.length == 2) {
-                        int i = index[0];
-                        int j = index[1];
-                        if (i == 1) {
-                            if (j == 0) {
-                                FormManager.showForm(AllForms.getForm(FormInput.class));
-                            } else if (j == 1) {
-                                FormManager.showForm(AllForms.getForm(FormTable.class));
-                            } else if (j == 2) {
-                                FormManager.showForm(AllForms.getForm(FormResponsiveLayout.class));
-                            }
-                        } else if (i == 2) {
-                            if (j == 0) {
-                                FormManager.showForm(AllForms.getForm(FormModal.class));
-                            } else if (j == 1) {
-                                FormManager.showForm(AllForms.getForm(FormToast.class));
-                            } else if (j == 2) {
-                                FormManager.showForm(AllForms.getForm(FormDateTime.class));
-                            } else if (j == 3) {
-                                FormManager.showForm(AllForms.getForm(FormAvatarIcon.class));
-                            }
-                        }
+                    Class<?> itemClass = action.getItem().getItemClass();
+                    int i = index[0];
+                    if (i == 8) {
+                        action.consume();
+                        FormManager.logout();
+                        return;
                     }
+                    if (itemClass == null || !Form.class.isAssignableFrom(itemClass)) {
+                        action.consume();
+                        return;
+                    }
+                    Class<? extends Form> formClass = (Class<? extends Form>) itemClass;
+                    FormManager.showForm(AllForms.getForm(formClass));
                 }
             });
 

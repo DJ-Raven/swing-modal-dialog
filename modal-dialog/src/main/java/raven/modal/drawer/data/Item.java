@@ -8,6 +8,10 @@ import java.util.List;
  */
 public class Item implements MenuItem {
 
+    public int[] getIndex() {
+        return index;
+    }
+
     public String getName() {
         return name;
     }
@@ -20,17 +24,34 @@ public class Item implements MenuItem {
         return subMenu;
     }
 
+    public Class<?> getItemClass() {
+        return itemClass;
+    }
+
     private final String name;
     private String icon;
     private List<Item> subMenu;
+    private Class<?> itemClass;
+    private int[] index;
 
     public Item(String name) {
         this.name = name;
     }
 
+    public Item(String name, Class<?> itemClass) {
+        this.name = name;
+        this.itemClass = itemClass;
+    }
+
     public Item(String name, String icon) {
         this.name = name;
         this.icon = icon;
+    }
+
+    public Item(String name, String icon, Class<?> itemClass) {
+        this.name = name;
+        this.icon = icon;
+        this.itemClass = itemClass;
     }
 
     public Item subMenu(Item item) {
@@ -43,6 +64,11 @@ public class Item implements MenuItem {
         return this;
     }
 
+    public Item subMenu(String name, Class<?> itemClass) {
+        addSubMenu(new Item(name, itemClass));
+        return this;
+    }
+
     private void addSubMenu(Item item) {
         if (subMenu == null) {
             subMenu = new ArrayList<>();
@@ -52,6 +78,12 @@ public class Item implements MenuItem {
 
     public boolean isSubmenuAble() {
         return subMenu != null;
+    }
+
+    public void initIndexOnNull(int[] index) {
+        if (this.index == null) {
+            this.index = index;
+        }
     }
 
     @Override

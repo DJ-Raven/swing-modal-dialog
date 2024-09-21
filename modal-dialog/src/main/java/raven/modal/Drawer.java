@@ -4,6 +4,7 @@ import raven.modal.component.ModalContainer;
 import raven.modal.drawer.DrawerBuilder;
 import raven.modal.drawer.DrawerLayoutResponsive;
 import raven.modal.drawer.DrawerPanel;
+import raven.modal.drawer.simple.SimpleDrawerBuilder;
 import raven.modal.option.Option;
 
 import javax.swing.*;
@@ -85,5 +86,10 @@ public class Drawer {
 
     public static DrawerBuilder getDrawerBuilder() {
         return instance.drawerPanel.getDrawerBuilder();
+    }
+
+    public static void setSelectedItemClass(Class<?> itemClass) {
+        SimpleDrawerBuilder drawerBuilder = (SimpleDrawerBuilder) instance.drawerPanel.getDrawerBuilder();
+        drawerBuilder.getDrawerMenu().setMenuSelectedClass(itemClass);
     }
 }
