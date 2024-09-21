@@ -13,44 +13,19 @@ and support animation
 
 ## Installation
 
-This project library do not available in maven central. so you can install with the jar library
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.dj-raven/modal-dialog?label=Maven%20Central)](https://search.maven.org/artifact/io.github.dj-raven/modal-dialog)
 
-- Get jar library or demo
-  here: [latest-releases](https://github.com/DJ-Raven/swing-modal-dialog/releases/latest)
-- Copy jar library file to the root project. exp: `library/modal-dialog-1.1.0.jar`
-- Add this code to `pom.xml`
-
+Add the dependency
 ``` xml
 <dependency>
-    <groupId>raven.modaldialog</groupId>
+    <groupId>io.github.dj-raven</groupId>
     <artifactId>modal-dialog</artifactId>
-    <version>1.1.0</version>
-    <scope>system</scope>
-    <systemPath>${basedir}/library/modal-dialog-1.1.0.jar</systemPath>
+    <version>1.2.0</version>
 </dependency>
 ```
 
-- Other library are use with this library
-
-``` xml
-<dependency>
-  <groupId>com.formdev</groupId>
-  <artifactId>flatlaf</artifactId>
-  <version>3.5</version>
-</dependency>
-
-<dependency>
-  <groupId>com.formdev</groupId>
-  <artifactId>flatlaf-extras</artifactId>
-  <version>3.5</version>
-</dependency>
-
-<dependency>
-    <groupId>com.miglayout</groupId>
-    <artifactId>miglayout-swing</artifactId>
-    <version>11.3</version>
-</dependency>
-```
+## Demo
+Get jar file here: [latest-releases](https://github.com/DJ-Raven/swing-modal-dialog/releases/latest)
 
 ## Document
 
