@@ -1,15 +1,18 @@
 # Changelog
 
-## [1.2.0]
+## [1.2.0] - 2024-09-21
 
 ### New features and improvements
 
 - Drawer
     - add line style and menu selected color (PR #7)
+    - support for invoke menu event using `class` (PR #13)
 
 ### Demo
 
 - Fixed form search inconsistent search case-insensitive (issues #9) (PR #10)
+- Updated change selected drawer menu item when open form by `quick-form-search`
+- Datetime picker library update to v1.4.0
 
 ## [1.1.0] - 2024-07-27
 
