@@ -29,8 +29,6 @@ jobs:
 
       - name: Build JAR with Maven
         run: mvn clean package -DskipTests --file pom.xml
-        env:
-          JAVA_HOME: ${{ steps.setup-java.outputs.path }}
 
       - name: Get Changelog Entry
         id: changelog_reader
