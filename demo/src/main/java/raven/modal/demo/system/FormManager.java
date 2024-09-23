@@ -40,6 +40,7 @@ public class FormManager {
             form.formCheck();
             form.formOpen();
             mainForm.setForm(form);
+            Drawer.setSelectedItemClass(form.getClass());
         }
     }
 
@@ -49,6 +50,7 @@ public class FormManager {
             form.formCheck();
             form.formOpen();
             mainForm.setForm(form);
+            Drawer.setSelectedItemClass(form.getClass());
         }
     }
 
