@@ -51,7 +51,7 @@ public class ModalController extends JPanel {
         setLayout(new MigLayout("fill,insets 0", "[fill,5::]", "[fill,5::]"));
         setOpaque(false);
         if (option.getBorderWidth() > 0) {
-            setBorder(new OutlineBorder(option.getBorderWidth(), option.getRound()));
+            setBorder(new OutlineBorder(option.getBorderWidth(), option.getRound(), option.getBorderColor()));
         }
         panelSlider = new PanelSlider((int) (option.getRound() / 2f));
         add(panelSlider);
@@ -144,7 +144,7 @@ public class ModalController extends JPanel {
                     @Override
                     public void begin() {
                         modalContainer.showSnapshot();
-                        snapshotsImage = ImageSnapshots.createSnapshotsImage(panelSlider, option.getRound());
+                        snapshotsImage = ImageSnapshots.createSnapshotsImage(panelSlider, getOptionRound());
                         panelSlider.setVisible(false);
                         display = true;
                     }
@@ -202,6 +202,10 @@ public class ModalController extends JPanel {
         modalContainerLayer.revalidate();
     }
 
+    private float getOptionRound() {
+        return option.getRound() - option.getBorderWidth() * 2f;
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
@@ -212,7 +216,7 @@ public class ModalController extends JPanel {
         int height = getHeight() - (insets.top + insets.bottom);
         FlatUIUtils.setRenderingHints(g2d);
         g2d.setColor(getBackground());
-        float arc = UIScale.scale(option.getRound()) - UIScale.scale(option.getBorderWidth() * 2f);
+        float arc = UIScale.scale(getOptionRound());
         g2d.setComposite(AlphaComposite.SrcOver.derive(animated));
         FlatUIUtils.paintComponentBackground(g2d, x, y, width, height, 0, arc);
         g2d.dispose();

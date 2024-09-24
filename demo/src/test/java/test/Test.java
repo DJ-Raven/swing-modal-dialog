@@ -19,6 +19,10 @@ public class Test extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new MigLayout("al center center"));
         JButton button = new JButton("show");
+        ModalDialog.getDefaultOption()
+                .setBorderWidth(1f)
+                .setBorderColor(new Color(22, 103, 92));
+
         button.addActionListener(e -> {
             ModalDialog.showModal(this, new SimpleModalBorder(new SimpleInputForms(), "Input", SimpleModalBorder.YES_NO_OPTION, (controller, action) -> {
                 System.out.println(action);
@@ -27,7 +31,7 @@ public class Test extends JFrame {
                     ModalDialog.pushModal(new SimpleModalBorder(new SimpleInputForms(), "New Input", SimpleModalBorder.YES_NO_OPTION, (controller1, action1) -> {
                     }), "input");
                 }
-            }), new Option().setBorderWidth(0.5f), "input");
+            }), "input");
         });
         add(button);
     }

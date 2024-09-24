@@ -16,10 +16,12 @@ public class OutlineBorder extends AbstractBorder {
 
     private final float borderWidth;
     private final float round;
+    private final Color borderColor;
 
-    public OutlineBorder(float borderWidth, float round) {
+    public OutlineBorder(float borderWidth, float round, Color borderColor) {
         this.borderWidth = borderWidth;
         this.round = round;
+        this.borderColor = borderColor;
     }
 
     @Override
@@ -46,6 +48,9 @@ public class OutlineBorder extends AbstractBorder {
     }
 
     protected Color getBorderColor() {
+        if (borderColor != null) {
+            return borderColor;
+        }
         Color color = UIManager.getColor("Component.borderColor");
         return color;
     }

@@ -45,6 +45,10 @@ public class Option {
         return borderWidth;
     }
 
+    public Color getBorderColor() {
+        return borderColor;
+    }
+
     public float getOpacity() {
         return opacity;
     }
@@ -61,6 +65,7 @@ public class Option {
     private Color backgroundDark;
     private float round = 20;
     private float borderWidth = 0;
+    private Color borderColor;
     private float opacity = 0.5f;
     private int duration = 350;
 
@@ -118,6 +123,11 @@ public class Option {
 
     public Option setBorderWidth(float borderWidth) {
         this.borderWidth = borderWidth;
+        return this;
+    }
+
+    public Option setBorderColor(Color borderColor) {
+        this.borderColor = borderColor;
         return this;
     }
 
