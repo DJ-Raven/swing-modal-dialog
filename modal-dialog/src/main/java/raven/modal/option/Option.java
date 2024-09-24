@@ -41,6 +41,14 @@ public class Option {
         return round;
     }
 
+    public float getBorderWidth() {
+        return borderWidth;
+    }
+
+    public Color getBorderColor() {
+        return borderColor;
+    }
+
     public float getOpacity() {
         return opacity;
     }
@@ -56,10 +64,12 @@ public class Option {
     private Color backgroundLight;
     private Color backgroundDark;
     private float round = 20;
+    private float borderWidth = 0;
+    private Color borderColor;
     private float opacity = 0.5f;
     private int duration = 350;
 
-    private Option(LayoutOption layoutOption, BackgroundClickType backgroundClickType, boolean animationEnabled, boolean closeOnPressedEscape, Color backgroundLight, Color backgroundDark, float round, float opacity, int duration) {
+    private Option(LayoutOption layoutOption, BackgroundClickType backgroundClickType, boolean animationEnabled, boolean closeOnPressedEscape, Color backgroundLight, Color backgroundDark, float round, float borderWidth, Color borderColor, float opacity, int duration) {
         this.layoutOption = layoutOption;
         this.backgroundClickType = backgroundClickType;
         this.animationEnabled = animationEnabled;
@@ -67,6 +77,8 @@ public class Option {
         this.backgroundLight = backgroundLight;
         this.backgroundDark = backgroundDark;
         this.round = round;
+        this.borderWidth = borderWidth;
+        this.borderColor = borderColor;
         this.opacity = opacity;
         this.duration = duration;
     }
@@ -111,6 +123,16 @@ public class Option {
         return this;
     }
 
+    public Option setBorderWidth(float borderWidth) {
+        this.borderWidth = borderWidth;
+        return this;
+    }
+
+    public Option setBorderColor(Color borderColor) {
+        this.borderColor = borderColor;
+        return this;
+    }
+
     public Option setOpacity(float opacity) {
         this.opacity = opacity;
         return this;
@@ -126,6 +148,6 @@ public class Option {
     }
 
     public Option copy() {
-        return new Option(layoutOption.copy(), backgroundClickType, animationEnabled, closeOnPressedEscape, backgroundLight == null ? null : new Color(backgroundLight.getRGB()), backgroundDark == null ? null : new Color(backgroundDark.getRGB()), round, opacity, duration);
+        return new Option(layoutOption.copy(), backgroundClickType, animationEnabled, closeOnPressedEscape, backgroundLight == null ? null : new Color(backgroundLight.getRGB()), backgroundDark == null ? null : new Color(backgroundDark.getRGB()), round, borderWidth, borderColor, opacity, duration);
     }
 }

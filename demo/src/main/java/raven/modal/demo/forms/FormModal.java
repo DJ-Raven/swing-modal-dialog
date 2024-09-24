@@ -45,7 +45,7 @@ public class FormModal extends Form {
     }
 
     private Component createOptions() {
-        JPanel panel = new JPanel(new MigLayout("wrap 2,fillx", "[grow 0,fill][fill]"));
+        JPanel panel = new JPanel(new MigLayout("wrap 2,fillx", "[grow 0,fill][fill]", "[fill]"));
         panel.add(createHorizontalOption());
         panel.add(createVerticalOption());
         panel.add(createModalOptions());
@@ -105,15 +105,17 @@ public class FormModal extends Form {
     }
 
     private Component createModalOptions() {
-        JPanel panel = new JPanel(new MigLayout());
+        JPanel panel = new JPanel(new MigLayout("wrap 2"));
         panel.setBorder(new TitledBorder("Options"));
         chAnimation = new JCheckBox("Animation enable");
         chCloseOnPressedEscape = new JCheckBox("Close on pressed escape");
+        chBorder = new JCheckBox("Border");
         chAnimation.setSelected(true);
         chCloseOnPressedEscape.setSelected(true);
 
         panel.add(chAnimation);
         panel.add(chCloseOnPressedEscape);
+        panel.add(chBorder);
 
         return panel;
     }
@@ -202,11 +204,20 @@ public class FormModal extends Form {
         option.getLayoutOption().setSize(-1, 1f)
                 .setOnTop(true)
                 .setAnimateDistance(0.7f, 0);
+
+        final String id = "input";
         ModalDialog.showModal(this, new SimpleModalBorder(
                 new SimpleInputForms(), "Sample Input Forms", SimpleModalBorder.YES_NO_CANCEL_OPTION,
                 (controller, action) -> {
-                    controller.close();
-                }), option);
+                    if (action == SimpleModalBorder.YES_OPTION) {
+
+                        // consume no close modal
+                        controller.consume();
+
+                        // push modal
+                        ModalDialog.pushModal(new SimpleModalBorder(new SimpleInputForms(), "New Input Forms", SimpleModalBorder.YES_NO_OPTION, null), id);
+                    }
+                }), option, id);
     }
 
     private Option getSelectedOption() {
@@ -216,7 +227,8 @@ public class FormModal extends Form {
         Option.BackgroundClickType backgroundClickType = jrClose.isSelected() ? Option.BackgroundClickType.CLOSE_MODAL : jrBlock.isSelected() ? Option.BackgroundClickType.BLOCK : Option.BackgroundClickType.NONE;
         option.setAnimationEnabled(chAnimation.isSelected())
                 .setCloseOnPressedEscape(chCloseOnPressedEscape.isSelected())
-                .setBackgroundClickType(backgroundClickType);
+                .setBackgroundClickType(backgroundClickType)
+                .setBorderWidth(chBorder.isSelected() ? 1f : 0);
         option.getLayoutOption().setLocation(h, v);
         return option;
     }
@@ -236,6 +248,7 @@ public class FormModal extends Form {
     // option
     private JCheckBox chAnimation;
     private JCheckBox chCloseOnPressedEscape;
+    private JCheckBox chBorder;
 
     // background click option
     private JRadioButton jrClose;

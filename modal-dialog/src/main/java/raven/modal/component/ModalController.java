@@ -11,6 +11,7 @@ import raven.modal.slider.SimpleTransition;
 import raven.modal.utils.ImageSnapshots;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.util.Stack;
@@ -49,6 +50,9 @@ public class ModalController extends JPanel {
 
         setLayout(new MigLayout("fill,insets 0", "[fill,5::]", "[fill,5::]"));
         setOpaque(false);
+        if (option.getBorderWidth() > 0) {
+            setBorder(new OutlineBorder(option.getBorderWidth(), option.getRound(), option.getBorderColor()));
+        }
         panelSlider = new PanelSlider((int) (option.getRound() / 2f));
         add(panelSlider);
     }
@@ -68,6 +72,7 @@ public class ModalController extends JPanel {
     }
 
     public void pushModal(Modal modal) {
+        installModalComponent(modal);
         if (modal instanceof SimpleModalBorder) {
             SimpleModalBorder simpleModalBorder = (SimpleModalBorder) modal;
             simpleModalBorder.createBackButton(getOnBackAction());
@@ -90,11 +95,7 @@ public class ModalController extends JPanel {
 
     public void showModal() {
         setFocusCycleRoot(true);
-        // install the modal component for the first show
-        if (!modal.isInstalled()) {
-            modal.installComponent();
-            modal.setInstalled(true);
-        }
+        installModalComponent(modal);
         modal.grabFocus();
         startAnimator(true);
     }
@@ -143,7 +144,7 @@ public class ModalController extends JPanel {
                     @Override
                     public void begin() {
                         modalContainer.showSnapshot();
-                        snapshotsImage = ImageSnapshots.createSnapshotsImage(panelSlider, option.getRound());
+                        snapshotsImage = ImageSnapshots.createSnapshotsImage(panelSlider, getOptionRound());
                         panelSlider.setVisible(false);
                         display = true;
                     }
@@ -187,20 +188,37 @@ public class ModalController extends JPanel {
         }
     }
 
+    private void installModalComponent(Modal modal) {
+        // install the modal component for the first show
+        if (!modal.isInstalled()) {
+            modal.installComponent();
+            modal.setInstalled(true);
+        }
+    }
+
     private void remove() {
         modalContainerLayer.removeContainer(modalContainer);
         modalContainerLayer.repaint();
         modalContainerLayer.revalidate();
     }
 
+    private float getOptionRound() {
+        return option.getRound() - option.getBorderWidth() * 2f;
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
+        Insets insets = getInsets();
+        int x = insets.left;
+        int y = insets.top;
+        int width = getWidth() - (insets.left + insets.right);
+        int height = getHeight() - (insets.top + insets.bottom);
         FlatUIUtils.setRenderingHints(g2d);
         g2d.setColor(getBackground());
-        float arc = UIScale.scale(option.getRound());
+        float arc = UIScale.scale(getOptionRound());
         g2d.setComposite(AlphaComposite.SrcOver.derive(animated));
-        FlatUIUtils.paintComponentBackground(g2d, 0, 0, getWidth(), getHeight(), 0, arc);
+        FlatUIUtils.paintComponentBackground(g2d, x, y, width, height, 0, arc);
         g2d.dispose();
         super.paintComponent(g);
     }
@@ -214,6 +232,10 @@ public class ModalController extends JPanel {
                 Insets insets = getInsets();
                 // draw snapshots image
                 g2.drawImage(snapshotsImage, insets.left, insets.top, null);
+                Border border = getBorder();
+                if (border != null) {
+                    getBorder().paintBorder(this, g2, 0, 0, getWidth(), getHeight());
+                }
                 g2.dispose();
             } else {
                 super.paint(g);
