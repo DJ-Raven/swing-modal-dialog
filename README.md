@@ -24,6 +24,26 @@ Add the dependency
 </dependency>
 ```
 
+### Snapshots
+To get the latest updates before the release, you can use the snapshot version from [Sonatype OSS Snapshots](https://s01.oss.sonatype.org/content/repositories/snapshots/io/github/dj-raven/modal-dialog/)
+
+``` xml
+<repositories>
+    <repository>
+        <id>sonatype-oss-snapshots</id>
+        <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+    </repository>
+</repositories>
+```
+Add the snapshot version
+``` xml
+<dependency>
+    <groupId>io.github.dj-raven</groupId>
+    <artifactId>modal-dialog</artifactId>
+    <version>x.x.x-SNAPSHOT</version>
+</dependency>
+```
+
 ## Demo
 Get jar file here: [latest-releases](https://github.com/DJ-Raven/swing-modal-dialog/releases/latest)
 
