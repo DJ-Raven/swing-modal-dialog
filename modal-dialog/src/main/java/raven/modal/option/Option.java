@@ -41,6 +41,10 @@ public class Option {
         return round;
     }
 
+    public float getBorderWidth() {
+        return borderWidth;
+    }
+
     public float getOpacity() {
         return opacity;
     }
@@ -56,6 +60,7 @@ public class Option {
     private Color backgroundLight;
     private Color backgroundDark;
     private float round = 20;
+    private float borderWidth = 0;
     private float opacity = 0.5f;
     private int duration = 350;
 
@@ -108,6 +113,11 @@ public class Option {
 
     public Option setRound(float round) {
         this.round = round;
+        return this;
+    }
+
+    public Option setBorderWidth(float borderWidth) {
+        this.borderWidth = borderWidth;
         return this;
     }
 

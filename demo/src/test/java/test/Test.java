@@ -6,6 +6,7 @@ import net.miginfocom.swing.MigLayout;
 import raven.modal.ModalDialog;
 import raven.modal.component.SimpleModalBorder;
 import raven.modal.demo.simple.SimpleInputForms;
+import raven.modal.option.Option;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +23,7 @@ public class Test extends JFrame {
             ModalDialog.showModal(this, new SimpleModalBorder(new SimpleInputForms(), "Input", SimpleModalBorder.YES_NO_OPTION, (controller, action) -> {
                 //  controller.consume();
                 System.out.println(action);
-            }));
+            }), new Option().setBorderWidth(1), "input");
         });
         add(button);
     }

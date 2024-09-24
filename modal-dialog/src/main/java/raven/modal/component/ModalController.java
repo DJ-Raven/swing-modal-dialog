@@ -11,6 +11,7 @@ import raven.modal.slider.SimpleTransition;
 import raven.modal.utils.ImageSnapshots;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.util.Stack;
@@ -49,6 +50,9 @@ public class ModalController extends JPanel {
 
         setLayout(new MigLayout("fill,insets 0", "[fill,5::]", "[fill,5::]"));
         setOpaque(false);
+        if (option.getBorderWidth() > 0) {
+            setBorder(new OutlineBorder(option.getRound()));
+        }
         panelSlider = new PanelSlider((int) (option.getRound() / 2f));
         add(panelSlider);
     }
@@ -196,11 +200,16 @@ public class ModalController extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
+        Insets insets = getInsets();
+        int x = insets.left;
+        int y = insets.top;
+        int width = getWidth() - (insets.left + insets.right);
+        int height = getHeight() - (insets.top + insets.bottom);
         FlatUIUtils.setRenderingHints(g2d);
         g2d.setColor(getBackground());
         float arc = UIScale.scale(option.getRound());
         g2d.setComposite(AlphaComposite.SrcOver.derive(animated));
-        FlatUIUtils.paintComponentBackground(g2d, 0, 0, getWidth(), getHeight(), 0, arc);
+        FlatUIUtils.paintComponentBackground(g2d, x, y, width, height, 0, arc);
         g2d.dispose();
         super.paintComponent(g);
     }
@@ -214,6 +223,10 @@ public class ModalController extends JPanel {
                 Insets insets = getInsets();
                 // draw snapshots image
                 g2.drawImage(snapshotsImage, insets.left, insets.top, null);
+                Border border = getBorder();
+                if (border != null) {
+                    getBorder().paintBorder(this, g2, 0, 0, getWidth(), getHeight());
+                }
                 g2.dispose();
             } else {
                 super.paint(g);
