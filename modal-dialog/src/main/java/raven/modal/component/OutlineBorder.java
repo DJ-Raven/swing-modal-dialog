@@ -14,9 +14,11 @@ import static com.formdev.flatlaf.util.UIScale.scale;
  */
 public class OutlineBorder extends AbstractBorder {
 
+    private final float borderWidth;
     private final float round;
 
-    public OutlineBorder(float round) {
+    public OutlineBorder(float borderWidth, float round) {
+        this.borderWidth = borderWidth;
         this.round = round;
     }
 
@@ -49,6 +51,6 @@ public class OutlineBorder extends AbstractBorder {
     }
 
     protected float getBorderWidth() {
-        return FlatUIUtils.getUIFloat("Component.borderWidth", 1);
+        return scale(borderWidth);
     }
 }
