@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.1]
+
+### New features and improvements
+
+- Modal dialog
+    - Add new border option `borderWidth` and `borderColor`
+
+### Fixed bugs
+
+- Modal dialog
+    - Fixed component not install when push modal
+
 ## [1.2.0] - 2024-09-21
 
 ### New features and improvements
