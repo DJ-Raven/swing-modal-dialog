@@ -21,9 +21,13 @@ public class Test extends JFrame {
         JButton button = new JButton("show");
         button.addActionListener(e -> {
             ModalDialog.showModal(this, new SimpleModalBorder(new SimpleInputForms(), "Input", SimpleModalBorder.YES_NO_OPTION, (controller, action) -> {
-                //  controller.consume();
                 System.out.println(action);
-            }), new Option().setBorderWidth(1), "input");
+                if (action == SimpleModalBorder.YES_OPTION) {
+                    controller.consume();
+                    ModalDialog.pushModal(new SimpleModalBorder(new SimpleInputForms(), "New Input", SimpleModalBorder.YES_NO_OPTION, (controller1, action1) -> {
+                    }), "input");
+                }
+            }), new Option().setBorderWidth(0.5f), "input");
         });
         add(button);
     }

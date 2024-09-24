@@ -72,6 +72,7 @@ public class ModalController extends JPanel {
     }
 
     public void pushModal(Modal modal) {
+        installModalComponent(modal);
         if (modal instanceof SimpleModalBorder) {
             SimpleModalBorder simpleModalBorder = (SimpleModalBorder) modal;
             simpleModalBorder.createBackButton(getOnBackAction());
@@ -94,11 +95,7 @@ public class ModalController extends JPanel {
 
     public void showModal() {
         setFocusCycleRoot(true);
-        // install the modal component for the first show
-        if (!modal.isInstalled()) {
-            modal.installComponent();
-            modal.setInstalled(true);
-        }
+        installModalComponent(modal);
         modal.grabFocus();
         startAnimator(true);
     }
@@ -188,6 +185,14 @@ public class ModalController extends JPanel {
                 animated = 0;
                 remove();
             }
+        }
+    }
+
+    private void installModalComponent(Modal modal) {
+        // install the modal component for the first show
+        if (!modal.isInstalled()) {
+            modal.installComponent();
+            modal.setInstalled(true);
         }
     }
 

@@ -183,7 +183,7 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
 
     public void createBackButton(Consumer onBack) {
         if (header != null) {
-            JButton buttonClose = new JButton(new FlatSVGIcon("raven/modal/icon/back.svg", 0.45f));
+            JButton buttonClose = new JButton(new FlatSVGIcon("raven/modal/icon/back.svg", 0.4f));
             buttonClose.addActionListener(e -> onBack.accept(null));
             buttonClose.putClientProperty(FlatClientProperties.STYLE, "" +
                     "arc:999;" +
