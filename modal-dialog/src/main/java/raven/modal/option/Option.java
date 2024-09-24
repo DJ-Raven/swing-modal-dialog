@@ -69,7 +69,7 @@ public class Option {
     private float opacity = 0.5f;
     private int duration = 350;
 
-    private Option(LayoutOption layoutOption, BackgroundClickType backgroundClickType, boolean animationEnabled, boolean closeOnPressedEscape, Color backgroundLight, Color backgroundDark, float round, float opacity, int duration) {
+    private Option(LayoutOption layoutOption, BackgroundClickType backgroundClickType, boolean animationEnabled, boolean closeOnPressedEscape, Color backgroundLight, Color backgroundDark, float round, float borderWidth, Color borderColor, float opacity, int duration) {
         this.layoutOption = layoutOption;
         this.backgroundClickType = backgroundClickType;
         this.animationEnabled = animationEnabled;
@@ -77,6 +77,8 @@ public class Option {
         this.backgroundLight = backgroundLight;
         this.backgroundDark = backgroundDark;
         this.round = round;
+        this.borderWidth = borderWidth;
+        this.borderColor = borderColor;
         this.opacity = opacity;
         this.duration = duration;
     }
@@ -146,6 +148,6 @@ public class Option {
     }
 
     public Option copy() {
-        return new Option(layoutOption.copy(), backgroundClickType, animationEnabled, closeOnPressedEscape, backgroundLight == null ? null : new Color(backgroundLight.getRGB()), backgroundDark == null ? null : new Color(backgroundDark.getRGB()), round, opacity, duration);
+        return new Option(layoutOption.copy(), backgroundClickType, animationEnabled, closeOnPressedEscape, backgroundLight == null ? null : new Color(backgroundLight.getRGB()), backgroundDark == null ? null : new Color(backgroundDark.getRGB()), round, borderWidth, borderColor, opacity, duration);
     }
 }
