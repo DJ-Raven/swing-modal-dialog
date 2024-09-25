@@ -1,6 +1,5 @@
 package raven.modal.demo.system;
 
-import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.Drawer;
@@ -77,6 +76,10 @@ public class MainForm extends JPanel {
         // check button
         buttonUndo.setEnabled(FormManager.FORMS.isUndoAble());
         buttonRedo.setEnabled(FormManager.FORMS.isRedoAble());
+        // check component orientation and update
+        if (mainPanel.getComponentOrientation().isLeftToRight() != form.getComponentOrientation().isLeftToRight()) {
+            applyComponentOrientation(mainPanel.getComponentOrientation());
+        }
     }
 
     public void refresh() {
