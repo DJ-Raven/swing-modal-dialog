@@ -1,7 +1,10 @@
 package raven.modal.demo.system;
 
 import raven.modal.Drawer;
+import raven.modal.ModalDialog;
+import raven.modal.component.SimpleModalBorder;
 import raven.modal.demo.auth.Login;
+import raven.modal.demo.component.About;
 import raven.modal.demo.forms.FormDashboard;
 import raven.modal.demo.utils.UndoRedo;
 
@@ -98,5 +101,11 @@ public class FormManager {
             login = new Login();
         }
         return login;
+    }
+
+    public static void showAbout() {
+        ModalDialog.showModal(frame, new SimpleModalBorder(new About(), "About"),
+                ModalDialog.createOption().setAnimationEnabled(false)
+        );
     }
 }

@@ -1,6 +1,7 @@
 package raven.modal.demo.menu;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import raven.modal.demo.Demo;
 import raven.modal.demo.forms.*;
 import raven.modal.demo.system.AllForms;
 import raven.modal.demo.system.Form;
@@ -44,7 +45,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
     public SimpleFooterData getSimpleFooterData() {
         return new SimpleFooterData()
                 .setTitle("Swing Modal Dialog")
-                .setDescription("Version 1.2.1");
+                .setDescription("Version " + Demo.DEMO_VERSION);
     }
 
     @Override
@@ -91,6 +92,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                             .subMenu("Plugin 2")
                             .subMenu("Plugin 3"),
                     new Item("Setting", "setting.svg", FormSetting.class),
+                    new Item("About", "about.svg"),
                     new Item("Logout", "logout.svg")
             };
 
@@ -122,6 +124,10 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                     Class<?> itemClass = action.getItem().getItemClass();
                     int i = index[0];
                     if (i == 8) {
+                        action.consume();
+                        FormManager.showAbout();
+                        return;
+                    } else if (i == 9) {
                         action.consume();
                         FormManager.logout();
                         return;
