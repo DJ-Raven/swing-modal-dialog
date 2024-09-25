@@ -5,12 +5,17 @@
 ### New features and improvements
 
 - Modal dialog
-    - Add new border option `borderWidth` and `borderColor`
+    - Add new border option `borderWidth` and `borderColor` (PR #14)
 
 ### Fixed bugs
 
 - Modal dialog
     - Fixed component not install when push modal
+
+### Demo
+
+- Fixed component not install when push modal
+- Updated select drawer menu when undo and redo form
 
 ## [1.2.0] - 2024-09-21
 
