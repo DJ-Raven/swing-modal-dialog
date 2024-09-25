@@ -58,6 +58,12 @@ public class ToastPanel extends JPanel {
     }
 
     @Override
+    public void updateUI() {
+        super.updateUI();
+        setBorder(new ToastBorder(content, toastData));
+    }
+
+    @Override
     public void paint(Graphics g) {
         if (animate >= 0 && animate < 1f) {
             Graphics2D g2 = (Graphics2D) g;

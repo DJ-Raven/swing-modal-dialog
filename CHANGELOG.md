@@ -11,6 +11,8 @@
 
 - Modal dialog
     - Fixed component not install when push modal
+- Toast
+    - Fixed `ToastPanel` border `null` when changed themes or UI updated
 
 ### Demo
 
