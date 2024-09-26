@@ -21,7 +21,7 @@ public class About extends JPanel {
     }
 
     private void init() {
-        setLayout(new MigLayout("fillx,wrap,insets 5 35 5 35,width 400", "[fill]", ""));
+        setLayout(new MigLayout("fillx,wrap,insets 5 35 5 35,width 400", "[fill,330::]", ""));
 
         JTextPane title = createText("Modal Dialog Demo Project");
         title.putClientProperty(FlatClientProperties.STYLE, "" +
@@ -56,8 +56,8 @@ public class About extends JPanel {
 
     private String getDescriptionText() {
         String text = "This is a demo project for the Modal Dialog library, " +
-                "built using FlatLaf Look and Feel and MigLayout library. For source code, " +
-                "visit the <a href=\"https://github.com/DJ-Raven/swing-modal-dialog/\">GitHub Project.</a>";
+                "built using FlatLaf Look and Feel and MigLayout library.<br>" +
+                "For source code, visit the <a href=\"https://github.com/DJ-Raven/swing-modal-dialog/\">GitHub Project.</a>";
 
         return text;
     }
