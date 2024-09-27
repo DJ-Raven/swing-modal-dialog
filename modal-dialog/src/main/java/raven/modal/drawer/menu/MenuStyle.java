@@ -31,4 +31,7 @@ public class MenuStyle {
 
     public void styleLabel(JLabel label) {
     }
+
+    public void styleSeparator(JSeparator separator) {
+    }
 }

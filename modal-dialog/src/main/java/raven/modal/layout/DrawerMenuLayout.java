@@ -1,5 +1,6 @@
 package raven.modal.layout;
 
+import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -53,7 +54,13 @@ public class DrawerMenuLayout implements LayoutManager {
                 Component com = parent.getComponent(i);
                 if (com.isVisible()) {
                     int h = com.getPreferredSize().height;
-                    com.setBounds(x, y, width, h);
+                    if (com instanceof JSeparator) {
+                        Insets in = ((JSeparator) com).getInsets();
+                        h += in.top + in.bottom;
+                        com.setBounds(x + in.left, y, width - (in.left + in.right), h);
+                    } else {
+                        com.setBounds(x, y, width, h);
+                    }
                     y += h;
                 }
             }

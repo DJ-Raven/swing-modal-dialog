@@ -108,4 +108,12 @@ public class Item implements MenuItem {
             return false;
         }
     }
+
+    public static class Separator implements MenuItem {
+
+        @Override
+        public boolean isMenu() {
+            return false;
+        }
+    }
 }

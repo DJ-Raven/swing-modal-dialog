@@ -91,6 +91,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                             .subMenu("Plugin 1")
                             .subMenu("Plugin 2")
                             .subMenu("Plugin 3"),
+                    new Item.Separator(),
                     new Item("Setting", "setting.svg", FormSetting.class),
                     new Item("About", "about.svg"),
                     new Item("Logout", "logout.svg")

@@ -131,10 +131,14 @@ public class DrawerMenu extends JPanel {
                         }
                     }
                 } else {
-                    // create label
+                    // create label and separator
                     if (checkLabelValidation(i, index)) {
-                        Item.Label label = (Item.Label) menuItem;
-                        add(createLabel(label.getName()));
+                        if (menuItem instanceof Item.Label) {
+                            Item.Label label = (Item.Label) menuItem;
+                            add(createLabel(label.getName()));
+                        } else if (menuItem instanceof Item.Separator) {
+                            add(createSeparator());
+                        }
                     }
                 }
             }
@@ -261,6 +265,9 @@ public class DrawerMenu extends JPanel {
                 boolean fondMenu = false;
                 for (int i = labelIndex + 1; i < menuOption.menus.length; i++) {
                     MenuItem menuItem = menuOption.menus[i];
+                    if (menuItem instanceof Item.Separator) {
+                        continue;
+                    }
                     if (menuItem.isMenu()) {
                         if (menuOption.menuValidation.menuValidation(new int[]{menuIndex})) {
                             fondMenu = true;
@@ -289,6 +296,18 @@ public class DrawerMenu extends JPanel {
                 "border:8,10,8,10;" +
                 "foreground:$Label.disabledForeground;");
         return label;
+    }
+
+    protected Component createSeparator() {
+        JSeparator separator = new JSeparator();
+        if (menuOption.menuStyle != null) {
+            menuOption.menuStyle.styleSeparator(separator);
+        }
+        FlatLafStyleUtils.appendStyleIfAbsent(separator, "" +
+                "height:11;" +
+                "stripeIndent:5;" +
+                "border:0,10,0,10;");
+        return separator;
     }
 
     public MenuOption getMenuOption() {
