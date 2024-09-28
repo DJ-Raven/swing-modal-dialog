@@ -15,7 +15,7 @@ import java.util.Arrays;
 /**
  * @author Raven
  */
-public class DrawerMenu extends JPanel {
+public class DrawerMenu extends AbstractMenuElement {
 
     public int[] getMenuSelectedIndex() {
         return menuSelectedIndex == null ? null : copyArray(menuSelectedIndex);
@@ -88,7 +88,7 @@ public class DrawerMenu extends JPanel {
     }
 
     private void init() {
-        setLayout(new DrawerMenuLayout());
+        setLayout(new DrawerMenuLayout(this, menuOption));
         if (menuOption.menuStyle != null) {
             menuOption.menuStyle.styleMenu(this);
         }
@@ -143,6 +143,44 @@ public class DrawerMenu extends JPanel {
                 }
             }
         }
+    }
+
+    @Override
+    public void layoutOptionChanged(MenuOption.MenuOpenMode menuOpenMode) {
+        boolean isFull = menuOpenMode == MenuOption.MenuOpenMode.FULL;
+        for (Component com : getComponents()) {
+            ButtonItem item = getButtonItem(com);
+            if (item != null) {
+                if (isFull) {
+                    item.setText(item.getItem().getName());
+                    item.setHorizontalAlignment(SwingConstants.LEADING);
+                } else {
+                    item.setText("");
+                    item.setHorizontalAlignment(SwingConstants.CENTER);
+                }
+            } else if (com instanceof JLabel) {
+                JLabel label = (JLabel) com;
+                if (isFull) {
+                    label.setHorizontalAlignment(SwingConstants.LEADING);
+                } else {
+                    label.setHorizontalAlignment(SwingConstants.CENTER);
+                }
+            }
+        }
+    }
+
+    private ButtonItem getButtonItem(Component com) {
+        if (com instanceof ButtonItem) {
+            return (ButtonItem) com;
+        } else if (com instanceof JPanel) {
+            JPanel panel = (JPanel) com;
+            if (panel.getComponentCount() > 0) {
+                if (panel.getComponent(0) instanceof ButtonItem) {
+                    return (ButtonItem) panel.getComponent(0);
+                }
+            }
+        }
+        return null;
     }
 
     private int[] copyArray(int[] arr) {
@@ -293,7 +331,6 @@ public class DrawerMenu extends JPanel {
             menuOption.menuStyle.styleLabel(label);
         }
         FlatLafStyleUtils.appendStyleIfAbsent(label, "" +
-                "border:8,10,8,10;" +
                 "foreground:$Label.disabledForeground;");
         return label;
     }
@@ -305,8 +342,7 @@ public class DrawerMenu extends JPanel {
         }
         FlatLafStyleUtils.appendStyleIfAbsent(separator, "" +
                 "height:11;" +
-                "stripeIndent:5;" +
-                "border:0,10,0,10;");
+                "stripeIndent:5;");
         return separator;
     }
 

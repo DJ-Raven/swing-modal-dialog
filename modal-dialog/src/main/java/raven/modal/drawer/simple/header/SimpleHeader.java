@@ -1,6 +1,8 @@
 package raven.modal.drawer.simple.header;
 
 import net.miginfocom.swing.MigLayout;
+import raven.modal.drawer.menu.AbstractMenuElement;
+import raven.modal.drawer.menu.MenuOption;
 import raven.modal.utils.FlatLafStyleUtils;
 
 import javax.swing.*;
@@ -8,7 +10,7 @@ import javax.swing.*;
 /**
  * @author Raven
  */
-public class SimpleHeader extends JPanel {
+public class SimpleHeader extends AbstractMenuElement {
 
     private SimpleHeaderData simpleHeaderData;
 
@@ -18,7 +20,7 @@ public class SimpleHeader extends JPanel {
     }
 
     private void init() {
-        setLayout(new MigLayout("wrap,insets 10 20 5 20,fill,gap 3"));
+        setLayout(new MigLayout("hidemode 3,wrap,insets 15 20 5 20,fill,gap 3"));
         profile = new JLabel(simpleHeaderData.getIcon());
         labelTitle = new JLabel(simpleHeaderData.getTitle());
         labelDescription = new JLabel(simpleHeaderData.getDescription());
@@ -50,6 +52,19 @@ public class SimpleHeader extends JPanel {
         profile.setIcon(simpleHeaderData.getIcon());
         labelTitle.setText(simpleHeaderData.getTitle());
         labelDescription.setText(simpleHeaderData.getDescription());
+    }
+
+    @Override
+    protected void layoutOptionChanged(MenuOption.MenuOpenMode menuOpenMode) {
+        if (menuOpenMode == MenuOption.MenuOpenMode.FULL) {
+            setLayout(new MigLayout("hidemode 3,wrap,insets 15 20 5 20,fill,gap 3"));
+            labelTitle.setVisible(true);
+            labelDescription.setVisible(true);
+        } else {
+            setLayout(new MigLayout("hidemode 3,wrap,insets 15 5 5 5,fill,gap 3", "[center]"));
+            labelTitle.setVisible(false);
+            labelDescription.setVisible(false);
+        }
     }
 
     private JLabel profile;

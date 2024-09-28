@@ -18,6 +18,7 @@ import raven.extras.AvatarIcon;
 import raven.modal.drawer.simple.header.SimpleHeaderStyle;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.Arrays;
 
 public class MyDrawerBuilder extends SimpleDrawerBuilder {
@@ -26,19 +27,26 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
     @Override
     public SimpleHeaderData getSimpleHeaderData() {
-        AvatarIcon icon = new AvatarIcon(getClass().getResource("/raven/modal/demo/drawer/image/profile.png"), 60, 60, 999);
+        AvatarIcon icon = new AvatarIcon(getClass().getResource("/raven/modal/demo/drawer/image/profile.png"), 50, 50, 3.5f);
+        icon.setType(AvatarIcon.Type.MASK_SQUIRCLE);
+        icon.setBorder(2, 2);
+
+        changeAvatarIconBorderColor(icon);
+
+        UIManager.addPropertyChangeListener(evt -> {
+            if (evt.getPropertyName().equals("lookAndFeel")) {
+                changeAvatarIconBorderColor(icon);
+            }
+        });
+
         return new SimpleHeaderData()
                 .setIcon(icon)
                 .setTitle("Ra Ven")
-                .setDescription("raven@gmail.com")
-                .setHeaderStyle(new SimpleHeaderStyle() {
-                    @Override
-                    public void styleProfile(JLabel label) {
-                        // apply border style to avatar label
-                        label.putClientProperty(FlatClientProperties.STYLE, "" +
-                                "border:2,2,2,2,$Component.borderColor,2,999");
-                    }
-                });
+                .setDescription("raven@gmail.com");
+    }
+
+    private void changeAvatarIconBorderColor(AvatarIcon icon) {
+        icon.setBorderColor(new AvatarIcon.BorderColor(UIManager.getColor("Component.accentColor"), 0.7f));
     }
 
     @Override
@@ -103,8 +111,8 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
                 @Override
                 public void styleMenu(JComponent component) {
-                    component.putClientProperty(FlatClientProperties.STYLE, ""
-                            + "background:$Drawer.background");
+                    component.putClientProperty(FlatClientProperties.STYLE, "" +
+                            "background:$Drawer.background");
                 }
 
                 @Override
@@ -112,10 +120,16 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                     if (isMainItem) {
                         menu.putClientProperty(FlatClientProperties.STYLE, "" +
                                 "selectedForeground:$Component.accentColor;" +
-                                "selectedBackground:null;");
+                                "selectedBackground:null;" +
+                                "arc:15;");
+                    } else {
+                        menu.putClientProperty(FlatClientProperties.STYLE, "" +
+                                "arc:15;");
                     }
                 }
             });
+
+            simpleMenuOption.setMenuOpenMode(MenuOption.MenuOpenMode.COMPACT);
             simpleMenuOption.getMenuStyle().setDrawerLineStyleRenderer(new DrawerStraightDotLineStyle());
             simpleMenuOption.setMenuItemAutoSelectionMode(MenuOption.MenuItemAutoSelectionMode.SELECT_SUB_MENU_LEVEL);
             simpleMenuOption.addMenuEvent(new MenuEvent() {
@@ -154,6 +168,11 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
     @Override
     public int getDrawerWidth() {
         return 275;
+    }
+
+    @Override
+    public int getDrawerCompactWidth() {
+        return 80;
     }
 
     @Override

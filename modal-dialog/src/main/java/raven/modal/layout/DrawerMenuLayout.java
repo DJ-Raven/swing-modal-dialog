@@ -1,5 +1,11 @@
 package raven.modal.layout;
 
+import com.formdev.flatlaf.ui.FlatUIUtils;
+import com.formdev.flatlaf.util.UIScale;
+import raven.modal.drawer.menu.AbstractMenuElement;
+import raven.modal.drawer.menu.MenuItemLayoutOption;
+import raven.modal.drawer.menu.MenuOption;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -7,6 +13,14 @@ import java.awt.*;
  * @author Raven
  */
 public class DrawerMenuLayout implements LayoutManager {
+
+    private final AbstractMenuElement parent;
+    private final MenuOption menuOption;
+
+    public DrawerMenuLayout(AbstractMenuElement parent, MenuOption menuOption) {
+        this.parent = parent;
+        this.menuOption = menuOption;
+    }
 
     @Override
     public void addLayoutComponent(String name, Component comp) {
@@ -27,8 +41,9 @@ public class DrawerMenuLayout implements LayoutManager {
             for (int i = 0; i < count; i++) {
                 Component com = parent.getComponent(i);
                 if (com.isVisible()) {
-                    height += com.getPreferredSize().height;
-                    width = Math.max(width, com.getPreferredSize().width);
+                    Insets in = getComponentInsets(com);
+                    height += com.getPreferredSize().height + (in.top + in.bottom);
+                    width = Math.max(width, com.getPreferredSize().width + (in.left + in.right));
                 }
             }
             return new Dimension(width, height);
@@ -54,16 +69,31 @@ public class DrawerMenuLayout implements LayoutManager {
                 Component com = parent.getComponent(i);
                 if (com.isVisible()) {
                     int h = com.getPreferredSize().height;
-                    if (com instanceof JSeparator) {
-                        Insets in = ((JSeparator) com).getInsets();
-                        h += in.top + in.bottom;
-                        com.setBounds(x + in.left, y, width - (in.left + in.right), h);
-                    } else {
-                        com.setBounds(x, y, width, h);
-                    }
+                    Insets in = getComponentInsets(com);
+                    h += in.top + in.bottom;
+                    com.setBounds(x + in.left, y, width - (in.left + in.right), h);
                     y += h;
                 }
             }
+        }
+    }
+
+    private Insets getComponentInsets(Component com) {
+        boolean full = this.parent.getMenuOpenMode() == MenuOption.MenuOpenMode.FULL;
+        MenuItemLayoutOption layoutOption = full ? menuOption.getMenuItemLayoutOption() : menuOption.getCompactMenuItemLayoutOption();
+
+        if (com instanceof JSeparator) {
+            Insets separatorInsets = ((JSeparator) com).getInsets();
+            return FlatUIUtils.addInsets(separatorInsets, UIScale.scale(layoutOption.getSeparatorMargin()));
+        } else if (com instanceof JLabel) {
+            return UIScale.scale(layoutOption.getLabelMargin());
+        } else {
+            Point point = layoutOption.getMenuHorizontalMargin();
+            int x = UIScale.scale(point.x);
+            int y = UIScale.scale(point.y);
+
+            // button menu item not support the top and bottom margin
+            return new Insets(0, x, 0, y);
         }
     }
 }

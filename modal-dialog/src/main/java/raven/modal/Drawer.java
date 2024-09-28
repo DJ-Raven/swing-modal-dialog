@@ -39,7 +39,7 @@ public class Drawer {
         instance.drawerPanel = new DrawerPanel(drawerBuilder);
         drawerBuilder.build(instance.drawerPanel);
         if (drawerBuilder.getOpenDrawerAt() >= 0) {
-            instance.drawerLayoutResponsive = ModalDialog.installDrawer(instance.rootPaneContainer, instance.drawerPanel, drawerBuilder.getOpenDrawerAt(), drawerBuilder.openDrawerAtScale());
+            instance.drawerLayoutResponsive = ModalDialog.installDrawer(instance.rootPaneContainer, instance.drawerPanel);
         }
     }
 

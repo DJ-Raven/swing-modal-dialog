@@ -1,6 +1,8 @@
 package raven.modal.drawer.simple.footer;
 
 import net.miginfocom.swing.MigLayout;
+import raven.modal.drawer.menu.AbstractMenuElement;
+import raven.modal.drawer.menu.MenuOption;
 import raven.modal.utils.FlatLafStyleUtils;
 
 import javax.swing.*;
@@ -8,7 +10,7 @@ import javax.swing.*;
 /**
  * @author Raven
  */
-public class SimpleFooter extends JPanel {
+public class SimpleFooter extends AbstractMenuElement {
 
     private SimpleFooterData simpleFooterData;
 
@@ -18,7 +20,7 @@ public class SimpleFooter extends JPanel {
     }
 
     private void init() {
-        setLayout(new MigLayout("wrap,insets 5 20 10 20,fill,gap 3"));
+        setLayout(new MigLayout("hidemode 3,wrap,insets 5 20 10 20,fill,gap 3"));
         labelTitle = new JLabel(simpleFooterData.getTitle());
         labelDescription = new JLabel(simpleFooterData.getDescription());
 
@@ -46,6 +48,17 @@ public class SimpleFooter extends JPanel {
         this.simpleFooterData = simpleFooterData;
         labelTitle.setText(simpleFooterData.getTitle());
         labelDescription.setText(simpleFooterData.getDescription());
+    }
+
+    @Override
+    public void layoutOptionChanged(MenuOption.MenuOpenMode menuOpenMode) {
+        if (menuOpenMode == MenuOption.MenuOpenMode.FULL) {
+            labelTitle.setVisible(true);
+            labelDescription.setVisible(true);
+        } else {
+            labelTitle.setVisible(false);
+            labelDescription.setVisible(false);
+        }
     }
 
     private JLabel labelTitle;

@@ -115,11 +115,11 @@ public class ModalDialog {
         return getInstance().defaultOption.copy();
     }
 
-    protected static DrawerLayoutResponsive installDrawer(RootPaneContainer rootPaneContainer, DrawerPanel drawerPanel, int drawerOpenAt, boolean scale) {
+    protected static DrawerLayoutResponsive installDrawer(RootPaneContainer rootPaneContainer, DrawerPanel drawerPanel) {
         ModalContainerLayer modalContainerLayer = getInstance().getModalContainerLayered(rootPaneContainer);
         JLayeredPane windowLayeredPane = rootPaneContainer.getLayeredPane();
         if (windowLayeredPane.getLayout() instanceof FrameModalLayout) {
-            DrawerLayoutResponsive drawerLayoutResponsive = new DrawerLayoutResponsive(null, drawerPanel, drawerOpenAt, scale);
+            DrawerLayoutResponsive drawerLayoutResponsive = new DrawerLayoutResponsive(null, drawerPanel);
             modalContainerLayer.setDrawerLayoutResponsive(drawerLayoutResponsive);
             ((FrameModalLayout) windowLayeredPane.getLayout()).setDrawerLayoutAction(drawerLayoutResponsive);
             return drawerLayoutResponsive;

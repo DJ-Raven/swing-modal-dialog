@@ -26,10 +26,6 @@ public class DrawerLayoutResponsive {
         return drawerPanel;
     }
 
-    public int getDrawerOpenAt() {
-        return drawerOpenAt;
-    }
-
     public boolean isOpened() {
         return opened;
     }
@@ -48,20 +44,18 @@ public class DrawerLayoutResponsive {
 
     private ModalContainer modalContainer;
     private DrawerPanel drawerPanel;
-    private int drawerOpenAt;
-    private boolean scale;
     private boolean opened = true;
     private boolean showing = true;
 
-    public DrawerLayoutResponsive(ModalContainer modalContainer, DrawerPanel drawerPanel, int drawerOpenAt, boolean scale) {
+    public DrawerLayoutResponsive(ModalContainer modalContainer, DrawerPanel drawerPanel) {
         this.modalContainer = modalContainer;
         this.drawerPanel = drawerPanel;
-        this.drawerOpenAt = drawerOpenAt;
-        this.scale = scale;
     }
 
     public boolean check(Container container, int width) {
-        boolean isOpen = width <= (scale ? UIScale.scale(drawerOpenAt) : drawerOpenAt);
+        DrawerBuilder drawerBuilder = drawerPanel.getDrawerBuilder();
+        int drawerOpenAt = drawerBuilder.getOpenDrawerAt();
+        boolean isOpen = width <= (drawerBuilder.openDrawerAtScale() ? UIScale.scale(drawerOpenAt) : drawerOpenAt);
         if (isOpen != opened) {
             // change layout
             if (isOpen) {
@@ -86,8 +80,13 @@ public class DrawerLayoutResponsive {
                 drawerPanel.setVisible(showing);
             }
             opened = isOpen;
+            drawerOpenChanged(!opened);
         }
         return opened;
+    }
+
+    private void drawerOpenChanged(boolean isOpen) {
+        drawerPanel.getDrawerBuilder().drawerOpenChanged(isOpen);
     }
 
     public Rectangle getDrawerLayout(Container parent) {
