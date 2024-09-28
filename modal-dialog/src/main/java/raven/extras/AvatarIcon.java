@@ -216,6 +216,18 @@ public class AvatarIcon implements Icon {
         image = null;
     }
 
+    public Icon getDefaultIcon() {
+        Icon icon;
+        if (filename != null) {
+            icon = new ImageIcon(filename);
+        } else if (location != null) {
+            icon = new ImageIcon(location);
+        } else {
+            icon = this.icon;
+        }
+        return icon;
+    }
+
     private int getAllBorder() {
         return UIScale.scale(borderWidth + innerBorderWidth);
     }
