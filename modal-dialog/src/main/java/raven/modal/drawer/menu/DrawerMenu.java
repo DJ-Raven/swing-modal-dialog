@@ -166,6 +166,13 @@ public class DrawerMenu extends AbstractMenuElement {
                     label.setHorizontalAlignment(SwingConstants.CENTER);
                 }
             }
+
+            // hide and show submenu item
+            if (com instanceof SubMenuItem) {
+                SubMenuItem subMenuItem = (SubMenuItem) com;
+                float animate = isFull && subMenuItem.menuShow ? 1 : 0;
+                subMenuItem.setAnimate(animate);
+            }
         }
     }
 
@@ -474,7 +481,11 @@ public class DrawerMenu extends AbstractMenuElement {
         private void createMainMenuEvent(JButton button) {
             button.addActionListener(e -> {
                 menuShow = !menuShow;
-                new MenuAnimation(this).run(menuShow);
+                if (getMenuOpenMode() == MenuOption.MenuOpenMode.FULL) {
+                    new MenuAnimation(this).run(menuShow);
+                } else {
+
+                }
             });
         }
 
@@ -534,9 +545,9 @@ public class DrawerMenu extends AbstractMenuElement {
                             }
                             subMenuLocation[i - 1] = y;
                         }
-                        lineStyleRenderer.draw(g2, this, x, menuHeight, x, last, subMenuLocation, selectedIndex, ltr);
+                        lineStyleRenderer.draw(g2, this, x, menuHeight, x, last, subMenuLocation, selectedIndex, ltr, DrawerMenu.this);
                         // create arrow
-                        lineStyleRenderer.drawArrow(g2, this, width, menuHeight, menuLayout.getAnimate(), isHasMenuSelected(), ltr);
+                        lineStyleRenderer.drawArrow(g2, this, width, menuHeight, menuLayout.getAnimate(), isHasMenuSelected(), ltr, DrawerMenu.this);
                         g2.dispose();
                     }
                 }

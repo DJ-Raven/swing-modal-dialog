@@ -1,6 +1,7 @@
 package raven.modal.drawer.renderer;
 
 import com.formdev.flatlaf.util.UIScale;
+import raven.modal.drawer.menu.AbstractMenuElement;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,7 +37,7 @@ public class DrawerStraightDotLineStyle extends AbstractDrawerLineStyleRenderer 
     }
 
     @Override
-    public void draw(Graphics2D g2, JComponent component, int startX, int startY, int endX, int endY, int[] subMenuLocation, int selectedIndex, boolean isLeftToRight) {
+    public void draw(Graphics2D g2, JComponent component, int startX, int startY, int endX, int endY, int[] subMenuLocation, int selectedIndex, boolean isLeftToRight, AbstractMenuElement menuElement) {
         float dotSize = UIScale.scale(6f);
         float stroke = UIScale.scale(1f);
         float cut = UIScale.scale(2.5f);
