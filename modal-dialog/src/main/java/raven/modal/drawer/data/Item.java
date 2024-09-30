@@ -8,6 +8,10 @@ import java.util.List;
  */
 public class Item implements MenuItem {
 
+    public boolean isValidation() {
+        return validation;
+    }
+
     public int[] getIndex() {
         return index;
     }
@@ -33,6 +37,7 @@ public class Item implements MenuItem {
     private List<Item> subMenu;
     private Class<?> itemClass;
     private int[] index;
+    private boolean validation;
 
     public Item(String name) {
         this.name = name;
@@ -80,9 +85,10 @@ public class Item implements MenuItem {
         return subMenu != null;
     }
 
-    public void initIndexOnNull(int[] index) {
+    public void initIndexOnNull(int[] index, boolean validation) {
         if (this.index == null) {
             this.index = index;
+            this.validation = validation;
         }
     }
 

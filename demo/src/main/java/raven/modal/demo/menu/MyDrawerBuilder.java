@@ -15,10 +15,8 @@ import raven.modal.drawer.simple.SimpleDrawerBuilder;
 import raven.modal.drawer.simple.footer.SimpleFooterData;
 import raven.modal.drawer.simple.header.SimpleHeaderData;
 import raven.extras.AvatarIcon;
-import raven.modal.drawer.simple.header.SimpleHeaderStyle;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.Arrays;
 
 public class MyDrawerBuilder extends SimpleDrawerBuilder {

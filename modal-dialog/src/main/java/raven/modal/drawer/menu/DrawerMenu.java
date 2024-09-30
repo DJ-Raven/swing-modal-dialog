@@ -21,7 +21,7 @@ public class DrawerMenu extends AbstractMenuElement {
         return menuSelectedIndex == null ? null : copyArray(menuSelectedIndex);
     }
 
-    private void setMenuSelectedIndex(int[] menuSelectedIndex) {
+    protected void setMenuSelectedIndex(int[] menuSelectedIndex) {
         if (menuSelectedIndex == null) {
             this.menuSelectedIndex = null;
         } else {
@@ -106,7 +106,7 @@ public class DrawerMenu extends AbstractMenuElement {
                 if (menuItem.isMenu()) {
                     Item item = (Item) menuItem;
                     int[] arrIndex = {index};
-                    item.initIndexOnNull(arrIndex);
+
                     if (item.isSubmenuAble()) {
                         // create submenu
                         int[] arrValidationIndex = {++validationIndex};
@@ -117,6 +117,7 @@ public class DrawerMenu extends AbstractMenuElement {
                         if (validation || menuOption.menuValidation.keepMenuValidationIndex) {
                             index++;
                         }
+                        item.initIndexOnNull(arrIndex, validation);
                     } else {
                         // create single menu item
                         int[] arrValidationIndex = {++validationIndex};
@@ -129,6 +130,7 @@ public class DrawerMenu extends AbstractMenuElement {
                         if (validation || menuOption.menuValidation.keepMenuValidationIndex) {
                             index++;
                         }
+                        item.initIndexOnNull(arrIndex, validation);
                     }
                 } else {
                     // create label and separator
@@ -271,7 +273,7 @@ public class DrawerMenu extends AbstractMenuElement {
         });
     }
 
-    private boolean isMenuAutoSelection(boolean isMainMenu) {
+    protected boolean isMenuAutoSelection(boolean isMainMenu) {
         MenuOption.MenuItemAutoSelectionMode mode = menuOption.menuItemAutoSelectionMode;
         if (mode == null || mode == MenuOption.MenuItemAutoSelectionMode.NONE) {
             return false;
@@ -288,7 +290,7 @@ public class DrawerMenu extends AbstractMenuElement {
         return false;
     }
 
-    private MenuAction runEvent(Item menuItem, int[] index) {
+    protected MenuAction runEvent(Item menuItem, int[] index) {
         if (!menuOption.events.isEmpty()) {
             MenuAction action = new MenuAction(menuItem);
             for (MenuEvent event : menuOption.events) {
@@ -450,9 +452,9 @@ public class DrawerMenu extends AbstractMenuElement {
                 int[] arrIndex = createArrayIndex(this.index, index);
                 int[] arrValidationIndex = createArrayIndex(this.validationIndex, ++validationIndex);
                 boolean validation = menuOption.menuValidation.menuValidation(copyArray(arrValidationIndex));
+                Item item = menu.getSubMenu().get(i);
+                item.initIndexOnNull(arrIndex, validation);
                 if (validation) {
-                    Item item = menu.getSubMenu().get(i);
-                    item.initIndexOnNull(arrIndex);
                     if (item.isSubmenuAble()) {
                         add(createSubmenuItem(item, arrIndex, arrValidationIndex, nextMenuLevel));
                     } else {
@@ -480,11 +482,11 @@ public class DrawerMenu extends AbstractMenuElement {
 
         private void createMainMenuEvent(JButton button) {
             button.addActionListener(e -> {
-                menuShow = !menuShow;
                 if (getMenuOpenMode() == MenuOption.MenuOpenMode.FULL) {
+                    menuShow = !menuShow;
                     new MenuAnimation(this).run(menuShow);
                 } else {
-
+                    new PopupSubmenu(DrawerMenu.this, menu).show(this);
                 }
             });
         }
