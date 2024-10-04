@@ -85,6 +85,7 @@ public class DrawerMenu extends AbstractMenuElement {
         if (isRightToLeft) {
             super.applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         }
+        layoutOptionChanged(menuOpenMode);
     }
 
     private void init() {
@@ -196,7 +197,7 @@ public class DrawerMenu extends AbstractMenuElement {
         return Arrays.copyOf(arr, arr.length);
     }
 
-    private boolean isMenuSelected(int[] itemIndex) {
+    protected boolean isMenuSelected(int[] itemIndex) {
         if (menuSelectedIndex == null) {
             return false;
         }

@@ -1,9 +1,14 @@
 package raven.modal.drawer.menu;
 
+import com.formdev.flatlaf.ui.FlatUIUtils;
+import com.formdev.flatlaf.util.UIScale;
 import raven.modal.drawer.data.Item;
+import raven.modal.drawer.renderer.AbstractDrawerLineStyleRenderer;
 import raven.modal.utils.FlatLafStyleUtils;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import java.awt.*;
 
 /**
@@ -20,63 +25,62 @@ public class PopupSubmenu {
         this.item = item;
     }
 
-    private void init() {
+    private void init(boolean ltr) {
         if (popupMenu == null) {
             popupMenu = new JPopupMenu();
-            defaultStyledPopup(popupMenu);
+            popupMenu.setBorder(new CompoundBorder(new PopupBorder(popupMenu), popupMenu.getBorder()));
             for (Item i : item.getSubMenu()) {
                 if (i.isValidation()) {
                     if (i.isSubmenuAble()) {
-                        popupMenu.add(createMenu(i));
+                        popupMenu.add(createMenu(i, ltr));
                     } else {
-                        popupMenu.add(createMenuItem(i));
+                        popupMenu.add(createMenuItem(i, ltr));
                     }
                 }
             }
         }
     }
 
-    private JMenuItem createMenu(Item item) {
+    private JMenuItem createMenu(Item item, boolean ltr) {
         boolean isMainItem = true;
         Menu menu = new Menu(item, isMainItem);
         applyMenuEvent(menu, item, isMainItem);
-        defaultStyled(menu);
-        defaultStyledPopup(menu.getPopupMenu());
+        defaultStyled(menu, ltr);
         for (Item i : item.getSubMenu()) {
             if (i.isValidation()) {
                 if (i.isSubmenuAble()) {
-                    menu.add(createMenu(i));
+                    menu.add(createMenu(i, ltr));
                 } else {
-                    menu.add(createMenuItem(i));
+                    menu.add(createMenuItem(i, ltr));
                 }
             }
         }
         return menu;
     }
 
-    private JMenuItem createMenuItem(Item item) {
+    private JMenuItem createMenuItem(Item item, boolean ltr) {
         boolean isMainItem = false;
         MenuItem menuItem = new MenuItem(item, isMainItem);
         applyMenuEvent(menuItem, item, isMainItem);
-        defaultStyled(menuItem);
+        defaultStyled(menuItem, ltr);
         return menuItem;
     }
 
-    private void defaultStyled(JMenuItem menuItem) {
+    private void defaultStyled(JMenuItem menuItem, boolean ltr) {
+        String insets = ltr ? "0,25,0,5" : "0,5,0,25";
         FlatLafStyleUtils.appendStyleIfAbsent(menuItem, "" +
-                "selectionInsets:0,5,0,5;" +
-                "margin:5,5,5,10;" +
+                "selectionInsets:" + insets + ";" +
+                "margin:5,10,5,10;" +
                 "selectionArc:10;" +
-                "minimumWidth:150;");
-    }
-
-    public void defaultStyledPopup(JPopupMenu popupMenu) {
-        FlatLafStyleUtils.appendStyleIfAbsent(popupMenu, "" +
-                "borderInsets:5,0,5,0;");
+                "minimumWidth:170;");
     }
 
     public void show(Component com) {
-        init();
+        boolean ltr = com.getComponentOrientation().isLeftToRight();
+        init(ltr);
+        if (popupMenu.getComponentOrientation().isLeftToRight() != ltr) {
+            popupMenu.applyComponentOrientation(com.getComponentOrientation());
+        }
         popupMenu.show(com, com.getWidth(), 0);
     }
 
@@ -93,7 +97,68 @@ public class PopupSubmenu {
         });
     }
 
-    private class MenuItem extends JMenuItem {
+    private class PopupBorder implements Border {
+
+        private final JPopupMenu popupMenu;
+
+        public PopupBorder(JPopupMenu popupMenu) {
+            this.popupMenu = popupMenu;
+        }
+
+        @Override
+        public void paintBorder(Component c, Graphics g, int lx, int ly, int width, int height) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            FlatUIUtils.setRenderingHints(g2);
+            if (drawerMenu.getMenuOption() != null && drawerMenu.getMenuOption().menuStyle != null) {
+                AbstractDrawerLineStyleRenderer lineStyleRenderer = drawerMenu.getMenuOption().menuStyle.getDrawerLineStyleRenderer();
+                if (lineStyleRenderer != null) {
+                    boolean ltr = popupMenu.getComponentOrientation().isLeftToRight();
+                    int menuHeight = 0;
+                    int last = getLastLocation();
+                    int gap = UIScale.scale(13);
+                    int x = ltr ? gap : width - gap;
+                    int count = popupMenu.getComponentCount();
+                    int subMenuLocation[] = new int[count];
+                    int selectedIndex = -1;
+                    for (int i = 0; i < count; i++) {
+                        Component com = popupMenu.getComponent(i);
+                        int y;
+                        if (com instanceof MainItem) {
+                            if (((MainItem) com).isItemSelected()) {
+                                selectedIndex = i;
+                            }
+                        }
+                        y = com.getY() + (com.getHeight() / 2);
+                        subMenuLocation[i] = y;
+                    }
+                    lineStyleRenderer.draw(g2, popupMenu, x, menuHeight, x, last, subMenuLocation, selectedIndex, ltr, null);
+                }
+            }
+            g2.dispose();
+        }
+
+        private int getLastLocation() {
+            Component com = popupMenu.getComponent(popupMenu.getComponentCount() - 1);
+            return com.getY() + com.getHeight() / 2;
+        }
+
+        @Override
+        public Insets getBorderInsets(Component c) {
+            return new Insets(0, 0, 0, 0);
+        }
+
+        @Override
+        public boolean isBorderOpaque() {
+            return true;
+        }
+    }
+
+    private interface MainItem {
+
+        boolean isItemSelected();
+    }
+
+    private class MenuItem extends JMenuItem implements MainItem {
 
         public Item getItem() {
             return item;
@@ -111,9 +176,15 @@ public class PopupSubmenu {
             this.item = item;
             this.isMainItem = isMainItem;
         }
+
+        @Override
+        public boolean isItemSelected() {
+            return drawerMenu.isMenuSelected(item.getIndex());
+        }
     }
 
-    protected class Menu extends JMenu {
+    protected class Menu extends JMenu implements MainItem {
+
         public Item getItem() {
             return item;
         }
@@ -129,6 +200,20 @@ public class PopupSubmenu {
             super(item.getName());
             this.item = item;
             this.isMainItem = isMainItem;
+        }
+
+        @Override
+        public JPopupMenu getPopupMenu() {
+            JPopupMenu jPopupMenu = super.getPopupMenu();
+            if (!(jPopupMenu.getBorder() instanceof CompoundBorder)) {
+                jPopupMenu.setBorder(new CompoundBorder(new PopupBorder(jPopupMenu), jPopupMenu.getBorder()));
+            }
+            return jPopupMenu;
+        }
+
+        @Override
+        public boolean isItemSelected() {
+            return drawerMenu.isMenuSelected(item.getIndex());
         }
     }
 }
