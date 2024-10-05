@@ -2,8 +2,10 @@ package raven.modal.drawer;
 
 import com.formdev.flatlaf.util.UIScale;
 import raven.modal.component.ModalContainer;
+import raven.modal.drawer.menu.MenuOption;
+import raven.modal.drawer.simple.SimpleDrawerBuilder;
+import raven.modal.drawer.simple.SimpleDrawerLayoutOption;
 import raven.modal.layout.OptionLayoutUtils;
-import raven.modal.utils.DynamicSize;
 
 import java.awt.*;
 
@@ -55,7 +57,7 @@ public class DrawerLayoutResponsive {
     public boolean check(Container container, int width) {
         DrawerBuilder drawerBuilder = drawerPanel.getDrawerBuilder();
         int drawerOpenAt = drawerBuilder.getOpenDrawerAt();
-        boolean isOpen = width <= (drawerBuilder.openDrawerAtScale() ? UIScale.scale(drawerOpenAt) : drawerOpenAt);
+        boolean isOpen = width <= (drawerBuilder.openDrawerAtScale() ? UIScale.scale(drawerOpenAt) : drawerOpenAt) || isUnsupportedCompactMenu(drawerBuilder);
         if (isOpen != opened) {
             // change layout
             if (isOpen) {
@@ -85,6 +87,17 @@ public class DrawerLayoutResponsive {
         return opened;
     }
 
+    private boolean isUnsupportedCompactMenu(DrawerBuilder drawerBuilder) {
+        if (drawerBuilder instanceof SimpleDrawerBuilder) {
+            if (((SimpleDrawerBuilder) drawerBuilder).getSimpleMenuOption().getMenuOpenMode() == MenuOption.MenuOpenMode.COMPACT) {
+                if (isHorizontalDrawer() == false) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private void drawerOpenChanged(boolean isOpen) {
         drawerPanel.getDrawerBuilder().drawerOpenChanged(isOpen);
     }
@@ -94,8 +107,9 @@ public class DrawerLayoutResponsive {
     }
 
     public boolean isHorizontalDrawer() {
-        DynamicSize size = drawerPanel.getDrawerBuilder().getOption().getLayoutOption().getSize();
-        return size.getY().floatValue() == 1f;
+        SimpleDrawerLayoutOption layoutOption = (SimpleDrawerLayoutOption) drawerPanel.getDrawerBuilder().getOption().getLayoutOption();
+        boolean isHorizontal = layoutOption.getFullSize().getY().floatValue() == 1f;
+        return isHorizontal;
     }
 
     public void revalidateDrawer() {

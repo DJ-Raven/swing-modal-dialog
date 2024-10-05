@@ -33,4 +33,8 @@ public class SimpleDrawerLayoutOption extends LayoutOption {
         }
         return super.getSize();
     }
+
+    public DynamicSize getFullSize() {
+        return super.getSize();
+    }
 }
