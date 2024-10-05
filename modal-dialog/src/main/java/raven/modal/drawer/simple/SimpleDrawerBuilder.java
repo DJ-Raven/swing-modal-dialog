@@ -130,6 +130,10 @@ public abstract class SimpleDrawerBuilder implements DrawerBuilder {
         footer.setMenuOpenMode(menuOpenMode);
     }
 
+    public void drawerOpenChanged() {
+        drawerOpenChanged(isOpen);
+    }
+
     public void build(DrawerPanel drawerPanel) {
     }
 

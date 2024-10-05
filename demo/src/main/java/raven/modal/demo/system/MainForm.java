@@ -33,7 +33,7 @@ public class MainForm extends JPanel {
             if (Drawer.isOpen()) {
                 Drawer.showDrawer();
             } else {
-                Drawer.setVisible(!Drawer.isVisible());
+                Drawer.toggleMenuOpenMode();
             }
         });
         buttonUndo.addActionListener(e -> FormManager.undo());

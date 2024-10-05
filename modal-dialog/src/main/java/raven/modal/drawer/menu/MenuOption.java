@@ -95,6 +95,14 @@ public class MenuOption {
     }
 
     public enum MenuOpenMode {
-        FULL, COMPACT
+        FULL, COMPACT;
+
+        public MenuOpenMode toggle() {
+            if (this == FULL) {
+                return COMPACT;
+            } else {
+                return FULL;
+            }
+        }
     }
 }
