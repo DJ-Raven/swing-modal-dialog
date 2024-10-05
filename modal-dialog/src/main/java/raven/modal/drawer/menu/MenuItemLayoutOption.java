@@ -11,7 +11,7 @@ public class MenuItemLayoutOption {
         if (menuOpenMode == MenuOption.MenuOpenMode.FULL) {
             return new MenuItemLayoutOption()
                     .setMenuHorizontalMargin(new Point(5, 5))
-                    .setLabelMargin(new Insets(8, 10, 8, 10))
+                    .setLabelMargin(new Insets(8, 25, 8, 25))
                     .setSeparatorMargin(new Insets(0, 10, 0, 10));
         } else {
             return new MenuItemLayoutOption()

@@ -113,7 +113,7 @@ public class DrawerMenu extends AbstractMenuElement {
                         int[] arrValidationIndex = {++validationIndex};
                         boolean validation = menuOption.menuValidation.menuValidation(copyArray(arrValidationIndex));
                         if (validation) {
-                            add(createSubmenuItem(item, arrIndex, arrValidationIndex, 0));
+                            add(createSubmenuItem(item, arrIndex, arrValidationIndex, 0, 0));
                         }
                         if (validation || menuOption.menuValidation.keepMenuValidationIndex) {
                             index++;
@@ -256,7 +256,7 @@ public class DrawerMenu extends AbstractMenuElement {
                 "focusWidth:0;" +
                 "innerFocusWidth:0;" +
                 "background:null;" +
-                "iconTextGap:5;");
+                "iconTextGap:10;");
         return button;
     }
 
@@ -302,8 +302,8 @@ public class DrawerMenu extends AbstractMenuElement {
         return null;
     }
 
-    protected Component createSubmenuItem(Item menu, int[] index, int[] validationIndex, int menuLevel) {
-        JPanel panelItem = new SubMenuItem(menu, index, validationIndex, menuLevel);
+    protected Component createSubmenuItem(Item menu, int[] index, int[] validationIndex, int menuLevel, int iconTextGap) {
+        JPanel panelItem = new SubMenuItem(menu, index, validationIndex, menuLevel, iconTextGap);
         return panelItem;
     }
 
@@ -399,7 +399,9 @@ public class DrawerMenu extends AbstractMenuElement {
     protected class SubMenuItem extends JPanel {
 
         private int menuLevel;
-        private int levelSpace = 18;
+        private int iconTextGap;
+        private int levelSpace = 13;
+        private int submenuSpace = 5;
         private SubmenuLayout menuLayout;
         private boolean menuShow;
         private final Item menu;
@@ -411,11 +413,12 @@ public class DrawerMenu extends AbstractMenuElement {
             menuLayout.setAnimate(animate);
         }
 
-        public SubMenuItem(Item menu, int[] index, int[] validationIndex, int menuLevel) {
+        public SubMenuItem(Item menu, int[] index, int[] validationIndex, int menuLevel, int iconTextGap) {
             this.menu = menu;
             this.index = index;
             this.validationIndex = validationIndex;
             this.menuLevel = menuLevel;
+            this.iconTextGap = iconTextGap;
             init();
         }
 
@@ -434,14 +437,21 @@ public class DrawerMenu extends AbstractMenuElement {
             int index = 0;
             int validationIndex = -1;
             int nextMenuLevel = menuLevel + 1;
+
             // create menu item
             ButtonItem mainButton;
             if (menuLevel == 0) {
                 // create first level menu item
                 mainButton = createMenuItem(menu, this.index, menuLevel, true);
+                if (mainButton.getIcon() != null) {
+                    iconTextGap = UIScale.unscale(mainButton.getIconTextGap());
+                }
+                levelSpace += iconTextGap;
             } else {
+                levelSpace += iconTextGap;
                 int addSpace = menuLevel > 1 ? (menuLevel - 1) * levelSpace : 0;
-                mainButton = createSubMenuItem(menu, this.index, iconWidth + addSpace, true);
+                int gap = iconWidth + addSpace + iconTextGap;
+                mainButton = createSubMenuItem(menu, this.index, gap, true);
             }
             if (mainButton.getIcon() != null) {
                 iconWidth = UIScale.unscale(mainButton.getIcon().getIconWidth());
@@ -457,11 +467,12 @@ public class DrawerMenu extends AbstractMenuElement {
                 item.initIndexOnNull(arrIndex, validation);
                 if (validation) {
                     if (item.isSubmenuAble()) {
-                        add(createSubmenuItem(item, arrIndex, arrValidationIndex, nextMenuLevel));
+                        add(createSubmenuItem(item, arrIndex, arrValidationIndex, nextMenuLevel, iconTextGap));
                     } else {
                         // create single menu item
                         int addSpace = menuLevel * levelSpace;
-                        ButtonItem button = createSubMenuItem(item, arrIndex, iconWidth + addSpace, false);
+                        int gap = iconWidth + addSpace + iconTextGap;
+                        ButtonItem button = createSubMenuItem(item, arrIndex, gap, false);
                         applyMenuEvent(button, arrIndex);
                         add(button);
                     }
@@ -499,7 +510,7 @@ public class DrawerMenu extends AbstractMenuElement {
                 menuOption.menuStyle.styleMenuItem(button, copyArray(index), isMainItem);
             }
             boolean isRightToLeft = !DrawerMenu.this.getComponentOrientation().isLeftToRight();
-            String margin = isRightToLeft ? ("7,30,7," + (gap + 25)) : ("7," + (gap + 25) + ",7,30");
+            String margin = isRightToLeft ? ("7,30,7," + (gap + 20)) : ("7," + (gap + 20) + ",7,30");
             FlatLafStyleUtils.appendStyleIfAbsent(button, "" +
                     "arc:0;" +
                     "margin:" + margin + ";" +
@@ -525,7 +536,7 @@ public class DrawerMenu extends AbstractMenuElement {
 
                         // create submenu line
                         int last = getLastLocation();
-                        int gap = UIScale.scale((20 + (iconWidth / 2)) + (levelSpace * menuLevel));
+                        int gap = UIScale.scale((20 + (iconWidth / 2)) + ((levelSpace + submenuSpace - 5) * menuLevel));
                         int x = ltr ? gap : width - gap;
                         int count = getComponentCount();
                         int subMenuLocation[] = new int[count - 1];

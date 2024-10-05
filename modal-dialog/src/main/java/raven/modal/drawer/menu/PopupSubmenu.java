@@ -94,13 +94,13 @@ public class PopupSubmenu {
         if (popupMenu.getComponentOrientation().isLeftToRight() != ltr) {
             popupMenu.applyComponentOrientation(subMenuItem.getComponentOrientation());
         }
-        int gap = UIScale.scale(ltr ? 13 : 12);
+
         int x;
         int y = com.getHeight() + UIScale.scale(5);
         if (ltr) {
-            x = com.getWidth() / 2 - gap;
+            x = com.getWidth();
         } else {
-            x = -popupMenu.getPreferredSize().width + (com.getWidth() / 2 + gap);
+            x = -popupMenu.getPreferredSize().width;
         }
         popupMenu.show(com, x, y);
     }
