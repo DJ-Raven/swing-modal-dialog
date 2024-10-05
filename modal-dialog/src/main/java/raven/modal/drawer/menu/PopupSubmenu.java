@@ -1,5 +1,6 @@
 package raven.modal.drawer.menu;
 
+import com.formdev.flatlaf.ui.FlatPopupMenuBorder;
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.UIScale;
 import raven.modal.drawer.data.Item;
@@ -28,7 +29,7 @@ public class PopupSubmenu {
     private void init(boolean ltr) {
         if (popupMenu == null) {
             popupMenu = new JPopupMenu();
-            popupMenu.setBorder(new CompoundBorder(new PopupBorder(popupMenu), popupMenu.getBorder()));
+            applyBorder(popupMenu);
             for (Item i : item.getSubMenu()) {
                 if (i.isValidation()) {
                     if (i.isSubmenuAble()) {
@@ -73,6 +74,16 @@ public class PopupSubmenu {
                 "margin:5,10,5,10;" +
                 "selectionArc:10;" +
                 "minimumWidth:170;");
+    }
+
+    private void applyBorder(JPopupMenu popupMenu) {
+        if (!(popupMenu.getBorder() instanceof CompoundBorder)) {
+            if (popupMenu.getBorder() instanceof FlatPopupMenuBorder) {
+                FlatPopupMenuBorder flatPopupMenuBorder = (FlatPopupMenuBorder) popupMenu.getBorder();
+                flatPopupMenuBorder.applyStyleProperty(new Insets(6, 1, 6, 1));
+            }
+            popupMenu.setBorder(new CompoundBorder(new PopupBorder(popupMenu), popupMenu.getBorder()));
+        }
     }
 
     public void show(Component com) {
@@ -205,9 +216,7 @@ public class PopupSubmenu {
         @Override
         public JPopupMenu getPopupMenu() {
             JPopupMenu jPopupMenu = super.getPopupMenu();
-            if (!(jPopupMenu.getBorder() instanceof CompoundBorder)) {
-                jPopupMenu.setBorder(new CompoundBorder(new PopupBorder(jPopupMenu), jPopupMenu.getBorder()));
-            }
+            applyBorder(jPopupMenu);
             return jPopupMenu;
         }
 
