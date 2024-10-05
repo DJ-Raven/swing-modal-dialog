@@ -21,7 +21,9 @@ import java.util.Arrays;
 
 public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
-    private MenuOption menuOption;
+    public MyDrawerBuilder() {
+        super(createSimpleMenuOption());
+    }
 
     @Override
     public SimpleHeaderData getSimpleHeaderData() {
@@ -54,113 +56,112 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 .setDescription("Version " + Demo.DEMO_VERSION);
     }
 
-    @Override
-    public MenuOption getSimpleMenuOption() {
-        if (menuOption == null) {
-            MenuItem items[] = new MenuItem[]{
-                    new Item.Label("MAIN"),
-                    new Item("Dashboard", "dashboard.svg", FormDashboard.class),
-                    new Item.Label("SWING UI"),
-                    new Item("Forms", "forms.svg")
-                            .subMenu("Input", FormInput.class)
-                            .subMenu("Table", FormTable.class)
-                            .subMenu("Responsive Layout", FormResponsiveLayout.class),
-                    new Item("Components", "components.svg")
-                            .subMenu("Modal", FormModal.class)
-                            .subMenu("Toast", FormToast.class)
-                            .subMenu("Date Time", FormDateTime.class)
-                            .subMenu("Avatar Icon", FormAvatarIcon.class),
-                    new Item("Email", "email.svg")
-                            .subMenu("Inbox")
-                            .subMenu(
-                                    new Item("Group Read")
-                                            .subMenu("Read 1")
-                                            .subMenu("Read 2")
-                                            .subMenu(
-                                                    new Item("Group Item")
-                                                            .subMenu("Item 1")
-                                                            .subMenu("Item 2")
-                                                            .subMenu("Item 3")
-                                                            .subMenu("Item 4")
-                                                            .subMenu("Item 5")
-                                                            .subMenu("Item 6")
-                                            )
-                                            .subMenu("Read 3")
-                                            .subMenu("Read 4")
-                                            .subMenu("Read 5")
-                            )
-                            .subMenu("Compost"),
-                    new Item("Chat", "chat.svg"),
-                    new Item("Calendar", "calendar.svg"),
-                    new Item.Label("OTHER"),
-                    new Item("Plugin", "plugin.svg")
-                            .subMenu("Plugin 1")
-                            .subMenu("Plugin 2")
-                            .subMenu("Plugin 3"),
-                    new Item.Separator(),
-                    new Item("Setting", "setting.svg", FormSetting.class),
-                    new Item("About", "about.svg"),
-                    new Item("Logout", "logout.svg")
-            };
 
-            MenuOption simpleMenuOption = new MenuOption();
+    public static MenuOption createSimpleMenuOption() {
 
-            simpleMenuOption.setMenuStyle(new MenuStyle() {
+        // create simple menu option
+        MenuOption simpleMenuOption = new MenuOption();
 
-                @Override
-                public void styleMenu(JComponent component) {
-                    component.putClientProperty(FlatClientProperties.STYLE, "" +
-                            "background:$Drawer.background");
+        MenuItem items[] = new MenuItem[]{
+                new Item.Label("MAIN"),
+                new Item("Dashboard", "dashboard.svg", FormDashboard.class),
+                new Item.Label("SWING UI"),
+                new Item("Forms", "forms.svg")
+                        .subMenu("Input", FormInput.class)
+                        .subMenu("Table", FormTable.class)
+                        .subMenu("Responsive Layout", FormResponsiveLayout.class),
+                new Item("Components", "components.svg")
+                        .subMenu("Modal", FormModal.class)
+                        .subMenu("Toast", FormToast.class)
+                        .subMenu("Date Time", FormDateTime.class)
+                        .subMenu("Avatar Icon", FormAvatarIcon.class),
+                new Item("Email", "email.svg")
+                        .subMenu("Inbox")
+                        .subMenu(
+                                new Item("Group Read")
+                                        .subMenu("Read 1")
+                                        .subMenu("Read 2")
+                                        .subMenu(
+                                                new Item("Group Item")
+                                                        .subMenu("Item 1")
+                                                        .subMenu("Item 2")
+                                                        .subMenu("Item 3")
+                                                        .subMenu("Item 4")
+                                                        .subMenu("Item 5")
+                                                        .subMenu("Item 6")
+                                        )
+                                        .subMenu("Read 3")
+                                        .subMenu("Read 4")
+                                        .subMenu("Read 5")
+                        )
+                        .subMenu("Compost"),
+                new Item("Chat", "chat.svg"),
+                new Item("Calendar", "calendar.svg"),
+                new Item.Label("OTHER"),
+                new Item("Plugin", "plugin.svg")
+                        .subMenu("Plugin 1")
+                        .subMenu("Plugin 2")
+                        .subMenu("Plugin 3"),
+                new Item.Separator(),
+                new Item("Setting", "setting.svg", FormSetting.class),
+                new Item("About", "about.svg"),
+                new Item("Logout", "logout.svg")
+        };
+
+        simpleMenuOption.setMenuStyle(new MenuStyle() {
+
+            @Override
+            public void styleMenu(JComponent component) {
+                component.putClientProperty(FlatClientProperties.STYLE, "" +
+                        "background:$Drawer.background");
+            }
+
+            @Override
+            public void styleMenuItem(JButton menu, int[] index, boolean isMainItem) {
+                if (isMainItem) {
+                    menu.putClientProperty(FlatClientProperties.STYLE, "" +
+                            "selectedForeground:$Component.accentColor;" +
+                            "selectedBackground:null;" +
+                            "arc:15;");
+                } else {
+                    menu.putClientProperty(FlatClientProperties.STYLE, "" +
+                            "arc:15;");
                 }
+            }
+        });
 
-                @Override
-                public void styleMenuItem(JButton menu, int[] index, boolean isMainItem) {
-                    if (isMainItem) {
-                        menu.putClientProperty(FlatClientProperties.STYLE, "" +
-                                "selectedForeground:$Component.accentColor;" +
-                                "selectedBackground:null;" +
-                                "arc:15;");
-                    } else {
-                        menu.putClientProperty(FlatClientProperties.STYLE, "" +
-                                "arc:15;");
-                    }
+        simpleMenuOption.setMenuOpenMode(MenuOption.MenuOpenMode.COMPACT);
+        simpleMenuOption.getMenuStyle().setDrawerLineStyleRenderer(new DrawerStraightDotLineStyle());
+        simpleMenuOption.setMenuItemAutoSelectionMode(MenuOption.MenuItemAutoSelectionMode.SELECT_SUB_MENU_LEVEL);
+        simpleMenuOption.addMenuEvent(new MenuEvent() {
+            @Override
+            public void selected(MenuAction action, int[] index) {
+                System.out.println("Drawer menu selected " + Arrays.toString(index));
+                Class<?> itemClass = action.getItem().getItemClass();
+                int i = index[0];
+                if (i == 8) {
+                    action.consume();
+                    FormManager.showAbout();
+                    return;
+                } else if (i == 9) {
+                    action.consume();
+                    FormManager.logout();
+                    return;
                 }
-            });
-
-            simpleMenuOption.setMenuOpenMode(MenuOption.MenuOpenMode.COMPACT);
-            simpleMenuOption.getMenuStyle().setDrawerLineStyleRenderer(new DrawerStraightDotLineStyle());
-            simpleMenuOption.setMenuItemAutoSelectionMode(MenuOption.MenuItemAutoSelectionMode.SELECT_SUB_MENU_LEVEL);
-            simpleMenuOption.addMenuEvent(new MenuEvent() {
-                @Override
-                public void selected(MenuAction action, int[] index) {
-                    System.out.println("Drawer menu selected " + Arrays.toString(index));
-                    Class<?> itemClass = action.getItem().getItemClass();
-                    int i = index[0];
-                    if (i == 8) {
-                        action.consume();
-                        FormManager.showAbout();
-                        return;
-                    } else if (i == 9) {
-                        action.consume();
-                        FormManager.logout();
-                        return;
-                    }
-                    if (itemClass == null || !Form.class.isAssignableFrom(itemClass)) {
-                        action.consume();
-                        return;
-                    }
-                    Class<? extends Form> formClass = (Class<? extends Form>) itemClass;
-                    FormManager.showForm(AllForms.getForm(formClass));
+                if (itemClass == null || !Form.class.isAssignableFrom(itemClass)) {
+                    action.consume();
+                    return;
                 }
-            });
+                Class<? extends Form> formClass = (Class<? extends Form>) itemClass;
+                FormManager.showForm(AllForms.getForm(formClass));
+            }
+        });
 
-            simpleMenuOption.setMenus(items)
-                    .setBaseIconPath("raven/modal/demo/drawer/icon")
-                    .setIconScale(0.45f);
+        simpleMenuOption.setMenus(items)
+                .setBaseIconPath("raven/modal/demo/drawer/icon")
+                .setIconScale(0.45f);
 
-            menuOption = simpleMenuOption;
-        }
-        return menuOption;
+        return simpleMenuOption;
     }
 
     @Override

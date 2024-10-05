@@ -13,7 +13,7 @@ public abstract class AbstractMenuElement extends JPanel {
         return menuOpenMode;
     }
 
-    protected MenuOption.MenuOpenMode menuOpenMode;
+    protected MenuOption.MenuOpenMode menuOpenMode = MenuOption.MenuOpenMode.FULL;
 
     public void setMenuOpenMode(MenuOption.MenuOpenMode menuOpenMode) {
         if (this.menuOpenMode != menuOpenMode) {

@@ -23,6 +23,7 @@ import java.awt.*;
  */
 public abstract class SimpleDrawerBuilder implements DrawerBuilder {
 
+    protected final MenuOption menuOption;
     protected AbstractMenuElement header;
     protected JSeparator headerSeparator;
     protected JScrollPane menuScroll;
@@ -31,7 +32,8 @@ public abstract class SimpleDrawerBuilder implements DrawerBuilder {
     protected Option option;
     protected boolean isOpen;
 
-    public SimpleDrawerBuilder() {
+    public SimpleDrawerBuilder(MenuOption menuOption) {
+        this.menuOption = menuOption;
         init();
     }
 
@@ -160,7 +162,9 @@ public abstract class SimpleDrawerBuilder implements DrawerBuilder {
         }
     }
 
-    public abstract MenuOption getSimpleMenuOption();
+    public final MenuOption getSimpleMenuOption() {
+        return menuOption;
+    }
 
     public abstract SimpleHeaderData getSimpleHeaderData();
 
