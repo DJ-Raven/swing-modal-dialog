@@ -18,11 +18,13 @@ import java.awt.*;
 public class PopupSubmenu {
 
     private JPopupMenu popupMenu;
+    private DrawerMenu.SubMenuItem subMenuItem;
     private final DrawerMenu drawerMenu;
     private final Item item;
 
-    public PopupSubmenu(DrawerMenu drawerMenu, Item item) {
+    public PopupSubmenu(DrawerMenu drawerMenu, DrawerMenu.SubMenuItem subMenuItem, Item item) {
         this.drawerMenu = drawerMenu;
+        this.subMenuItem = subMenuItem;
         this.item = item;
     }
 
@@ -87,12 +89,20 @@ public class PopupSubmenu {
     }
 
     public void show(Component com) {
-        boolean ltr = com.getComponentOrientation().isLeftToRight();
+        boolean ltr = subMenuItem.getComponentOrientation().isLeftToRight();
         init(ltr);
         if (popupMenu.getComponentOrientation().isLeftToRight() != ltr) {
-            popupMenu.applyComponentOrientation(com.getComponentOrientation());
+            popupMenu.applyComponentOrientation(subMenuItem.getComponentOrientation());
         }
-        popupMenu.show(com, com.getWidth(), 0);
+        int gap = UIScale.scale(ltr ? 13 : 12);
+        int x;
+        int y = com.getHeight() + UIScale.scale(5);
+        if (ltr) {
+            x = com.getWidth() / 2 - gap;
+        } else {
+            x = -popupMenu.getPreferredSize().width + (com.getWidth() / 2 + gap);
+        }
+        popupMenu.show(com, x, y);
     }
 
     protected void applyMenuEvent(JMenuItem menuItem, Item item, boolean isMainItem) {
@@ -124,9 +134,9 @@ public class PopupSubmenu {
                 AbstractDrawerLineStyleRenderer lineStyleRenderer = drawerMenu.getMenuOption().menuStyle.getDrawerLineStyleRenderer();
                 if (lineStyleRenderer != null) {
                     boolean ltr = popupMenu.getComponentOrientation().isLeftToRight();
-                    int menuHeight = 0;
+                    int menuHeight = UIScale.scale(6);
                     int last = getLastLocation();
-                    int gap = UIScale.scale(13);
+                    int gap = UIScale.scale(12);
                     int x = ltr ? gap : width - gap;
                     int count = popupMenu.getComponentCount();
                     int subMenuLocation[] = new int[count];

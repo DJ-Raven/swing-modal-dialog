@@ -487,7 +487,7 @@ public class DrawerMenu extends AbstractMenuElement {
                     menuShow = !menuShow;
                     new MenuAnimation(this).run(menuShow);
                 } else {
-                    new PopupSubmenu(DrawerMenu.this, menu).show(this);
+                    new PopupSubmenu(DrawerMenu.this, this, menu).show(button);
                 }
             });
         }
