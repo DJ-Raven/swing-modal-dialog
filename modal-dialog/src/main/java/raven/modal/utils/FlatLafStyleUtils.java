@@ -23,6 +23,12 @@ public class FlatLafStyleUtils {
         component.putClientProperty(FlatClientProperties.STYLE, styles);
     }
 
+    public static void appendStyle(JComponent component, String style) {
+        String oldStyle = FlatClientProperties.clientProperty(component, FlatClientProperties.STYLE, null, String.class);
+        String styles = FlatLafStyleUtils.appendStyle(oldStyle, style);
+        component.putClientProperty(FlatClientProperties.STYLE, styles);
+    }
+
     public static String appendStyle(String oldStyle, String newStyle) {
         Map<String, String> oldStyleMap = styleToMap(oldStyle);
         Map<String, String> newStyleMap = styleToMap(newStyle);
