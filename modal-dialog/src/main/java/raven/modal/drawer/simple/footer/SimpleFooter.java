@@ -12,26 +12,40 @@ import javax.swing.*;
  */
 public class SimpleFooter extends AbstractMenuElement {
 
+    public static final int LABEL_TITLE_STYLE = 0;
+    public static final int LABEL_DESCRIPTION_STYLE = 1;
+
     private SimpleFooterData simpleFooterData;
+
+    protected MigLayout layout;
 
     public SimpleFooter(SimpleFooterData simpleFooterData) {
         this.simpleFooterData = simpleFooterData;
-        init();
+        initDefault();
+        initComponent();
     }
 
-    private void init() {
-        setLayout(new MigLayout("hidemode 3,wrap,insets 5 20 10 20,fill,gap 3"));
+    protected void initDefault() {
+        if (simpleFooterData.getSimpleFooterStyle() != null) {
+            simpleFooterData.getSimpleFooterStyle().styleFooter(this);
+        }
+
+        FlatLafStyleUtils.appendStyleIfAbsent(this, "" +
+                "background:null;");
+    }
+
+    protected void initComponent() {
+        layout = new MigLayout("hidemode 3,wrap,insets 5 20 10 20,fill,gap 3");
+        setLayout(layout);
+
         labelTitle = new JLabel(simpleFooterData.getTitle());
         labelDescription = new JLabel(simpleFooterData.getDescription());
 
         if (simpleFooterData.getSimpleFooterStyle() != null) {
-            simpleFooterData.getSimpleFooterStyle().styleFooter(this);
-            simpleFooterData.getSimpleFooterStyle().styleTitle(labelTitle);
-            simpleFooterData.getSimpleFooterStyle().styleDescription(labelDescription);
+            simpleFooterData.getSimpleFooterStyle().styleComponent(labelTitle, LABEL_TITLE_STYLE);
+            simpleFooterData.getSimpleFooterStyle().styleComponent(labelDescription, LABEL_DESCRIPTION_STYLE);
         }
 
-        FlatLafStyleUtils.appendStyleIfAbsent(this, "" +
-                "background:null");
         FlatLafStyleUtils.appendStyleIfAbsent(labelDescription, "" +
                 "font:-1;" +
                 "foreground:$Label.disabledForeground;");
@@ -46,12 +60,17 @@ public class SimpleFooter extends AbstractMenuElement {
 
     public void setSimpleFooterData(SimpleFooterData simpleFooterData) {
         this.simpleFooterData = simpleFooterData;
-        labelTitle.setText(simpleFooterData.getTitle());
-        labelDescription.setText(simpleFooterData.getDescription());
+
+        if (labelTitle != null)
+            labelTitle.setText(simpleFooterData.getTitle());
+        if (labelDescription != null)
+            labelDescription.setText(simpleFooterData.getDescription());
     }
 
     @Override
-    public void layoutOptionChanged(MenuOption.MenuOpenMode menuOpenMode) {
+    protected void layoutOptionChanged(MenuOption.MenuOpenMode menuOpenMode) {
+        if (labelTitle == null || labelDescription == null) return;
+
         if (menuOpenMode == MenuOption.MenuOpenMode.FULL) {
             labelTitle.setVisible(true);
             labelDescription.setVisible(true);
@@ -61,6 +80,6 @@ public class SimpleFooter extends AbstractMenuElement {
         }
     }
 
-    private JLabel labelTitle;
-    private JLabel labelDescription;
+    protected JLabel labelTitle;
+    protected JLabel labelDescription;
 }
