@@ -149,7 +149,7 @@ public class DrawerMenu extends AbstractMenuElement {
     }
 
     @Override
-    public void layoutOptionChanged(MenuOption.MenuOpenMode menuOpenMode) {
+    protected void layoutOptionChanged(MenuOption.MenuOpenMode menuOpenMode) {
         boolean isFull = menuOpenMode == MenuOption.MenuOpenMode.FULL;
         for (Component com : getComponents()) {
             ButtonItem item = getButtonItem(com);
