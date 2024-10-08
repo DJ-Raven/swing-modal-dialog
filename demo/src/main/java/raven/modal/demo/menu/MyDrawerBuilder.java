@@ -12,6 +12,7 @@ import raven.modal.drawer.data.MenuItem;
 import raven.modal.drawer.menu.*;
 import raven.modal.drawer.renderer.DrawerStraightDotLineStyle;
 import raven.modal.drawer.simple.SimpleDrawerBuilder;
+import raven.modal.drawer.simple.footer.LightDarkButtonFooter;
 import raven.modal.drawer.simple.footer.SimpleFooterData;
 import raven.modal.drawer.simple.header.SimpleHeaderData;
 import raven.extras.AvatarIcon;
@@ -23,6 +24,10 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
     public MyDrawerBuilder() {
         super(createSimpleMenuOption());
+        LightDarkButtonFooter lightDarkButtonFooter = (LightDarkButtonFooter) footer;
+        lightDarkButtonFooter.addModeChangeListener(isDarkMode -> {
+            System.out.println("laf changed");
+        });
     }
 
     @Override
@@ -112,8 +117,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
             @Override
             public void styleMenu(JComponent component) {
-                component.putClientProperty(FlatClientProperties.STYLE, "" +
-                        "background:$Drawer.background");
+                component.putClientProperty(FlatClientProperties.STYLE, getDrawerBackgroundStyle());
             }
 
             @Override
@@ -186,7 +190,12 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
     @Override
     public void build(DrawerPanel drawerPanel) {
-        drawerPanel.putClientProperty(FlatClientProperties.STYLE, ""
-                + "background:$Drawer.background");
+        drawerPanel.putClientProperty(FlatClientProperties.STYLE, getDrawerBackgroundStyle());
+    }
+
+    private static String getDrawerBackgroundStyle() {
+        return "" +
+                "[light]background:tint($Panel.background,100%);" +
+                "[dark]background:tint($Panel.background,5%);";
     }
 }

@@ -6,7 +6,7 @@ import raven.modal.drawer.DrawerPanel;
 import raven.modal.drawer.menu.AbstractMenuElement;
 import raven.modal.drawer.menu.DrawerMenu;
 import raven.modal.drawer.menu.MenuOption;
-import raven.modal.drawer.simple.footer.SimpleFooter;
+import raven.modal.drawer.simple.footer.LightDarkButtonFooter;
 import raven.modal.drawer.simple.footer.SimpleFooterData;
 import raven.modal.drawer.simple.header.SimpleHeader;
 import raven.modal.drawer.simple.header.SimpleHeaderData;
@@ -43,7 +43,7 @@ public abstract class SimpleDrawerBuilder implements DrawerBuilder {
         MenuOption simpleMenuOption = getSimpleMenuOption();
         menu = new DrawerMenu(simpleMenuOption);
         menuScroll = createScroll(menu);
-        footer = new SimpleFooter(getSimpleFooterData());
+        footer = new LightDarkButtonFooter(getSimpleFooterData());
         option = new Option()
                 .setRound(0)
                 .setDuration(500);
