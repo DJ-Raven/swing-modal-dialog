@@ -26,7 +26,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
         super(createSimpleMenuOption());
         LightDarkButtonFooter lightDarkButtonFooter = (LightDarkButtonFooter) footer;
         lightDarkButtonFooter.addModeChangeListener(isDarkMode -> {
-            System.out.println("laf changed");
+            // event for light dark mode changed
         });
     }
 

@@ -35,7 +35,7 @@ public class SimpleHeader extends AbstractMenuElement {
     }
 
     protected void initComponent() {
-        layout = new MigLayout("hidemode 3,wrap,insets 15 20 5 20,fill,gap 3");
+        layout = new MigLayout("hidemode 3,wrap 2,insets 15 15 5 15,gap 10");
         setLayout(layout);
         profile = new JLabel(simpleHeaderData.getIcon());
         labelTitle = new JLabel(simpleHeaderData.getTitle());
@@ -49,13 +49,18 @@ public class SimpleHeader extends AbstractMenuElement {
 
         FlatLafStyleUtils.appendStyleIfAbsent(profile, "" +
                 "background:$Component.borderColor");
+        FlatLafStyleUtils.appendStyleIfAbsent(labelTitle, "" +
+                "font:bold +1;");
         FlatLafStyleUtils.appendStyleIfAbsent(labelDescription, "" +
-                "font:-1;" +
                 "foreground:$Label.disabledForeground;");
 
+        panel = new JPanel(new MigLayout("insets 0,wrap,al n center,gap 2"));
+        panel.setOpaque(false);
+
         add(profile);
-        add(labelTitle);
-        add(labelDescription);
+        panel.add(labelTitle);
+        panel.add(labelDescription);
+        add(panel);
     }
 
     public SimpleHeaderData getSimpleHeaderData() {
@@ -78,17 +83,18 @@ public class SimpleHeader extends AbstractMenuElement {
         if (labelTitle == null || labelTitle == null) return;
 
         if (menuOpenMode == MenuOption.MenuOpenMode.FULL) {
-            setLayout(new MigLayout("hidemode 3,wrap,insets 15 20 5 20,fill,gap 3"));
-            labelTitle.setVisible(true);
-            labelDescription.setVisible(true);
+
+            layout.setColumnConstraints(null);
+            panel.setVisible(true);
         } else {
-            setLayout(new MigLayout("hidemode 3,wrap,insets 15 5 5 5,fill,gap 3", "[center]"));
-            labelTitle.setVisible(false);
-            labelDescription.setVisible(false);
+
+            layout.setColumnConstraints("[center]");
+            panel.setVisible(false);
         }
     }
 
     protected JLabel profile;
     protected JLabel labelTitle;
     protected JLabel labelDescription;
+    protected JPanel panel;
 }

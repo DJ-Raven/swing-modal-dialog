@@ -43,7 +43,7 @@ public class DrawerMenuLayout implements LayoutManager {
                 if (com.isVisible()) {
                     Insets in = getComponentInsets(com);
                     height += com.getPreferredSize().height + (in.top + in.bottom);
-                    width = Math.max(width, com.getPreferredSize().width + (in.left + in.right));
+                    width = Math.min(width, com.getPreferredSize().width + (in.left + in.right));
                 }
             }
             return new Dimension(width, height);
@@ -92,7 +92,7 @@ public class DrawerMenuLayout implements LayoutManager {
             int x = UIScale.scale(point.x);
             int y = UIScale.scale(point.y);
 
-            // button menu item not support the top and bottom margin
+            // menu item not support the top and bottom margin
             return new Insets(0, x, 0, y);
         }
     }
