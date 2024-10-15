@@ -151,13 +151,13 @@ public class ModalContainer extends JComponent {
             if (modalController.getOption().getBackgroundDark() != null) {
                 return modalController.getOption().getBackgroundDark();
             } else {
-                return ColorFunctions.lighten(getBackground(), 0.2f);
+                return ColorFunctions.tint(getBackground(), 0.2f);
             }
         } else {
             if (modalController.getOption().getBackgroundLight() != null) {
                 return modalController.getOption().getBackgroundLight();
             } else {
-                return ColorFunctions.darken(getBackground(), 0.2f);
+                return ColorFunctions.shade(getBackground(), 0.2f);
             }
         }
     }
