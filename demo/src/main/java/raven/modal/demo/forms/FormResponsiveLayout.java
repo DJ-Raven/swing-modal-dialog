@@ -61,7 +61,7 @@ public class FormResponsiveLayout extends Form {
 
     private Component createOptions() {
         JPanel panel = new JPanel(new MigLayout("wrap 3,fill", "[grow 0,fill][grow 0,fill][fill]0", "[fill,grow 0][fill]"));
-        panel.add(createLayoutOption(), "width 300::");
+        panel.add(createLayoutOption());
         panel.add(createOtherOption());
         panel.add(createGapOption(), "gapx 0 7");
         panel.add(createExample(), "span 3,gapx 0 2");
@@ -69,7 +69,7 @@ public class FormResponsiveLayout extends Form {
     }
 
     private Component createLayoutOption() {
-        JPanel panel = new JPanel(new MigLayout("wrap 2"));
+        JPanel panel = new JPanel(new MigLayout("wrap 2,width 300"));
         panel.setBorder(new TitledBorder("Justify content"));
 
         JRadioButton jrStart = new JRadioButton("Start");
@@ -120,7 +120,7 @@ public class FormResponsiveLayout extends Form {
     }
 
     private Component createOtherOption() {
-        JPanel panel = new JPanel(new MigLayout("wrap 2"));
+        JPanel panel = new JPanel(new MigLayout("wrap 2,width 300"));
         panel.setBorder(new TitledBorder("Column and Item option"));
 
         JCheckBox chColumn = new JCheckBox("Set column");
