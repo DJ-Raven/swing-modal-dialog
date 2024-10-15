@@ -105,12 +105,12 @@ public abstract class SimpleDrawerBuilder implements DrawerBuilder {
 
     @Override
     public int getDrawerWidth() {
-        return -1;
+        return 270;
     }
 
     @Override
     public int getDrawerCompactWidth() {
-        return -1;
+        return 80;
     }
 
     @Override
