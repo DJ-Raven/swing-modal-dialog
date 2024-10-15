@@ -70,6 +70,8 @@ public class DrawerMenu extends AbstractMenuElement {
         return null;
     }
 
+    private final int menuItemPadding = 10;
+    private final int iconTextGap = 10;
     private final MenuOption menuOption;
     private int[] menuSelectedIndex;
 
@@ -250,13 +252,13 @@ public class DrawerMenu extends AbstractMenuElement {
             menuOption.menuStyle.styleMenuItem(button, copyArray(index), isMainItem);
         }
         FlatLafStyleUtils.appendStyleIfAbsent(button, "" +
-                "arc:0;" +
-                "margin:6,20,6,20;" +
+                "arc:15;" +
+                "margin:6," + menuItemPadding + ",6," + menuItemPadding + ";" +
                 "borderWidth:0;" +
                 "focusWidth:0;" +
                 "innerFocusWidth:0;" +
                 "background:null;" +
-                "iconTextGap:10;");
+                "iconTextGap:" + iconTextGap + ";");
         return button;
     }
 
@@ -425,7 +427,7 @@ public class DrawerMenu extends AbstractMenuElement {
         private void init() {
             menuLayout = new SubmenuLayout();
             setLayout(menuLayout);
-            // use opaque true on the first submenu panel to fix g2d draw arrow line
+            // use opaque false on the submenu panel level >0 to fix g2d draw arrow line
             setOpaque(menuLevel == 0);
             if (menuOption.menuStyle != null) {
                 menuOption.menuStyle.styleMenuPanel(this, copyArray(this.index));
@@ -510,14 +512,14 @@ public class DrawerMenu extends AbstractMenuElement {
                 menuOption.menuStyle.styleMenuItem(button, copyArray(index), isMainItem);
             }
             boolean isRightToLeft = !DrawerMenu.this.getComponentOrientation().isLeftToRight();
-            String margin = isRightToLeft ? ("7,30,7," + (gap + 20)) : ("7," + (gap + 20) + ",7,30");
+            String margin = isRightToLeft ? ("7," + menuItemPadding + ",7," + (gap + menuItemPadding)) : ("7," + (gap + menuItemPadding) + ",7," + menuItemPadding);
             FlatLafStyleUtils.appendStyleIfAbsent(button, "" +
-                    "arc:0;" +
+                    "arc:15;" +
                     "margin:" + margin + ";" +
                     "borderWidth:0;" +
                     "focusWidth:0;" +
                     "innerFocusWidth:0;" +
-                    "background:null");
+                    "background:null;");
             return button;
         }
 
@@ -536,7 +538,7 @@ public class DrawerMenu extends AbstractMenuElement {
 
                         // create submenu line
                         int last = getLastLocation();
-                        int gap = UIScale.scale((20 + (iconWidth / 2)) + ((levelSpace + submenuSpace - 5) * menuLevel));
+                        int gap = UIScale.scale((menuItemPadding + (iconWidth / 2)) + ((levelSpace + submenuSpace - 5) * menuLevel));
                         int x = ltr ? gap : width - gap;
                         int count = getComponentCount();
                         int subMenuLocation[] = new int[count - 1];

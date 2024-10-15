@@ -125,11 +125,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 if (isMainItem) {
                     menu.putClientProperty(FlatClientProperties.STYLE, "" +
                             "selectedForeground:$Component.accentColor;" +
-                            "selectedBackground:null;" +
-                            "arc:15;");
-                } else {
-                    menu.putClientProperty(FlatClientProperties.STYLE, "" +
-                            "arc:15;");
+                            "selectedBackground:null;");
                 }
             }
         });

@@ -29,7 +29,7 @@ public abstract class AbstractDrawerLineStyleRenderer {
         if (menuElement.getMenuOpenMode() == MenuOption.MenuOpenMode.FULL) {
             int arrowWidth = UIScale.scale(10);
             int arrowHeight = UIScale.scale(4);
-            int gap = UIScale.scale(15);
+            int gap = UIScale.scale(13);
             int x = isLeftToRight ? (width - arrowWidth - gap) : gap;
             int y = (height - arrowHeight) / 2;
             Path2D p = new Path2D.Double();
