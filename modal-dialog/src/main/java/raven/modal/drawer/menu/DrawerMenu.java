@@ -163,6 +163,7 @@ public class DrawerMenu extends AbstractMenuElement {
                     item.setText("");
                     item.setHorizontalAlignment(SwingConstants.CENTER);
                 }
+                applySelectedButtonStyle(item);
             } else if (com instanceof JLabel) {
                 JLabel label = (JLabel) com;
                 if (isFull) {
@@ -193,6 +194,20 @@ public class DrawerMenu extends AbstractMenuElement {
             }
         }
         return null;
+    }
+
+    private void applySelectedButtonStyle(ButtonItem item) {
+        if (item.isMainItem) {
+            boolean isFull = menuOpenMode == MenuOption.MenuOpenMode.FULL;
+            if (isFull) {
+                FlatLafStyleUtils.appendStyle(item, "" +
+                        "selectedBackground:null;" +
+                        "selectedForeground:$Component.accentColor;");
+            } else {
+                FlatLafStyleUtils.appendStyle(item, "" +
+                        "selectedBackground:$Button.selectedBackground;");
+            }
+        }
     }
 
     private int[] copyArray(int[] arr) {
@@ -259,6 +274,7 @@ public class DrawerMenu extends AbstractMenuElement {
                 "innerFocusWidth:0;" +
                 "background:null;" +
                 "iconTextGap:" + iconTextGap + ";");
+        applySelectedButtonStyle(button);
         return button;
     }
 
@@ -520,6 +536,7 @@ public class DrawerMenu extends AbstractMenuElement {
                     "focusWidth:0;" +
                     "innerFocusWidth:0;" +
                     "background:null;");
+            applySelectedButtonStyle(button);
             return button;
         }
 

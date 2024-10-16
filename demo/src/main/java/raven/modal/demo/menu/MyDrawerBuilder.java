@@ -118,18 +118,8 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
             public void styleMenu(JComponent component) {
                 component.putClientProperty(FlatClientProperties.STYLE, getDrawerBackgroundStyle());
             }
-
-            @Override
-            public void styleMenuItem(JButton menu, int[] index, boolean isMainItem) {
-                if (isMainItem) {
-                    menu.putClientProperty(FlatClientProperties.STYLE, "" +
-                            "selectedForeground:$Component.accentColor;" +
-                            "selectedBackground:null;");
-                }
-            }
         });
 
-        simpleMenuOption.setMenuOpenMode(MenuOption.MenuOpenMode.COMPACT);
         simpleMenuOption.getMenuStyle().setDrawerLineStyleRenderer(new DrawerStraightDotLineStyle());
         simpleMenuOption.setMenuItemAutoSelectionMode(MenuOption.MenuItemAutoSelectionMode.SELECT_SUB_MENU_LEVEL);
         simpleMenuOption.addMenuEvent(new MenuEvent() {

@@ -39,7 +39,6 @@ public abstract class SimpleDrawerBuilder implements DrawerBuilder {
 
     private void init() {
         header = new SimpleHeader(getSimpleHeaderData());
-        headerSeparator = new JSeparator();
         MenuOption simpleMenuOption = getSimpleMenuOption();
         menu = new DrawerMenu(simpleMenuOption);
         menuScroll = createScroll(menu);
