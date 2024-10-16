@@ -70,9 +70,8 @@ public class DrawerMenuLayout implements LayoutManager {
                 if (com.isVisible()) {
                     int h = com.getPreferredSize().height;
                     Insets in = getComponentInsets(com);
-                    h += in.top + in.bottom;
-                    com.setBounds(x + in.left, y, width - (in.left + in.right), h);
-                    y += h;
+                    com.setBounds(x + in.left, y + in.top, width - (in.left + in.right), h);
+                    y += (h + in.top + in.bottom);
                 }
             }
         }
