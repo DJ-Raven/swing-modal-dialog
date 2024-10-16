@@ -1,8 +1,10 @@
 package raven.modal.slider;
 
+import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.Animator;
 import com.formdev.flatlaf.util.CubicBezierEasing;
 import com.formdev.flatlaf.util.ScaledEmptyBorder;
+import com.formdev.flatlaf.util.UIScale;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,8 +21,10 @@ public class PanelSlider extends JLayeredPane {
 
     private PanelSnapshot panelSnapshot;
     private Component slideComponent;
+    private float roundBorder;
 
-    public PanelSlider(int border) {
+    public PanelSlider(int border, float roundBorder) {
+        this.roundBorder = roundBorder;
         init(border);
     }
 
@@ -68,6 +72,19 @@ public class PanelSlider extends JLayeredPane {
         return snapshot;
     }
 
+    @Override
+    protected void paintComponent(Graphics g) {
+        if (roundBorder > 0 && slideComponent != null) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            FlatUIUtils.setRenderingHints(g2);
+            g2.setColor(slideComponent.getBackground());
+            float arc = UIScale.scale(roundBorder);
+            FlatUIUtils.paintComponentBackground(g2, 0, 0, getWidth(), getHeight(), 0, arc);
+            g2.dispose();
+        }
+        super.paintComponent(g);
+    }
+
     private class PanelSnapshot extends JComponent {
 
         private Animator animator;
@@ -90,6 +107,7 @@ public class PanelSlider extends JLayeredPane {
                 public void end() {
                     setVisible(false);
                     component.setVisible(true);
+                    PanelSlider.this.repaint();
                     if (newImage != null) {
                         newImage.flush();
                     }

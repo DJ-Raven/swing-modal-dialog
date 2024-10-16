@@ -28,7 +28,6 @@ public class SimpleMessageModal extends SimpleModalBorder {
         String gap = type == Type.DEFAULT ? "35" : "67";
         text.putClientProperty(FlatClientProperties.STYLE, "" +
                 "border:0," + gap + ",10,35;" +
-                "background:null;" +
                 "[light]foreground:lighten($Label.foreground,20%);" +
                 "[dark]foreground:darken($Label.foreground,20%);");
         return text;

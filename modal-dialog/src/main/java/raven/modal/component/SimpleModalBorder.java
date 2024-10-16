@@ -97,7 +97,6 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
         if (optionButton != null) {
             add(optionButton);
         }
-        setOpaque(false);
     }
 
     protected JScrollPane createContentScroll() {
@@ -114,6 +113,8 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
 
     protected JComponent createHeader() {
         JPanel panel = new JPanel(new MigLayout("fill,insets 2 35 2 35"));
+        panel.putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:null;");
         panel.add(createTitleComponent(title), "push");
         panel.add(createActionTitleComponent());
         return panel;
@@ -146,6 +147,8 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
             return null;
         }
         JPanel panel = new JPanel(new MigLayout("insets 2 35 2 35,al trailing"));
+        panel.putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:null;");
         for (Option option : optionsType) {
             panel.add(createButtonOption(option));
         }
@@ -226,6 +229,14 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
                 getController().getModalContainer().closeModal();
             }
         }
+    }
+
+    @Override
+    public Color getBackground() {
+        if (component == null) {
+            return super.getBackground();
+        }
+        return component.getBackground();
     }
 
     public static class Option {
