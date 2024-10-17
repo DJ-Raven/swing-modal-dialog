@@ -53,7 +53,7 @@ public class ModalController extends JPanel {
         if (option.getBorderWidth() > 0) {
             setBorder(new OutlineBorder(option.getBorderWidth(), option.getRound(), option.getBorderColor()));
         }
-        panelSlider = new PanelSlider((int) (option.getRound() / 2f), getOptionRound());
+        panelSlider = new PanelSlider(modalContainer, (int) (option.getRound() / 2f), getOptionRound());
         add(panelSlider);
     }
 

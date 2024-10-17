@@ -6,6 +6,7 @@ import raven.modal.ModalDialog;
 import raven.modal.component.SimpleModalBorder;
 import raven.modal.demo.component.LabelButton;
 import raven.modal.demo.simple.SimpleInputForms;
+import raven.modal.demo.simple.SimpleInputForms2;
 import raven.modal.demo.simple.SimpleMessageModal;
 import raven.modal.demo.system.Form;
 import raven.modal.demo.utils.SystemForm;
@@ -201,9 +202,8 @@ public class FormModal extends Form {
     }
 
     private void showModalSlide(Option option) {
-        option.getLayoutOption().setSize(-1, 1f)
-                .setOnTop(true)
-                .setAnimateDistance(0.7f, 0);
+        option.getLayoutOption()
+                .setOnTop(true);
 
         final String id = "input";
         ModalDialog.showModal(this, new SimpleModalBorder(
@@ -215,7 +215,7 @@ public class FormModal extends Form {
                         controller.consume();
 
                         // push modal
-                        ModalDialog.pushModal(new SimpleModalBorder(new SimpleInputForms(), "New Input Forms", SimpleModalBorder.YES_NO_OPTION, null), id);
+                        ModalDialog.pushModal(new SimpleModalBorder(new SimpleInputForms2(), "New Input Forms", SimpleModalBorder.YES_NO_OPTION, null), id);
                     }
                 }), option, id);
     }

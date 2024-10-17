@@ -174,4 +174,21 @@ public class ModalContainer extends JComponent {
             modalContainerLayer.setVisible(false);
         }
     }
+
+    public Dimension getModalComponentSize(Component com, Container container) {
+        Insets insets = new Insets(0, 0, 0, 0);
+        addParentInsets(container, insets);
+        return modalLayout.getComponentSize(this, com, insets);
+    }
+
+    private void addParentInsets(Container container, Insets insets) {
+        Insets in = container.getInsets();
+        insets.top += in.top;
+        insets.left += in.left;
+        insets.bottom += in.bottom;
+        insets.right += in.right;
+        if (container.getParent() != this) {
+            addParentInsets(container.getParent(), insets);
+        }
+    }
 }
