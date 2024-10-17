@@ -8,6 +8,7 @@ import raven.modal.ModalDialog;
 import raven.modal.component.SimpleModalBorder;
 import raven.modal.demo.simple.SimpleInputForms;
 import raven.modal.demo.simple.SimpleInputForms2;
+import raven.modal.option.Location;
 
 import javax.swing.*;
 import java.awt.*;

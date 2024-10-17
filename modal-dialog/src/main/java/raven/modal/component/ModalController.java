@@ -8,6 +8,7 @@ import net.miginfocom.swing.MigLayout;
 import raven.modal.option.Option;
 import raven.modal.slider.PanelSlider;
 import raven.modal.slider.SimpleTransition;
+import raven.modal.slider.SliderTransition;
 import raven.modal.utils.ImageSnapshots;
 
 import javax.swing.*;
@@ -81,7 +82,9 @@ public class ModalController extends JPanel {
         this.modal = modal;
         modal.setController(this);
         modal.grabFocus();
-        panelSlider.addSlide(modal, SimpleTransition.get(option.isAnimationEnabled() ? SimpleTransition.SliderType.FORWARD : null));
+        int sliderDuration = option.getSliderDuration();
+        SliderTransition sliderTransition = sliderDuration > 0 ? SimpleTransition.get(SimpleTransition.SliderType.FORWARD) : null;
+        panelSlider.addSlide(modal, sliderTransition, sliderDuration);
     }
 
     public void popModal() {
@@ -89,7 +92,9 @@ public class ModalController extends JPanel {
             Modal component = modalStack.pop();
             this.modal = component;
             modal.grabFocus();
-            panelSlider.addSlide(component, SimpleTransition.get(option.isAnimationEnabled() ? SimpleTransition.SliderType.BACK : null));
+            int sliderDuration = option.getSliderDuration();
+            SliderTransition sliderTransition = sliderDuration > 0 ? SimpleTransition.get(SimpleTransition.SliderType.BACK) : null;
+            panelSlider.addSlide(component, sliderTransition, sliderDuration);
         }
     }
 

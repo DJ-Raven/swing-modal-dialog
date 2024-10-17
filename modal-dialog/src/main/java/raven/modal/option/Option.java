@@ -57,6 +57,10 @@ public class Option {
         return duration;
     }
 
+    public int getSliderDuration() {
+        return sliderDuration;
+    }
+
     private LayoutOption layoutOption = LayoutOption.getDefault();
     private BackgroundClickType backgroundClickType = BackgroundClickType.CLOSE_MODAL;
     private boolean animationEnabled = true;
@@ -68,8 +72,9 @@ public class Option {
     private Color borderColor;
     private float opacity = 0.5f;
     private int duration = 350;
+    private int sliderDuration = 400;
 
-    private Option(LayoutOption layoutOption, BackgroundClickType backgroundClickType, boolean animationEnabled, boolean closeOnPressedEscape, Color backgroundLight, Color backgroundDark, float round, float borderWidth, Color borderColor, float opacity, int duration) {
+    private Option(LayoutOption layoutOption, BackgroundClickType backgroundClickType, boolean animationEnabled, boolean closeOnPressedEscape, Color backgroundLight, Color backgroundDark, float round, float borderWidth, Color borderColor, float opacity, int duration, int sliderDuration) {
         this.layoutOption = layoutOption;
         this.backgroundClickType = backgroundClickType;
         this.animationEnabled = animationEnabled;
@@ -81,6 +86,7 @@ public class Option {
         this.borderColor = borderColor;
         this.opacity = opacity;
         this.duration = duration;
+        this.sliderDuration = sliderDuration;
     }
 
     public Option() {
@@ -143,11 +149,16 @@ public class Option {
         return this;
     }
 
+    public Option setSliderDuration(int duration) {
+        this.sliderDuration = duration;
+        return this;
+    }
+
     public enum BackgroundClickType {
         CLOSE_MODAL, BLOCK, NONE
     }
 
     public Option copy() {
-        return new Option(layoutOption.copy(), backgroundClickType, animationEnabled, closeOnPressedEscape, backgroundLight == null ? null : new Color(backgroundLight.getRGB()), backgroundDark == null ? null : new Color(backgroundDark.getRGB()), round, borderWidth, borderColor, opacity, duration);
+        return new Option(layoutOption.copy(), backgroundClickType, animationEnabled, closeOnPressedEscape, backgroundLight == null ? null : new Color(backgroundLight.getRGB()), backgroundDark == null ? null : new Color(backgroundDark.getRGB()), round, borderWidth, borderColor, opacity, duration, sliderDuration);
     }
 }
