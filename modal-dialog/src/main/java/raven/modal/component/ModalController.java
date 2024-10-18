@@ -81,7 +81,6 @@ public class ModalController extends JPanel {
         pushStack(this.modal);
         this.modal = modal;
         modal.setController(this);
-        modal.grabFocus();
         int sliderDuration = option.getSliderDuration();
         SliderTransition sliderTransition = sliderDuration > 0 ? SimpleTransition.get(SimpleTransition.SliderType.FORWARD) : null;
         panelSlider.addSlide(modal, sliderTransition, sliderDuration);
@@ -91,7 +90,6 @@ public class ModalController extends JPanel {
         if (modalStack != null && !modalStack.isEmpty()) {
             Modal component = modalStack.pop();
             this.modal = component;
-            modal.grabFocus();
             int sliderDuration = option.getSliderDuration();
             SliderTransition sliderTransition = sliderDuration > 0 ? SimpleTransition.get(SimpleTransition.SliderType.BACK) : null;
             panelSlider.addSlide(component, sliderTransition, sliderDuration);
@@ -101,7 +99,6 @@ public class ModalController extends JPanel {
     public void showModal() {
         setFocusCycleRoot(true);
         installModalComponent(modal);
-        modal.grabFocus();
         startAnimator(true);
     }
 
@@ -161,6 +158,7 @@ public class ModalController extends JPanel {
                             remove();
                         } else {
                             panelSlider.setVisible(true);
+                            modal.requestFocus();
                         }
                         if (snapshotsImage != null) {
                             snapshotsImage.flush();
@@ -186,6 +184,7 @@ public class ModalController extends JPanel {
                 animated = 1;
                 display = true;
                 modalContainer.getModalLayout().setAnimate(animated);
+                SwingUtilities.invokeLater(() -> modal.requestFocus());
             } else {
                 animated = 0;
                 remove();

@@ -125,6 +125,7 @@ public class PanelSlider extends JLayeredPane {
                     setVisible(false);
                     component.setVisible(true);
                     animatedLayout.reset();
+                    slideComponent.requestFocus();
                     PanelSlider.this.repaint();
                     if (newImage != null) {
                         newImage.flush();
