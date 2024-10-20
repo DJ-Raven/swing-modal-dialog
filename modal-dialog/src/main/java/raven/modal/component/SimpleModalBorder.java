@@ -83,7 +83,7 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
      */
     @Override
     public void installComponent() {
-        setLayout(new MigLayout("wrap,fillx,insets 10 0 10 0", "[fill]", "[][fill,grow][]"));
+        setLayout(new MigLayout("wrap,fillx,insets 15 0 15 0", "[fill]", "[][fill,grow][]"));
         header = createHeader();
         add(header);
         if (option.isUseScroll()) {

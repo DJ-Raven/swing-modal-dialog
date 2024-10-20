@@ -1,10 +1,7 @@
 package raven.modal.slider;
 
-import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.Animator;
 import com.formdev.flatlaf.util.CubicBezierEasing;
-import com.formdev.flatlaf.util.ScaledEmptyBorder;
-import com.formdev.flatlaf.util.UIScale;
 import raven.modal.component.ModalContainer;
 import raven.modal.layout.AnimatedLayout;
 
@@ -25,18 +22,15 @@ public class PanelSlider extends JLayeredPane {
     private Component slideComponent;
     private AnimatedLayout animatedLayout;
     private ModalContainer modalContainer;
-    private float roundBorder;
 
-    public PanelSlider(ModalContainer modalContainer, int border, float roundBorder) {
+    public PanelSlider(ModalContainer modalContainer) {
         this.modalContainer = modalContainer;
-        this.roundBorder = roundBorder;
-        init(border);
+        init();
     }
 
-    private void init(int border) {
+    private void init() {
         panelSnapshot = new PanelSnapshot();
         animatedLayout = new AnimatedLayout(modalContainer);
-        setBorder(new ScaledEmptyBorder(border, 0, border, 0));
         setLayout(animatedLayout);
         setLayer(panelSnapshot, JLayeredPane.MODAL_LAYER);
         add(panelSnapshot);
@@ -85,17 +79,19 @@ public class PanelSlider extends JLayeredPane {
         return snapshot;
     }
 
-    @Override
     protected void paintComponent(Graphics g) {
-        if (roundBorder > 0 && slideComponent != null) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            FlatUIUtils.setRenderingHints(g2);
-            g2.setColor(slideComponent.getBackground());
-            float arc = UIScale.scale(roundBorder);
-            FlatUIUtils.paintComponentBackground(g2, 0, 0, getWidth(), getHeight(), 0, arc);
-            g2.dispose();
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setColor(slideComponent.getBackground());
+        g2.fillRect(0, 0, getWidth(), getHeight());
+        g2.dispose();
+    }
+
+    @Override
+    public Color getBackground() {
+        if (slideComponent == null) {
+            return super.getBackground();
         }
-        super.paintComponent(g);
+        return slideComponent.getBackground();
     }
 
     public class PanelSnapshot extends JComponent {

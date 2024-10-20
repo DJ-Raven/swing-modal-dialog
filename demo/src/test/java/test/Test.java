@@ -8,7 +8,7 @@ import raven.modal.ModalDialog;
 import raven.modal.component.SimpleModalBorder;
 import raven.modal.demo.simple.SimpleInputForms;
 import raven.modal.demo.simple.SimpleInputForms2;
-import raven.modal.option.Location;
+import raven.modal.option.BorderOption;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +22,10 @@ public class Test extends JFrame {
         setLayout(new MigLayout("wrap,al center center"));
         JButton button = new JButton("show");
         ModalDialog.getDefaultOption()
-                .setBorderWidth(1f);
+                .setOpacity(0f)
+                .getBorderOption()
+                .setBorderWidth(0.5f)
+                .setShadow(BorderOption.Shadow.MEDIUM);
 
         button.addActionListener(e -> {
             ModalDialog.showModal(this, new SimpleModalBorder(new SimpleInputForms(), "Input", SimpleModalBorder.YES_NO_OPTION, (controller, action) -> {

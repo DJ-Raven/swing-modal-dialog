@@ -43,9 +43,9 @@ public abstract class SimpleDrawerBuilder implements DrawerBuilder {
         menu = new DrawerMenu(simpleMenuOption);
         menuScroll = createScroll(menu);
         footer = new LightDarkButtonFooter(getSimpleFooterData());
-        option = new Option()
-                .setRound(0)
-                .setDuration(500);
+        option = new Option();
+        option.getBorderOption()
+                .setRound(0);
         LayoutOption layoutOption = new SimpleDrawerLayoutOption(this)
                 .setCompactSize(getDrawerCompactWidth(), 1f)
                 .setSize(getDrawerWidth(), 1f)

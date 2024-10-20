@@ -10,6 +10,7 @@ import raven.modal.demo.simple.SimpleInputForms2;
 import raven.modal.demo.simple.SimpleMessageModal;
 import raven.modal.demo.system.Form;
 import raven.modal.demo.utils.SystemForm;
+import raven.modal.option.BorderOption;
 import raven.modal.option.Location;
 import raven.modal.option.Option;
 
@@ -110,13 +111,19 @@ public class FormModal extends Form {
         panel.setBorder(new TitledBorder("Options"));
         chAnimation = new JCheckBox("Animation enable");
         chCloseOnPressedEscape = new JCheckBox("Close on pressed escape");
-        chBorder = new JCheckBox("Border");
+        chBorder = new JCheckBox("Outline border");
+        chShadow = new JCheckBox("Shadow border");
+        chOpacity = new JCheckBox("Background opacity");
+
         chAnimation.setSelected(true);
         chCloseOnPressedEscape.setSelected(true);
+        chOpacity.setSelected(true);
 
         panel.add(chAnimation);
         panel.add(chCloseOnPressedEscape);
         panel.add(chBorder);
+        panel.add(chShadow);
+        panel.add(chOpacity);
 
         return panel;
     }
@@ -228,7 +235,10 @@ public class FormModal extends Form {
         option.setAnimationEnabled(chAnimation.isSelected())
                 .setCloseOnPressedEscape(chCloseOnPressedEscape.isSelected())
                 .setBackgroundClickType(backgroundClickType)
-                .setBorderWidth(chBorder.isSelected() ? 1f : 0);
+                .setOpacity(chOpacity.isSelected() ? 0.5f : 0);
+        option.getBorderOption()
+                .setBorderWidth(chBorder.isSelected() ? 1f : 0)
+                .setShadow(chShadow.isSelected() ? BorderOption.Shadow.MEDIUM : BorderOption.Shadow.NONE);
         option.getLayoutOption().setLocation(h, v);
         return option;
     }
@@ -249,6 +259,8 @@ public class FormModal extends Form {
     private JCheckBox chAnimation;
     private JCheckBox chCloseOnPressedEscape;
     private JCheckBox chBorder;
+    private JCheckBox chShadow;
+    private JCheckBox chOpacity;
 
     // background click option
     private JRadioButton jrClose;

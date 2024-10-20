@@ -31,7 +31,6 @@ public class SimpleHeader extends AbstractMenuElement {
         }
         FlatLafStyleUtils.appendStyleIfAbsent(this, "" +
                 "background:null");
-
     }
 
     protected void initComponent() {

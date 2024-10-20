@@ -1,10 +1,9 @@
 package raven.modal.component;
 
-import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.Animator;
 import com.formdev.flatlaf.util.CubicBezierEasing;
-import com.formdev.flatlaf.util.UIScale;
 import net.miginfocom.swing.MigLayout;
+import raven.modal.option.BorderOption;
 import raven.modal.option.Option;
 import raven.modal.slider.PanelSlider;
 import raven.modal.slider.SimpleTransition;
@@ -49,13 +48,23 @@ public class ModalController extends JPanel {
         addMouseListener(new MouseAdapter() {
         });
 
-        setLayout(new MigLayout("fill,insets 0", "[fill,5::]", "[fill,5::]"));
+        int minimumSize = option.getBorderOption().getShadowSize();
+        setLayout(new MigLayout("fill,insets 0", "[fill," + minimumSize + "::]", "[fill," + minimumSize + "::]"));
         setOpaque(false);
-        if (option.getBorderWidth() > 0) {
-            setBorder(new OutlineBorder(option.getBorderWidth(), option.getRound(), option.getBorderColor()));
-        }
-        panelSlider = new PanelSlider(modalContainer, (int) (option.getRound() / 2f), getOptionRound());
+
+        panelSlider = new PanelSlider(modalContainer);
+        initBorder();
         add(panelSlider);
+    }
+
+    private void initBorder() {
+        if (option == null) {
+            return;
+        }
+        BorderOption borderOption = option.getBorderOption();
+        if (borderOption.getBorderWidth() > 0 || (borderOption.getShadowSize() > 0 || borderOption.getRound() > 0)) {
+            setBorder(new OutlineBorder(borderOption.getBorderWidth(), borderOption.getShadowSize(), borderOption.getShadowTopSize(), borderOption.getShadowOpacity(), borderOption.getShadowColor(), borderOption.getRound(), borderOption.getBorderColor()));
+        }
     }
 
     private void pushStack(Modal modal) {
@@ -146,7 +155,12 @@ public class ModalController extends JPanel {
                     @Override
                     public void begin() {
                         modalContainer.showSnapshot();
-                        snapshotsImage = ImageSnapshots.createSnapshotsImage(panelSlider, getOptionRound());
+                        Border border = getBorder();
+                        if (border != null) {
+                            snapshotsImage = ImageSnapshots.createSnapshotsImage(panelSlider, ModalController.this, getBorder());
+                        } else {
+                            snapshotsImage = ImageSnapshots.createSnapshotsImage(panelSlider, 0);
+                        }
                         panelSlider.setVisible(false);
                         display = true;
                     }
@@ -206,25 +220,18 @@ public class ModalController extends JPanel {
         modalContainerLayer.revalidate();
     }
 
-    private float getOptionRound() {
-        return option.getRound() - option.getBorderWidth() * 2f;
+    @Override
+    public Color getBackground() {
+        if (panelSlider == null) {
+            return super.getBackground();
+        }
+        return panelSlider.getBackground();
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g.create();
-        Insets insets = getInsets();
-        int x = insets.left;
-        int y = insets.top;
-        int width = getWidth() - (insets.left + insets.right);
-        int height = getHeight() - (insets.top + insets.bottom);
-        FlatUIUtils.setRenderingHints(g2d);
-        g2d.setColor(getBackground());
-        float arc = UIScale.scale(getOptionRound());
-        g2d.setComposite(AlphaComposite.SrcOver.derive(animated));
-        FlatUIUtils.paintComponentBackground(g2d, x, y, width, height, 0, arc);
-        g2d.dispose();
-        super.paintComponent(g);
+    public void updateUI() {
+        super.updateUI();
+        initBorder();
     }
 
     @Override
@@ -233,13 +240,8 @@ public class ModalController extends JPanel {
             if (snapshotsImage != null) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setComposite(AlphaComposite.SrcOver.derive(animated));
-                Insets insets = getInsets();
                 // draw snapshots image
-                g2.drawImage(snapshotsImage, insets.left, insets.top, null);
-                Border border = getBorder();
-                if (border != null) {
-                    getBorder().paintBorder(this, g2, 0, 0, getWidth(), getHeight());
-                }
+                g2.drawImage(snapshotsImage, 0, 0, null);
                 g2.dispose();
             } else {
                 super.paint(g);

@@ -17,6 +17,10 @@ public class Option {
         return layoutOption;
     }
 
+    public BorderOption getBorderOption() {
+        return borderOption;
+    }
+
     public BackgroundClickType getBackgroundClickType() {
         return backgroundClickType;
     }
@@ -37,18 +41,6 @@ public class Option {
         return backgroundDark;
     }
 
-    public float getRound() {
-        return round;
-    }
-
-    public float getBorderWidth() {
-        return borderWidth;
-    }
-
-    public Color getBorderColor() {
-        return borderColor;
-    }
-
     public float getOpacity() {
         return opacity;
     }
@@ -62,28 +54,24 @@ public class Option {
     }
 
     private LayoutOption layoutOption = LayoutOption.getDefault();
+    private BorderOption borderOption = BorderOption.getDefault();
     private BackgroundClickType backgroundClickType = BackgroundClickType.CLOSE_MODAL;
     private boolean animationEnabled = true;
     private boolean closeOnPressedEscape = true;
     private Color backgroundLight;
     private Color backgroundDark;
-    private float round = 20;
-    private float borderWidth = 0;
-    private Color borderColor;
     private float opacity = 0.5f;
     private int duration = 350;
     private int sliderDuration = 400;
 
-    private Option(LayoutOption layoutOption, BackgroundClickType backgroundClickType, boolean animationEnabled, boolean closeOnPressedEscape, Color backgroundLight, Color backgroundDark, float round, float borderWidth, Color borderColor, float opacity, int duration, int sliderDuration) {
+    private Option(LayoutOption layoutOption, BorderOption borderOption, BackgroundClickType backgroundClickType, boolean animationEnabled, boolean closeOnPressedEscape, Color backgroundLight, Color backgroundDark, float opacity, int duration, int sliderDuration) {
         this.layoutOption = layoutOption;
+        this.borderOption = borderOption;
         this.backgroundClickType = backgroundClickType;
         this.animationEnabled = animationEnabled;
         this.closeOnPressedEscape = closeOnPressedEscape;
         this.backgroundLight = backgroundLight;
         this.backgroundDark = backgroundDark;
-        this.round = round;
-        this.borderWidth = borderWidth;
-        this.borderColor = borderColor;
         this.opacity = opacity;
         this.duration = duration;
         this.sliderDuration = sliderDuration;
@@ -124,21 +112,6 @@ public class Option {
         return this;
     }
 
-    public Option setRound(float round) {
-        this.round = round;
-        return this;
-    }
-
-    public Option setBorderWidth(float borderWidth) {
-        this.borderWidth = borderWidth;
-        return this;
-    }
-
-    public Option setBorderColor(Color borderColor) {
-        this.borderColor = borderColor;
-        return this;
-    }
-
     public Option setOpacity(float opacity) {
         this.opacity = opacity;
         return this;
@@ -159,6 +132,6 @@ public class Option {
     }
 
     public Option copy() {
-        return new Option(layoutOption.copy(), backgroundClickType, animationEnabled, closeOnPressedEscape, backgroundLight == null ? null : new Color(backgroundLight.getRGB()), backgroundDark == null ? null : new Color(backgroundDark.getRGB()), round, borderWidth, borderColor, opacity, duration, sliderDuration);
+        return new Option(layoutOption.copy(), borderOption.copy(), backgroundClickType, animationEnabled, closeOnPressedEscape, backgroundLight == null ? null : new Color(backgroundLight.getRGB()), backgroundDark == null ? null : new Color(backgroundDark.getRGB()), opacity, duration, sliderDuration);
     }
 }
