@@ -1,25 +1,46 @@
 # Changelog
 
-## [1.2.1]
+## [2.0] - 2024-10-20
 
 ### New features and improvements
 
 - Modal dialog
     - Add new border option `borderWidth` and `borderColor` (PR #14)
+    - Add drop shadow border
+    - Slider layout changed with animation when `push` or `pop`
+- Drawer
+    - Support menu two mode `full` and `compact`
+    - Add new drawer footer `LightDark Button`
+- Extras
+    - Add new `LightDarkButton`
+
+### Changed
+
+- Modal dialog
+    - Add new option `sliderDuration`
+    - Add new `BorderOption` class
+    - Move `round` option in class `Option` to `BorderOption`
+    - Move `menuOption` instance to class SimpleDrawerBuilder and init in constructor
+    - Modal background now paint as the component background and not allow `null` background
+- Drawer
+    - Removed menu `headerSeparator` in default
+    - Use `LightDarkButtonFooter` in default
+    - Changed menu `header` layout to horizontal view
 
 ### Fixed bugs
 
 - Modal dialog
     - Fixed component not install when push modal
+    - Fixed layout
 - Toast
     - Fixed `ToastPanel` border `null` when changed themes or UI updated
 
 ### Demo
 
-- Fixed component not install when push modal
-- Updated select drawer menu when undo and redo form
-- Fixed component orientation `RTL` not update when show form
 - Add `about` information
+- Updated select drawer menu when undo and redo form
+- Fixed component not install when push modal
+- Fixed component orientation `RTL` not update when show form
 
 ## [1.2.0] - 2024-09-21
 
