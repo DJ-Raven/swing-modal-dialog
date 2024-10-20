@@ -23,7 +23,11 @@ public interface DrawerBuilder {
 
     int getDrawerWidth();
 
+    int getDrawerCompactWidth();
+
     int getOpenDrawerAt();
 
     boolean openDrawerAtScale();
+
+    void drawerOpenChanged(boolean isOpen);
 }

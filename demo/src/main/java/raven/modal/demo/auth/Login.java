@@ -20,19 +20,19 @@ public class Login extends Form {
         chRememberMe = new JCheckBox("Remember me");
         cmdLogin = new JButton("Login");
         JPanel panel = new JPanel(new MigLayout("wrap,fillx,insets 35 45 35 45", "fill,250:280"));
-        panel.putClientProperty(FlatClientProperties.STYLE, ""
-                + "arc:20;"
-                + "[light]background:darken(@background,3%);"
-                + "[dark]background:lighten(@background,3%)");
+        panel.putClientProperty(FlatClientProperties.STYLE, "" +
+                "arc:20;" +
+                "[light]background:shade($Panel.background,5%);" +
+                "[dark]background:tint($Panel.background,5%);");
 
-        txtPassword.putClientProperty(FlatClientProperties.STYLE, ""
-                + "showRevealButton:true");
-        cmdLogin.putClientProperty(FlatClientProperties.STYLE, ""
-                + "[light]background:darken(@background,10%);"
-                + "[dark]background:lighten(@background,10%);"
-                + "borderWidth:0;"
-                + "focusWidth:0;"
-                + "innerFocusWidth:0");
+        txtPassword.putClientProperty(FlatClientProperties.STYLE, "" +
+                "showRevealButton:true");
+        cmdLogin.putClientProperty(FlatClientProperties.STYLE, "" +
+                "[light]background:shade($Panel.background,10%);" +
+                "[dark]background:tint($Panel.background,10%);" +
+                "borderWidth:0;" +
+                "focusWidth:0;" +
+                "innerFocusWidth:0");
 
         txtUsername.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Enter your username or email");
         txtPassword.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Enter your password");

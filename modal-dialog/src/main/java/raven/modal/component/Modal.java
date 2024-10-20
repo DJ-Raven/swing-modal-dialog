@@ -7,7 +7,7 @@ import javax.swing.*;
  *
  * @author Raven
  */
-public class Modal extends JPanel {
+public abstract class Modal extends JPanel {
 
     public String getId() {
         return id;

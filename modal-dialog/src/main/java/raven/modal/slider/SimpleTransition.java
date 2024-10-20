@@ -14,6 +14,8 @@ public class SimpleTransition {
 
                 @Override
                 public void renderImageNew(Graphics g, Image image, int width, int height, float animate) {
+                    Graphics2D g2 = (Graphics2D) g;
+                    g2.setComposite(AlphaComposite.SrcOver.derive(animate));
                     int x = -(int) (width * (1f - animate));
                     g.drawImage(image, x, 0, null);
                     g.dispose();
@@ -22,6 +24,8 @@ public class SimpleTransition {
                 @Override
                 public void renderImageOld(Graphics g, Image image, int width, int height, float animate) {
                     int x = (int) (width * animate);
+                    Graphics2D g2 = (Graphics2D) g;
+                    g2.setComposite(AlphaComposite.SrcOver.derive(1f - animate));
                     g.drawImage(image, x, 0, null);
                     g.dispose();
                 }
@@ -31,6 +35,8 @@ public class SimpleTransition {
 
                 @Override
                 public void renderImageNew(Graphics g, Image image, int width, int height, float animate) {
+                    Graphics2D g2 = (Graphics2D) g;
+                    g2.setComposite(AlphaComposite.SrcOver.derive(animate));
                     int x = (int) (width - width * animate);
                     g.drawImage(image, x, 0, null);
                     g.dispose();
@@ -38,6 +44,8 @@ public class SimpleTransition {
 
                 @Override
                 public void renderImageOld(Graphics g, Image image, int width, int height, float animate) {
+                    Graphics2D g2 = (Graphics2D) g;
+                    g2.setComposite(AlphaComposite.SrcOver.derive(1f - animate));
                     int x = -(int) (width * animate);
                     g.drawImage(image, x, 0, null);
                     g.dispose();

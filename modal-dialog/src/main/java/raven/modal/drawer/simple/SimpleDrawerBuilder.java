@@ -3,12 +3,14 @@ package raven.modal.drawer.simple;
 import com.formdev.flatlaf.FlatClientProperties;
 import raven.modal.drawer.DrawerBuilder;
 import raven.modal.drawer.DrawerPanel;
+import raven.modal.drawer.menu.AbstractMenuElement;
 import raven.modal.drawer.menu.DrawerMenu;
 import raven.modal.drawer.menu.MenuOption;
-import raven.modal.drawer.simple.footer.SimpleFooter;
+import raven.modal.drawer.simple.footer.LightDarkButtonFooter;
 import raven.modal.drawer.simple.footer.SimpleFooterData;
 import raven.modal.drawer.simple.header.SimpleHeader;
 import raven.modal.drawer.simple.header.SimpleHeaderData;
+import raven.modal.option.LayoutOption;
 import raven.modal.option.Location;
 import raven.modal.option.Option;
 import raven.modal.utils.FlatLafStyleUtils;
@@ -21,32 +23,36 @@ import java.awt.*;
  */
 public abstract class SimpleDrawerBuilder implements DrawerBuilder {
 
-    protected SimpleHeader header;
+    protected final MenuOption menuOption;
+    protected AbstractMenuElement header;
     protected JSeparator headerSeparator;
     protected JScrollPane menuScroll;
     protected DrawerMenu menu;
-    protected SimpleFooter footer;
+    protected AbstractMenuElement footer;
     protected Option option;
+    protected boolean isOpen;
 
-    public SimpleDrawerBuilder() {
+    public SimpleDrawerBuilder(MenuOption menuOption) {
+        this.menuOption = menuOption;
         init();
     }
 
     private void init() {
         header = new SimpleHeader(getSimpleHeaderData());
-        headerSeparator = new JSeparator();
         MenuOption simpleMenuOption = getSimpleMenuOption();
         menu = new DrawerMenu(simpleMenuOption);
         menuScroll = createScroll(menu);
-        footer = new SimpleFooter(getSimpleFooterData());
-        option = new Option()
-                .setRound(0)
-                .setDuration(500);
-        option.getLayoutOption()
-                .setMargin(0)
+        footer = new LightDarkButtonFooter(getSimpleFooterData());
+        option = new Option();
+        option.getBorderOption()
+                .setRound(0);
+        LayoutOption layoutOption = new SimpleDrawerLayoutOption(this)
+                .setCompactSize(getDrawerCompactWidth(), 1f)
                 .setSize(getDrawerWidth(), 1f)
-                .setAnimateDistance(-0.7f, 01)
+                .setMargin(0)
+                .setAnimateDistance(-0.7f, 0)
                 .setLocation(Location.LEADING, Location.TOP);
+        option.setLayoutOption(layoutOption);
     }
 
     protected JScrollPane createScroll(JComponent component) {
@@ -98,7 +104,12 @@ public abstract class SimpleDrawerBuilder implements DrawerBuilder {
 
     @Override
     public int getDrawerWidth() {
-        return -1;
+        return 270;
+    }
+
+    @Override
+    public int getDrawerCompactWidth() {
+        return 80;
     }
 
     @Override
@@ -111,12 +122,26 @@ public abstract class SimpleDrawerBuilder implements DrawerBuilder {
         return true;
     }
 
+    @Override
+    public void drawerOpenChanged(boolean isOpen) {
+        this.isOpen = isOpen;
+        MenuOption.MenuOpenMode menuOpenMode = getMenuOpenMode();
+        menu.setMenuOpenMode(menuOpenMode);
+        header.setMenuOpenMode(menuOpenMode);
+        footer.setMenuOpenMode(menuOpenMode);
+    }
+
+    public void drawerOpenChanged() {
+        drawerOpenChanged(isOpen);
+    }
+
     public void build(DrawerPanel drawerPanel) {
     }
 
     public void rebuildMenu() {
         if (menu != null) {
             menu.rebuildMenu();
+            menu.setMenuOpenMode(getMenuOpenMode());
         }
     }
 
@@ -124,7 +149,21 @@ public abstract class SimpleDrawerBuilder implements DrawerBuilder {
         return menu;
     }
 
-    public abstract MenuOption getSimpleMenuOption();
+    public boolean isDrawerOpen() {
+        return isOpen;
+    }
+
+    private MenuOption.MenuOpenMode getMenuOpenMode() {
+        if (isOpen) {
+            return getSimpleMenuOption().getMenuOpenMode();
+        } else {
+            return MenuOption.MenuOpenMode.FULL;
+        }
+    }
+
+    public final MenuOption getSimpleMenuOption() {
+        return menuOption;
+    }
 
     public abstract SimpleHeaderData getSimpleHeaderData();
 

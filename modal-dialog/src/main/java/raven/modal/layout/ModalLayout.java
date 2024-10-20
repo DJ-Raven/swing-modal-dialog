@@ -1,5 +1,7 @@
 package raven.modal.layout;
 
+import com.formdev.flatlaf.ui.FlatUIUtils;
+import com.formdev.flatlaf.util.UIScale;
 import raven.modal.option.LayoutOption;
 
 import java.awt.*;
@@ -52,5 +54,12 @@ public class ModalLayout implements LayoutManager {
                 component.setBounds(rec.x, rec.y, rec.width, rec.height);
             }
         }
+    }
+
+    public Dimension getComponentSize(Container parent, Component component, Insets margin) {
+        Insets insets = FlatUIUtils.addInsets(parent.getInsets(), UIScale.scale(layoutOption.getMargin()));
+        int width = parent.getWidth() - (insets.left + insets.right + margin.left + margin.right);
+        int height = parent.getHeight() - (insets.top + insets.bottom + margin.top + margin.bottom);
+        return OptionLayoutUtils.getComponentSize(component, width, height, 1f, layoutOption);
     }
 }

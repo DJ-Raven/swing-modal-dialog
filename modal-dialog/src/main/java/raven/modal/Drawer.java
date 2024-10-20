@@ -4,6 +4,7 @@ import raven.modal.component.ModalContainer;
 import raven.modal.drawer.DrawerBuilder;
 import raven.modal.drawer.DrawerLayoutResponsive;
 import raven.modal.drawer.DrawerPanel;
+import raven.modal.drawer.menu.MenuOption;
 import raven.modal.drawer.simple.SimpleDrawerBuilder;
 import raven.modal.option.Option;
 
@@ -39,7 +40,7 @@ public class Drawer {
         instance.drawerPanel = new DrawerPanel(drawerBuilder);
         drawerBuilder.build(instance.drawerPanel);
         if (drawerBuilder.getOpenDrawerAt() >= 0) {
-            instance.drawerLayoutResponsive = ModalDialog.installDrawer(instance.rootPaneContainer, instance.drawerPanel, drawerBuilder.getOpenDrawerAt(), drawerBuilder.openDrawerAtScale());
+            instance.drawerLayoutResponsive = ModalDialog.installDrawer(instance.rootPaneContainer, instance.drawerPanel);
         }
     }
 
@@ -74,6 +75,30 @@ public class Drawer {
                 ModalDialog.closeModalAsRemove(DRAWER_ID);
             }
         }
+    }
+
+    public static void setDrawerOpenMode(MenuOption.MenuOpenMode menuOpenMode) {
+        DrawerBuilder builder = instance.drawerPanel.getDrawerBuilder();
+        if (builder instanceof SimpleDrawerBuilder) {
+            SimpleDrawerBuilder simpleDrawerBuilder = (SimpleDrawerBuilder) builder;
+            if (simpleDrawerBuilder.getSimpleMenuOption().getMenuOpenMode() != menuOpenMode) {
+                simpleDrawerBuilder.getSimpleMenuOption().setMenuOpenMode(menuOpenMode);
+                simpleDrawerBuilder.drawerOpenChanged();
+            }
+        }
+    }
+
+    public static MenuOption.MenuOpenMode getDrawerOpenMode() {
+        DrawerBuilder builder = instance.drawerPanel.getDrawerBuilder();
+        if (builder instanceof SimpleDrawerBuilder) {
+            return ((SimpleDrawerBuilder) builder).getSimpleMenuOption().getMenuOpenMode();
+        }
+        throw new RuntimeException("Error drawer not support open mode");
+    }
+
+    public static void toggleMenuOpenMode() {
+        MenuOption.MenuOpenMode openMode = getDrawerOpenMode();
+        setDrawerOpenMode(openMode.toggle());
     }
 
     public static boolean isVisible() {

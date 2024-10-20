@@ -2,7 +2,8 @@ package raven.modal.slider;
 
 import com.formdev.flatlaf.util.Animator;
 import com.formdev.flatlaf.util.CubicBezierEasing;
-import com.formdev.flatlaf.util.ScaledEmptyBorder;
+import raven.modal.component.ModalContainer;
+import raven.modal.layout.AnimatedLayout;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,20 +20,27 @@ public class PanelSlider extends JLayeredPane {
 
     private PanelSnapshot panelSnapshot;
     private Component slideComponent;
+    private AnimatedLayout animatedLayout;
+    private ModalContainer modalContainer;
 
-    public PanelSlider(int border) {
-        init(border);
+    public PanelSlider(ModalContainer modalContainer) {
+        this.modalContainer = modalContainer;
+        init();
     }
 
-    private void init(int border) {
+    private void init() {
         panelSnapshot = new PanelSnapshot();
-        setBorder(new ScaledEmptyBorder(border, 0, border, 0));
-        setLayout(new CardLayout());
+        animatedLayout = new AnimatedLayout(modalContainer);
+        setLayout(animatedLayout);
         setLayer(panelSnapshot, JLayeredPane.MODAL_LAYER);
         add(panelSnapshot);
     }
 
     public void addSlide(Component component, SliderTransition transition) {
+        addSlide(component, transition, 400);
+    }
+
+    public void addSlide(Component component, SliderTransition transition, int duration) {
         this.slideComponent = component;
         if (getComponentCount() == 1) {
             add(component);
@@ -44,12 +52,15 @@ public class PanelSlider extends JLayeredPane {
             Component oldComponent = getComponent(1);
             add(component);
             if (transition != null) {
+                Dimension fromSize = modalContainer.getModalComponentSize(oldComponent, this);
+                Dimension targetSize = modalContainer.getModalComponentSize(slideComponent, this);
+                animatedLayout.addAnimateSize(fromSize, targetSize);
                 doLayout();
                 SwingUtilities.invokeLater(() -> {
-                    Image oldImage = createImage(oldComponent);
-                    Image newImage = createImage(component);
+                    Image oldImage = createImage(oldComponent, fromSize);
+                    Image newImage = createImage(component, targetSize);
                     remove(oldComponent);
-                    panelSnapshot.animate(component, transition, oldImage, newImage);
+                    panelSnapshot.animate(component, transition, oldImage, newImage, duration);
                 });
             } else {
                 component.setVisible(true);
@@ -60,15 +71,30 @@ public class PanelSlider extends JLayeredPane {
         }
     }
 
-    private Image createImage(Component component) {
-        VolatileImage snapshot = component.createVolatileImage(getWidth(), getHeight());
+    private Image createImage(Component component, Dimension size) {
+        VolatileImage snapshot = component.createVolatileImage(size.width, size.height);
         if (snapshot != null) {
             component.paint(snapshot.getGraphics());
         }
         return snapshot;
     }
 
-    private class PanelSnapshot extends JComponent {
+    protected void paintComponent(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setColor(slideComponent.getBackground());
+        g2.fillRect(0, 0, getWidth(), getHeight());
+        g2.dispose();
+    }
+
+    @Override
+    public Color getBackground() {
+        if (slideComponent == null) {
+            return super.getBackground();
+        }
+        return slideComponent.getBackground();
+    }
+
+    public class PanelSnapshot extends JComponent {
 
         private Animator animator;
         private Component component;
@@ -84,12 +110,19 @@ public class PanelSlider extends JLayeredPane {
                 public void timingEvent(float v) {
                     animate = v;
                     repaint();
+                    animatedLayout.setAnimate(animate);
+                    if (animatedLayout.isUpdateAble()) {
+                        PanelSlider.this.revalidate();
+                    }
                 }
 
                 @Override
                 public void end() {
                     setVisible(false);
                     component.setVisible(true);
+                    animatedLayout.reset();
+                    slideComponent.requestFocus();
+                    PanelSlider.this.repaint();
                     if (newImage != null) {
                         newImage.flush();
                     }
@@ -101,7 +134,7 @@ public class PanelSlider extends JLayeredPane {
             animator.setInterpolator(CubicBezierEasing.STANDARD_EASING);
         }
 
-        protected void animate(Component component, SliderTransition sliderTransition, Image oldImage, Image newImage) {
+        protected void animate(Component component, SliderTransition sliderTransition, Image oldImage, Image newImage, int duration) {
             if (animator.isRunning()) {
                 animator.stop();
             }
@@ -112,6 +145,7 @@ public class PanelSlider extends JLayeredPane {
             this.animate = 0f;
             repaint();
             setVisible(true);
+            animator.setDuration(duration);
             animator.start();
         }
 

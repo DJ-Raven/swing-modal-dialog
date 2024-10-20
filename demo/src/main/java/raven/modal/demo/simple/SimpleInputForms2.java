@@ -2,16 +2,12 @@ package raven.modal.demo.simple;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import net.miginfocom.swing.MigLayout;
-import raven.modal.component.ModalBorderAction;
-import raven.modal.component.SimpleModalBorder;
 
 import javax.swing.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
-public class SimpleInputForms extends JPanel {
+public class SimpleInputForms2 extends JPanel {
 
-    public SimpleInputForms() {
+    public SimpleInputForms2() {
         init();
     }
 
@@ -22,11 +18,6 @@ public class SimpleInputForms extends JPanel {
         JTextField txtCompany = new JTextField();
         JTextField txtEmail = new JTextField();
         JComboBox comboCountry = new JComboBox();
-
-        JTextArea txtAddress = new JTextArea();
-        txtAddress.setWrapStyleWord(true);
-        txtAddress.setLineWrap(true);
-        JScrollPane scroll = new JScrollPane(txtAddress);
 
         // style
         txtFirstName.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "First");
@@ -46,22 +37,6 @@ public class SimpleInputForms extends JPanel {
         add(new JLabel("Country"), "gapy 5 0");
         add(comboCountry);
 
-        createTitle("Delivery address");
-
-        add(new JLabel("Address"), "gapy 5 0");
-        add(scroll, "height 150,grow,pushy");
-
-        txtAddress.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                if (e.isControlDown() && e.getKeyChar() == 10) {
-                    ModalBorderAction modalBorderAction = ModalBorderAction.getModalBorderAction(SimpleInputForms.this);
-                    if (modalBorderAction != null) {
-                        modalBorderAction.doAction(SimpleModalBorder.YES_OPTION);
-                    }
-                }
-            }
-        });
         initComboItem(comboCountry);
     }
 

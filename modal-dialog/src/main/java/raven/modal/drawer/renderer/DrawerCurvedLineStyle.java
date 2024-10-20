@@ -1,6 +1,7 @@
 package raven.modal.drawer.renderer;
 
 import com.formdev.flatlaf.util.UIScale;
+import raven.modal.drawer.menu.AbstractMenuElement;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,7 +38,7 @@ public class DrawerCurvedLineStyle extends AbstractDrawerLineStyleRenderer {
     }
 
     @Override
-    public void draw(Graphics2D g2, JComponent component, int startX, int startY, int endX, int endY, int[] subMenuLocation, int selectedIndex, boolean isLeftToRight) {
+    public void draw(Graphics2D g2, JComponent component, int startX, int startY, int endX, int endY, int[] subMenuLocation, int selectedIndex, boolean isLeftToRight, AbstractMenuElement menuElement) {
         int round = UIScale.scale(8);
         Path2D.Double defaultLine = new Path2D.Double();
         Path2D.Double selectedLine = selectedIndex >= 0 ? new Path2D.Double() : null;

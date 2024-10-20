@@ -151,13 +151,13 @@ public class ModalContainer extends JComponent {
             if (modalController.getOption().getBackgroundDark() != null) {
                 return modalController.getOption().getBackgroundDark();
             } else {
-                return ColorFunctions.lighten(getBackground(), 0.2f);
+                return ColorFunctions.tint(getBackground(), 0.2f);
             }
         } else {
             if (modalController.getOption().getBackgroundLight() != null) {
                 return modalController.getOption().getBackgroundLight();
             } else {
-                return ColorFunctions.darken(getBackground(), 0.2f);
+                return ColorFunctions.shade(getBackground(), 0.2f);
             }
         }
     }
@@ -172,6 +172,23 @@ public class ModalContainer extends JComponent {
                 }
             }
             modalContainerLayer.setVisible(false);
+        }
+    }
+
+    public Dimension getModalComponentSize(Component com, Container container) {
+        Insets insets = new Insets(0, 0, 0, 0);
+        addParentInsets(container, insets);
+        return modalLayout.getComponentSize(this, com, insets);
+    }
+
+    private void addParentInsets(Container container, Insets insets) {
+        Insets in = container.getInsets();
+        insets.top += in.top;
+        insets.left += in.left;
+        insets.bottom += in.bottom;
+        insets.right += in.right;
+        if (container.getParent() != this) {
+            addParentInsets(container.getParent(), insets);
         }
     }
 }

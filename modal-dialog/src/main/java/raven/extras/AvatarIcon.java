@@ -216,6 +216,18 @@ public class AvatarIcon implements Icon {
         image = null;
     }
 
+    public Icon getDefaultIcon() {
+        Icon icon;
+        if (filename != null) {
+            icon = new ImageIcon(filename);
+        } else if (location != null) {
+            icon = new ImageIcon(location);
+        } else {
+            icon = this.icon;
+        }
+        return icon;
+    }
+
     private int getAllBorder() {
         return UIScale.scale(borderWidth + innerBorderWidth);
     }
@@ -271,21 +283,28 @@ public class AvatarIcon implements Icon {
 
         public void paint(Graphics2D g, int x, int y, int width, int height) {
             float op;
-            if (opacity > 1f) {
+            float opt = getOpacity();
+            if (opt > 1f) {
                 op = 1f;
-            } else if (opacity < 0) {
+            } else if (opt < 0) {
                 op = 0;
             } else {
-                op = opacity;
+                op = opt;
             }
             if (op == 0f) return;
             if (op < 1f) {
                 g.setComposite(AlphaComposite.SrcOver.derive(op));
             }
-            if (endColor == null) {
-                g.setColor(startColor);
+
+            Color eColor = getEndColor();
+            Color sColor = getStartColor();
+            float sPoint = getStartPoint();
+            float ePoint = getEndPoint();
+
+            if (eColor == null) {
+                g.setColor(sColor);
             } else {
-                g.setPaint(new GradientPaint(x, y + height * startPoint, startColor, x + width, y + height * endPoint, endColor));
+                g.setPaint(new GradientPaint(x, y + height * sPoint, sColor, x + width, y + height * ePoint, eColor));
             }
         }
 

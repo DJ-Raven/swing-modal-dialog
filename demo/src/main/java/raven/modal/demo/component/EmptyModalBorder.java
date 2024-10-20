@@ -8,7 +8,7 @@ import java.awt.*;
 public class EmptyModalBorder extends Modal {
 
     public EmptyModalBorder(Component component) {
-        setLayout(new MigLayout("fill,insets 0", "[fill]", "[fill]"));
+        setLayout(new MigLayout("fill,insets 8 0 8 0", "[fill]", "[fill]"));
         add(component);
     }
 }

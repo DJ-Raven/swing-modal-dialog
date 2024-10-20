@@ -70,13 +70,14 @@ public class FrameModalLayout implements LayoutManager {
             component.setBounds(x, y, width, height);
             snapshot.setBounds(x, y, width, height);
             if (drawerLayoutResponsive != null) {
-                boolean isOpen = drawerLayoutResponsive.check(parent, drawerLayoutResponsive.isHorizontalDrawer() ? width : height);
+                boolean isHorizontalDrawer = drawerLayoutResponsive.isHorizontalDrawer();
+                boolean isOpen = drawerLayoutResponsive.check(parent, isHorizontalDrawer ? width : height);
                 if (isOpen || drawerLayoutResponsive.isShowing() == false) {
                     contentPane.setBounds(0, contentPane.getY(), width, height);
                     drawerLayoutResponsive.revalidateDrawer();
                 } else {
                     Rectangle drawerRec = drawerLayoutResponsive.getDrawerLayout(parent);
-                    Rectangle contentRec = calculate(new Rectangle(x, y, width, height), drawerRec, drawerLayoutResponsive.isHorizontalDrawer());
+                    Rectangle contentRec = calculate(new Rectangle(x, y, width, height), drawerRec, isHorizontalDrawer);
                     contentPane.setBounds(contentRec);
                     drawerLayoutResponsive.getDrawerPanel().setBounds(x + drawerRec.x, y + drawerRec.y, drawerRec.width - x, drawerRec.height - y);
                 }
