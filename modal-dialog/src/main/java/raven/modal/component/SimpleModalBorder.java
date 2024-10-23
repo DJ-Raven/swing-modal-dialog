@@ -19,13 +19,14 @@ import java.util.function.Consumer;
  */
 public class SimpleModalBorder extends Modal implements ModalBorderAction {
 
-    private final Component component;
-    private final ModalBorderOption option;
-    private final String title;
+    protected final Component component;
+    protected JComponent header;
+
+    protected final ModalBorderOption option;
+    protected final String title;
     private final int optionType;
     private Option[] optionsType;
     private final ModalCallback callback;
-    private JComponent header;
 
     // options
     public static final int DEFAULT_OPTION = -1;
@@ -83,7 +84,7 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
      */
     @Override
     public void installComponent() {
-        setLayout(new MigLayout("wrap,fillx,insets 15 0 15 0", "[fill]", "[][fill,grow][]"));
+        setLayout(new MigLayout("wrap,fillx,insets 18 0 18 0", "[fill]", "[][fill,grow][]"));
         header = createHeader();
         add(header);
         if (option.isUseScroll()) {
@@ -112,7 +113,7 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
     }
 
     protected JComponent createHeader() {
-        JPanel panel = new JPanel(new MigLayout("fill,insets 2 35 2 35"));
+        JPanel panel = new JPanel(new MigLayout("fill,insets 3 30 3 30"));
         panel.putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:null;");
         panel.add(createTitleComponent(title), "push");
@@ -147,7 +148,7 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
         if (optionsType == null || optionsType.length == 0) {
             return null;
         }
-        JPanel panel = new JPanel(new MigLayout("insets 2 35 2 35,al trailing"));
+        JPanel panel = new JPanel(new MigLayout("insets 3 30 3 30,al trailing"));
         panel.putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:null;");
         for (Option option : optionsType) {
@@ -185,20 +186,25 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
         return button;
     }
 
-    public void createBackButton(Consumer onBack) {
+    protected void applyBackButton(Consumer onBack) {
+        Component backButton = createBackButton(onBack);
         if (header != null) {
-            JButton buttonClose = new JButton(new FlatSVGIcon("raven/modal/icon/back.svg", 0.4f));
-            buttonClose.setFocusable(false);
-            buttonClose.addActionListener(e -> onBack.accept(null));
-            buttonClose.putClientProperty(FlatClientProperties.STYLE, "" +
-                    "arc:999;" +
-                    "margin:5,5,5,5;" +
-                    "borderWidth:0;" +
-                    "focusWidth:0;" +
-                    "innerFocusWidth:0;" +
-                    "background:null;");
-            header.add(buttonClose, 0);
+            header.add(backButton, 0);
         }
+    }
+
+    protected JComponent createBackButton(Consumer onBack) {
+        JButton buttonClose = new JButton(new FlatSVGIcon("raven/modal/icon/back.svg", 0.4f));
+        buttonClose.setFocusable(false);
+        buttonClose.addActionListener(e -> onBack.accept(null));
+        buttonClose.putClientProperty(FlatClientProperties.STYLE, "" +
+                "arc:999;" +
+                "margin:5,5,5,5;" +
+                "borderWidth:0;" +
+                "focusWidth:0;" +
+                "innerFocusWidth:0;" +
+                "background:null;");
+        return buttonClose;
     }
 
     private void checkOptionType(int type) {

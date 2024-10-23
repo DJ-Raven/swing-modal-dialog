@@ -85,7 +85,7 @@ public class ModalController extends JPanel {
         installModalComponent(modal);
         if (modal instanceof SimpleModalBorder) {
             SimpleModalBorder simpleModalBorder = (SimpleModalBorder) modal;
-            simpleModalBorder.createBackButton(getOnBackAction());
+            simpleModalBorder.applyBackButton(getOnBackAction());
         }
         pushStack(this.modal);
         this.modal = modal;
