@@ -1,6 +1,18 @@
 # Changelog
 
-## [2.0] - 2024-10-20
+## [2.1.0]-SNAPSHOT
+
+### Changed
+
+- Modal dialog
+    - Update drop shadow border use `insets` instead of `shadowSize` and `shadowTopSize` (PR #16)
+
+### Demo
+
+- Use `JTextPane` instead of `JTextArea` to avoid error layout when component is RTL (issues with layout)
+- Drawer now use shadow border
+
+## [2.0.0] - 2024-10-20
 
 ### New features and improvements
 
