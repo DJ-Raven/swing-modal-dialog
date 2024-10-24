@@ -44,6 +44,7 @@ public class ModalContainer extends JComponent {
         setLayout(modalLayout);
         installOption(option);
         add(modalController);
+        modalController.setComponentOrientation(modalContainerLayer.getComponentOrientation());
     }
 
     private void installOption(Option option) {

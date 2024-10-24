@@ -1,5 +1,7 @@
 package raven.modal.option;
 
+import raven.modal.utils.ModalUtils;
+
 import java.awt.*;
 
 /**
@@ -15,12 +17,8 @@ public class BorderOption {
         return round;
     }
 
-    public int getShadowSize() {
-        return shadowSize;
-    }
-
-    public int getShadowTopSize() {
-        return shadowTopSize;
+    public Insets getShadowSize() {
+        return new Insets(shadowSize.top, shadowSize.left, shadowSize.bottom, shadowSize.right);
     }
 
     public Color getShadowColor() {
@@ -39,10 +37,9 @@ public class BorderOption {
         return borderColor;
     }
 
-    private BorderOption(float round, int shadowSize, int shadowTopSize, Color shadowColor, float shadowOpacity, float borderWidth, Color borderColor) {
+    private BorderOption(float round, Insets shadowSize, Color shadowColor, float shadowOpacity, float borderWidth, Color borderColor) {
         this.round = round;
         this.shadowSize = shadowSize;
-        this.shadowTopSize = shadowTopSize;
         this.shadowColor = shadowColor;
         this.shadowOpacity = shadowOpacity;
         this.borderWidth = borderWidth;
@@ -53,8 +50,7 @@ public class BorderOption {
     }
 
     private float round = 20;
-    private int shadowSize = 0;
-    private int shadowTopSize = 0;
+    private Insets shadowSize = new Insets(0, 0, 0, 0);
     private Color shadowColor;
     private float shadowOpacity = -1;
     private float borderWidth = 0;
@@ -66,12 +62,18 @@ public class BorderOption {
     }
 
     public BorderOption setShadowSize(int shadowSize) {
-        this.shadowSize = shadowSize;
+        if (shadowSize < 0) {
+            throw new IllegalArgumentException("shadow size must be >=0");
+        }
+        this.shadowSize = new Insets(shadowSize, shadowSize, shadowSize, shadowSize);
         return this;
     }
 
-    public BorderOption setShadowTopSize(int shadowTopSize) {
-        this.shadowTopSize = shadowTopSize;
+    public BorderOption setShadowSize(Insets shadowSize) {
+        if (ModalUtils.minimumInsets(shadowSize) < 0) {
+            throw new IllegalArgumentException("shadow size must be >=0");
+        }
+        this.shadowSize = new Insets(shadowSize.top, shadowSize.left, shadowSize.bottom, shadowSize.right);
         return this;
     }
 
@@ -101,7 +103,8 @@ public class BorderOption {
     }
 
     public BorderOption copy() {
-        return new BorderOption(round, shadowSize, shadowTopSize, shadowColor, shadowOpacity, borderWidth, borderColor);
+        Insets newShadowSize = new Insets(shadowSize.top, shadowSize.left, shadowSize.bottom, shadowSize.right);
+        return new BorderOption(round, newShadowSize, shadowColor, shadowOpacity, borderWidth, borderColor);
     }
 
     public enum Shadow {
@@ -109,23 +112,17 @@ public class BorderOption {
 
         private void apply(BorderOption option) {
             if (this == NONE) {
-                option.setShadowSize(0)
-                        .setShadowTopSize(0);
+                option.setShadowSize(0);
             } else if (this == SMALL) {
-                option.setShadowSize(6)
-                        .setShadowTopSize(4);
+                option.setShadowSize(new Insets(4, 4, 6, 6));
             } else if (this == MEDIUM) {
-                option.setShadowSize(12)
-                        .setShadowTopSize(8);
+                option.setShadowSize(new Insets(8, 8, 12, 12));
             } else if (this == LARGE) {
-                option.setShadowSize(18)
-                        .setShadowTopSize(12);
+                option.setShadowSize(new Insets(12, 12, 18, 18));
             } else if (this == EXTRA_LARGE) {
-                option.setShadowSize(24)
-                        .setShadowTopSize(16);
+                option.setShadowSize(new Insets(16, 16, 24, 24));
             } else {
-                option.setShadowSize(30)
-                        .setShadowTopSize(20);
+                option.setShadowSize(new Insets(20, 20, 30, 30));
             }
         }
     }

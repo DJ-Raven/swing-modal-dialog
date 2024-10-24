@@ -34,7 +34,7 @@ public class FormToast extends Form {
     private JPanel createInfo() {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[fill]"));
         JLabel title = new JLabel("Toast");
-        JTextArea text = new JTextArea();
+        JTextPane text = new JTextPane();
         text.setText("A toast notification is a small, transient message that appears on the screen to provide feedback to the user.\nIt is commonly used to display brief, non-intrusive notifications.");
         text.setEditable(false);
         text.setBorder(BorderFactory.createEmptyBorder());
@@ -42,7 +42,7 @@ public class FormToast extends Form {
                 "font:bold +3");
 
         panel.add(title);
-        panel.add(text);
+        panel.add(text, "width 500");
         return panel;
     }
 

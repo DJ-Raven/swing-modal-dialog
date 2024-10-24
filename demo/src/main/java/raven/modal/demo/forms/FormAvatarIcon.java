@@ -27,7 +27,7 @@ public class FormAvatarIcon extends Form {
     private JPanel createInfo() {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[fill]"));
         JLabel title = new JLabel("Avatar Icon");
-        JTextArea text = new JTextArea();
+        JTextPane text = new JTextPane();
         text.setText("An avatar icon is a graphical element that visually represents a user within an application.\nIt is often used in user profiles, comment sections, and contact lists to personalize the user interface.");
         text.setEditable(false);
         text.setBorder(BorderFactory.createEmptyBorder());
@@ -35,7 +35,7 @@ public class FormAvatarIcon extends Form {
                 "font:bold +3");
 
         panel.add(title);
-        panel.add(text);
+        panel.add(text,"width 500");
         return panel;
     }
 

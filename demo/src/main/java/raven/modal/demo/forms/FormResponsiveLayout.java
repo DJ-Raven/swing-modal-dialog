@@ -47,7 +47,7 @@ public class FormResponsiveLayout extends Form {
     private JPanel createInfo() {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[fill]"));
         JLabel title = new JLabel("Responsive Layout");
-        JTextArea text = new JTextArea();
+        JTextPane text = new JTextPane();
         text.setText("A responsive layout in desktop applications ensures that\nthe user interface adapts seamlessly to different window sizes and screen resolutions.");
         text.setEditable(false);
         text.setBorder(BorderFactory.createEmptyBorder());
@@ -55,7 +55,7 @@ public class FormResponsiveLayout extends Form {
                 "font:bold +3");
 
         panel.add(title);
-        panel.add(text);
+        panel.add(text, "width 500");
         return panel;
     }
 
