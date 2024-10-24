@@ -41,14 +41,11 @@ public class ModalContainerLayer extends JLayeredPane {
 
     public ModalContainer addModalWithoutShowing(Modal modal, Option option, String id) {
         ModalContainer modalContainer = new ModalContainer(this, option, id);
-        modalContainer.setComponentOrientation(modal.getComponentOrientation());
         setLayer(modalContainer, JLayeredPane.MODAL_LAYER + (option.getLayoutOption().isOnTop() ? 1 : 0));
         add(modalContainer, 0);
         modalContainer.addModal(modal);
         modal.setId(id);
-        if (rootPaneContainer.getRootPane().getComponentOrientation().isLeftToRight() != modalContainer.getComponentOrientation().isLeftToRight()) {
-            modalContainer.applyComponentOrientation(rootPaneContainer.getRootPane().getComponentOrientation());
-        }
+        modalContainer.setComponentOrientation(rootPaneContainer.getRootPane().getComponentOrientation());
         setModalContainer.add(modalContainer);
         return modalContainer;
     }

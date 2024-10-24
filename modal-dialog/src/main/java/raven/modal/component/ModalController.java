@@ -216,6 +216,10 @@ public class ModalController extends JPanel {
             modal.installComponent();
             modal.setInstalled(true);
         }
+
+        // apply component orientation
+        ComponentOrientation orientation = modalContainerLayer.getRootPaneContainer().getRootPane().getComponentOrientation();
+        modal.applyComponentOrientation(orientation);
     }
 
     private void remove() {
