@@ -40,7 +40,7 @@ Add the snapshot version
 <dependency>
     <groupId>io.github.dj-raven</groupId>
     <artifactId>modal-dialog</artifactId>
-    <version>x.x.x-SNAPSHOT</version>
+    <version>2.1.0-SNAPSHOT</version>
 </dependency>
 ```
 
