@@ -4,11 +4,10 @@ import com.formdev.flatlaf.ui.FlatDropShadowBorder;
 import com.formdev.flatlaf.ui.FlatEmptyBorder;
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.UIScale;
+import raven.modal.utils.ModalUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Area;
-import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 
 /**
@@ -19,52 +18,51 @@ public class OutlineBorder extends FlatEmptyBorder {
     private static final float inner = 0.2f;
     private final float borderWidth;
 
-    private final int shadowSize;
-    private final int shadowTopSize;
+    private final Insets shadowSize;
     private final float round;
     private final Color borderColor;
     private FlatDropShadowBorder shadowBorder;
 
     public OutlineBorder(int shadowSize, float round) {
-        this(shadowSize, shadowSize, round);
+        this(new Insets(shadowSize, shadowSize, shadowSize, shadowSize), shadowSize, round);
     }
 
-    public OutlineBorder(float borderWidth, int shadowSize, float round) {
-        this(borderWidth, shadowSize, shadowSize, round, null);
+    public OutlineBorder(Insets shadowSize, float round) {
+        this(shadowSize, 0, null, round);
     }
 
-    public OutlineBorder(int shadowSize, int shadowTopSize, float round) {
-        this(0, shadowSize, shadowTopSize, round, null);
+    public OutlineBorder(Insets shadowSize, float borderWidth, float round) {
+        this(shadowSize, borderWidth, null, round);
     }
 
-    public OutlineBorder(float borderWidth, int shadowSize, int shadowTopSize, float round, Color borderColor) {
-        this(borderWidth, shadowSize, shadowTopSize, -1, null, round, borderColor);
+    public OutlineBorder(Insets shadowSize, float borderWidth, Color borderColor, float round) {
+        this(shadowSize, -1, null, borderWidth, borderColor, round);
     }
 
-    public OutlineBorder(float borderWidth, int shadowSize, int shadowTopSize, float shadowOpacity, Color shadowColor, float round, Color borderColor) {
-        super(getShadowInsets(borderWidth, shadowSize, shadowTopSize, round));
-        this.borderWidth = borderWidth;
+    public OutlineBorder(Insets shadowSize, float shadowOpacity, Color shadowColor, float borderWidth, Color borderColor, float round) {
+        super(getShadowInsets(shadowSize, borderWidth, round));
         this.shadowSize = shadowSize;
-        this.shadowTopSize = Math.min(shadowTopSize, shadowSize);
-        this.round = round;
+        this.borderWidth = borderWidth;
         this.borderColor = borderColor;
+        this.round = round;
 
-        if (shadowSize > 0) {
+        int size = ModalUtils.maximumInsets(shadowSize);
+        if (size > 0) {
             int width = (int) getBorderWidth(borderWidth, round);
             this.shadowBorder = new FlatDropShadowBorder(
                     shadowColor == null ? UIManager.getColor("Popup.dropShadowColor") : shadowColor,
-                    new Insets(shadowSize + width, shadowSize + width, shadowSize + width, shadowSize + width),
+                    new Insets(size + width, size + width, size + width, size + width),
                     shadowOpacity <= -1 ? FlatUIUtils.getUIFloat("Popup.dropShadowOpacity", 0.5f) : shadowOpacity);
         }
     }
 
-    private static Insets getShadowInsets(float borderWidth, int shadowSize, int shadowTopSize, float round) {
+    private static Insets getShadowInsets(Insets shadowInsets, float borderWidth, float round) {
         float addSize = getBorderWidth(borderWidth, round);
-        if (shadowSize > 0) {
-            int top = (int) (shadowTopSize + addSize);
-            int left = (int) (shadowSize + addSize);
-            int bottom = (int) (shadowSize + addSize);
-            int right = (int) (shadowSize + addSize);
+        if (!FlatUIUtils.isInsetsEmpty(shadowInsets)) {
+            int top = (int) (shadowInsets.top + addSize);
+            int left = (int) (shadowInsets.left + addSize);
+            int bottom = (int) (shadowInsets.bottom + addSize);
+            int right = (int) (shadowInsets.right + addSize);
             return new Insets(top, left, bottom, right);
         }
         int b = (int) addSize;
@@ -88,17 +86,27 @@ public class OutlineBorder extends FlatEmptyBorder {
                 shadowBorder.paintBorder(c, g2, x, y, width, height);
             }
 
+            int top = shadowSize.top;
+            int left = shadowSize.left;
+            int bottom = shadowSize.bottom;
+            int right = shadowSize.right;
+
+            if (!c.getComponentOrientation().isLeftToRight()) {
+                left = shadowSize.right;
+                right = shadowSize.left;
+            }
+
             float lineWidth = UIScale.scale(borderWidth);
             float arc = UIScale.scale(round);
-            float lx = UIScale.scale(shadowSize);
-            float ly = UIScale.scale(shadowTopSize);
-            int w = width - UIScale.scale(shadowSize + shadowSize);
-            int h = height - UIScale.scale(shadowTopSize + shadowSize);
+            float lx = UIScale.scale(left);
+            float ly = UIScale.scale(top);
+            int w = width - UIScale.scale(left + right);
+            int h = height - UIScale.scale(top + bottom);
             g2.translate(lx, ly);
 
             // paint background
             g2.setColor(c.getBackground());
-            g2.fill(createShapeBorder(w, h));
+            g2.fill(new RoundRectangle2D.Float(0, 0, w, h, arc, arc));
 
             // paint outline
             if (borderWidth > 0) {
@@ -109,18 +117,6 @@ public class OutlineBorder extends FlatEmptyBorder {
         } finally {
             g2.dispose();
         }
-    }
-
-    private Shape createShapeBorder(float width, float height) {
-        float lineWidth = UIScale.scale(getBorderWidth(borderWidth, round));
-
-        float arc = UIScale.scale(round);
-        lineWidth += UIScale.scale(0.5f);
-        float x = lineWidth;
-        float y = lineWidth + UIScale.scale(shadowSize - shadowTopSize);
-        Area area = new Area(new RoundRectangle2D.Float(0, 0, width, height, arc, arc));
-        area.subtract(new Area(new Rectangle2D.Float(x, y, width - lineWidth * 2f, height - (lineWidth + y))));
-        return area;
     }
 
     protected Color getBorderColor() {

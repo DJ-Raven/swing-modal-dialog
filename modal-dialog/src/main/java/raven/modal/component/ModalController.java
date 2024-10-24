@@ -1,5 +1,6 @@
 package raven.modal.component;
 
+import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.Animator;
 import com.formdev.flatlaf.util.CubicBezierEasing;
 import net.miginfocom.swing.MigLayout;
@@ -9,6 +10,7 @@ import raven.modal.slider.PanelSlider;
 import raven.modal.slider.SimpleTransition;
 import raven.modal.slider.SliderTransition;
 import raven.modal.utils.ImageSnapshots;
+import raven.modal.utils.ModalUtils;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -48,7 +50,8 @@ public class ModalController extends JPanel {
         addMouseListener(new MouseAdapter() {
         });
 
-        int minimumSize = option.getBorderOption().getShadowSize();
+        Insets shadowSize = option.getBorderOption().getShadowSize();
+        int minimumSize = ModalUtils.maximumInsets(shadowSize);
         setLayout(new MigLayout("fill,insets 0", "[fill," + minimumSize + "::]", "[fill," + minimumSize + "::]"));
         setOpaque(false);
 
@@ -62,8 +65,9 @@ public class ModalController extends JPanel {
             return;
         }
         BorderOption borderOption = option.getBorderOption();
-        if (borderOption.getBorderWidth() > 0 || (borderOption.getShadowSize() > 0 || borderOption.getRound() > 0)) {
-            setBorder(new OutlineBorder(borderOption.getBorderWidth(), borderOption.getShadowSize(), borderOption.getShadowTopSize(), borderOption.getShadowOpacity(), borderOption.getShadowColor(), borderOption.getRound(), borderOption.getBorderColor()));
+        Insets shadowSize = option.getBorderOption().getShadowSize();
+        if (!FlatUIUtils.isInsetsEmpty(shadowSize) || borderOption.getRound() > 0) {
+            setBorder(new OutlineBorder(shadowSize, borderOption.getShadowOpacity(), borderOption.getShadowColor(), borderOption.getBorderWidth(), borderOption.getBorderColor(), borderOption.getRound()));
         }
     }
 
