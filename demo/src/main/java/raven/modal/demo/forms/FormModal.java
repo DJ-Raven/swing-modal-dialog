@@ -34,7 +34,7 @@ public class FormModal extends Form {
     private JPanel createInfo() {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[fill]"));
         JLabel title = new JLabel("Modal");
-        JTextArea text = new JTextArea();
+        JTextPane text = new JTextPane();
         text.setText("A library modal dialog is a user interface element that appears on top of the main application window, requiring the user's interaction to proceed.");
         text.setEditable(false);
         text.setBorder(BorderFactory.createEmptyBorder());
@@ -42,7 +42,7 @@ public class FormModal extends Form {
                 "font:bold +3");
 
         panel.add(title);
-        panel.add(text);
+        panel.add(text, "width 500");
         return panel;
     }
 

@@ -33,7 +33,7 @@ public class FormDateTime extends Form {
     private JPanel createInfo() {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[fill]"));
         JLabel title = new JLabel("DateTime Picker");
-        JTextArea text = new JTextArea();
+        JTextPane text = new JTextPane();
         text.setText("A DateTime picker is a user interface component that allows users to select both a date and a time from a graphical interface.\nIt simplifies date and time input, ensuring accuracy and consistency.");
         text.setEditable(false);
         text.setBorder(BorderFactory.createEmptyBorder());
@@ -41,7 +41,7 @@ public class FormDateTime extends Form {
                 "font:bold +3");
 
         panel.add(title);
-        panel.add(text);
+        panel.add(text, "width 500");
         return panel;
     }
 
@@ -54,7 +54,7 @@ public class FormDateTime extends Form {
     }
 
     private Component createDateOption() {
-        JPanel panel = new JPanel(new MigLayout("wrap","[200]"));
+        JPanel panel = new JPanel(new MigLayout("wrap", "[200]"));
         panel.setBorder(new TitledBorder("Date option"));
         JCheckBox chDateBetween = new JCheckBox("Date between");
         JCheckBox chUsePanelOption = new JCheckBox("Use panel option");

@@ -37,14 +37,14 @@ public class FormTable extends Form {
     private JPanel createInfo(String title, String description, int level) {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[fill]"));
         JLabel lbTitle = new JLabel(title);
-        JTextArea text = new JTextArea();
+        JTextPane text = new JTextPane();
         text.setText(description);
         text.setEditable(false);
         text.setBorder(BorderFactory.createEmptyBorder());
         lbTitle.putClientProperty(FlatClientProperties.STYLE, "" +
                 "font:bold +" + (4 - level));
         panel.add(lbTitle);
-        panel.add(text);
+        panel.add(text, "width 500");
         return panel;
     }
 
