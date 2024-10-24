@@ -16,8 +16,10 @@ import raven.modal.drawer.simple.footer.LightDarkButtonFooter;
 import raven.modal.drawer.simple.footer.SimpleFooterData;
 import raven.modal.drawer.simple.header.SimpleHeaderData;
 import raven.extras.AvatarIcon;
+import raven.modal.option.Option;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.Arrays;
 
 public class MyDrawerBuilder extends SimpleDrawerBuilder {
@@ -166,6 +168,15 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
     @Override
     public int getOpenDrawerAt() {
         return 1000;
+    }
+
+    @Override
+    public Option getOption() {
+        Option option = super.getOption();
+        option.setOpacity(0.3f);
+        option.getBorderOption()
+                .setShadowSize(new Insets(0, 0, 0, 12));
+        return option;
     }
 
     @Override
