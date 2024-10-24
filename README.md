@@ -7,9 +7,9 @@ and support animation
 - [x] Drawer
 - [x] Toast Notification
 
-<img src="https://github.com/DJ-Raven/swing-modal-dialog/blob/main/screenshot/simple 1.png" alt="simple 1"/>
-<img src="https://github.com/DJ-Raven/swing-modal-dialog/blob/main/screenshot/simple 2.png" alt="simple 2"/>
-<img src="https://github.com/DJ-Raven/swing-modal-dialog/blob/main/screenshot/simple 3.png" alt="simple 3"/>
+![Simple 1](screenshot/simple%201.png)
+![Simple 2](screenshot/simple%202.png)
+![Simple 3](screenshot/simple%203.png)
 
 ## Installation
 
