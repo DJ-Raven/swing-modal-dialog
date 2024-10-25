@@ -6,6 +6,8 @@
 
 - Modal dialog
     - Update drop shadow border use `insets` instead of `shadowSize` and `shadowTopSize` (PR #16)
+- Drawer
+    - Embed drawer menu now apply border option
 
 ### Demo
 

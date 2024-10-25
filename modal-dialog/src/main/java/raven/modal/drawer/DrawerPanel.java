@@ -1,9 +1,12 @@
 package raven.modal.drawer;
 
+import com.formdev.flatlaf.FlatClientProperties;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.component.Modal;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 
 /**
  * @author Raven
@@ -23,24 +26,30 @@ public class DrawerPanel extends Modal {
 
     @Override
     public void installComponent() {
+        setLayout(new CardLayout());
+        setOpaque(false);
+        JPanel menuBackground = createMenuBackground();
+
         String layoutRow = "";
         if (drawerBuilder.getHeader() != null) {
             layoutRow = "[grow 0]";
-            add(drawerBuilder.getHeader());
+            menuBackground.add(drawerBuilder.getHeader());
         }
         if (drawerBuilder.getHeaderSeparator() != null) {
             layoutRow += "[grow 0,2::]";
-            add(drawerBuilder.getHeaderSeparator());
+            menuBackground.add(drawerBuilder.getHeaderSeparator());
         }
         if (drawerBuilder.getMenu() != null) {
             layoutRow += "[fill]";
-            add(drawerBuilder.getMenu());
+            menuBackground.add(drawerBuilder.getMenu());
         }
         if (drawerBuilder.getFooter() != null) {
             layoutRow += "[grow 0]";
-            add(drawerBuilder.getFooter());
+            menuBackground.add(drawerBuilder.getFooter());
         }
-        setLayout(new MigLayout("wrap,insets 0,fill", "fill", layoutRow));
+        menuBackground.setLayout(new MigLayout("wrap,insets 0,fill", "fill", layoutRow));
+
+        add(menuBackground);
     }
 
     public DrawerBuilder getDrawerBuilder() {
@@ -52,5 +61,24 @@ public class DrawerPanel extends Modal {
             SwingUtilities.updateComponentTreeUI(this);
             oldThemes = UIManager.getLookAndFeel();
         }
+    }
+
+    private JPanel createMenuBackground() {
+        JPanel panel = new JPanel();
+        panel.putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:null;");
+        return panel;
+    }
+
+    @Override
+    public void updateUI() {
+        Border border = getBorder();
+        super.updateUI();
+        setBorder(border);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
     }
 }

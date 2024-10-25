@@ -24,6 +24,8 @@ import java.util.Arrays;
 
 public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
+    private final int SHADOW_SIZE = 12;
+
     public MyDrawerBuilder() {
         super(createSimpleMenuOption());
         LightDarkButtonFooter lightDarkButtonFooter = (LightDarkButtonFooter) footer;
@@ -157,12 +159,12 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
     @Override
     public int getDrawerWidth() {
-        return 270;
+        return 270 + SHADOW_SIZE;
     }
 
     @Override
     public int getDrawerCompactWidth() {
-        return 80;
+        return 80 + SHADOW_SIZE;
     }
 
     @Override
@@ -175,7 +177,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
         Option option = super.getOption();
         option.setOpacity(0.3f);
         option.getBorderOption()
-                .setShadowSize(new Insets(0, 0, 0, 12));
+                .setShadowSize(new Insets(0, 0, 0, SHADOW_SIZE));
         return option;
     }
 

@@ -66,7 +66,7 @@ public class ModalController extends JPanel {
         }
         BorderOption borderOption = option.getBorderOption();
         Insets shadowSize = option.getBorderOption().getShadowSize();
-        if (!FlatUIUtils.isInsetsEmpty(shadowSize) || borderOption.getRound() > 0) {
+        if (borderOption.getBorderWidth() > 0 || borderOption.getRound() > 0 || !FlatUIUtils.isInsetsEmpty(shadowSize)) {
             setBorder(new OutlineBorder(shadowSize, borderOption.getShadowOpacity(), borderOption.getShadowColor(), borderOption.getBorderWidth(), borderOption.getBorderColor(), borderOption.getRound()));
         }
     }

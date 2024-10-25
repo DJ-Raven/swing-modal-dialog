@@ -64,10 +64,10 @@ public abstract class SimpleDrawerBuilder implements DrawerBuilder {
         scroll.getVerticalScrollBar().setUnitIncrement(10);
         scroll.getHorizontalScrollBar().setUnitIncrement(10);
         scroll.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" +
-                "width:9;" +
+                "width:6;" +
                 "trackArc:999;" +
-                "thumbInsets:0,3,0,3;" +
-                "trackInsets:0,3,0,3;" +
+                "thumbInsets:0,0,0,3;" +
+                "trackInsets:0,0,0,3;" +
                 "background:" + background);
         if (!background.equals("null")) {
             FlatLafStyleUtils.appendStyleIfAbsent(scroll.getVerticalScrollBar(), "" +

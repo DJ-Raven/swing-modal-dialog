@@ -1,12 +1,16 @@
 package raven.modal.drawer;
 
+import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.UIScale;
 import raven.modal.component.ModalContainer;
+import raven.modal.component.OutlineBorder;
 import raven.modal.drawer.menu.MenuOption;
 import raven.modal.drawer.simple.SimpleDrawerBuilder;
 import raven.modal.drawer.simple.SimpleDrawerLayoutOption;
 import raven.modal.layout.OptionLayoutUtils;
+import raven.modal.option.BorderOption;
 
+import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -99,7 +103,19 @@ public class DrawerLayoutResponsive {
     }
 
     private void drawerOpenChanged(boolean isOpen) {
+        BorderOption borderOption = drawerPanel.getDrawerBuilder().getOption().getBorderOption();
+        if (borderOption.getBorderWidth() > 0 || borderOption.getRound() > 0 || !FlatUIUtils.isInsetsEmpty(borderOption.getShadowSize())) {
+            if (!isOpen) {
+                drawerPanel.setBorder(BorderFactory.createEmptyBorder());
+            } else {
+                drawerPanel.setBorder(createBorder(borderOption));
+            }
+        }
         drawerPanel.getDrawerBuilder().drawerOpenChanged(isOpen);
+    }
+
+    private OutlineBorder createBorder(BorderOption option) {
+        return new OutlineBorder(option.getShadowSize(), option.getShadowOpacity(), option.getShadowColor(), option.getBorderWidth(), option.getBorderColor(), option.getRound());
     }
 
     public Rectangle getDrawerLayout(Container parent) {
