@@ -8,11 +8,13 @@
     - Update drop shadow border use `insets` instead of `shadowSize` and `shadowTopSize` (PR #16)
 - Drawer
     - Embed drawer menu now apply border option
+    - Add new method `Drawer.getDrawerOption()` and use it instead of `Drawer.getDrawerBuilder().getOption()`
 
 ### Demo
 
 - Use `JTextPane` instead of `JTextArea` to avoid error layout when component is RTL (issues with layout)
 - Drawer now use shadow border
+- Update from layout
 
 ## [2.0.0] - 2024-10-20
 
