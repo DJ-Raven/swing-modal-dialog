@@ -19,7 +19,7 @@ public class FormAvatarIcon extends Form {
     }
 
     private void init() {
-        setLayout(new MigLayout("wrap,fillx,insets 7 15 7 15", "[fill]"));
+        setLayout(new MigLayout("wrap,fillx", "[fill]"));
         add(createInfo());
         add(createOptions());
     }
@@ -35,7 +35,7 @@ public class FormAvatarIcon extends Form {
                 "font:bold +3");
 
         panel.add(title);
-        panel.add(text,"width 500");
+        panel.add(text, "width 500");
         return panel;
     }
 

@@ -19,7 +19,7 @@ public class FormDateTime extends Form {
     }
 
     private void init() {
-        setLayout(new MigLayout("wrap,fillx,insets 7 15 7 15", "[fill]"));
+        setLayout(new MigLayout("wrap,fillx", "[fill]"));
         add(createInfo());
         add(createOptions());
     }

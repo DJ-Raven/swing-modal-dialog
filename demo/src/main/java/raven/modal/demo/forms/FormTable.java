@@ -29,7 +29,7 @@ public class FormTable extends Form {
     }
 
     private void init() {
-        setLayout(new MigLayout("fillx,wrap,insets 7 15 7 15", "[fill]", "[][fill,grow]"));
+        setLayout(new MigLayout("fillx,wrap", "[fill]", "[][fill,grow]"));
         add(createInfo("Custom Table", "A table is a user interface component that displays a collection of records in a structured, tabular format. It allows users to view, sort, and manage data or other resources.", 1));
         add(createTab(), "gapx 7 7");
     }

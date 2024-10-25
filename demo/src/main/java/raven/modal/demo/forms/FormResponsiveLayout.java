@@ -22,7 +22,7 @@ public class FormResponsiveLayout extends Form {
     }
 
     private void init() {
-        setLayout(new MigLayout("wrap,fill,insets 7 15 7 15", "[fill]", "[grow 0][fill]"));
+        setLayout(new MigLayout("wrap,fill", "[fill]", "[grow 0][fill]"));
         add(createInfo());
         add(createOptions());
     }
