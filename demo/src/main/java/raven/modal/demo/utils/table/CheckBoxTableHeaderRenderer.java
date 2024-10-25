@@ -1,7 +1,6 @@
 package raven.modal.demo.utils.table;
 
 import com.formdev.flatlaf.FlatClientProperties;
-import com.formdev.flatlaf.util.UIScale;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
@@ -9,22 +8,23 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Rectangle2D;
 
 public class CheckBoxTableHeaderRenderer extends JCheckBox implements TableCellRenderer {
 
     private final JTable table;
     private final int column;
+    private final TableCellRenderer oldCellRenderer;
 
     public CheckBoxTableHeaderRenderer(JTable table, int column) {
         this.table = table;
         this.column = column;
+        this.oldCellRenderer = table.getTableHeader().getDefaultRenderer();
         init();
     }
 
     private void init() {
         putClientProperty(FlatClientProperties.STYLE, ""
-                + "background:$Table.background");
+                + "background:null;");
         setHorizontalAlignment(SwingConstants.CENTER);
 
         table.getTableHeader().addMouseListener(new MouseAdapter() {
@@ -71,16 +71,16 @@ public class CheckBoxTableHeaderRenderer extends JCheckBox implements TableCellR
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        JComponent com = (JComponent) oldCellRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        setBorder(com.getBorder());
         return this;
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g.create();
-        g2.setColor(UIManager.getColor("TableHeader.bottomSeparatorColor"));
-        float size = UIScale.scale(1f);
-        g2.fill(new Rectangle2D.Float(0, getHeight() - size, getWidth(), size));
-        g2.dispose();
+        if (getBorder() != null) {
+            getBorder().paintBorder(this, g, 0, 0, getWidth(), getHeight());
+        }
         super.paintComponent(g);
     }
 }
