@@ -29,7 +29,6 @@ public class DrawerPanel extends Modal {
     @Override
     public void installComponent() {
         setLayout(new CardLayout());
-        setOpaque(false);
         JPanel menuBackground = createMenuBackground();
 
         String layoutRow = "";

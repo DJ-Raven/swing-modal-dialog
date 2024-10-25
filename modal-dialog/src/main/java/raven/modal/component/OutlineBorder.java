@@ -80,7 +80,10 @@ public class OutlineBorder extends FlatEmptyBorder {
 
         try {
             FlatUIUtils.setRenderingHints(g2);
-
+            if (c.isOpaque()) {
+                g2.setColor(getBackgroundColor());
+                g2.fill(new Rectangle(0, 0, c.getWidth(), c.getHeight()));
+            }
             // paint shadow
             if (shadowBorder != null) {
                 shadowBorder.paintBorder(c, g2, x, y, width, height);
@@ -125,5 +128,9 @@ public class OutlineBorder extends FlatEmptyBorder {
         }
         Color color = UIManager.getColor("Component.borderColor");
         return color;
+    }
+
+    private Color getBackgroundColor() {
+        return UIManager.getColor("Panel.background");
     }
 }
