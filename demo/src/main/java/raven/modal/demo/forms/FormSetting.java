@@ -93,7 +93,7 @@ public class FormSetting extends Form {
 
         jrLeft.addActionListener(e -> {
             DrawerBuilder drawerBuilder = Drawer.getDrawerBuilder();
-            LayoutOption layoutOption = drawerBuilder.getOption().getLayoutOption();
+            LayoutOption layoutOption = Drawer.getDrawerOption().getLayoutOption();
             layoutOption.setSize(drawerBuilder.getDrawerWidth(), 1f)
                     .setLocation(Location.LEFT, Location.TOP)
                     .setAnimateDistance(-0.7f, 0f);
@@ -101,7 +101,7 @@ public class FormSetting extends Form {
         });
         jrLeading.addActionListener(e -> {
             DrawerBuilder drawerBuilder = Drawer.getDrawerBuilder();
-            LayoutOption layoutOption = drawerBuilder.getOption().getLayoutOption();
+            LayoutOption layoutOption = Drawer.getDrawerOption().getLayoutOption();
             layoutOption.setSize(drawerBuilder.getDrawerWidth(), 1f)
                     .setLocation(Location.LEADING, Location.TOP)
                     .setAnimateDistance(-0.7f, 0f);
@@ -109,7 +109,7 @@ public class FormSetting extends Form {
         });
         jrTrailing.addActionListener(e -> {
             DrawerBuilder drawerBuilder = Drawer.getDrawerBuilder();
-            LayoutOption layoutOption = drawerBuilder.getOption().getLayoutOption();
+            LayoutOption layoutOption = Drawer.getDrawerOption().getLayoutOption();
             layoutOption.setSize(drawerBuilder.getDrawerWidth(), 1f)
                     .setLocation(Location.TRAILING, Location.TOP)
                     .setAnimateDistance(0.7f, 0f);
@@ -117,7 +117,7 @@ public class FormSetting extends Form {
         });
         jrRight.addActionListener(e -> {
             DrawerBuilder drawerBuilder = Drawer.getDrawerBuilder();
-            LayoutOption layoutOption = drawerBuilder.getOption().getLayoutOption();
+            LayoutOption layoutOption = Drawer.getDrawerOption().getLayoutOption();
             layoutOption.setSize(drawerBuilder.getDrawerWidth(), 1f)
                     .setLocation(Location.RIGHT, Location.TOP)
                     .setAnimateDistance(0.7f, 0f);
@@ -125,7 +125,7 @@ public class FormSetting extends Form {
         });
         jrTop.addActionListener(e -> {
             DrawerBuilder drawerBuilder = Drawer.getDrawerBuilder();
-            LayoutOption layoutOption = drawerBuilder.getOption().getLayoutOption();
+            LayoutOption layoutOption = Drawer.getDrawerOption().getLayoutOption();
             layoutOption.setSize(1f, drawerBuilder.getDrawerWidth())
                     .setLocation(Location.LEADING, Location.TOP)
                     .setAnimateDistance(0f, -0.7f);
@@ -133,7 +133,7 @@ public class FormSetting extends Form {
         });
         jrBottom.addActionListener(e -> {
             DrawerBuilder drawerBuilder = Drawer.getDrawerBuilder();
-            LayoutOption layoutOption = drawerBuilder.getOption().getLayoutOption();
+            LayoutOption layoutOption = Drawer.getDrawerOption().getLayoutOption();
             layoutOption.setSize(1f, drawerBuilder.getDrawerWidth())
                     .setLocation(Location.LEADING, Location.BOTTOM)
                     .setAnimateDistance(0f, 0.7f);

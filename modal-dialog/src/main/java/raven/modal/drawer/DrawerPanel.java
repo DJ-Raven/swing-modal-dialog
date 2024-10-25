@@ -3,6 +3,7 @@ package raven.modal.drawer;
 import com.formdev.flatlaf.FlatClientProperties;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.component.Modal;
+import raven.modal.option.Option;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -15,10 +16,11 @@ public class DrawerPanel extends Modal {
 
     private LookAndFeel oldThemes = UIManager.getLookAndFeel();
     private final DrawerBuilder drawerBuilder;
+    private final Option drawerOption;
 
-    public DrawerPanel(DrawerBuilder drawerBuilder) {
+    public DrawerPanel(DrawerBuilder drawerBuilder, Option drawerOption) {
         this.drawerBuilder = drawerBuilder;
-
+        this.drawerOption = drawerOption;
         // drawer we need install component. because drawer use auto responsive embed to the frame before show modal dialog
         setInstalled(true);
         installComponent();
@@ -63,6 +65,10 @@ public class DrawerPanel extends Modal {
         }
     }
 
+    public Option getDrawerOption() {
+        return drawerOption;
+    }
+
     private JPanel createMenuBackground() {
         JPanel panel = new JPanel();
         panel.putClientProperty(FlatClientProperties.STYLE, "" +
@@ -75,10 +81,5 @@ public class DrawerPanel extends Modal {
         Border border = getBorder();
         super.updateUI();
         setBorder(border);
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
     }
 }

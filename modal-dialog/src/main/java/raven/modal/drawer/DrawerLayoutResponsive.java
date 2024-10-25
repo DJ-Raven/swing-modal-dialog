@@ -103,7 +103,7 @@ public class DrawerLayoutResponsive {
     }
 
     private void drawerOpenChanged(boolean isOpen) {
-        BorderOption borderOption = drawerPanel.getDrawerBuilder().getOption().getBorderOption();
+        BorderOption borderOption = drawerPanel.getDrawerOption().getBorderOption();
         if (borderOption.getBorderWidth() > 0 || borderOption.getRound() > 0 || !FlatUIUtils.isInsetsEmpty(borderOption.getShadowSize())) {
             if (!isOpen) {
                 drawerPanel.setBorder(BorderFactory.createEmptyBorder());
@@ -119,11 +119,11 @@ public class DrawerLayoutResponsive {
     }
 
     public Rectangle getDrawerLayout(Container parent) {
-        return OptionLayoutUtils.getLayoutLocation(parent, drawerPanel, 1f, drawerPanel.getDrawerBuilder().getOption().getLayoutOption());
+        return OptionLayoutUtils.getLayoutLocation(parent, drawerPanel, 1f, drawerPanel.getDrawerOption().getLayoutOption());
     }
 
     public boolean isHorizontalDrawer() {
-        SimpleDrawerLayoutOption layoutOption = (SimpleDrawerLayoutOption) drawerPanel.getDrawerBuilder().getOption().getLayoutOption();
+        SimpleDrawerLayoutOption layoutOption = (SimpleDrawerLayoutOption) drawerPanel.getDrawerOption().getLayoutOption();
         boolean isHorizontal = layoutOption.getFullSize().getY().floatValue() == 1f;
         return isHorizontal;
     }

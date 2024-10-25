@@ -37,7 +37,7 @@ public class Drawer {
         initInstance();
         instance.rootPaneContainer = ModalDialog.getRootPaneContainer(parentComponent);
         instance.drawerOption = drawerBuilder.getOption();
-        instance.drawerPanel = new DrawerPanel(drawerBuilder);
+        instance.drawerPanel = new DrawerPanel(drawerBuilder, instance.drawerOption);
         drawerBuilder.build(instance.drawerPanel);
         if (drawerBuilder.getOpenDrawerAt() >= 0) {
             instance.drawerLayoutResponsive = ModalDialog.installDrawer(instance.rootPaneContainer, instance.drawerPanel);
@@ -111,6 +111,10 @@ public class Drawer {
 
     public static DrawerBuilder getDrawerBuilder() {
         return instance.drawerPanel.getDrawerBuilder();
+    }
+
+    public static Option getDrawerOption() {
+        return instance.drawerOption;
     }
 
     public static void setSelectedItemClass(Class<?> itemClass) {
