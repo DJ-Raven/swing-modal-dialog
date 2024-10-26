@@ -43,4 +43,7 @@ public abstract class Modal extends JPanel {
 
     protected void controllerInit() {
     }
+
+    protected void modalOpened() {
+    }
 }

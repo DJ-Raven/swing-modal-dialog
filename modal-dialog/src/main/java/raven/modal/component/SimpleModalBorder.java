@@ -40,6 +40,7 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
     public static final int CANCEL_OPTION = 2;
     public static final int OK_OPTION = 0;
     public static final int CLOSE_OPTION = -1;
+    public static final int OPENED = 20;
 
     public SimpleModalBorder(Component component, String title) {
         this(component, title, new ModalBorderOption());
@@ -224,6 +225,14 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
                 getController().getModalContainer().closeModal();
             }
         };
+    }
+
+    @Override
+    protected void modalOpened() {
+        if (callback != null) {
+            ModalController controller = createController();
+            callback.action(controller, OPENED);
+        }
     }
 
     @Override

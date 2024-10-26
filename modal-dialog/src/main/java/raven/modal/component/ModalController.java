@@ -175,7 +175,7 @@ public class ModalController extends JPanel {
                             remove();
                         } else {
                             panelSlider.setVisible(true);
-                            modal.requestFocus();
+                            modalOpened();
                         }
                         if (snapshotsImage != null) {
                             snapshotsImage.flush();
@@ -201,12 +201,23 @@ public class ModalController extends JPanel {
                 animated = 1;
                 display = true;
                 modalContainer.getModalLayout().setAnimate(animated);
-                SwingUtilities.invokeLater(() -> modal.requestFocus());
+                modalOpened();
             } else {
                 animated = 0;
                 remove();
             }
         }
+    }
+
+    private void modalOpened() {
+        SwingUtilities.invokeLater(() -> {
+            initFocus();
+            modal.modalOpened();
+        });
+    }
+
+    private void initFocus() {
+        modal.requestFocus();
     }
 
     private void installModalComponent(Modal modal) {

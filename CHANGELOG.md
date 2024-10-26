@@ -2,6 +2,11 @@
 
 ## [2.1.0]-SNAPSHOT
 
+### New features and improvements
+
+- Modal dialog
+    - Add new callback action `SimpleModalBorder.OPENED` work when modal has opened
+
 ### Changed
 
 - Modal dialog
