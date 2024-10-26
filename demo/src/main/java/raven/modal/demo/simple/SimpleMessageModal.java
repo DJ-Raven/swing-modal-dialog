@@ -9,6 +9,7 @@ import raven.modal.listener.ModalCallback;
 import raven.modal.toast.ToastPanel;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 
 public class SimpleMessageModal extends SimpleModalBorder {
@@ -23,11 +24,15 @@ public class SimpleMessageModal extends SimpleModalBorder {
     private static Component createMessage(Type type, String message) {
         JTextArea text = new JTextArea(message);
         text.setWrapStyleWord(true);
-        text.setFocusable(false);
-        text.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        String gap = type == Type.DEFAULT ? "35" : "67";
+        text.setEditable(false);
+        text.setCaret(new DefaultCaret() {
+            @Override
+            public void paint(Graphics g) {
+            }
+        });
+        String gap = type == Type.DEFAULT ? "30" : "62";
         text.putClientProperty(FlatClientProperties.STYLE, "" +
-                "border:0," + gap + ",10,35;" +
+                "border:0," + gap + ",10,30;" +
                 "[light]foreground:lighten($Label.foreground,20%);" +
                 "[dark]foreground:darken($Label.foreground,20%);");
         return text;

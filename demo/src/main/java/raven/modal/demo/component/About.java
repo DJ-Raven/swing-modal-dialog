@@ -21,7 +21,7 @@ public class About extends JPanel {
     }
 
     private void init() {
-        setLayout(new MigLayout("fillx,wrap,insets 5 35 5 35,width 400", "[fill,330::]", ""));
+        setLayout(new MigLayout("fillx,wrap,insets 5 30 5 30,width 400", "[fill,330::]", ""));
 
         JTextPane title = createText("Modal Dialog Demo Project");
         title.putClientProperty(FlatClientProperties.STYLE, "" +
