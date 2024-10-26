@@ -64,8 +64,11 @@ public class FormSearch {
         Option option = ModalDialog.createOption();
         option.setAnimationEnabled(false);
         option.getLayoutOption().setMargin(20, 10, 10, 10).setLocation(Location.CENTER, Location.TOP);
-        ModalDialog.showModal(FormManager.getFrame(), new EmptyModalBorder(getSearchPanel()), option, ID);
-        SwingUtilities.invokeLater(() -> searchPanel.searchGrabFocus());
+        ModalDialog.showModal(FormManager.getFrame(), new EmptyModalBorder(getSearchPanel(), (controller, action) -> {
+            if (action == EmptyModalBorder.OPENED) {
+                searchPanel.searchGrabFocus();
+            }
+        }), option, ID);
     }
 
     private JPanel getSearchPanel() {
