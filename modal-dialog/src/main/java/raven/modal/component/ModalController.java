@@ -1,6 +1,5 @@
 package raven.modal.component;
 
-import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.Animator;
 import com.formdev.flatlaf.util.CubicBezierEasing;
 import net.miginfocom.swing.MigLayout;
@@ -65,9 +64,9 @@ public class ModalController extends JPanel {
             return;
         }
         BorderOption borderOption = option.getBorderOption();
-        Insets shadowSize = option.getBorderOption().getShadowSize();
-        if (borderOption.getBorderWidth() > 0 || borderOption.getRound() > 0 || !FlatUIUtils.isInsetsEmpty(shadowSize)) {
-            setBorder(new OutlineBorder(shadowSize, borderOption.getShadowOpacity(), borderOption.getShadowColor(), borderOption.getBorderWidth(), borderOption.getBorderColor(), borderOption.getRound()));
+        Border border = borderOption.createBorder();
+        if (border != null) {
+            setBorder(border);
         }
     }
 

@@ -77,8 +77,14 @@ public class DrawerPanel extends Modal {
 
     @Override
     public void updateUI() {
-        Border border = getBorder();
+        Border oldBorder = getBorder();
         super.updateUI();
-        setBorder(border);
+        if (oldBorder != null) {
+            Border border = drawerOption.getBorderOption().createBorder();
+            if (border != null) {
+                System.out.println("set border");
+                setBorder(border);
+            }
+        }
     }
 }

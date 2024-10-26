@@ -193,7 +193,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
     private static String getDrawerBackgroundStyle() {
         return "" +
-                "[light]background:tint($Panel.background,100%);" +
+                "[light]background:tint($Panel.background,20%);" +
                 "[dark]background:tint($Panel.background,5%);";
     }
 }
