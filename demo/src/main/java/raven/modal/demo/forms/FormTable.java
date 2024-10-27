@@ -274,7 +274,7 @@ public class FormTable extends Form {
         ModalDialog.showModal(this, new SimpleModalBorder(
                 new SimpleInputForms(), "Create", SimpleModalBorder.YES_NO_OPTION,
                 (controller, action) -> {
-                    controller.close();
+
                 }), option);
     }
 }
