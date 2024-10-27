@@ -82,7 +82,6 @@ public class DrawerPanel extends Modal {
         if (oldBorder != null) {
             Border border = drawerOption.getBorderOption().createBorder();
             if (border != null) {
-                System.out.println("set border");
                 setBorder(border);
             }
         }
