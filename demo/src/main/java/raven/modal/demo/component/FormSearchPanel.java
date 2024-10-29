@@ -62,7 +62,6 @@ public class FormSearchPanel extends JPanel {
                 "thumbInsets:0,3,0,3;" +
                 "trackInsets:0,3,0,3;" +
                 "width:12;");
-        showRecentResult();
         add(scrollPane);
         installSearchField();
     }
@@ -266,7 +265,11 @@ public class FormSearchPanel extends JPanel {
     }
 
     public void clearSearch() {
-        textSearch.setText("");
+        if (!textSearch.getText().isEmpty()) {
+            textSearch.setText("");
+        } else {
+            showRecentResult();
+        }
     }
 
     private JTextField textSearch;
