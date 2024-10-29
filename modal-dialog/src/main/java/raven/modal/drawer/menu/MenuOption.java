@@ -74,12 +74,36 @@ public class MenuOption {
         return icon;
     }
 
+    public MenuEvent[] getEvents() {
+        return events.toArray(new MenuEvent[events.size()]);
+    }
+
+    public MenuValidation getMenuValidation() {
+        return menuValidation;
+    }
+
     public MenuStyle getMenuStyle() {
         return menuStyle;
     }
 
     public MenuOpenMode getMenuOpenMode() {
         return menuOpenMode;
+    }
+
+    public MenuItem[] getMenus() {
+        return menus;
+    }
+
+    public float[] getIconScale() {
+        return iconScale;
+    }
+
+    public String getBaseIconPath() {
+        return baseIconPath;
+    }
+
+    public MenuItemAutoSelectionMode getMenuItemAutoSelectionMode() {
+        return menuItemAutoSelectionMode;
     }
 
     public MenuItemLayoutOption getMenuItemLayoutOption() {
