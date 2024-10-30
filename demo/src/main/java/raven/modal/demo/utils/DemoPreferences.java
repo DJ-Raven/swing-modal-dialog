@@ -14,6 +14,7 @@ public class DemoPreferences {
     public static final String KEY_LAF = "laf";
     public static final String KEY_LAF_THEME = "lafTheme";
     public static final String KEY_RECENT_SEARCH = "recentSearch";
+    public static final String KEY_RECENT_SEARCH_FAVORITE = "recentSearchFavorite";
 
     public static final String RESOURCE_PREFIX = "res:";
 
@@ -57,30 +58,54 @@ public class DemoPreferences {
         });
     }
 
-    public static String[] getRecentSearch() {
-        String stringArr = state.get(KEY_RECENT_SEARCH, null);
+    public static String[] getRecentSearch(boolean favorite) {
+        String stringArr = state.get(favorite ? KEY_RECENT_SEARCH_FAVORITE : KEY_RECENT_SEARCH, null);
         if (stringArr == null || stringArr.trim().isEmpty()) return null;
         return stringArr.trim().split(",");
     }
 
-    public static void addRecentSearch(String value) {
-        String[] oldRecent = getRecentSearch();
-        if (oldRecent == null) {
-            state.put(KEY_RECENT_SEARCH, value);
+    public static void addRecentSearch(String value, boolean favorite) {
+        String[] oldRecent = getRecentSearch(false);
+        String[] oldFavorite = getRecentSearch(true);
+        if (favorite) {
+            if (oldRecent != null) {
+                // remove from recent search
+                List<String> list = new ArrayList<>(Arrays.asList(oldRecent));
+                list.remove(value);
+                state.put(KEY_RECENT_SEARCH, String.join(",", list));
+            }
+            if (oldFavorite != null) {
+                List<String> list = new ArrayList<>(Arrays.asList(oldFavorite));
+                list.remove(value);
+                list.add(0, value);
+                state.put(KEY_RECENT_SEARCH_FAVORITE, String.join(",", list));
+            } else {
+                state.put(KEY_RECENT_SEARCH_FAVORITE, value);
+            }
         } else {
-            List<String> list = new ArrayList<>(Arrays.asList(oldRecent));
-            list.remove(value);
-            list.add(0, value);
-            state.put(KEY_RECENT_SEARCH, String.join(",", list));
+            if (oldFavorite != null) {
+                List<String> list = new ArrayList<>(Arrays.asList(oldFavorite));
+                if (list.contains(value)) {
+                    return;
+                }
+            }
+            if (oldRecent == null) {
+                state.put(KEY_RECENT_SEARCH, value);
+            } else {
+                List<String> list = new ArrayList<>(Arrays.asList(oldRecent));
+                list.remove(value);
+                list.add(0, value);
+                state.put(KEY_RECENT_SEARCH, String.join(",", list));
+            }
         }
     }
 
-    public static void removeRecentSearch(String value) {
-        String[] oldRecent = getRecentSearch();
+    public static void removeRecentSearch(String value, boolean favorite) {
+        String[] oldRecent = getRecentSearch(favorite);
         if (oldRecent != null) {
             List<String> list = new ArrayList<>(Arrays.asList(oldRecent));
             list.remove(value);
-            state.put(KEY_RECENT_SEARCH, String.join(",", list));
+            state.put(favorite ? KEY_RECENT_SEARCH_FAVORITE : KEY_RECENT_SEARCH, String.join(",", list));
         }
     }
 }

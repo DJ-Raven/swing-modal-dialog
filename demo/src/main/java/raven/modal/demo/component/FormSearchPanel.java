@@ -2,12 +2,12 @@ package raven.modal.demo.component;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.formdev.flatlaf.icons.FlatClearIcon;
 import com.formdev.flatlaf.icons.FlatMenuArrowIcon;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.Drawer;
 import raven.modal.ModalDialog;
 import raven.modal.component.ModalContainer;
+import raven.modal.demo.icons.SVGIconUIColor;
 import raven.modal.demo.layout.ResponsiveLayout;
 import raven.modal.demo.system.*;
 import raven.modal.demo.utils.DemoPreferences;
@@ -24,7 +24,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class FormSearchPanel extends JPanel {
@@ -32,6 +34,7 @@ public class FormSearchPanel extends JPanel {
     private LookAndFeel oldTheme = UIManager.getLookAndFeel();
     private final int SEARCH_MAX_LENGTH = 50;
     private final Map<SystemForm, Class<? extends Form>> formsMap;
+    private final List<Item> listItems = new ArrayList<>();
 
     public FormSearchPanel(Map<SystemForm, Class<? extends Form>> formsMap) {
         this.formsMap = formsMap;
@@ -105,6 +108,7 @@ public class FormSearchPanel extends JPanel {
                 if (!st.equals(text)) {
                     text = st;
                     panelResult.removeAll();
+                    listItems.clear();
                     if (st.isEmpty()) {
                         showRecentResult();
                     } else {
@@ -114,16 +118,18 @@ public class FormSearchPanel extends JPanel {
                             if (s.name().toLowerCase().contains(st)
                                     || s.description().toLowerCase().contains(st)
                                     || checkTags(s.tags(), st)) {
-                                panelResult.add(new Item(s, entry.getValue(), false));
+                                Item item = new Item(s, entry.getValue(), false, false);
+                                panelResult.add(item);
+                                listItems.add(item);
                             }
                         }
-                        if (panelResult.getComponentCount() > 0) {
+                        if (!listItems.isEmpty()) {
                             setSelected(0);
                         } else {
                             panelResult.add(createNoResult(st));
                         }
                         panelResult.repaint();
-                        SwingUtilities.getAncestorOfClass(ModalContainer.class, FormSearchPanel.this).revalidate();
+                        updateLayout();
                     }
                 }
             }
@@ -152,97 +158,103 @@ public class FormSearchPanel extends JPanel {
         });
     }
 
-    private void showForm() {
-        int index = getSelectedIndex();
-        if (index >= 0 && index <= panelResult.getComponentCount() - 1) {
-            Component com = panelResult.getComponent(index);
-            if (com instanceof Item) {
-                ((Item) com).showForm();
-            }
-        }
-    }
-
-    private void setSelected(int index) {
-        Component[] components = panelResult.getComponents();
-        for (int i = 0; i < components.length; i++) {
-            if (components[i] instanceof JButton) {
-                ((JButton) components[i]).setSelected(index == i);
-                if (i == index) {
-                    panelResult.scrollRectToVisible(components[i].getBounds());
-                }
-            }
-        }
-    }
-
-    private int getSelectedIndex() {
-        for (Component com : panelResult.getComponents()) {
-            if (com instanceof JButton) {
-                if (((JButton) com).isSelected()) {
-                    return panelResult.getComponentZOrder(com);
-                }
-            }
-        }
-        return -1;
-    }
-
-    private void move(boolean up) {
-        int index = getSelectedIndex();
-        boolean isShowRecent = panelResult.getComponentCount() > 0 && panelResult.getComponent(0) instanceof JLabel;
-        if (index == -1) {
-            if (up) {
-                setSelected(panelResult.getComponentCount() - 1);
-            } else {
-                setSelected(isShowRecent ? 1 : 0);
-            }
-        } else {
-            int count = panelResult.getComponentCount();
-            if (up) {
-                if (index == 0 || (isShowRecent && index == 1)) {
-                    setSelected(count - 1);
-                } else {
-                    setSelected(index - 1);
-                }
-            } else {
-                if (index == count - 1) {
-                    setSelected(isShowRecent ? 1 : 0);
-                } else {
-                    setSelected(index + 1);
-                }
-            }
-        }
-    }
-
-    private void showRecentResult() {
-        String[] recentSearch = DemoPreferences.getRecentSearch();
-        panelResult.removeAll();
-        if (recentSearch == null || recentSearch.length == 0) {
-            panelResult.add(new NoRecentResult());
-        } else {
-            for (String r : recentSearch) {
-                Item item = createRecentItem(r);
-                if (item != null) {
-                    panelResult.add(item);
-                }
-            }
-            if (panelResult.getComponentCount() > 0) {
-                JLabel label = new JLabel("Recent");
-                label.putClientProperty(FlatClientProperties.STYLE, "" +
-                        "font:bold +1;" +
-                        "border:0,18,0,18;");
-                panelResult.add(label, 0);
-                setSelected(1);
-            }
-        }
+    private void updateLayout() {
         Container container = SwingUtilities.getAncestorOfClass(ModalContainer.class, FormSearchPanel.this);
         if (container != null) {
             container.revalidate();
         }
     }
 
-    private Item createRecentItem(String name) {
+    private void showForm() {
+        int index = getSelectedIndex();
+        if (index != -1) {
+            listItems.get(index).showForm();
+        }
+    }
+
+    private void setSelected(int index) {
+        for (int i = 0; i < listItems.size(); i++) {
+            listItems.get(i).setSelected(index == i);
+        }
+    }
+
+    private int getSelectedIndex() {
+        for (int i = 0; i < listItems.size(); i++) {
+            if (listItems.get(i).isSelected()) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void move(boolean up) {
+        if (listItems.isEmpty()) return;
+        int index = getSelectedIndex();
+        int size = listItems.size();
+        if (index == -1) {
+            if (up) {
+                index = listItems.size() - 1;
+            } else {
+                index = 0;
+            }
+        } else {
+            if (up) {
+                index = (index == 0) ? size - 1 : index - 1;
+            } else {
+                index = (index == size - 1) ? 0 : index + 1;
+            }
+        }
+        setSelected(index);
+    }
+
+    private void showRecentResult() {
+        String[] recentSearch = DemoPreferences.getRecentSearch(false);
+        String[] favoriteSearch = DemoPreferences.getRecentSearch(true);
+        panelResult.removeAll();
+        listItems.clear();
+        if (recentSearch != null && recentSearch.length > 0) {
+            for (String r : recentSearch) {
+                Item item = createRecentItem(r, false);
+                if (item != null) {
+                    panelResult.add(item);
+                    listItems.add(item);
+                }
+            }
+            if (!listItems.isEmpty()) {
+                panelResult.add(createLabel("Recent"), 0);
+            }
+        }
+
+        if (favoriteSearch != null && favoriteSearch.length > 0) {
+            panelResult.add(createLabel("Favorite"));
+            for (String r : favoriteSearch) {
+                Item item = createRecentItem(r, true);
+                if (item != null) {
+                    panelResult.add(item);
+                    listItems.add(item);
+                }
+            }
+        }
+        if (listItems.isEmpty()) {
+            panelResult.add(new NoRecentResult());
+        } else {
+            setSelected(0);
+        }
+        updateLayout();
+    }
+
+    private JLabel createLabel(String title) {
+        JLabel label = new JLabel(title);
+        label.putClientProperty(FlatClientProperties.STYLE, "" +
+                "font:bold +1;" +
+                "border:0,18,0,18;");
+        return label;
+    }
+
+    private Item createRecentItem(String name, boolean favorite) {
         for (Map.Entry<SystemForm, Class<? extends Form>> entry : formsMap.entrySet()) {
             if (entry.getKey().name().equals(name)) {
-                return new Item(entry.getKey(), entry.getValue(), true);
+                return new Item(entry.getKey(), entry.getValue(), true, favorite);
             }
         }
         return null;
@@ -272,12 +284,12 @@ public class FormSearchPanel extends JPanel {
         }
     }
 
-    private JTextField textSearch;
-    private JPanel panelResult;
-
     public void searchGrabFocus() {
         textSearch.grabFocus();
     }
+
+    private JTextField textSearch;
+    private JPanel panelResult;
 
     private static class NoRecentResult extends JPanel {
 
@@ -295,18 +307,19 @@ public class FormSearchPanel extends JPanel {
         }
     }
 
-    private static class Item extends JButton {
+    private class Item extends JButton {
 
         private final SystemForm data;
         private final Class<? extends Form> form;
         private final boolean isRecent;
-        private JLabel labelRemove;
-        private boolean removeHoverButton;
+        private final boolean isFavorite;
+        private Component itemSource;
 
-        public Item(SystemForm data, Class<? extends Form> form, boolean isRecent) {
+        public Item(SystemForm data, Class<? extends Form> form, boolean isRecent, boolean isFavorite) {
             this.data = data;
             this.form = form;
             this.isRecent = isRecent;
+            this.isFavorite = isFavorite;
             init();
         }
 
@@ -332,48 +345,16 @@ public class FormSearchPanel extends JPanel {
                 add(createRecentOption(), "cell 1 0,span 1 2");
             }
             addActionListener(e -> {
-                if (!removeHoverButton) {
+                if (itemSource == null) {
                     clearSelected();
                     setSelected(true);
                     showForm();
-                } else {
+                } else if (itemSource.getName().equals("remove")) {
                     removeRecent();
+                } else if (itemSource.getName().equals("favorite")) {
+                    addFavorite();
                 }
             });
-            if (isRecent) {
-                addMouseMotionListener(new MouseAdapter() {
-                    @Override
-                    public void mouseMoved(MouseEvent e) {
-                        boolean h = SwingUtilities.convertRectangle(labelRemove.getParent(), labelRemove.getBounds(), Item.this).contains(e.getPoint());
-                        changeHover(h);
-                    }
-
-                    @Override
-                    public void mouseDragged(MouseEvent e) {
-                        boolean h = SwingUtilities.convertRectangle(labelRemove.getParent(), labelRemove.getBounds(), Item.this).contains(e.getPoint());
-                        changeHover(h);
-                    }
-
-                    @Override
-                    public void mouseExited(MouseEvent e) {
-                        changeHover(false);
-                    }
-
-                    private void changeHover(boolean hover) {
-                        if (removeHoverButton != hover) {
-                            removeHoverButton = hover;
-                            if (removeHoverButton) {
-                                labelRemove.putClientProperty(FlatClientProperties.STYLE, "" +
-                                        "background:$Button.toolbar.hoverBackground;" +
-                                        "border:3,3,3,3,#FFFFFF,0,999");
-                            } else {
-                                labelRemove.putClientProperty(FlatClientProperties.STYLE, "" +
-                                        "border:3,3,3,3;");
-                            }
-                        }
-                    }
-                });
-            }
         }
 
         private void clearSelected() {
@@ -387,28 +368,113 @@ public class FormSearchPanel extends JPanel {
         protected void showForm() {
             ModalDialog.closeModal(FormSearch.ID);
             Drawer.setSelectedItemClass(form);
-            DemoPreferences.addRecentSearch(data.name());
+            if (!isFavorite) {
+                DemoPreferences.addRecentSearch(data.name(), false);
+            }
         }
 
         protected Component createRecentOption() {
-            JPanel panel = new JPanel(new MigLayout());
+            JPanel panel = new JPanel(new MigLayout("fill,gapx 2", "", "[fill]"));
             panel.setOpaque(false);
-            labelRemove = new JLabel(new FlatClearIcon());
-            labelRemove.putClientProperty(FlatClientProperties.STYLE, "" +
-                    "border:3,3,3,3;");
-            panel.add(labelRemove);
+            JButton cmdRemove = createButton("remove", "clear.svg", 0.35f, "Label.foreground");
+            if (!isFavorite) {
+                JButton cmdFavorite = createButton("favorite", "favorite.svg", 0.4f, "Component.accentColor");
+                panel.add(cmdFavorite);
+            } else {
+                JLabel label = new JLabel(new SVGIconUIColor("raven/modal/demo/icons/favorite_filled.svg", 0.4f, "Component.accentColor"));
+                label.putClientProperty(FlatClientProperties.STYLE, "" +
+                        "border:3,3,3,3;");
+                panel.add(label);
+            }
+            panel.add(new JSeparator(JSeparator.VERTICAL), "gapy 5 5");
+            panel.add(cmdRemove);
             return panel;
         }
 
+        private JButton createButton(String name, String icon, float scale, String hoverKey) {
+            SVGIconUIColor svgIcon = new SVGIconUIColor("raven/modal/demo/icons/" + icon, scale, "Component.borderColor");
+            JButton button = new JButton(svgIcon);
+            button.setName(name);
+            button.setFocusable(false);
+            button.setContentAreaFilled(false);
+            button.setModel(getModel());
+            button.putClientProperty(FlatClientProperties.STYLE, "" +
+                    "margin:3,3,3,3;");
+
+            button.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    svgIcon.setColorKey(hoverKey);
+                    itemSource = (Component) e.getSource();
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    svgIcon.setColorKey("Component.borderColor");
+                    itemSource = null;
+                }
+            });
+            return button;
+        }
+
         protected void removeRecent() {
-            DemoPreferences.removeRecentSearch(data.name());
-            Container parent = getParent();
-            parent.remove(this);
-            if (parent.getComponentCount() <= 1) {
-                parent.removeAll();
-                parent.add(new NoRecentResult());
+            DemoPreferences.removeRecentSearch(data.name(), isFavorite);
+            panelResult.remove(this);
+            listItems.remove(this);
+            if (listItems.isEmpty()) {
+                panelResult.removeAll();
+                panelResult.add(new NoRecentResult());
+            } else {
+                if (getCount(isFavorite) == 0) {
+                    if (isFavorite) {
+                        panelResult.remove(panelResult.getComponentCount() - 1);
+                    } else {
+                        panelResult.remove(0);
+                    }
+                }
             }
-            SwingUtilities.getAncestorOfClass(ModalContainer.class, parent).revalidate();
+            updateLayout();
+        }
+
+        protected void addFavorite() {
+            DemoPreferences.addRecentSearch(data.name(), true);
+            int index[] = getFirstFavoriteIndex();
+            panelResult.remove(this);
+            listItems.remove(this);
+            Item item = new Item(data, form, isRecent, true);
+            if (index == null) {
+                panelResult.add(createLabel("Favorite"));
+                panelResult.add(item);
+                listItems.add(item);
+            } else {
+                panelResult.remove(this);
+                listItems.remove(this);
+                panelResult.add(item, index[1] - 1);
+                listItems.add(index[0] - 1, item);
+            }
+            if (getCount(false) == 0) {
+                panelResult.remove(0);
+            }
+            updateLayout();
+        }
+
+        private int getCount(boolean favorite) {
+            int count = 0;
+            for (Item item : listItems) {
+                if (item.isFavorite == favorite) {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        private int[] getFirstFavoriteIndex() {
+            for (int i = 0; i < listItems.size(); i++) {
+                if (listItems.get(i).isFavorite) {
+                    return new int[]{i, panelResult.getComponentZOrder(listItems.get(i))};
+                }
+            }
+            return null;
         }
     }
 }
