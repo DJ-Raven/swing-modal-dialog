@@ -8,7 +8,6 @@ import raven.modal.Drawer;
 import raven.modal.ModalDialog;
 import raven.modal.component.ModalContainer;
 import raven.modal.demo.icons.SVGIconUIColor;
-import raven.modal.demo.layout.ResponsiveLayout;
 import raven.modal.demo.system.*;
 import raven.modal.demo.utils.DemoPreferences;
 import raven.modal.demo.utils.SystemForm;
@@ -44,9 +43,7 @@ public class FormSearchPanel extends JPanel {
     private void init() {
         setLayout(new MigLayout("fillx,insets 0,wrap", "[fill,500]"));
         textSearch = new JTextField();
-        panelResult = new JPanel(new ResponsiveLayout(ResponsiveLayout.JustifyContent.FIT_CONTENT, new Dimension(-1, -1), 10, 3, 1));
-        panelResult.putClientProperty(FlatClientProperties.STYLE, "" +
-                "border:0,10,0,10;");
+        panelResult = new JPanel(new MigLayout("insets 3 10 3 10,fillx,wrap", "[fill]"));
         textSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Search...");
         textSearch.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, new FlatSVGIcon("raven/modal/demo/icons/search.svg", 0.4f));
         textSearch.putClientProperty(FlatClientProperties.STYLE, "" +
@@ -247,7 +244,7 @@ public class FormSearchPanel extends JPanel {
         JLabel label = new JLabel(title);
         label.putClientProperty(FlatClientProperties.STYLE, "" +
                 "font:bold +1;" +
-                "border:0,18,0,18;");
+                "border:5,15,5,15;");
         return label;
     }
 
@@ -374,7 +371,7 @@ public class FormSearchPanel extends JPanel {
         }
 
         protected Component createRecentOption() {
-            JPanel panel = new JPanel(new MigLayout("fill,gapx 2", "", "[fill]"));
+            JPanel panel = new JPanel(new MigLayout("insets n 0 n 0,fill,gapx 2", "", "[fill]"));
             panel.setOpaque(false);
             JButton cmdRemove = createButton("remove", "clear.svg", 0.35f, "Label.foreground", 0.9f);
             if (!isFavorite) {
