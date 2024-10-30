@@ -376,12 +376,12 @@ public class FormSearchPanel extends JPanel {
         protected Component createRecentOption() {
             JPanel panel = new JPanel(new MigLayout("fill,gapx 2", "", "[fill]"));
             panel.setOpaque(false);
-            JButton cmdRemove = createButton("remove", "clear.svg", 0.35f, "Label.foreground");
+            JButton cmdRemove = createButton("remove", "clear.svg", 0.35f, "Label.foreground", 0.9f);
             if (!isFavorite) {
-                JButton cmdFavorite = createButton("favorite", "favorite.svg", 0.4f, "Component.accentColor");
+                JButton cmdFavorite = createButton("favorite", "favorite.svg", 0.4f, "Component.accentColor", 0.9f);
                 panel.add(cmdFavorite);
             } else {
-                JLabel label = new JLabel(new SVGIconUIColor("raven/modal/demo/icons/favorite_filled.svg", 0.4f, "Component.accentColor"));
+                JLabel label = new JLabel(new SVGIconUIColor("raven/modal/demo/icons/favorite_filled.svg", 0.4f, "Component.accentColor", 0.8f));
                 label.putClientProperty(FlatClientProperties.STYLE, "" +
                         "border:3,3,3,3;");
                 panel.add(label);
@@ -391,12 +391,13 @@ public class FormSearchPanel extends JPanel {
             return panel;
         }
 
-        private JButton createButton(String name, String icon, float scale, String hoverKey) {
-            SVGIconUIColor svgIcon = new SVGIconUIColor("raven/modal/demo/icons/" + icon, scale, "Component.borderColor");
+        private JButton createButton(String name, String icon, float scale, String hoverKey, float alpha) {
+            SVGIconUIColor svgIcon = new SVGIconUIColor("raven/modal/demo/icons/" + icon, scale, "Label.disabledForeground", alpha);
             JButton button = new JButton(svgIcon);
             button.setName(name);
             button.setFocusable(false);
             button.setContentAreaFilled(false);
+            button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             button.setModel(getModel());
             button.putClientProperty(FlatClientProperties.STYLE, "" +
                     "margin:3,3,3,3;");
@@ -410,7 +411,7 @@ public class FormSearchPanel extends JPanel {
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    svgIcon.setColorKey("Component.borderColor");
+                    svgIcon.setColorKey("Label.disabledForeground");
                     itemSource = null;
                 }
             });
