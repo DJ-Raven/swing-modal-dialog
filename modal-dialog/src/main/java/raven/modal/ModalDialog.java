@@ -189,6 +189,7 @@ public class ModalDialog {
             FrameModalLayout frameModalLayout = new FrameModalLayout(modalContainerLayer, rootPaneContainer.getContentPane(), snapshot);
             LayoutManager oldLayout = windowLayeredPane.getLayout();
             windowLayeredPane.setLayout(frameModalLayout);
+            windowLayeredPane.doLayout();
 
             // check if toast layout install
             if (oldLayout != null && oldLayout instanceof FrameToastLayout) {
