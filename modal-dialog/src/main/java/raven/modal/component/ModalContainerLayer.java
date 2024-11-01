@@ -21,6 +21,7 @@ public class ModalContainerLayer extends JLayeredPane {
     private final RootPaneContainer rootPaneContainer;
     private Component componentSnapshot;
     private boolean isShowSnapshot;
+    private Set<ModalContainer> setModalContainerOnTop;
     private Set<ModalContainer> setModalContainer;
     private JLayeredPane layeredSnapshot;
     private DrawerLayoutResponsive drawerLayoutResponsive;
@@ -32,6 +33,7 @@ public class ModalContainerLayer extends JLayeredPane {
     }
 
     private void init() {
+        setModalContainerOnTop = new LinkedHashSet<>();
         setModalContainer = new LinkedHashSet<>();
         setLayout(new FullContentLayout());
     }
@@ -48,7 +50,11 @@ public class ModalContainerLayer extends JLayeredPane {
         modalContainer.addModal(modal);
         modal.setId(id);
         modalContainer.setComponentOrientation(rootPaneContainer.getRootPane().getComponentOrientation());
-        setModalContainer.add(modalContainer);
+        if (isOnTop) {
+            setModalContainerOnTop.add(modalContainer);
+        } else {
+            setModalContainer.add(modalContainer);
+        }
         return modalContainer;
     }
 
@@ -66,10 +72,10 @@ public class ModalContainerLayer extends JLayeredPane {
     }
 
     public void closeAllModal() {
-        for (ModalContainer con : setModalContainer) {
+        for (ModalContainer con : getSetModalContainer()) {
             con.closeModal();
         }
-        setModalContainer.clear();
+        clearSetModalContainer();
     }
 
     public void closeAsRemove(String id) {
@@ -78,14 +84,14 @@ public class ModalContainerLayer extends JLayeredPane {
     }
 
     public void closeAllAsRemove() {
-        for (ModalContainer con : setModalContainer) {
+        for (ModalContainer con : getSetModalContainer()) {
             con.close();
         }
-        setModalContainer.clear();
+        clearSetModalContainer();
     }
 
     private ModalContainer getModalContainerById(String id) {
-        for (ModalContainer con : setModalContainer) {
+        for (ModalContainer con : getSetModalContainer()) {
             if (con.getId() != null && con.getId().equals(id)) {
                 return con;
             }
@@ -131,7 +137,7 @@ public class ModalContainerLayer extends JLayeredPane {
     protected VolatileImage createSnapshot(ModalContainer modalContainer) {
         Component contentPane = rootPaneContainer.getContentPane();
         VolatileImage snapshot = createSnapshotImage(contentPane);
-        for (ModalContainer c : setModalContainer) {
+        for (ModalContainer c : getSetModalContainer()) {
             if (c == modalContainer) break;
             if (c.isVisible()) {
                 Graphics g = snapshot.createGraphics();
@@ -191,7 +197,7 @@ public class ModalContainerLayer extends JLayeredPane {
     }
 
     protected void updateAnotherSnapshot(boolean show) {
-        for (ModalContainer c : setModalContainer) {
+        for (ModalContainer c : getSetModalContainer()) {
             c.updatePaintSnapshot(show);
         }
     }
@@ -216,7 +222,7 @@ public class ModalContainerLayer extends JLayeredPane {
     }
 
     public boolean checkId(String id) {
-        for (ModalContainer con : setModalContainer) {
+        for (ModalContainer con : getSetModalContainer()) {
             if (con.getId() != null && con.getId().equals(id)) {
                 return true;
             }
@@ -224,8 +230,19 @@ public class ModalContainerLayer extends JLayeredPane {
         return false;
     }
 
+    /**
+     * This method return both `Set` setModalContainer and setModalContainerOnTop
+     * And without reference `Set`
+     */
     public Set<ModalContainer> getSetModalContainer() {
-        return setModalContainer;
+        Set<ModalContainer> sets = new LinkedHashSet<>(setModalContainer);
+        sets.addAll(setModalContainerOnTop);
+        return sets;
+    }
+
+    public void clearSetModalContainer() {
+        setModalContainerOnTop.clear();
+        setModalContainer.clear();
     }
 
     public RootPaneContainer getRootPaneContainer() {
@@ -247,8 +264,9 @@ public class ModalContainerLayer extends JLayeredPane {
 
     protected void removeContainer(ModalContainer container) {
         remove(container);
+        setModalContainerOnTop.remove(container);
         setModalContainer.remove(container);
-        if (setModalContainer.isEmpty()) {
+        if (setModalContainerOnTop.isEmpty() && setModalContainer.isEmpty()) {
             setVisible(false);
         }
     }
@@ -268,6 +286,7 @@ public class ModalContainerLayer extends JLayeredPane {
     public void remove() {
         closeAllAsRemove();
         componentSnapshot = null;
+        setModalContainerOnTop = null;
         setModalContainer = null;
         layeredSnapshot = null;
         drawerLayoutResponsive = null;
