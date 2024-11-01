@@ -5,11 +5,14 @@ import com.formdev.flatlaf.util.ColorFunctions;
 import com.formdev.flatlaf.util.ScaledEmptyBorder;
 import raven.modal.layout.ModalLayout;
 import raven.modal.option.Option;
+import raven.modal.utils.BlurImageUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.VolatileImage;
 
 /**
  * @author Raven
@@ -30,6 +33,7 @@ public class ModalContainer extends JComponent {
     private MouseListener mouseListener;
     private ActionListener escapeAction;
     private ModalLayout modalLayout;
+    private Image snapshotBlurImage;
 
     public ModalContainer(ModalContainerLayer modalContainerLayer, Option option, String id) {
         this.modalContainerLayer = modalContainerLayer;
@@ -121,10 +125,40 @@ public class ModalContainer extends JComponent {
 
     protected void showSnapshot() {
         modalContainerLayer.showSnapshot();
+        Option option = modalController.getOption();
+        if (option.getBackgroundBlur().isBlur()) {
+            VolatileImage image = modalContainerLayer.createSnapshot(this);
+            if (image != null) {
+                snapshotBlurImage = BlurImageUtils.applyGaussianBlur(image, option.getBackgroundBlur().getRadius());
+            }
+        } else {
+            modalContainerLayer.updateAnotherSnapshot(true);
+        }
     }
 
     protected void hideSnapshot() {
         modalContainerLayer.hideSnapshot();
+        if (snapshotBlurImage != null) {
+            snapshotBlurImage.flush();
+            snapshotBlurImage = null;
+        }
+    }
+
+    protected void updatePaintSnapshot(boolean paintSnapshot) {
+        Option option = modalController.getOption();
+        if (option.getBackgroundBlur().isBlur()) {
+            if (paintSnapshot) {
+                VolatileImage image = modalContainerLayer.createSnapshot(this);
+                if (image != null) {
+                    snapshotBlurImage = BlurImageUtils.applyGaussianBlur(image, option.getBackgroundBlur().getRadius());
+                }
+            } else {
+                if (snapshotBlurImage != null) {
+                    snapshotBlurImage.flush();
+                    snapshotBlurImage = null;
+                }
+            }
+        }
     }
 
     public ModalController getController() {
@@ -134,6 +168,23 @@ public class ModalContainer extends JComponent {
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
+        Option option = modalController.getOption();
+        if (option.getBackgroundBlur().isBlur()) {
+            if (snapshotBlurImage != null) {
+                // paint snapshot blur image
+                g2.setComposite(AlphaComposite.SrcOver.derive(modalController.getAnimated()));
+                g2.drawImage(snapshotBlurImage, 0, 0, null);
+            } else {
+                // paint blur image
+                VolatileImage image = modalContainerLayer.createSnapshot(this);
+                if (image != null) {
+                    g2.setComposite(AlphaComposite.SrcOver.derive(modalController.getAnimated()));
+                    BufferedImage blurImage = BlurImageUtils.applyGaussianBlur(image, option.getBackgroundBlur().getRadius());
+                    g2.drawImage(blurImage, 0, 0, null);
+                    blurImage.flush();
+                }
+            }
+        }
         g2.setColor(getBackgroundColor());
         float opacity = modalController.getOption().getOpacity() * modalController.getAnimated();
         if (opacity > 1) {
@@ -190,6 +241,14 @@ public class ModalContainer extends JComponent {
         insets.right += in.right;
         if (container.getParent() != this) {
             addParentInsets(container.getParent(), insets);
+        }
+    }
+
+    @Override
+    public void removeNotify() {
+        super.removeNotify();
+        if (snapshotBlurImage != null) {
+            snapshotBlurImage.flush();
         }
     }
 }

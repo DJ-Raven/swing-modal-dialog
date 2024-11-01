@@ -109,6 +109,7 @@ public class ModalController extends JPanel {
     }
 
     public void showModal() {
+        FocusManager.getCurrentManager().clearFocusOwner();
         setFocusCycleRoot(true);
         installModalComponent(modal);
         startAnimator(true);
@@ -157,7 +158,6 @@ public class ModalController extends JPanel {
 
                     @Override
                     public void begin() {
-                        modalContainer.showSnapshot();
                         Border border = getBorder();
                         if (border != null) {
                             snapshotsImage = ImageSnapshots.createSnapshotsImage(panelSlider, ModalController.this, getBorder());
@@ -194,6 +194,7 @@ public class ModalController extends JPanel {
             } else {
                 animated = 1;
             }
+            modalContainer.showSnapshot();
             animator.start();
         } else {
             this.showing = show;
@@ -204,6 +205,7 @@ public class ModalController extends JPanel {
                 modalOpened();
             } else {
                 animated = 0;
+                modalContainer.hideSnapshot();
                 remove();
             }
         }
@@ -264,6 +266,23 @@ public class ModalController extends JPanel {
             } else {
                 super.paint(g);
             }
+        }
+    }
+
+    /**
+     * Paint for snapshot background
+     */
+    protected void paintSnapshot(Graphics g) {
+        g.translate(getX(), getY());
+        if (snapshotsImage != null) {
+            g.drawImage(snapshotsImage, 0, 0, null);
+        } else {
+            // print border because method `printComponents()` don't paint it
+            Border border = getBorder();
+            if (border != null) {
+                border.paintBorder(this, g, 0, 0, getWidth(), getHeight());
+            }
+            printComponents(g);
         }
     }
 
