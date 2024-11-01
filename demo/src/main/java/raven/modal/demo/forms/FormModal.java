@@ -114,6 +114,7 @@ public class FormModal extends Form {
         chBorder = new JCheckBox("Outline border");
         chShadow = new JCheckBox("Shadow border");
         chOpacity = new JCheckBox("Background opacity");
+        chBackgroundBlur = new JCheckBox("Background blur");
 
         chAnimation.setSelected(true);
         chCloseOnPressedEscape.setSelected(true);
@@ -124,6 +125,7 @@ public class FormModal extends Form {
         panel.add(chBorder);
         panel.add(chShadow);
         panel.add(chOpacity);
+        panel.add(chBackgroundBlur);
 
         return panel;
     }
@@ -209,9 +211,6 @@ public class FormModal extends Form {
     }
 
     private void showModalSlide(Option option) {
-        option.getLayoutOption()
-                .setOnTop(true);
-
         final String id = "input";
         ModalDialog.showModal(this, new SimpleModalBorder(
                 new SimpleInputForms(), "Sample Input Forms", SimpleModalBorder.YES_NO_CANCEL_OPTION,
@@ -235,7 +234,8 @@ public class FormModal extends Form {
         option.setAnimationEnabled(chAnimation.isSelected())
                 .setCloseOnPressedEscape(chCloseOnPressedEscape.isSelected())
                 .setBackgroundClickType(backgroundClickType)
-                .setOpacity(chOpacity.isSelected() ? 0.5f : 0);
+                .setOpacity(chOpacity.isSelected() ? 0.5f : 0)
+                .setBackgroundBlur(chBackgroundBlur.isSelected() ? Option.BackgroundBlur.SMALL : Option.BackgroundBlur.NONE);
         option.getBorderOption()
                 .setBorderWidth(chBorder.isSelected() ? 1f : 0)
                 .setShadow(chShadow.isSelected() ? BorderOption.Shadow.MEDIUM : BorderOption.Shadow.NONE);
@@ -261,6 +261,7 @@ public class FormModal extends Form {
     private JCheckBox chBorder;
     private JCheckBox chShadow;
     private JCheckBox chOpacity;
+    private JCheckBox chBackgroundBlur;
 
     // background click option
     private JRadioButton jrClose;

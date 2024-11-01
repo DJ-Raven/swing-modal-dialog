@@ -175,7 +175,8 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
     @Override
     public Option getOption() {
         Option option = super.getOption();
-        option.setOpacity(0.3f);
+        option.setOpacity(0.3f)
+                .setBackgroundBlur(Option.BackgroundBlur.SMALL);
         option.getBorderOption()
                 .setShadowSize(new Insets(0, 0, 0, SHADOW_SIZE));
         return option;
