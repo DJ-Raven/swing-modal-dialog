@@ -104,6 +104,7 @@ public class FormSearchPanel extends JPanel {
                 String st = textSearch.getText().trim().toLowerCase(); // Convert search term to lowercase
                 if (!st.equals(text)) {
                     text = st;
+                    int oldSize = listItems.size();
                     panelResult.removeAll();
                     listItems.clear();
                     if (st.isEmpty()) {
@@ -125,8 +126,9 @@ public class FormSearchPanel extends JPanel {
                         } else {
                             panelResult.add(createNoResult(st));
                         }
-                        panelResult.repaint();
-                        updateLayout();
+                        if (oldSize != listItems.size()) {
+                            updateLayout();
+                        }
                     }
                 }
             }
@@ -207,6 +209,7 @@ public class FormSearchPanel extends JPanel {
     private void showRecentResult() {
         String[] recentSearch = DemoPreferences.getRecentSearch(false);
         String[] favoriteSearch = DemoPreferences.getRecentSearch(true);
+        int oldSize = listItems.size();
         panelResult.removeAll();
         listItems.clear();
         if (recentSearch != null && recentSearch.length > 0) {
@@ -237,7 +240,9 @@ public class FormSearchPanel extends JPanel {
         } else {
             setSelected(0);
         }
-        updateLayout();
+        if (oldSize != listItems.size()) {
+            updateLayout();
+        }
     }
 
     private JLabel createLabel(String title) {
