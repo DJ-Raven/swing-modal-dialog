@@ -123,7 +123,7 @@ public class ModalContainer extends JComponent {
         uninstallOption();
     }
 
-    protected void showSnapshot() {
+    public void showSnapshot() {
         modalContainerLayer.showSnapshot();
         Option option = modalController.getOption();
         if (option.getBackgroundBlur().isBlur()) {
@@ -136,7 +136,7 @@ public class ModalContainer extends JComponent {
         }
     }
 
-    protected void hideSnapshot() {
+    public void hideSnapshot() {
         modalContainerLayer.hideSnapshot();
         if (snapshotBlurImage != null) {
             snapshotBlurImage.flush();

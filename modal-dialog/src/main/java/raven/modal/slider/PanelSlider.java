@@ -118,6 +118,7 @@ public class PanelSlider extends JLayeredPane {
 
                 @Override
                 public void end() {
+                    modalContainer.hideSnapshot();
                     setVisible(false);
                     component.setVisible(true);
                     animatedLayout.reset();
@@ -146,6 +147,7 @@ public class PanelSlider extends JLayeredPane {
             repaint();
             setVisible(true);
             animator.setDuration(duration);
+            modalContainer.showSnapshot();
             animator.start();
         }
 
