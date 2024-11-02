@@ -1,9 +1,11 @@
 package raven.modal.demo.system;
 
+import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.Drawer;
 import raven.modal.demo.component.FormSearchButton;
+import raven.modal.demo.component.MemoryBar;
 import raven.modal.demo.component.RefreshLine;
 
 import javax.swing.*;
@@ -16,10 +18,11 @@ public class MainForm extends JPanel {
     }
 
     private void init() {
-        setLayout(new MigLayout("fillx,wrap,insets 0,gap 0", "[fill]", "[][][fill,grow]"));
+        setLayout(new MigLayout("fillx,wrap,insets 0,gap 0", "[fill]", "[][][fill,grow][]"));
         add(createHeader());
         add(createRefreshLine(), "height 3!");
         add(createMain());
+        add(createFooter());
     }
 
     private JPanel createHeader() {
@@ -46,6 +49,29 @@ public class MainForm extends JPanel {
         toolBar.add(buttonRefresh);
         panel.add(toolBar);
         panel.add(createSearchBox(), "gapx n 135");
+        return panel;
+    }
+
+    private JPanel createFooter() {
+        JPanel panel = new JPanel(new MigLayout("insets 1 n 1 n,al trailing center,gapx 10,height 30!"));
+        panel.putClientProperty(FlatClientProperties.STYLE, "" +
+                "[light]background:tint($Panel.background,20%);" +
+                "[dark]background:tint($Panel.background,5%);");
+
+        // java version
+        String javaVendor = System.getProperty("java.vendor");
+        if (javaVendor.equals("Oracle Corporation")) {
+            javaVendor = "";
+        }
+        String java = javaVendor + " v" + System.getProperty("java.version").trim();
+        String st = "Running on: Java %s";
+        JLabel lbJava = new JLabel(String.format(st, java));
+        lbJava.setIcon(new FlatSVGIcon("raven/modal/demo/icons/java.svg", 18, 18));
+        panel.add(lbJava);
+
+        // memory
+        MemoryBar memoryBar = new MemoryBar();
+        panel.add(memoryBar, "height 18");
         return panel;
     }
 
