@@ -21,6 +21,7 @@
 - Drawer now use shadow border
 - Update from layout
 - Quick search update layout and add new favorite option (PR #17)
+- Add new frame footer and create new `MemoryBar`
 
 ## [2.0.0] - 2024-10-20
 
