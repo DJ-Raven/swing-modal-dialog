@@ -44,5 +44,9 @@ public class LightDarkButtonFooter extends SimpleFooter {
         lightDarkButton.addModeChangeListener(listener);
     }
 
+    public LightDarkButton getLightDarkButton() {
+        return lightDarkButton;
+    }
+
     protected LightDarkButton lightDarkButton;
 }

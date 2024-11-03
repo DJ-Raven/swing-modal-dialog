@@ -30,6 +30,7 @@ public class LightDarkButton extends JPanel {
     private JToggleButton buttonDark;
     private JToggleButton buttonLightDark;
     private ButtonGroup group;
+    private List<LookAndFeelLightDark> supportLookAndFeel;
     private List<ModeChangeListener> modeChangeListeners;
     private final int arc;
     private final int borderWidth = 4;
@@ -63,6 +64,7 @@ public class LightDarkButton extends JPanel {
     }
 
     private void init() {
+        supportLookAndFeel = new ArrayList<>();
         modeChangeListeners = new ArrayList<>();
         lightButtonText = "Light";
         darkButtonText = "Dark";
@@ -71,12 +73,18 @@ public class LightDarkButton extends JPanel {
 
         darkButtonIcon = new FlatSVGIcon("raven/modal/icon/dark.svg", 0.4f)
                 .setColorFilter(getFilterColor(true));
-
+        initSupportLookAndFeel();
         installButton();
         putClientProperty(FlatClientProperties.STYLE, "" +
                 "arc:" + arc + ";" +
                 "[light]background:shade($Panel.background,10%);" +
                 "[dark]background:tint($Panel.background,10%);");
+    }
+
+    private void initSupportLookAndFeel() {
+        supportLookAndFeel.add(new LookAndFeelLightDark(FlatLightLaf.class, FlatDarkLaf.class));
+        supportLookAndFeel.add(new LookAndFeelLightDark(FlatIntelliJLaf.class, FlatDarculaLaf.class));
+        supportLookAndFeel.add(new LookAndFeelLightDark(FlatMacLightLaf.class, FlatMacDarkLaf.class));
     }
 
     public int getArc() {
@@ -164,31 +172,17 @@ public class LightDarkButton extends JPanel {
         return group;
     }
 
-    /**
-     * Auto changed themes only for core themes
-     * To add another themes support go override method `getLookAndFeelWhenUnknown`
-     */
     protected String getLookAndFeelChanged(LookAndFeel oldLaf, boolean isDarkMode) {
         if (oldLaf instanceof FlatLaf) {
             FlatLaf flatLaf = (FlatLaf) oldLaf;
             if (flatLaf.isDark() == isDarkMode) {
                 return null;
             }
-            if (isDarkMode) {
-                if (flatLaf instanceof FlatMacLightLaf) {
-                    return FlatMacDarkLaf.class.getName();
-                } else if (flatLaf instanceof FlatIntelliJLaf) {
-                    return FlatDarculaLaf.class.getName();
-                } else if (flatLaf instanceof FlatLightLaf) {
-                    return FlatDarkLaf.class.getName();
-                }
-            } else {
-                if (flatLaf instanceof FlatMacDarkLaf) {
-                    return FlatMacLightLaf.class.getName();
-                } else if (flatLaf instanceof FlatDarculaLaf) {
-                    return FlatIntelliJLaf.class.getName();
-                } else if (flatLaf instanceof FlatDarkLaf) {
-                    return FlatLightLaf.class.getName();
+            String oldThemeName = oldLaf.getClass().getName();
+            for (LookAndFeelLightDark lightDark : supportLookAndFeel) {
+                String lfName = (isDarkMode ? lightDark.light : lightDark.dark).getName();
+                if (oldThemeName.equals(lfName)) {
+                    return (isDarkMode ? lightDark.dark : lightDark.light).getName();
                 }
             }
         }
@@ -322,6 +316,18 @@ public class LightDarkButton extends JPanel {
         modeChangeListeners.remove(listener);
     }
 
+    public List<LookAndFeelLightDark> getSupportLookAndFeel() {
+        return supportLookAndFeel;
+    }
+
+    public void setSupportLookAndFeel(List<LookAndFeelLightDark> supportLookAndFeel) {
+        this.supportLookAndFeel = supportLookAndFeel;
+    }
+
+    public void addSupportLookAndFeel(Class<? extends FlatLaf> light, Class<? extends FlatLaf> dark) {
+        this.supportLookAndFeel.add(new LookAndFeelLightDark(light, dark));
+    }
+
     private void notifyModeChanged(boolean isDarkMode) {
         for (ModeChangeListener listener : modeChangeListeners) {
             listener.onModeChanged(isDarkMode);
@@ -338,5 +344,24 @@ public class LightDarkButton extends JPanel {
 
     public interface ModeChangeListener {
         void onModeChanged(boolean isDarkMode);
+    }
+
+    public class LookAndFeelLightDark {
+
+        public Class<? extends FlatLaf> getLight() {
+            return light;
+        }
+
+        public Class<? extends FlatLaf> getDark() {
+            return dark;
+        }
+
+        private final Class<? extends FlatLaf> light;
+        private final Class<? extends FlatLaf> dark;
+
+        public LookAndFeelLightDark(Class<? extends FlatLaf> light, Class<? extends FlatLaf> dark) {
+            this.light = light;
+            this.dark = dark;
+        }
     }
 }
