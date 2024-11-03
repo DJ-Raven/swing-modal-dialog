@@ -1,6 +1,7 @@
 package raven.modal.layout;
 
 import raven.modal.drawer.DrawerLayoutResponsive;
+import raven.modal.drawer.DrawerPanel;
 
 import java.awt.*;
 
@@ -78,6 +79,20 @@ public class FrameModalLayout implements LayoutManager {
                 } else {
                     Rectangle drawerRec = drawerLayoutResponsive.getDrawerLayout(parent);
                     Rectangle contentRec = calculate(new Rectangle(x, y, width, height), drawerRec, isHorizontalDrawer);
+
+                    // adjust content pane with drawer insets left and right
+                    // to make the shadow border paint over the content pane
+                    Insets drawerInsets = getBorderInsets(drawerLayoutResponsive.getDrawerPanel());
+                    if (drawerInsets != null && (drawerInsets.left > 0 || drawerInsets.right > 0)) {
+                        boolean ltr = parent.getComponentOrientation().isLeftToRight();
+                        if (ltr) {
+                            contentRec.x -= drawerInsets.right;
+                            contentRec.width += drawerInsets.right;
+                        } else {
+                            contentRec.width += drawerInsets.left;
+                        }
+                    }
+
                     contentPane.setBounds(contentRec);
                     drawerLayoutResponsive.getDrawerPanel().setBounds(x + drawerRec.x, y + drawerRec.y, drawerRec.width - x, drawerRec.height - y);
                 }
@@ -89,6 +104,10 @@ public class FrameModalLayout implements LayoutManager {
                 otherComponent.setBounds(insets.left, insets.top, fw, fh);
             }
         }
+    }
+
+    private Insets getBorderInsets(DrawerPanel drawerPanel) {
+        return drawerPanel.getInsets();
     }
 
     private Rectangle calculate(Rectangle rec1, Rectangle rec2, boolean horizontal) {
