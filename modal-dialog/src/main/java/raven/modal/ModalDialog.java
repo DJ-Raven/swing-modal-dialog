@@ -21,7 +21,7 @@ import java.util.Map;
 public class ModalDialog {
 
     private static ModalDialog instance;
-    private final Integer LAYER = JLayeredPane.MODAL_LAYER + 1;
+    public static final Integer LAYER = JLayeredPane.MODAL_LAYER + 1;
     private Map<RootPaneContainer, ModalContainerLayer> map;
     private Option defaultOption;
 

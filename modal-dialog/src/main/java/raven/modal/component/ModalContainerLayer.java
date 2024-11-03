@@ -2,6 +2,7 @@ package raven.modal.component;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.ui.FlatTitlePane;
+import raven.modal.ModalDialog;
 import raven.modal.drawer.DrawerLayoutResponsive;
 import raven.modal.layout.FullContentLayout;
 import raven.modal.option.Option;
@@ -9,7 +10,7 @@ import raven.modal.option.Option;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.VolatileImage;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -20,6 +21,7 @@ public class ModalContainerLayer extends JLayeredPane {
     private final RootPaneContainer rootPaneContainer;
     private Component componentSnapshot;
     private boolean isShowSnapshot;
+    private Set<ModalContainer> setModalContainerOnTop;
     private Set<ModalContainer> setModalContainer;
     private JLayeredPane layeredSnapshot;
     private DrawerLayoutResponsive drawerLayoutResponsive;
@@ -31,7 +33,8 @@ public class ModalContainerLayer extends JLayeredPane {
     }
 
     private void init() {
-        setModalContainer = new HashSet<>();
+        setModalContainerOnTop = new LinkedHashSet<>();
+        setModalContainer = new LinkedHashSet<>();
         setLayout(new FullContentLayout());
     }
 
@@ -41,12 +44,17 @@ public class ModalContainerLayer extends JLayeredPane {
 
     public ModalContainer addModalWithoutShowing(Modal modal, Option option, String id) {
         ModalContainer modalContainer = new ModalContainer(this, option, id);
-        setLayer(modalContainer, JLayeredPane.MODAL_LAYER + (option.getLayoutOption().isOnTop() ? 1 : 0));
+        boolean isOnTop = option.getLayoutOption().isOnTop();
+        setLayer(modalContainer, ModalDialog.LAYER + (isOnTop ? 1 : 0));
         add(modalContainer, 0);
         modalContainer.addModal(modal);
         modal.setId(id);
         modalContainer.setComponentOrientation(rootPaneContainer.getRootPane().getComponentOrientation());
-        setModalContainer.add(modalContainer);
+        if (isOnTop) {
+            setModalContainerOnTop.add(modalContainer);
+        } else {
+            setModalContainer.add(modalContainer);
+        }
         return modalContainer;
     }
 
@@ -64,10 +72,10 @@ public class ModalContainerLayer extends JLayeredPane {
     }
 
     public void closeAllModal() {
-        for (ModalContainer con : setModalContainer) {
+        for (ModalContainer con : getSetModalContainer()) {
             con.closeModal();
         }
-        setModalContainer.clear();
+        clearSetModalContainer();
     }
 
     public void closeAsRemove(String id) {
@@ -76,14 +84,14 @@ public class ModalContainerLayer extends JLayeredPane {
     }
 
     public void closeAllAsRemove() {
-        for (ModalContainer con : setModalContainer) {
+        for (ModalContainer con : getSetModalContainer()) {
             con.close();
         }
-        setModalContainer.clear();
+        clearSetModalContainer();
     }
 
     private ModalContainer getModalContainerById(String id) {
-        for (ModalContainer con : setModalContainer) {
+        for (ModalContainer con : getSetModalContainer()) {
             if (con.getId() != null && con.getId().equals(id)) {
                 return con;
             }
@@ -91,15 +99,17 @@ public class ModalContainerLayer extends JLayeredPane {
         throw new IllegalArgumentException("id '" + id + "' not found");
     }
 
-    protected void showSnapshot() {
-        if (isShowSnapshot) {
-            return;
+    private VolatileImage createSnapshotImage(Component contentPane) {
+        int width = rootPaneContainer.getLayeredPane().getWidth();
+        int height = rootPaneContainer.getLayeredPane().getHeight();
+
+        if (width <= 0 || height <= 0) {
+            return null;
         }
-        isShowSnapshot = true;
-        Component contentPane = rootPaneContainer.getContentPane();
-        VolatileImage snapshot = contentPane.createVolatileImage(rootPaneContainer.getLayeredPane().getWidth(), rootPaneContainer.getLayeredPane().getHeight());
+
+        VolatileImage snapshot = contentPane.createVolatileImage(width, height);
         if (snapshot == null) {
-            return;
+            return null;
         }
         boolean isFullWindowContent = FlatClientProperties.clientPropertyBoolean(rootPaneContainer.getRootPane(), FlatClientProperties.FULL_WINDOW_CONTENT, false);
         Graphics g = snapshot.createGraphics();
@@ -108,7 +118,7 @@ public class ModalContainerLayer extends JLayeredPane {
             y -= getY();
         }
         g.translate(contentPane.getX(), y);
-        contentPane.paint(g);
+        contentPane.print(g);
         g.dispose();
 
         // paint drawer menu component that outside the contentPane to snapshot
@@ -119,6 +129,35 @@ public class ModalContainerLayer extends JLayeredPane {
         // if rootPane use `full window content` as true, paint flatlaf title to snapshot
         if (isFullWindowContent) {
             drawTitleBarToSnapshot(snapshot);
+        }
+
+        return snapshot;
+    }
+
+    protected VolatileImage createSnapshot(ModalContainer modalContainer) {
+        Component contentPane = rootPaneContainer.getContentPane();
+        VolatileImage snapshot = createSnapshotImage(contentPane);
+        for (ModalContainer c : getSetModalContainer()) {
+            if (c == modalContainer) break;
+            if (c.isVisible()) {
+                Graphics g = snapshot.createGraphics();
+                c.getController().paintSnapshot(g);
+                g.dispose();
+                c.updatePaintSnapshot(true);
+            }
+        }
+        return snapshot;
+    }
+
+    protected void showSnapshot() {
+        if (isShowSnapshot) {
+            return;
+        }
+        isShowSnapshot = true;
+        Component contentPane = rootPaneContainer.getContentPane();
+        VolatileImage snapshot = createSnapshotImage(contentPane);
+        if (snapshot == null) {
+            return;
         }
         componentSnapshot = new JComponent() {
             @Override
@@ -145,6 +184,8 @@ public class ModalContainerLayer extends JLayeredPane {
     }
 
     protected void hideSnapshot() {
+        if (componentSnapshot == null) return;
+
         layeredSnapshot.setVisible(false);
         rootPaneContainer.getContentPane().setVisible(true);
         if (drawerLayoutResponsive != null && drawerLayoutResponsive.isOpened() == false) {
@@ -152,13 +193,20 @@ public class ModalContainerLayer extends JLayeredPane {
         }
         layeredSnapshot.remove(componentSnapshot);
         isShowSnapshot = false;
+        updateAnotherSnapshot(false);
+    }
+
+    protected void updateAnotherSnapshot(boolean show) {
+        for (ModalContainer c : getSetModalContainer()) {
+            c.updatePaintSnapshot(show);
+        }
     }
 
     private void drawEmbedComponent(VolatileImage snapshot) {
         Graphics g = snapshot.createGraphics();
         Rectangle rec = drawerLayoutResponsive.getDrawerLayout(rootPaneContainer.getLayeredPane());
         g.translate(rec.x, rec.y);
-        drawerLayoutResponsive.getDrawerPanel().paint(g);
+        drawerLayoutResponsive.getDrawerPanel().print(g);
         g.dispose();
     }
 
@@ -167,14 +215,14 @@ public class ModalContainerLayer extends JLayeredPane {
             if (com instanceof FlatTitlePane) {
                 Graphics g = snapshot.createGraphics();
                 g.translate(com.getX(), com.getY());
-                com.paint(g);
+                com.print(g);
                 g.dispose();
             }
         }
     }
 
     public boolean checkId(String id) {
-        for (ModalContainer con : setModalContainer) {
+        for (ModalContainer con : getSetModalContainer()) {
             if (con.getId() != null && con.getId().equals(id)) {
                 return true;
             }
@@ -182,8 +230,19 @@ public class ModalContainerLayer extends JLayeredPane {
         return false;
     }
 
+    /**
+     * This method return both `Set` setModalContainer and setModalContainerOnTop
+     * And without reference `Set`
+     */
     public Set<ModalContainer> getSetModalContainer() {
-        return setModalContainer;
+        Set<ModalContainer> sets = new LinkedHashSet<>(setModalContainer);
+        sets.addAll(setModalContainerOnTop);
+        return sets;
+    }
+
+    public void clearSetModalContainer() {
+        setModalContainerOnTop.clear();
+        setModalContainer.clear();
     }
 
     public RootPaneContainer getRootPaneContainer() {
@@ -205,8 +264,9 @@ public class ModalContainerLayer extends JLayeredPane {
 
     protected void removeContainer(ModalContainer container) {
         remove(container);
+        setModalContainerOnTop.remove(container);
         setModalContainer.remove(container);
-        if (setModalContainer.isEmpty()) {
+        if (setModalContainerOnTop.isEmpty() && setModalContainer.isEmpty()) {
             setVisible(false);
         }
     }
@@ -226,6 +286,7 @@ public class ModalContainerLayer extends JLayeredPane {
     public void remove() {
         closeAllAsRemove();
         componentSnapshot = null;
+        setModalContainerOnTop = null;
         setModalContainer = null;
         layeredSnapshot = null;
         drawerLayoutResponsive = null;

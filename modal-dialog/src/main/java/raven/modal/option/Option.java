@@ -25,6 +25,10 @@ public class Option {
         return backgroundClickType;
     }
 
+    public BackgroundBlur getBackgroundBlur() {
+        return backgroundBlur;
+    }
+
     public boolean isAnimationEnabled() {
         return animationEnabled;
     }
@@ -56,6 +60,7 @@ public class Option {
     private LayoutOption layoutOption = LayoutOption.getDefault();
     private BorderOption borderOption = BorderOption.getDefault();
     private BackgroundClickType backgroundClickType = BackgroundClickType.CLOSE_MODAL;
+    public BackgroundBlur backgroundBlur = BackgroundBlur.NONE;
     private boolean animationEnabled = true;
     private boolean closeOnPressedEscape = true;
     private Color backgroundLight;
@@ -64,10 +69,11 @@ public class Option {
     private int duration = 350;
     private int sliderDuration = 400;
 
-    private Option(LayoutOption layoutOption, BorderOption borderOption, BackgroundClickType backgroundClickType, boolean animationEnabled, boolean closeOnPressedEscape, Color backgroundLight, Color backgroundDark, float opacity, int duration, int sliderDuration) {
+    private Option(LayoutOption layoutOption, BorderOption borderOption, BackgroundClickType backgroundClickType, BackgroundBlur backgroundBlur, boolean animationEnabled, boolean closeOnPressedEscape, Color backgroundLight, Color backgroundDark, float opacity, int duration, int sliderDuration) {
         this.layoutOption = layoutOption;
         this.borderOption = borderOption;
         this.backgroundClickType = backgroundClickType;
+        this.backgroundBlur = backgroundBlur;
         this.animationEnabled = animationEnabled;
         this.closeOnPressedEscape = closeOnPressedEscape;
         this.backgroundLight = backgroundLight;
@@ -87,6 +93,11 @@ public class Option {
 
     public Option setBackgroundClickType(BackgroundClickType backgroundClickType) {
         this.backgroundClickType = backgroundClickType;
+        return this;
+    }
+
+    public Option setBackgroundBlur(BackgroundBlur backgroundBlur) {
+        this.backgroundBlur = backgroundBlur;
         return this;
     }
 
@@ -131,7 +142,30 @@ public class Option {
         CLOSE_MODAL, BLOCK, NONE
     }
 
+    public enum BackgroundBlur {
+        NONE(0),
+        SMALL(2),
+        MEDIUM(3),
+        LARGE(4),
+        EXTRA_LARGE(5),
+        DOUBLE_EXTRA_LARGE(6);
+
+        private final int radius;
+
+        BackgroundBlur(int radius) {
+            this.radius = radius;
+        }
+
+        public int getRadius() {
+            return radius;
+        }
+
+        public boolean isBlur() {
+            return radius > 1;
+        }
+    }
+
     public Option copy() {
-        return new Option(layoutOption.copy(), borderOption.copy(), backgroundClickType, animationEnabled, closeOnPressedEscape, backgroundLight == null ? null : new Color(backgroundLight.getRGB()), backgroundDark == null ? null : new Color(backgroundDark.getRGB()), opacity, duration, sliderDuration);
+        return new Option(layoutOption.copy(), borderOption.copy(), backgroundClickType, backgroundBlur, animationEnabled, closeOnPressedEscape, backgroundLight == null ? null : new Color(backgroundLight.getRGB()), backgroundDark == null ? null : new Color(backgroundDark.getRGB()), opacity, duration, sliderDuration);
     }
 }
