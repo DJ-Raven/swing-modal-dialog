@@ -114,6 +114,12 @@ public class FormModal extends Form {
         chBorder = new JCheckBox("Outline border");
         chShadow = new JCheckBox("Shadow border");
         chOpacity = new JCheckBox("Background opacity");
+        chScale = new JCheckBox("Animate scale");
+
+        // event
+        chAnimation.addActionListener(e -> {
+            chScale.setEnabled(chAnimation.isSelected());
+        });
 
         chAnimation.setSelected(true);
         chCloseOnPressedEscape.setSelected(true);
@@ -124,6 +130,7 @@ public class FormModal extends Form {
         panel.add(chBorder);
         panel.add(chShadow);
         panel.add(chOpacity);
+        panel.add(chScale);
 
         return panel;
     }
@@ -229,6 +236,7 @@ public class FormModal extends Form {
 
     private Option getSelectedOption() {
         Option option = ModalDialog.createOption();
+        float scale = chScale.isSelected() ? 0.1f : 0f;
         Location h = jrLeft.isSelected() ? Location.LEFT : jrRight.isSelected() ? Location.RIGHT : jrLeading.isSelected() ? Location.LEADING : jrTrailing.isSelected() ? Location.TRAILING : Location.CENTER;
         Location v = jrTop.isSelected() ? Location.TOP : jrMiddle.isSelected() ? Location.CENTER : Location.BOTTOM;
         Option.BackgroundClickType backgroundClickType = jrClose.isSelected() ? Option.BackgroundClickType.CLOSE_MODAL : jrBlock.isSelected() ? Option.BackgroundClickType.BLOCK : Option.BackgroundClickType.NONE;
@@ -240,6 +248,10 @@ public class FormModal extends Form {
                 .setBorderWidth(chBorder.isSelected() ? 1f : 0)
                 .setShadow(chShadow.isSelected() ? BorderOption.Shadow.MEDIUM : BorderOption.Shadow.NONE);
         option.getLayoutOption().setLocation(h, v);
+        if (scale != 0) {
+            option.getLayoutOption().setAnimateDistance(0, 0)
+                    .setAnimateScale(scale);
+        }
         return option;
     }
 
@@ -261,6 +273,7 @@ public class FormModal extends Form {
     private JCheckBox chBorder;
     private JCheckBox chShadow;
     private JCheckBox chOpacity;
+    private JCheckBox chScale;
 
     // background click option
     private JRadioButton jrClose;

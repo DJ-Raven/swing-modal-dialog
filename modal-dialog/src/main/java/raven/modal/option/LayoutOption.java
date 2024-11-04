@@ -35,16 +35,21 @@ public class LayoutOption {
         return animateDistance;
     }
 
+    public float getAnimateScale() {
+        return animateScale;
+    }
+
     public boolean isOnTop() {
         return onTop;
     }
 
-    private LayoutOption(Location horizontalLocation, Location verticalLocation, Insets margin, DynamicSize size, DynamicSize animateDistance, boolean onTop) {
+    private LayoutOption(Location horizontalLocation, Location verticalLocation, Insets margin, DynamicSize size, DynamicSize animateDistance, float animateScale, boolean onTop) {
         this.horizontalLocation = horizontalLocation;
         this.verticalLocation = verticalLocation;
         this.margin = margin;
         this.size = size;
         this.animateDistance = animateDistance;
+        this.animateScale = animateScale;
         this.onTop = onTop;
     }
 
@@ -56,6 +61,7 @@ public class LayoutOption {
     private Insets margin = new Insets(7, 7, 7, 7);
     private DynamicSize size = new DynamicSize(-1, -1);
     private DynamicSize animateDistance = new DynamicSize(0, 20);
+    private float animateScale;
     private boolean onTop = false;
 
     public LayoutOption setLocation(Location horizontal, Location vertical) {
@@ -89,7 +95,15 @@ public class LayoutOption {
         return this;
     }
 
+    public LayoutOption setAnimateScale(float animateScale) {
+        if (animateScale < 0 || animateScale > 1) {
+            throw new IllegalArgumentException("Scale value must be 0 to 1");
+        }
+        this.animateScale = animateScale;
+        return this;
+    }
+
     public LayoutOption copy() {
-        return new LayoutOption(horizontalLocation, verticalLocation, new Insets(margin.top, margin.left, margin.bottom, margin.right), new DynamicSize(size), new DynamicSize(animateDistance), onTop);
+        return new LayoutOption(horizontalLocation, verticalLocation, new Insets(margin.top, margin.left, margin.bottom, margin.right), new DynamicSize(size), new DynamicSize(animateDistance), animateScale, onTop);
     }
 }

@@ -258,6 +258,24 @@ public class ModalController extends JPanel {
             if (snapshotsImage != null) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setComposite(AlphaComposite.SrcOver.derive(animated));
+
+                float scaleValue = option.getLayoutOption().getAnimateScale();
+                if (scaleValue != 0) {
+                    float minScale = 1f - scaleValue;
+
+                    float scale = minScale + (scaleValue * animated);
+                    float width = getWidth();
+                    float height = getHeight();
+
+                    // calculate the center position after scaling
+                    float scaledWidth = (width * scale);
+                    float scaledHeight = (height * scale);
+                    float x = (width - scaledWidth) / 2f;
+                    float y = (height - scaledHeight) / 2f;
+                    g2.translate(x, y);
+                    g2.scale(scale, scale);
+                }
+
                 // draw snapshots image
                 g2.drawImage(snapshotsImage, 0, 0, null);
                 g2.dispose();

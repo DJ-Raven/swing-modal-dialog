@@ -6,6 +6,7 @@
 
 - Modal dialog
     - Add new callback action `SimpleModalBorder.OPENED` work when modal has opened
+    - Add new layout option `animateScale` to scale the modal when open and close
 - Extras
     - LightDarkButton: add list support l&f `light` and `dark` to auto install themes when switch
 
