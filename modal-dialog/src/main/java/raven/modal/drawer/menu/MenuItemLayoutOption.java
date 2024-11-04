@@ -10,7 +10,7 @@ public class MenuItemLayoutOption {
     public static MenuItemLayoutOption getDefault(MenuOption.MenuOpenMode menuOpenMode) {
         if (menuOpenMode == MenuOption.MenuOpenMode.FULL) {
             return new MenuItemLayoutOption()
-                    .setMenuHorizontalMargin(new Point(7, 7))
+                    .setMenuHorizontalMargin(new Point(10, 10))
                     .setLabelMargin(new Insets(8, 20, 8, 20))
                     .setSeparatorMargin(new Insets(0, 10, 0, 10));
         } else {

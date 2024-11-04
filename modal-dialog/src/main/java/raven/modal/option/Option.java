@@ -61,7 +61,7 @@ public class Option {
     private Color backgroundLight;
     private Color backgroundDark;
     private float opacity = 0.5f;
-    private int duration = 350;
+    private int duration = 200;
     private int sliderDuration = 400;
 
     private Option(LayoutOption layoutOption, BorderOption borderOption, BackgroundClickType backgroundClickType, boolean animationEnabled, boolean closeOnPressedEscape, Color backgroundLight, Color backgroundDark, float opacity, int duration, int sliderDuration) {

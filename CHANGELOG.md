@@ -14,9 +14,12 @@
 
 - Modal dialog
     - Update drop shadow border use `insets` instead of `shadowSize` and `shadowTopSize` (PR #16)
+    - Default animation duration decreased from `350` to `200`
 - Drawer
     - Embed drawer menu now apply border option
     - Add new method `Drawer.getDrawerOption()` and use it instead of `Drawer.getDrawerBuilder().getOption()`
+    - Default animation duration set to `300`
+    - Menu item horizontal margin change from `7,7` to `10,10`
 
 ### Demo
 
