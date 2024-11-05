@@ -54,9 +54,13 @@ public class ModalController extends JPanel {
         setLayout(new MigLayout("fill,insets 0", "[fill," + minimumSize + "::]", "[fill," + minimumSize + "::]"));
         setOpaque(false);
 
-        panelSlider = new PanelSlider(modalContainer);
+        panelSlider = new PanelSlider(createSliderLayoutSize());
         initBorder();
         add(panelSlider);
+    }
+
+    private PanelSlider.PaneSliderLayoutSize createSliderLayoutSize() {
+        return (container, component) -> modalContainer.getModalComponentSize(component, container);
     }
 
     private void initBorder() {

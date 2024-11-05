@@ -2,7 +2,6 @@ package raven.modal.slider;
 
 import com.formdev.flatlaf.util.Animator;
 import com.formdev.flatlaf.util.CubicBezierEasing;
-import raven.modal.component.ModalContainer;
 import raven.modal.layout.AnimatedLayout;
 
 import javax.swing.*;
@@ -18,19 +17,19 @@ public class PanelSlider extends JLayeredPane {
         return slideComponent;
     }
 
+    private final PaneSliderLayoutSize paneSliderLayoutSize;
     private PanelSnapshot panelSnapshot;
     private Component slideComponent;
     private AnimatedLayout animatedLayout;
-    private ModalContainer modalContainer;
 
-    public PanelSlider(ModalContainer modalContainer) {
-        this.modalContainer = modalContainer;
+    public PanelSlider(PaneSliderLayoutSize paneSliderLayoutSize) {
+        this.paneSliderLayoutSize = paneSliderLayoutSize;
         init();
     }
 
     private void init() {
         panelSnapshot = new PanelSnapshot();
-        animatedLayout = new AnimatedLayout(modalContainer);
+        animatedLayout = new AnimatedLayout(paneSliderLayoutSize);
         setLayout(animatedLayout);
         setLayer(panelSnapshot, JLayeredPane.MODAL_LAYER);
         add(panelSnapshot);
@@ -52,8 +51,8 @@ public class PanelSlider extends JLayeredPane {
             Component oldComponent = getComponent(1);
             add(component);
             if (transition != null) {
-                Dimension fromSize = modalContainer.getModalComponentSize(oldComponent, this);
-                Dimension targetSize = modalContainer.getModalComponentSize(slideComponent, this);
+                Dimension fromSize = paneSliderLayoutSize.getComponentSize(this, oldComponent);
+                Dimension targetSize = paneSliderLayoutSize.getComponentSize(this, slideComponent);
                 animatedLayout.addAnimateSize(fromSize, targetSize);
                 doLayout();
                 SwingUtilities.invokeLater(() -> {
@@ -80,10 +79,12 @@ public class PanelSlider extends JLayeredPane {
     }
 
     protected void paintComponent(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g.create();
-        g2.setColor(slideComponent.getBackground());
-        g2.fillRect(0, 0, getWidth(), getHeight());
-        g2.dispose();
+        if (slideComponent != null) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setColor(slideComponent.getBackground());
+            g2.fillRect(0, 0, getWidth(), getHeight());
+            g2.dispose();
+        }
     }
 
     @Override
@@ -92,6 +93,10 @@ public class PanelSlider extends JLayeredPane {
             return super.getBackground();
         }
         return slideComponent.getBackground();
+    }
+
+    public interface PaneSliderLayoutSize {
+        Dimension getComponentSize(Container container, Component component);
     }
 
     public class PanelSnapshot extends JComponent {
