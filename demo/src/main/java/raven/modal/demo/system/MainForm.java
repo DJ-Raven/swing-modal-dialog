@@ -24,6 +24,7 @@ public class MainForm extends JPanel {
         add(createHeader());
         add(createRefreshLine(), "height 3!");
         add(createMain());
+        add(new JSeparator(), "height 2!");
         add(createFooter());
     }
 
