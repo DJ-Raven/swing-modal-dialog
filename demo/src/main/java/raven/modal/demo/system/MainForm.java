@@ -4,9 +4,11 @@ import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.Drawer;
+import raven.modal.demo.Demo;
 import raven.modal.demo.component.FormSearchButton;
 import raven.modal.demo.component.MemoryBar;
 import raven.modal.demo.component.RefreshLine;
+import raven.modal.demo.icons.SVGIconUIColor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,10 +55,17 @@ public class MainForm extends JPanel {
     }
 
     private JPanel createFooter() {
-        JPanel panel = new JPanel(new MigLayout("insets 1 n 1 n,al trailing center,gapx 10,height 30!"));
+        JPanel panel = new JPanel(new MigLayout("insets 1 n 1 n,al trailing center,gapx 10,height 30!", "[]push[][]", "fill"));
         panel.putClientProperty(FlatClientProperties.STYLE, "" +
                 "[light]background:tint($Panel.background,20%);" +
                 "[dark]background:tint($Panel.background,5%);");
+
+        // demo version
+        JLabel lbDemoVersion = new JLabel("Demo: v" + Demo.DEMO_VERSION);
+        lbDemoVersion.putClientProperty(FlatClientProperties.STYLE, "" +
+                "foreground:$Label.disabledForeground;");
+        lbDemoVersion.setIcon(new SVGIconUIColor("raven/modal/demo/icons/git.svg", 1f, "Label.disabledForeground"));
+        panel.add(lbDemoVersion);
 
         // java version
         String javaVendor = System.getProperty("java.vendor");
@@ -66,12 +75,16 @@ public class MainForm extends JPanel {
         String java = javaVendor + " v" + System.getProperty("java.version").trim();
         String st = "Running on: Java %s";
         JLabel lbJava = new JLabel(String.format(st, java));
-        lbJava.setIcon(new FlatSVGIcon("raven/modal/demo/icons/java.svg", 18, 18));
+        lbJava.putClientProperty(FlatClientProperties.STYLE, "" +
+                "foreground:$Label.disabledForeground;");
+        lbJava.setIcon(new SVGIconUIColor("raven/modal/demo/icons/java.svg", 1f, "Label.disabledForeground"));
         panel.add(lbJava);
+
+        panel.add(new JSeparator(JSeparator.VERTICAL));
 
         // memory
         MemoryBar memoryBar = new MemoryBar();
-        panel.add(memoryBar, "height 18");
+        panel.add(memoryBar);
         return panel;
     }
 
