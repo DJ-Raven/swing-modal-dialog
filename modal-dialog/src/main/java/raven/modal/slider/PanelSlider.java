@@ -17,10 +17,19 @@ public class PanelSlider extends JLayeredPane {
         return slideComponent;
     }
 
+    public boolean isRequestFocusAfterSlide() {
+        return requestFocusAfterSlide;
+    }
+
+    public void setRequestFocusAfterSlide(boolean requestFocusAfterSlide) {
+        this.requestFocusAfterSlide = requestFocusAfterSlide;
+    }
+
     private final PaneSliderLayoutSize paneSliderLayoutSize;
     private PanelSnapshot panelSnapshot;
     private Component slideComponent;
     private AnimatedLayout animatedLayout;
+    private boolean requestFocusAfterSlide;
 
     public PanelSlider(PaneSliderLayoutSize paneSliderLayoutSize) {
         this.paneSliderLayoutSize = paneSliderLayoutSize;
@@ -126,7 +135,9 @@ public class PanelSlider extends JLayeredPane {
                     setVisible(false);
                     component.setVisible(true);
                     animatedLayout.reset();
-                    slideComponent.requestFocus();
+                    if (isRequestFocusAfterSlide()) {
+                        slideComponent.requestFocus();
+                    }
                     PanelSlider.this.repaint();
                     if (newImage != null) {
                         newImage.flush();

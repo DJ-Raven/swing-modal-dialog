@@ -55,6 +55,7 @@ public class ModalController extends JPanel {
         setOpaque(false);
 
         panelSlider = new PanelSlider(createSliderLayoutSize());
+        panelSlider.setRequestFocusAfterSlide(true);
         initBorder();
         add(panelSlider);
     }
