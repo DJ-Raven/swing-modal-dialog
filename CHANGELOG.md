@@ -26,7 +26,7 @@
 
 - Use `JTextPane` instead of `JTextArea` to avoid error layout when component is RTL (issues with layout)
 - Drawer now use shadow border
-- Update from layout
+- Update form layout
 - Quick search update layout and add new favorite option (PR #17)
 - Add new frame footer and create new `MemoryBar`
 
