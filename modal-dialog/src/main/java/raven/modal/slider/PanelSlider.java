@@ -25,11 +25,20 @@ public class PanelSlider extends JLayeredPane {
         this.requestFocusAfterSlide = requestFocusAfterSlide;
     }
 
+    public boolean isUseSlideAsBackground() {
+        return useSlideAsBackground;
+    }
+
+    public void setUseSlideAsBackground(boolean useSlideAsBackground) {
+        this.useSlideAsBackground = useSlideAsBackground;
+    }
+
     private final PaneSliderLayoutSize paneSliderLayoutSize;
     private PanelSnapshot panelSnapshot;
     private Component slideComponent;
     private AnimatedLayout animatedLayout;
     private boolean requestFocusAfterSlide;
+    private boolean useSlideAsBackground;
 
     public PanelSlider(PaneSliderLayoutSize paneSliderLayoutSize) {
         this.paneSliderLayoutSize = paneSliderLayoutSize;
@@ -87,18 +96,9 @@ public class PanelSlider extends JLayeredPane {
         return snapshot;
     }
 
-    protected void paintComponent(Graphics g) {
-        if (slideComponent != null) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setColor(slideComponent.getBackground());
-            g2.fillRect(0, 0, getWidth(), getHeight());
-            g2.dispose();
-        }
-    }
-
     @Override
     public Color getBackground() {
-        if (slideComponent == null) {
+        if (useSlideAsBackground == false || slideComponent == null) {
             return super.getBackground();
         }
         return slideComponent.getBackground();

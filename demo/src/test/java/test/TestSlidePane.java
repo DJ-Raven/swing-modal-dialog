@@ -23,8 +23,8 @@ public class TestSlidePane extends JFrame {
         JButton button = new JButton("slide");
 
         SlidePane slidePane = new SlidePane((container, component) -> component.getPreferredSize());
-    slidePane.setBackground(new Color(3,3,3));
         slidePane.addSlide(new SimpleInputForms());
+        slidePane.setOpaque(true);
 
         button.addActionListener(e -> {
             Component com = state % 2 == 0 ? new SimpleInputForms() : new SimpleInputForms2();
