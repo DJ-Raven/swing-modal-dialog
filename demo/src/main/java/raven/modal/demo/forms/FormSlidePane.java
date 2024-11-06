@@ -23,7 +23,7 @@ public class FormSlidePane extends Form {
     }
 
     private void init() {
-        setLayout(new MigLayout("wrap,fillx", "[fill]"));
+        setLayout(new MigLayout("wrap,fillx", "[fill]", "[][grow,fill]"));
         add(createInfo());
         add(createOptions());
     }
@@ -44,9 +44,9 @@ public class FormSlidePane extends Form {
     }
 
     private Component createOptions() {
-        JPanel panel = new JPanel(new MigLayout("wrap 2,fillx", "[grow 0,fill][fill]", "[fill]"));
+        JPanel panel = new JPanel(new MigLayout("wrap 2,fillx", "[grow 0,fill][fill]", "[fill][][grow,fill]"));
         panel.add(createTransitionOption());
-        panel.add(createOtherOption());
+        panel.add(createLayoutSizeOption());
         panel.add(createTestButton(), "span 2");
         panel.add(createExample(), "span 2");
         return panel;
@@ -83,18 +83,39 @@ public class FormSlidePane extends Form {
         return panel;
     }
 
-    private Component createOtherOption() {
-        JPanel panel = new JPanel(new MigLayout());
-        panel.setBorder(new TitledBorder("Other option"));
+    private Component createLayoutSizeOption() {
+        JPanel panel = new JPanel(new MigLayout("wrap 2"));
+        panel.setBorder(new TitledBorder("Layout size option"));
         jrContainerSize = new JRadioButton("Container size");
         jrComponentPreferredSize = new JRadioButton("Component preferred size", true);
+
+        final String TEXT_1 = "Resize the child component to match the container's size. (SlidePane changed to: width 100%, height 100%)";
+        final String TEXT_2 = "Use the child component's default preferred size for sliding. (SlidePane changed to default size)";
+
+        JLabel lbDescription = new JLabel(TEXT_2);
+        lbDescription.putClientProperty(FlatClientProperties.STYLE, "" +
+                "foreground:$Label.disabledForeground;");
 
         ButtonGroup group = new ButtonGroup();
         group.add(jrContainerSize);
         group.add(jrComponentPreferredSize);
 
+        jrContainerSize.addActionListener(e -> {
+            MigLayout layout = (MigLayout) slidePane.getParent().getLayout();
+            layout.setComponentConstraints(slidePane, "width 100%,height 100%");
+            lbDescription.setText(TEXT_1);
+            slidePane.revalidate();
+        });
+        jrComponentPreferredSize.addActionListener(e -> {
+            MigLayout layout = (MigLayout) slidePane.getParent().getLayout();
+            layout.setComponentConstraints(slidePane, null);
+            lbDescription.setText(TEXT_2);
+            slidePane.revalidate();
+        });
+
         panel.add(jrContainerSize);
         panel.add(jrComponentPreferredSize);
+        panel.add(lbDescription, "span 2");
         return panel;
     }
 
@@ -117,7 +138,7 @@ public class FormSlidePane extends Form {
     }
 
     private Component createExample() {
-        JPanel panel = new JPanel(new MigLayout("wrap"));
+        JPanel panel = new JPanel(new MigLayout("wrap,fillx"));
         panel.setBorder(new TitledBorder("Example"));
         // create slide layout size
         PanelSlider.PaneSliderLayoutSize layoutSize = (container, component) -> {
