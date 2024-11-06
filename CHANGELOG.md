@@ -9,6 +9,7 @@
     - Add new layout option `animateScale` to scale the modal when open and close
 - Extras
     - LightDarkButton: add list support l&f `light` and `dark` to auto install themes when switch
+    - Add new `SlidePane` component (PR #19)
 
 ### Changed
 
