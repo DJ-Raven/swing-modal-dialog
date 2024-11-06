@@ -177,7 +177,6 @@ public class PanelSlider extends JLayeredPane {
         @Override
         public void removeNotify() {
             super.removeNotify();
-            animator = null;
             component = null;
             sliderTransition = null;
             oldImage = null;

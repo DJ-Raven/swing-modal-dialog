@@ -42,6 +42,7 @@ public class FormSearch {
         return new Class[]{
                 FormDashboard.class,
                 FormAvatarIcon.class,
+                FormSlidePane.class,
                 FormDateTime.class,
                 FormModal.class,
                 FormToast.class,
