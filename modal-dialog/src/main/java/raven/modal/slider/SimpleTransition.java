@@ -51,6 +51,32 @@ public class SimpleTransition {
                     g.dispose();
                 }
             };
+        } else if (sliderType == SliderType.ZOOM_IN) {
+            transition = new SliderTransition() {
+
+                @Override
+                public void renderImageNew(Graphics g, Image image, int width, int height, float animate) {
+                    Graphics2D g2 = (Graphics2D) g;
+                    g2.setComposite(AlphaComposite.SrcOver.derive(animate));
+                    g.drawImage(image, 0, 0, null);
+                    g2.dispose();
+                }
+
+                @Override
+                public void renderImageOld(Graphics g, Image image, int width, int height, float animate) {
+                    Graphics2D g2 = (Graphics2D) g;
+                    float sx = 1f - animate;
+                    float sy = 1f - animate;
+                    float x = width / 2f;
+                    float y = height / 2f;
+                    g2.translate(x, y);
+                    g2.scale(sx, sy);
+                    g2.translate(-x, -y);
+                    g2.setComposite(AlphaComposite.SrcOver.derive(1f - animate));
+                    g.drawImage(image, 0, 0, null);
+                    g2.dispose();
+                }
+            };
         } else if (sliderType == SliderType.ZOOM_OUT) {
             transition = new SliderTransition() {
 
@@ -65,10 +91,10 @@ public class SimpleTransition {
                 @Override
                 public void renderImageOld(Graphics g, Image image, int width, int height, float animate) {
                     Graphics2D g2 = (Graphics2D) g;
-                    float sx = 1 + animate;
-                    float sy = 1 + animate;
-                    int x = width / 2;
-                    int y = height / 2;
+                    float sx = 1f + animate;
+                    float sy = 1f + animate;
+                    float x = width / 2f;
+                    float y = height / 2f;
                     g2.translate(x, y);
                     g2.scale(sx, sy);
                     g2.translate(-x, -y);

@@ -1,6 +1,5 @@
 package raven.modal.layout;
 
-import raven.modal.component.ModalContainer;
 import raven.modal.slider.PanelSlider;
 
 import java.awt.*;
@@ -32,13 +31,13 @@ public class AnimatedLayout extends CardLayout {
         }
     }
 
-    private final ModalContainer modalContainer;
+    private final PanelSlider.PaneSliderLayoutSize paneSliderLayoutSize;
     private Dimension from;
     private Dimension target;
     private float animate;
 
-    public AnimatedLayout(ModalContainer modalContainer) {
-        this.modalContainer = modalContainer;
+    public AnimatedLayout(PanelSlider.PaneSliderLayoutSize paneSliderLayoutSize) {
+        this.paneSliderLayoutSize = paneSliderLayoutSize;
     }
 
     @Override
@@ -104,7 +103,7 @@ public class AnimatedLayout extends CardLayout {
         if (com instanceof PanelSlider.PanelSnapshot) {
             return new Dimension(width, height);
         }
-        Dimension size = modalContainer.getModalComponentSize(com, parent);
+        Dimension size = paneSliderLayoutSize.getComponentSize(parent, com);
         return size;
     }
 

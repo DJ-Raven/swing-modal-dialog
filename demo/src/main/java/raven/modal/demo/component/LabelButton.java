@@ -11,10 +11,12 @@ public class LabelButton extends JLabel {
     public LabelButton(String text) {
         super("<html><a href=\"#\">" + text + "</a></html>");
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        setFocusable(true);
     }
 
     public LabelButton() {
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        setFocusable(true);
     }
 
     public void addOnClick(Consumer event) {
@@ -22,6 +24,7 @@ public class LabelButton extends JLabel {
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (SwingUtilities.isLeftMouseButton(e)) {
+                    requestFocus();
                     event.accept(null);
                 }
             }
