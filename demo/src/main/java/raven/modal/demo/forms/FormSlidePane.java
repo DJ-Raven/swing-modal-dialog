@@ -2,6 +2,7 @@ package raven.modal.demo.forms;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.ui.FlatUIUtils;
+import com.formdev.flatlaf.util.UIScale;
 import net.miginfocom.layout.PlatformDefaults;
 import net.miginfocom.swing.MigLayout;
 import raven.extras.SlidePane;
@@ -173,7 +174,7 @@ public class FormSlidePane extends Form {
         int left = (int) PlatformDefaults.getPanelInsets(1).getValue();
         int bottom = (int) PlatformDefaults.getPanelInsets(2).getValue();
         int right = (int) PlatformDefaults.getPanelInsets(3).getValue();
-        return new Insets(top, left, bottom, right);
+        return UIScale.scale(new Insets(top, left, bottom, right));
     }
 
     private SlidePaneTransition.Type getTransition() {
