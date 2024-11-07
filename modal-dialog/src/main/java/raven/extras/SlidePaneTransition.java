@@ -12,7 +12,7 @@ public abstract class SlidePaneTransition extends SliderTransition {
 
     public static SliderTransition create(Type type) {
         if (type == Type.DEFAULT) {
-            return null;
+            return SimpleTransition.get(SimpleTransition.SliderType.DEFAULT);
         } else if (type == Type.BACK) {
             return SimpleTransition.get(SimpleTransition.SliderType.BACK);
         } else if (type == Type.FORWARD) {

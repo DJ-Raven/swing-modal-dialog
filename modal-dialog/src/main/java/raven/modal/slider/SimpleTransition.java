@@ -9,7 +9,26 @@ public class SimpleTransition {
 
     public static SliderTransition get(SliderType sliderType) {
         SliderTransition transition = null;
-        if (sliderType == SliderType.BACK) {
+        if (sliderType == SliderType.DEFAULT) {
+            transition = new SliderTransition() {
+
+                @Override
+                public void renderImageNew(Graphics g, Image image, int width, int height, float animate) {
+                    Graphics2D g2 = (Graphics2D) g;
+                    g2.setComposite(AlphaComposite.SrcOver.derive(animate));
+                    g.drawImage(image, 0, 0, null);
+                    g.dispose();
+                }
+
+                @Override
+                public void renderImageOld(Graphics g, Image image, int width, int height, float animate) {
+                    Graphics2D g2 = (Graphics2D) g;
+                    g2.setComposite(AlphaComposite.SrcOver.derive(1f - animate));
+                    g.drawImage(image, 0, 0, null);
+                    g.dispose();
+                }
+            };
+        } else if (sliderType == SliderType.BACK) {
             transition = new SliderTransition() {
 
                 @Override
