@@ -61,6 +61,7 @@ public class FormDateTime extends Form {
         JCheckBox chCloseAfterSelected = new JCheckBox("Close after selected");
         JCheckBox chEditorValidation = new JCheckBox("Editor validation", true);
         JCheckBox chValidationOnNull = new JCheckBox("Validation on null");
+        JCheckBox chAnimationEnabled = new JCheckBox("Animation Enabled", true);
 
         chDateBetween.addActionListener(e -> {
             datePicker.setDateSelectionMode(chDateBetween.isSelected() ? DatePicker.DateSelectionMode.BETWEEN_DATE_SELECTED
@@ -73,12 +74,14 @@ public class FormDateTime extends Form {
             chValidationOnNull.setEnabled(chEditorValidation.isSelected());
         });
         chValidationOnNull.addActionListener(e -> datePicker.setValidationOnNull(chValidationOnNull.isSelected()));
+        chAnimationEnabled.addActionListener(e -> datePicker.setAnimationEnabled(chAnimationEnabled.isSelected()));
 
         panel.add(chDateBetween);
         panel.add(chUsePanelOption);
         panel.add(chCloseAfterSelected);
         panel.add(chEditorValidation);
         panel.add(chValidationOnNull);
+        panel.add(chAnimationEnabled);
 
         return panel;
     }

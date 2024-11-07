@@ -29,6 +29,7 @@
 - Update form layout
 - Quick search update layout and add new favorite option (PR #17)
 - Add new frame footer and create new `MemoryBar`
+- Update form DateTimePicker
 
 ## [2.0.0] - 2024-10-20
 
