@@ -1,6 +1,8 @@
 package raven.modal.demo.forms;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import com.formdev.flatlaf.ui.FlatUIUtils;
+import net.miginfocom.layout.PlatformDefaults;
 import net.miginfocom.swing.MigLayout;
 import raven.extras.SlidePane;
 import raven.extras.SlidePaneTransition;
@@ -144,7 +146,7 @@ public class FormSlidePane extends Form {
         PanelSlider.PaneSliderLayoutSize layoutSize = (container, component) -> {
             if (jrComponentPreferredSize.isSelected()) {
                 // when slide use the component preferred size.
-                return component.getPreferredSize();
+                return minSize(container, component);
             } else {
                 // when slide use the container slide pane as the size.
                 return container.getSize();
@@ -154,6 +156,24 @@ public class FormSlidePane extends Form {
         slidePane.addSlide(new SimpleInputForms());
         panel.add(slidePane);
         return panel;
+    }
+
+    private Dimension minSize(Container container, Component component) {
+        Container parent = container.getParent();
+        Dimension comSize = component.getPreferredSize();
+        Dimension parentSize = parent.getSize();
+        Insets parentInsets = FlatUIUtils.addInsets(parent.getInsets(), getMiglayoutDefaultInsets());
+        int width = Math.min(comSize.width, parentSize.width - (parentInsets.left + parentInsets.right));
+        int height = Math.min(comSize.height, parentSize.height - (parentInsets.top + parentInsets.bottom));
+        return new Dimension(width, height);
+    }
+
+    private Insets getMiglayoutDefaultInsets() {
+        int top = (int) PlatformDefaults.getPanelInsets(0).getValue();
+        int left = (int) PlatformDefaults.getPanelInsets(1).getValue();
+        int bottom = (int) PlatformDefaults.getPanelInsets(2).getValue();
+        int right = (int) PlatformDefaults.getPanelInsets(3).getValue();
+        return new Insets(top, left, bottom, right);
     }
 
     private SlidePaneTransition.Type getTransition() {
