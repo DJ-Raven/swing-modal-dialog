@@ -143,7 +143,7 @@ public class AvatarIcon implements Icon {
             if (round == 999) {
                 mask = new Ellipse2D.Double(border, border, width, height);
             } else {
-                float r = UIScale.scale(round);
+                float r = Math.max(UIScale.scale(round) - border, 0);
                 mask = new RoundRectangle2D.Double(border, border, width, height, r, r);
             }
         } else {
