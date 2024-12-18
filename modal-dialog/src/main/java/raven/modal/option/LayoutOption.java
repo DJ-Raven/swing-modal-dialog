@@ -19,8 +19,8 @@ public class LayoutOption {
         return horizontalLocation;
     }
 
-    public Location getVerticalLocation() {
-        return verticalLocation;
+    public DynamicSize getLocation() {
+        return location;
     }
 
     public Insets getMargin() {
@@ -43,9 +43,8 @@ public class LayoutOption {
         return onTop;
     }
 
-    private LayoutOption(Location horizontalLocation, Location verticalLocation, Insets margin, DynamicSize size, DynamicSize animateDistance, float animateScale, boolean onTop) {
-        this.horizontalLocation = horizontalLocation;
-        this.verticalLocation = verticalLocation;
+    private LayoutOption(DynamicSize location, Insets margin, DynamicSize size, DynamicSize animateDistance, float animateScale, boolean onTop) {
+        this.location = location;
         this.margin = margin;
         this.size = size;
         this.animateDistance = animateDistance;
@@ -56,8 +55,9 @@ public class LayoutOption {
     public LayoutOption() {
     }
 
+    // keep this horizontal location for component orientation (RTL or LTR)
     private Location horizontalLocation = Location.CENTER;
-    private Location verticalLocation = Location.CENTER;
+    private DynamicSize location = new DynamicSize(horizontalLocation.getValue(), Location.CENTER.getValue());
     private Insets margin = new Insets(7, 7, 7, 7);
     private DynamicSize size = new DynamicSize(-1, -1);
     private DynamicSize animateDistance = new DynamicSize(0, 20);
@@ -65,8 +65,20 @@ public class LayoutOption {
     private boolean onTop = false;
 
     public LayoutOption setLocation(Location horizontal, Location vertical) {
+        this.location = new DynamicSize(horizontal.getValue(), vertical.getValue());
         this.horizontalLocation = horizontal;
-        this.verticalLocation = vertical;
+        return this;
+    }
+
+    public LayoutOption setLocation(Location horizontal, Number y) {
+        this.location = new DynamicSize(horizontal.getValue(), y);
+        this.horizontalLocation = horizontal;
+        return this;
+    }
+
+    public LayoutOption setLocation(Number x, Number y) {
+        this.location = new DynamicSize(x, y);
+        this.horizontalLocation = null;
         return this;
     }
 
@@ -104,6 +116,6 @@ public class LayoutOption {
     }
 
     public LayoutOption copy() {
-        return new LayoutOption(horizontalLocation, verticalLocation, new Insets(margin.top, margin.left, margin.bottom, margin.right), new DynamicSize(size), new DynamicSize(animateDistance), animateScale, onTop);
+        return new LayoutOption(location, new Insets(margin.top, margin.left, margin.bottom, margin.right), new DynamicSize(size), new DynamicSize(animateDistance), animateScale, onTop);
     }
 }

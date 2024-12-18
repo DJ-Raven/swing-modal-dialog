@@ -1,36 +1,39 @@
 package raven.modal.toast.option;
 
-import raven.modal.Toast;
-import raven.modal.option.LayoutOption;
 import raven.modal.option.Location;
-import raven.modal.utils.DynamicSize;
 
 /**
  * @author Raven
  */
 public enum ToastLocation {
 
-    TOP_LEADING(Location.LEADING, Location.TOP, new DynamicSize(-0.7f, 0)),
-    TOP_CENTER(Location.CENTER, Location.TOP, new DynamicSize(0, -1f)),
-    TOP_TRAILING(Location.TRAILING, Location.TOP, new DynamicSize(0.7f, 0)),
-    BOTTOM_LEADING(Location.LEADING, Location.BOTTOM, new DynamicSize(-0.7f, 0)),
-    BOTTOM_CENTER(Location.CENTER, Location.BOTTOM, new DynamicSize(0, 1f)),
-    BOTTOM_TRAILING(Location.TRAILING, Location.BOTTOM, new DynamicSize(0.7f, 0));
+    TOP_LEADING(Location.LEADING, Location.TOP, ToastDirection.LEFT_TO_RIGHT_BOTTOM),
+    TOP_CENTER(Location.CENTER, Location.TOP, ToastDirection.TOP_TO_BOTTOM),
+    TOP_TRAILING(Location.TRAILING, Location.TOP, ToastDirection.RIGHT_TO_LEFT_BOTTOM),
+    BOTTOM_LEADING(Location.LEADING, Location.BOTTOM, ToastDirection.LEFT_TO_RIGHT_TOP),
+    BOTTOM_CENTER(Location.CENTER, Location.BOTTOM, ToastDirection.BOTTOM_TO_TOP),
+    BOTTOM_TRAILING(Location.TRAILING, Location.BOTTOM, ToastDirection.RIGHT_TO_LEFT_TOP);
 
-    private ToastLocation(Location horizontalLocation, Location verticalLocation, DynamicSize animateDistance) {
+    ToastLocation(Location horizontalLocation, Location verticalLocation, ToastDirection direction) {
         this.horizontalLocation = horizontalLocation;
         this.verticalLocation = verticalLocation;
-        this.animateDistance = animateDistance;
+        this.direction = direction;
     }
 
     private Location horizontalLocation;
     private Location verticalLocation;
-    private DynamicSize animateDistance;
+    private ToastDirection direction;
 
-    public LayoutOption getLayout() {
-        return Toast.createOption().getLayoutOption()
-                .setLocation(horizontalLocation, verticalLocation)
-                .setAnimateDistance(animateDistance.getX(), animateDistance.getY());
+    public Location getHorizontalLocation() {
+        return horizontalLocation;
+    }
+
+    public Location getVerticalLocation() {
+        return verticalLocation;
+    }
+
+    public ToastDirection getDirection() {
+        return direction;
     }
 
     public static ToastLocation from(Location horizontalLocation, Location verticalLocation) {
@@ -40,5 +43,10 @@ public enum ToastLocation {
             }
         }
         return TOP_CENTER;
+    }
+
+    public boolean isSame(ToastLocation location) {
+        return this.horizontalLocation.getValue() == location.horizontalLocation.getValue()
+                && this.verticalLocation.getValue() == location.verticalLocation.getValue();
     }
 }

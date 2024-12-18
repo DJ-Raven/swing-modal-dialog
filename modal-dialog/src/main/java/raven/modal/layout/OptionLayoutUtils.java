@@ -4,6 +4,7 @@ import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.UIScale;
 import raven.modal.option.LayoutOption;
 import raven.modal.option.Location;
+import raven.modal.utils.DynamicSize;
 
 import java.awt.*;
 
@@ -21,33 +22,46 @@ public class OptionLayoutUtils {
         Dimension comSize = getComponentSize(component, width, height, animate, layoutOption);
         boolean rightToLeft = !parent.getComponentOrientation().isLeftToRight();
         Location lh = layoutOption.getHorizontalLocation();
-        if (rightToLeft) {
-            if (lh == Location.LEADING) {
-                lh = Location.RIGHT;
-            } else if (lh == Location.TRAILING) {
-                lh = Location.LEFT;
-            } else {
-                rightToLeft = false;
+        Number lx = layoutOption.getLocation().getX();
+        Number ly = layoutOption.getLocation().getY();
+        if (lh != null) {
+            if (rightToLeft) {
+                if (lh == Location.LEADING) {
+                    lh = Location.RIGHT;
+                } else if (lh == Location.TRAILING) {
+                    lh = Location.LEFT;
+                } else {
+                    rightToLeft = false;
+                }
             }
+            lx = lh.getValue();
         }
-        Point point = location(width, height, comSize, lh, layoutOption.getVerticalLocation());
+        DynamicSize size = new DynamicSize(lx, ly);
+        Point point = location(width, height, comSize, size);
         Point animatePoint = getAnimatePoint(comSize, animate, rightToLeft, layoutOption);
         int cx = x + point.x + animatePoint.x;
         int cy = y + point.y + animatePoint.y;
         return new Rectangle(cx, cy, comSize.width, comSize.height);
     }
 
-    protected static Point location(int width, int height, Dimension componentSize, Location lx, Location ly) {
-        float x = (width * lx.getValue()) - (componentSize.width / 2);
-        float y = (height * ly.getValue()) - (componentSize.height / 2);
-        if (lx != Location.CENTER) {
+    protected static Point location(int width, int height, Dimension componentSize, DynamicSize size) {
+        Dimension location = size.getSize(new Dimension(width, height));
+        double x = location.width;
+        double y = location.height;
+        if (size.getX() instanceof Float) {
+            x -= componentSize.width / 2f;
+        }
+        if (size.getY() instanceof Float) {
+            y -= componentSize.height / 2f;
+        }
+        if (!size.isHorizontalCenter()) {
             if (x < 0) {
                 x = 0;
             } else if (x > width - componentSize.width) {
                 x = width - componentSize.width;
             }
         }
-        if (ly != Location.CENTER) {
+        if (!size.isVerticalCenter()) {
             if (y < 0) {
                 y = 0;
             } else if (y > height - componentSize.height) {

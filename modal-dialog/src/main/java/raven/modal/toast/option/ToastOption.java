@@ -1,7 +1,5 @@
 package raven.modal.toast.option;
 
-import raven.modal.option.LayoutOption;
-
 /**
  * This class for toast option
  *
@@ -13,7 +11,7 @@ public class ToastOption {
         return new ToastOption();
     }
 
-    public LayoutOption getLayoutOption() {
+    public ToastLayoutOption getLayoutOption() {
         return layoutOption;
     }
 
@@ -45,7 +43,7 @@ public class ToastOption {
         return delay;
     }
 
-    public ToastOption(LayoutOption layoutOption, ToastStyle style, boolean animationEnabled, boolean pauseDelayOnHover, boolean autoClose, boolean closeOnClick, int duration, int delay) {
+    public ToastOption(ToastLayoutOption layoutOption, ToastStyle style, boolean animationEnabled, boolean pauseDelayOnHover, boolean autoClose, boolean closeOnClick, int duration, int delay) {
         this.layoutOption = layoutOption;
         this.style = style;
         this.animationEnabled = animationEnabled;
@@ -59,7 +57,7 @@ public class ToastOption {
     public ToastOption() {
     }
 
-    private LayoutOption layoutOption = LayoutOption.getDefault();
+    private ToastLayoutOption layoutOption = ToastLayoutOption.getDefault();
     private ToastStyle style = ToastStyle.getDefault();
     private boolean animationEnabled = true;
     private boolean pauseDelayOnHover = true;
@@ -68,7 +66,7 @@ public class ToastOption {
     private int duration = 350;
     private int delay = 3000;
 
-    public ToastOption setLayoutOption(LayoutOption layoutOption) {
+    public ToastOption setLayoutOption(ToastLayoutOption layoutOption) {
         this.layoutOption = layoutOption;
         return this;
     }
