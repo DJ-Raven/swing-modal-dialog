@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.2.0]-SNAPSHOT
+
+### New features and improvements
+
+- Modal dialog
+    - Add custom location (PR #22)
+- Toast
+    - Add custom location (PR #22)
+
 ## [2.1.0] - 2024-11-07
 
 ### New features and improvements
