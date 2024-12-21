@@ -6,7 +6,6 @@ import raven.modal.option.LayoutOption;
 import raven.modal.toast.ToastPanel;
 import raven.modal.toast.option.ToastLayoutOption;
 import raven.modal.toast.option.ToastOption;
-import raven.modal.utils.DynamicSize;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -71,15 +70,10 @@ public class ToastLayout implements LayoutManager {
     }
 
     private float getLayoutY(Container parent, Dimension comSize, LayoutOption layoutOption) {
-        DynamicSize size = layoutOption.getLocation();
-        if (size.getY() instanceof Float) {
-            int insets = parent.getInsets().top + parent.getInsets().bottom + UIScale.scale(layoutOption.getMargin().top + layoutOption.getMargin().bottom);
-            int height = parent.getHeight() - insets;
-            Point point = OptionLayoutUtils.location(0, height, comSize, layoutOption.getLocation());
-            return point.y;
-        } else {
-            return size.getY().floatValue();
-        }
+        int insets = parent.getInsets().top + parent.getInsets().bottom + UIScale.scale(layoutOption.getMargin().top + layoutOption.getMargin().bottom);
+        int height = parent.getHeight() - insets;
+        Point point = OptionLayoutUtils.location(0, height, comSize, layoutOption.getLocation());
+        return point.y;
     }
 
     private int getY(Component[] components, ToastPanel parentPanel, ToastLayoutOption layoutOption, int index, Rectangle rec, Insets baseMargin, float ly, float animate) {
