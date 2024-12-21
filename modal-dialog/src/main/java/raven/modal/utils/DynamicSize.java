@@ -41,4 +41,12 @@ public class DynamicSize {
         float ny = y instanceof Float ? target.height * y.floatValue() : UIScale.scale(y.floatValue());
         return new Dimension((int) nx, (int) ny);
     }
+
+    public boolean isHorizontalCenter() {
+        return x instanceof Float && x.floatValue() == 0.5f;
+    }
+
+    public boolean isVerticalCenter() {
+        return y instanceof Float && y.floatValue() == 0.5f;
+    }
 }

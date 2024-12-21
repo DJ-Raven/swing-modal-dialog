@@ -3,8 +3,9 @@ package raven.modal.layout;
 import com.formdev.flatlaf.util.UIScale;
 import raven.modal.Toast;
 import raven.modal.option.LayoutOption;
-import raven.modal.option.Location;
 import raven.modal.toast.ToastPanel;
+import raven.modal.toast.option.ToastLayoutOption;
+import raven.modal.toast.option.ToastOption;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -51,15 +52,16 @@ public class ToastLayout implements LayoutManager {
                 Component component = components[i];
                 if (component instanceof ToastPanel) {
                     ToastPanel toastPanel = (ToastPanel) component;
-                    LayoutOption option = toastPanel.getToastData().getOption().getLayoutOption();
-                    boolean isVerticalSlide = option.getAnimateDistance().getY().floatValue() != 0;
-                    Rectangle rec = OptionLayoutUtils.getLayoutLocation(parent, toastPanel, toastPanel.getAnimate(), option);
+                    ToastOption option = toastPanel.getToastData().getOption();
+                    LayoutOption layoutOption = option.getLayoutOption().createLayoutOption();
+                    Rectangle rec = OptionLayoutUtils.getLayoutLocation(parent, toastPanel, toastPanel.getAnimate(), layoutOption);
                     int index = i;
                     int y = rec.y;
                     if (index > 0) {
-                        y = getY(components, toastPanel, index, option.getVerticalLocation(), rec, baseMargin, isVerticalSlide, toastPanel.getAnimate());
+                        float ly = getLayoutY(parent, rec.getSize(), layoutOption);
+                        y = getY(components, toastPanel, option.getLayoutOption(), index, rec, baseMargin, ly, toastPanel.getAnimate());
                     } else {
-                        baseMargin = UIScale.scale(option.getMargin());
+                        baseMargin = UIScale.scale(layoutOption.getMargin());
                     }
                     component.setBounds(rec.x, y, rec.width, rec.height);
                 }
@@ -67,21 +69,29 @@ public class ToastLayout implements LayoutManager {
         }
     }
 
-    private int getY(Component[] components, ToastPanel parentPanel, int index, Location vertical, Rectangle rec, Insets baseMargin, boolean isVerticalSlide, float animate) {
+    private float getLayoutY(Container parent, Dimension comSize, LayoutOption layoutOption) {
+        int insets = parent.getInsets().top + parent.getInsets().bottom + UIScale.scale(layoutOption.getMargin().top + layoutOption.getMargin().bottom);
+        int height = parent.getHeight() - insets;
+        Point point = OptionLayoutUtils.location(0, height, comSize, layoutOption.getLocation());
+        return point.y;
+    }
+
+    private int getY(Component[] components, ToastPanel parentPanel, ToastLayoutOption layoutOption, int index, Rectangle rec, Insets baseMargin, float ly, float animate) {
         ToastPanel previousToast = getToastPanel(components, parentPanel, index - 1);
         if (previousToast == null) {
             return rec.y;
         }
-        double y = 0;
-        if (vertical == Location.TOP) {
+        boolean isVerticalDirection = layoutOption.getDirection().isVerticalDirection();
+        double y;
+        if (layoutOption.getDirection().isToBottomDirection()) {
             int h = previousToast.getHeight();
-            if (!isVerticalSlide) {
+            if (!isVerticalDirection) {
                 h *= previousToast.getAnimate();
             }
-            y = rec.y + previousToast.getY() + h - baseMargin.top;
-        } else if (vertical == Location.BOTTOM) {
+            y = rec.y + previousToast.getY() + h - (baseMargin.top + ly);
+        } else {
             float h;
-            if (!isVerticalSlide) {
+            if (!isVerticalDirection) {
                 h = rec.height - (previousToast.getHeight() * (1f - previousToast.getAnimate()));
             } else {
                 h = rec.height * (animate);

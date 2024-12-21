@@ -2,13 +2,11 @@ package raven.modal;
 
 import raven.modal.layout.FrameModalLayout;
 import raven.modal.layout.FrameToastLayout;
-import raven.modal.option.LayoutOption;
-import raven.modal.option.Location;
-import raven.modal.toast.option.ToastLocation;
-import raven.modal.toast.option.ToastOption;
 import raven.modal.toast.ToastContainerLayer;
 import raven.modal.toast.ToastPanel;
 import raven.modal.toast.ToastPromise;
+import raven.modal.toast.option.ToastLocation;
+import raven.modal.toast.option.ToastOption;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,9 +37,6 @@ public class Toast {
         map = new HashMap<>();
         initThemesData();
         defaultOption = ToastOption.getDefault();
-        defaultOption.getLayoutOption()
-                .setLocation(Location.CENTER, Location.TOP)
-                .setAnimateDistance(0, -1f);
     }
 
     private void initThemesData() {
@@ -59,15 +54,15 @@ public class Toast {
     }
 
     public static void show(Component owner, Type type, String message, ToastLocation location) {
-        ToastOption option = createOption().setLayoutOption(location.getLayout());
+        ToastOption option = createOption();
+        option.getLayoutOption()
+                .setLocation(location);
         show(owner, type, message, option);
     }
 
     public static void show(Component owner, Type type, String message, ToastLocation location, ToastOption option) {
-        LayoutOption l = location.getLayout();
         option.getLayoutOption()
-                .setLocation(l.getHorizontalLocation(), l.getVerticalLocation())
-                .setAnimateDistance(l.getAnimateDistance().getX(), l.getAnimateDistance().getY());
+                .setLocation(location);
         show(owner, type, message, option, null);
     }
 
@@ -80,15 +75,15 @@ public class Toast {
     }
 
     public static void showPromise(Component owner, String message, ToastLocation location, ToastPromise promise) {
-        ToastOption option = createOption().setLayoutOption(location.getLayout());
+        ToastOption option = createOption();
+        option.getLayoutOption()
+                .setLocation(location);
         showPromise(owner, message, option, promise);
     }
 
     public static void showPromise(Component owner, String message, ToastLocation location, ToastOption option, ToastPromise promise) {
-        LayoutOption l = location.getLayout();
         option.getLayoutOption()
-                .setLocation(l.getHorizontalLocation(), l.getVerticalLocation())
-                .setAnimateDistance(l.getAnimateDistance().getX(), l.getAnimateDistance().getY());
+                .setLocation(location);
         showPromise(owner, message, option, promise);
     }
 
@@ -142,7 +137,7 @@ public class Toast {
 
     public static void closeAll(ToastLocation location) {
         for (Map.Entry<RootPaneContainer, ToastContainerLayer> entry : getInstance().map.entrySet()) {
-            entry.getValue().closeAll(location.getLayout());
+            entry.getValue().closeAll(location);
         }
     }
 

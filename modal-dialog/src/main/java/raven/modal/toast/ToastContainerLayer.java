@@ -1,7 +1,7 @@
 package raven.modal.toast;
 
 import raven.modal.layout.ToastLayout;
-import raven.modal.option.LayoutOption;
+import raven.modal.toast.option.ToastLocation;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -61,11 +61,11 @@ public class ToastContainerLayer extends JLayeredPane {
         }
     }
 
-    public void closeAll(LayoutOption option) {
+    public void closeAll(ToastLocation location) {
         synchronized (toastPanels) {
             for (int i = toastPanels.size() - 1; i >= 0; i--) {
                 ToastPanel p = toastPanels.get(i);
-                if (p.checkSameLayout(option)) {
+                if (p.checkSameLayout(location)) {
                     if (!p.isCurrenPromise()) {
                         p.stop();
                     }

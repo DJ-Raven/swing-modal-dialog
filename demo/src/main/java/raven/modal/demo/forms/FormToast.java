@@ -8,9 +8,9 @@ import raven.modal.demo.simple.SimpleCustomToast;
 import raven.modal.demo.system.Form;
 import raven.modal.demo.utils.SystemForm;
 import raven.modal.option.Location;
+import raven.modal.toast.ToastPromise;
 import raven.modal.toast.option.ToastLocation;
 import raven.modal.toast.option.ToastOption;
-import raven.modal.toast.ToastPromise;
 import raven.modal.toast.option.ToastStyle;
 
 import javax.swing.*;
@@ -292,7 +292,9 @@ public class FormToast extends Form {
                 .setPauseDelayOnHover(chPauseDelayOnHover.isSelected())
                 .setAutoClose(chAutoClose.isSelected())
                 .setCloseOnClick(chCloseOnClick.isSelected());
-        option.setLayoutOption(ToastLocation.from(h, v).getLayout());
+
+        option.getLayoutOption()
+                .setLocation(ToastLocation.from(h, v));
         option.getStyle().setBackgroundType(backgroundType)
                 .setBorderType(borderType)
                 .setShowLabel(chShowLabel.isSelected())

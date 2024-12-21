@@ -17,7 +17,7 @@ public enum Location {
 
     private final float value;
 
-    private Location(float value) {
+    Location(float value) {
         this.value = value;
     }
 
