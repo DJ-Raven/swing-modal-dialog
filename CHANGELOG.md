@@ -9,6 +9,10 @@
 - Toast
     - Add custom location (PR #22)
 
+### Demo
+
+- DateTimePicker library update to `v2.0.0`
+
 ## [2.1.0] - 2024-11-07
 
 ### New features and improvements

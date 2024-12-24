@@ -2,14 +2,15 @@ package raven.modal.demo.forms;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import net.miginfocom.swing.MigLayout;
-import raven.datetime.component.date.DatePicker;
-import raven.datetime.component.time.TimePicker;
+import raven.datetime.DatePicker;
+import raven.datetime.TimePicker;
 import raven.modal.demo.system.Form;
 import raven.modal.demo.utils.SystemForm;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.time.LocalTime;
 
 @SystemForm(name = "DateTime", description = "date time picker user interface component")
 public class FormDateTime extends Form {
@@ -90,15 +91,35 @@ public class FormDateTime extends Form {
         JPanel panel = new JPanel(new MigLayout("wrap"));
         panel.setBorder(new TitledBorder("Time option"));
         JCheckBox ch24HourView = new JCheckBox("24 hour view");
+        JCheckBox chDisablePast = new JCheckBox("Disable past");
+        JCheckBox chEditorValidation = new JCheckBox("Editor validation", true);
+        JCheckBox chValidationOnNull = new JCheckBox("Validation on null");
         JCheckBox chHorizontal = new JCheckBox("Horizontal");
 
         ch24HourView.addActionListener(e -> {
             timePicker.set24HourView(ch24HourView.isSelected());
         });
+        chDisablePast.addActionListener(e -> {
+            boolean disable = chDisablePast.isSelected();
+            if (disable) {
+                disablePast();
+            } else {
+                timePicker.setTimeSelectionAble(null);
+            }
+        });
+        chEditorValidation.addActionListener(e -> {
+            timePicker.setEditorValidation(chEditorValidation.isSelected());
+            chValidationOnNull.setEnabled(chEditorValidation.isSelected());
+        });
+
+        chValidationOnNull.addActionListener(e -> timePicker.setValidationOnNull(chValidationOnNull.isSelected()));
         chHorizontal.addActionListener(e -> timePicker.setOrientation(chHorizontal.isSelected() ? SwingConstants.HORIZONTAL
                 : SwingConstants.VERTICAL));
 
         panel.add(ch24HourView);
+        panel.add(chDisablePast);
+        panel.add(chEditorValidation);
+        panel.add(chValidationOnNull);
         panel.add(chHorizontal);
 
         return panel;
@@ -120,6 +141,16 @@ public class FormDateTime extends Form {
         panel.add(dateEditor, "width 220");
         panel.add(timeEditor, "width 220");
         return panel;
+    }
+
+    private void disablePast() {
+        timePicker.setTimeSelectionAble((time, hourView) -> {
+            LocalTime now = LocalTime.now().withSecond(0).withNano(0);
+            if (hourView) {
+                return time.getHour() >= now.getHour();
+            }
+            return !time.isBefore(now);
+        });
     }
 
     private DatePicker datePicker;
