@@ -29,6 +29,10 @@ public class Option {
         return animationEnabled;
     }
 
+    public boolean isAnimationOnClose() {
+        return animationOnClose;
+    }
+
     public boolean isCloseOnPressedEscape() {
         return closeOnPressedEscape;
     }
@@ -57,6 +61,7 @@ public class Option {
     private BorderOption borderOption = BorderOption.getDefault();
     private BackgroundClickType backgroundClickType = BackgroundClickType.CLOSE_MODAL;
     private boolean animationEnabled = true;
+    private boolean animationOnClose = true;
     private boolean closeOnPressedEscape = true;
     private Color backgroundLight;
     private Color backgroundDark;
@@ -64,11 +69,12 @@ public class Option {
     private int duration = 200;
     private int sliderDuration = 400;
 
-    private Option(LayoutOption layoutOption, BorderOption borderOption, BackgroundClickType backgroundClickType, boolean animationEnabled, boolean closeOnPressedEscape, Color backgroundLight, Color backgroundDark, float opacity, int duration, int sliderDuration) {
+    private Option(LayoutOption layoutOption, BorderOption borderOption, BackgroundClickType backgroundClickType, boolean animationEnabled, boolean animationOnClose, boolean closeOnPressedEscape, Color backgroundLight, Color backgroundDark, float opacity, int duration, int sliderDuration) {
         this.layoutOption = layoutOption;
         this.borderOption = borderOption;
         this.backgroundClickType = backgroundClickType;
         this.animationEnabled = animationEnabled;
+        this.animationOnClose = animationOnClose;
         this.closeOnPressedEscape = closeOnPressedEscape;
         this.backgroundLight = backgroundLight;
         this.backgroundDark = backgroundDark;
@@ -92,6 +98,11 @@ public class Option {
 
     public Option setAnimationEnabled(boolean animationEnabled) {
         this.animationEnabled = animationEnabled;
+        return this;
+    }
+
+    public Option setAnimationOnClose(boolean animationOnClose) {
+        this.animationOnClose = animationOnClose;
         return this;
     }
 
@@ -132,6 +143,6 @@ public class Option {
     }
 
     public Option copy() {
-        return new Option(layoutOption.copy(), borderOption.copy(), backgroundClickType, animationEnabled, closeOnPressedEscape, backgroundLight == null ? null : new Color(backgroundLight.getRGB()), backgroundDark == null ? null : new Color(backgroundDark.getRGB()), opacity, duration, sliderDuration);
+        return new Option(layoutOption.copy(), borderOption.copy(), backgroundClickType, animationEnabled, animationOnClose, closeOnPressedEscape, backgroundLight == null ? null : new Color(backgroundLight.getRGB()), backgroundDark == null ? null : new Color(backgroundDark.getRGB()), opacity, duration, sliderDuration);
     }
 }

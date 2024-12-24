@@ -6,6 +6,7 @@
 
 - Modal dialog
     - Add custom location (PR #22)
+    - Add new option `animationOnClose` by default `true` use to enable or disabled animation while closing
 - Toast
     - Add custom location (PR #22)
 

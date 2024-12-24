@@ -151,7 +151,7 @@ public class ModalController extends JPanel {
     }
 
     public void startAnimator(boolean show) {
-        if (option.isAnimationEnabled()) {
+        if (option.isAnimationEnabled() && (show == true || option.isAnimationOnClose())) {
             if (animator == null) {
                 animator = new Animator(option.getDuration(), new Animator.TimingTarget() {
                     @Override

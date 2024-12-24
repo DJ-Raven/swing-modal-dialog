@@ -23,6 +23,7 @@ public class Test extends JFrame {
         JButton button = new JButton("show");
         ModalDialog.getDefaultOption()
                 .setOpacity(0f)
+                .setAnimationOnClose(false)
                 .getBorderOption()
                 .setBorderWidth(0.5f)
                 .setShadow(BorderOption.Shadow.MEDIUM);
