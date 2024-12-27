@@ -24,7 +24,7 @@ public class OutlineBorder extends FlatEmptyBorder {
     private FlatDropShadowBorder shadowBorder;
 
     public OutlineBorder(int shadowSize, float round) {
-        this(new Insets(shadowSize, shadowSize, shadowSize, shadowSize), shadowSize, round);
+        this(new Insets(shadowSize, shadowSize, shadowSize, shadowSize), 0, round);
     }
 
     public OutlineBorder(Insets shadowSize, float round) {
