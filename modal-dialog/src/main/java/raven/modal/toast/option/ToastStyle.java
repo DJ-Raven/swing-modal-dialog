@@ -33,6 +33,10 @@ public class ToastStyle {
         return showCloseButton;
     }
 
+    public boolean isPaintTextColor() {
+        return paintTextColor;
+    }
+
     public int getLineSize() {
         return lineSize;
     }
@@ -58,12 +62,13 @@ public class ToastStyle {
         return 1;
     }
 
-    public ToastStyle(BackgroundType backgroundType, BorderType borderType, boolean showLabel, boolean iconSeparateLine, boolean showCloseButton, int lineSize, String promiseLabel, Icon icon) {
+    public ToastStyle(BackgroundType backgroundType, BorderType borderType, boolean showLabel, boolean iconSeparateLine, boolean showCloseButton, boolean paintTextColor, int lineSize, String promiseLabel, Icon icon) {
         this.backgroundType = backgroundType;
         this.borderType = borderType;
         this.showLabel = showLabel;
         this.iconSeparateLine = iconSeparateLine;
         this.showCloseButton = showCloseButton;
+        this.paintTextColor = paintTextColor;
         this.lineSize = lineSize;
         this.promiseLabel = promiseLabel;
         this.customIcon = icon;
@@ -77,6 +82,7 @@ public class ToastStyle {
     private boolean showLabel;
     private boolean iconSeparateLine;
     private boolean showCloseButton = true;
+    private boolean paintTextColor;
     private int lineSize = 3;
     private String promiseLabel = "Loading";
     private Icon customIcon;
@@ -106,6 +112,11 @@ public class ToastStyle {
         return this;
     }
 
+    public ToastStyle setPaintTextColor(boolean paintTextColor) {
+        this.paintTextColor = paintTextColor;
+        return this;
+    }
+
     public ToastStyle setLineSize(int lineSize) {
         this.lineSize = lineSize;
         return this;
@@ -122,7 +133,7 @@ public class ToastStyle {
     }
 
     public ToastStyle copy() {
-        return new ToastStyle(backgroundType, borderType, showLabel, iconSeparateLine, showCloseButton, lineSize, promiseLabel, customIcon);
+        return new ToastStyle(backgroundType, borderType, showLabel, iconSeparateLine, showCloseButton, paintTextColor, lineSize, promiseLabel, customIcon);
     }
 
     public enum BackgroundType {

@@ -61,7 +61,9 @@ public class ToastPanel extends JPanel {
     @Override
     public void updateUI() {
         super.updateUI();
-        setBorder(new ToastBorder(content, toastData));
+        if (toastData != null && content != null) {
+            setBorder(new ToastBorder(content, toastData));
+        }
     }
 
     @Override
@@ -190,7 +192,7 @@ public class ToastPanel extends JPanel {
                     "[light]background:mix(" + themesData.colors[0] + ",$TextArea.background,10%);" +
                     "[dark]background:mix(" + themesData.colors[1] + ",$TextArea.background,10%);");
         }
-        if (textMessage != null) {
+        if (textMessage != null && toastData.getOption().getStyle().isPaintTextColor()) {
             textMessage.putClientProperty(FlatClientProperties.STYLE, "" +
                     "[light]foreground:" + themesData.colors[0] + ";" +
                     "[dark]foreground:" + themesData.colors[1] + ";");

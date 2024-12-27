@@ -9,6 +9,8 @@
     - Add new option `animationOnClose` by default `true` use to enable or disabled animation while closing
 - Toast
     - Add custom location (PR #22)
+    - Add new style option `paintTextColor` by default `false`. When set to true, the message text will be painted using
+      the color corresponding to the toast type
 
 ### Demo
 
