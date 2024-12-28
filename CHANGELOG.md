@@ -15,6 +15,7 @@
 ### Demo
 
 - DateTimePicker library update to `v2.0.0`
+- Login password field add `PasswordRevealIcon`
 
 ## [2.1.0] - 2024-11-07
 
