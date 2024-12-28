@@ -12,6 +12,11 @@
     - Add new style option `paintTextColor` by default `false`. When set to true, the message text will be painted using
       the color corresponding to the toast type
 
+### Fixed bugs
+
+- Toast
+    - Fixed paint border toast background when animation fade in fade out
+
 ### Demo
 
 - DateTimePicker library update to `v2.0.0`

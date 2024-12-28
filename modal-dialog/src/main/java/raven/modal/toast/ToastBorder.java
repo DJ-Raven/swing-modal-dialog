@@ -13,6 +13,7 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 
 /**
  * @author Raven
@@ -73,8 +74,10 @@ class ToastBorder extends FlatEmptyBorder {
 
     @Override
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-        Graphics2D g2 = (Graphics2D) g.create();
+        Graphics2D g2 = null;
         try {
+            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            g2 = image.createGraphics();
             FlatUIUtils.setRenderingHints(g2);
             if (shadowBorder != null) {
                 shadowBorder.paintBorder(c, g2, x, y, width, height);
@@ -122,8 +125,11 @@ class ToastBorder extends FlatEmptyBorder {
                     g2.fill(area);
                 }
             }
+            g.drawImage(image, x, y, null);
         } finally {
-            g2.dispose();
+            if (g2 != null) {
+                g2.dispose();
+            }
         }
     }
 }
