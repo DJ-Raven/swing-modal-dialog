@@ -19,8 +19,9 @@
 
 ### Demo
 
-- DateTimePicker library update to `v2.0.0`
-- Login password field add `PasswordRevealIcon`
+- DateTimePicker: library update to `v2.0.0`
+- Login: password field add `PasswordRevealIcon`
+- Form Table: remove table header separator
 
 ## [2.1.0] - 2024-11-07
 

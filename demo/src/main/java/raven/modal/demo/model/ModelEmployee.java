@@ -61,7 +61,7 @@ public class ModelEmployee {
 
     public Object[] toTableRowBasic(int row) {
         NumberFormat nf = new DecimalFormat("$ #,##0.##");
-        return new Object[]{ row, profile.getName(), profile.getLocation(), date, nf.format(salary), position, description, profile};
+        return new Object[]{ row, profile.getName(), profile.getLocation(), date, nf.format(salary), position, description};
     }
 
     public Object[] toTableRowCustom(int row) {

@@ -64,7 +64,7 @@ public class FormTable extends Form {
     }
 
     private Component createCustomTable() {
-        JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
+        JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][]0[fill,grow]"));
 
         // create table model
         Object columns[] = new Object[]{"SELECT", "#", "NAME", "DATE", "SALARY", "POSITION", "DESCRIPTION"};
@@ -153,11 +153,6 @@ public class FormTable extends Form {
 
         // create header
         panel.add(createHeaderAction());
-
-        JSeparator separator = new JSeparator();
-        separator.putClientProperty(FlatClientProperties.STYLE, "" +
-                "foreground:$Table.gridColor;");
-        panel.add(separator, "height 2");
         panel.add(scrollPane);
 
         // sample data
@@ -168,7 +163,7 @@ public class FormTable extends Form {
     }
 
     private Component createBasicTable() {
-        JPanel panelTable = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][]0[fill,grow]"));
+        JPanel panelTable = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[]0[fill,grow]"));
 
         // create table model
         Object columns[] = new Object[]{"#", "NAME", "LOCATION", "DATE", "SALARY", "POSITION", "DESCRIPTION"};
@@ -231,11 +226,6 @@ public class FormTable extends Form {
         title.putClientProperty(FlatClientProperties.STYLE, "" +
                 "font:bold +2");
         panelTable.add(title, "gapx 20");
-
-        JSeparator separator = new JSeparator();
-        separator.putClientProperty(FlatClientProperties.STYLE, "" +
-                "foreground:$Table.gridColor;");
-        panelTable.add(separator, "height 2");
         panelTable.add(scrollPane);
 
         // sample data
