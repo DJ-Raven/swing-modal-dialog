@@ -12,6 +12,10 @@
     - Add new style option `paintTextColor` by default `false`. When set to true, the message text will be painted using
       the color corresponding to the toast type
 
+### Changed
+
+- FlatLaf: update to `v3.5.4`
+
 ### Fixed bugs
 
 - Toast
