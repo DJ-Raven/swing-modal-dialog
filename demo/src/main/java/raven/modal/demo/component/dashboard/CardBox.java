@@ -17,10 +17,7 @@ public class CardBox extends JPanel {
 
     private void init() {
         setLayout(new MigLayout("", "[fill]", "[fill]"));
-        putClientProperty(FlatClientProperties.STYLE, "" +
-                "[dark]background:tint($Panel.background,5%);" +
-                "[light]background:tint($Panel.background,25%);" +
-                "border:3,3,3,3,$Separator.foreground,,15;");
+        putClientProperty(FlatClientProperties.STYLE_CLASS, "dashboardBackground");
     }
 
     private void createSeparator() {

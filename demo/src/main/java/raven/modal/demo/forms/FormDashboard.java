@@ -3,6 +3,7 @@ package raven.modal.demo.forms;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import net.miginfocom.swing.MigLayout;
+import raven.modal.demo.component.chart.TimeSeriesChart;
 import raven.modal.demo.component.dashboard.CardBox;
 import raven.modal.demo.system.Form;
 import raven.modal.demo.utils.SystemForm;
@@ -22,6 +23,7 @@ public class FormDashboard extends Form {
         createTitle();
         createPanelLayout();
         createCard();
+        createChart();
     }
 
     @Override
@@ -65,6 +67,14 @@ public class FormDashboard extends Form {
         cardBox.addCardItem(createIcon("raven/modal/demo/icons/dashboard/expense.svg", Color.decode("#f43f5e")), "Total Expense");
         cardBox.addCardItem(createIcon("raven/modal/demo/icons/dashboard/profit.svg", Color.decode("#10b981")), "Last Profit");
         panel.add(cardBox);
+        panelLayout.add(panel);
+    }
+
+    private void createChart() {
+        JPanel panel = new JPanel(new MigLayout("fillx", "[fill]", "[350]"));
+        TimeSeriesChart timeSeriesChart = new TimeSeriesChart();
+
+        panel.add(timeSeriesChart);
         panelLayout.add(panel);
     }
 
