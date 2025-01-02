@@ -1,19 +1,17 @@
 package raven.modal.demo.component.chart;
 
 import com.formdev.flatlaf.FlatClientProperties;
-import com.formdev.flatlaf.util.UIScale;
 import net.miginfocom.swing.MigLayout;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.ui.RectangleInsets;
 
 import javax.swing.*;
 import java.awt.*;
 
 public abstract class ChartCustomPanel extends JPanel {
 
-    private JFreeChart freeChart;
-    private ChartPanel chartPanel;
+    protected JFreeChart freeChart;
+    protected ChartPanel chartPanel;
 
     public ChartCustomPanel() {
         init();
@@ -25,7 +23,7 @@ public abstract class ChartCustomPanel extends JPanel {
 
         freeChart = createChart();
         chartPanel = new ChartPanel(freeChart);
-
+        createAnnotation(chartPanel);
         applyStyledChart(freeChart, chartPanel);
 
         add(chartPanel);
@@ -48,20 +46,20 @@ public abstract class ChartCustomPanel extends JPanel {
         chart.getLegend().setItemPaint(foreground);
         chart.getLegend().setItemFont(font);
 
+        // panel
+        chartPanel.setPopupMenu(null);
         styleChart(chart, panel);
     }
 
     protected abstract JFreeChart createChart();
 
+    protected abstract void createAnnotation(ChartPanel panel);
+
     protected void styleChart(JFreeChart chart, ChartPanel panel) {
     }
 
-    protected RectangleInsets scaleRectangleInsets(int top, int left, int bottom, int right) {
-        return new RectangleInsets(UIScale.scale(top), UIScale.scale(left), UIScale.scale(bottom), UIScale.scale(right));
-    }
-
-    protected Color alphaColor(Color color, int alpha) {
-        return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+    protected Color alphaColor(Color color, float alpha) {
+        return new Color(color.getRed(), color.getGreen(), color.getBlue(), (int) (alpha * 255));
     }
 
     @Override
