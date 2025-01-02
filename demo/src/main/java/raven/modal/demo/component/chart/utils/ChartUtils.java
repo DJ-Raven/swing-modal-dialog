@@ -25,4 +25,8 @@ public class ChartUtils {
         Rectangle r = rec.getBounds();
         return new Rectangle2D.Double(UIScale.unscale((float) r.getX()), UIScale.unscale((float) rec.getY()), UIScale.unscale((float) rec.getWidth()), UIScale.unscale((float) rec.getHeight()));
     }
+
+    public static Color alphaColor(Color color, float alpha) {
+        return new Color(color.getRed(), color.getGreen(), color.getBlue(), (int) (alpha * 255));
+    }
 }

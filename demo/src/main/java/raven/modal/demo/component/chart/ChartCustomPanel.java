@@ -18,7 +18,7 @@ public abstract class ChartCustomPanel extends JPanel {
     }
 
     private void init() {
-        setLayout(new MigLayout("fill", "[fill]", "[fill]"));
+        setLayout(new MigLayout("wrap,fill,gap 0", "[fill]", ""));
         putClientProperty(FlatClientProperties.STYLE_CLASS, "dashboardBackground");
 
         freeChart = createChart();
@@ -56,10 +56,6 @@ public abstract class ChartCustomPanel extends JPanel {
     protected abstract void createAnnotation(ChartPanel panel);
 
     protected void styleChart(JFreeChart chart, ChartPanel panel) {
-    }
-
-    protected Color alphaColor(Color color, float alpha) {
-        return new Color(color.getRed(), color.getGreen(), color.getBlue(), (int) (alpha * 255));
     }
 
     @Override

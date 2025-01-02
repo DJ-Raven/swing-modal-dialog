@@ -71,8 +71,8 @@ public class SampleData {
         s1.add(new Month(3, 2002), 137.3);
         s1.add(new Month(4, 2002), 143.9);
         s1.add(new Month(5, 2002), 139.8);
-        s1.add(new Month(6, 2002), 137.0);
-        s1.add(new Month(7, 2002), 132.8);
+        s1.add(new Month(6, 2002), 80.0);
+        s1.add(new Month(7, 2002), 50.8);
 
         TimeSeries s2 = new TimeSeries("Expense");
         s2.add(new Month(2, 2001), 129.6);

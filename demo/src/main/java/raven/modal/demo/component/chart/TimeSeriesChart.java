@@ -5,21 +5,23 @@ import org.jfree.chart.*;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYBezierRenderer;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.time.TimeSeriesCollection;
-import raven.modal.demo.component.chart.utils.MultiXYTextAnnotation;
+import raven.modal.demo.component.chart.renderer.ChartXYCurveRenderer;
 import raven.modal.demo.component.chart.utils.ChartUtils;
+import raven.modal.demo.component.chart.utils.MultiXYTextAnnotation;
 import raven.modal.demo.sample.SampleData;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.Date;
 
 public class TimeSeriesChart extends ChartCustomPanel {
+
+    private XYItemRenderer renderer;
 
     public TimeSeriesChart() {
         super();
@@ -29,6 +31,14 @@ public class TimeSeriesChart extends ChartCustomPanel {
     protected JFreeChart createChart() {
         JFreeChart chart = ChartFactory.createTimeSeriesChart(null, null, null, SampleData.createTimeSeriesDataset());
         return chart;
+    }
+
+    public void setRenderer(XYItemRenderer renderer) {
+        if (this.renderer != renderer) {
+            this.renderer = renderer;
+            XYPlot plot = (XYPlot) freeChart.getPlot();
+            plot.setRenderer(renderer);
+        }
     }
 
     @Override
@@ -64,15 +74,9 @@ public class TimeSeriesChart extends ChartCustomPanel {
         plot.setInsets(ChartUtils.scaleRectangleInsets(4, 8, 15, 8));
         plot.setDomainGridlinePaint(border);
 
-        XYBezierRenderer renderer = new XYBezierRenderer(UIScale.scale(10), UIScale.scale(25));
+        plot.setRenderer(getDefaultRender());
 
-        initSeriesStyle(renderer, 0, Color.decode("#10b981"));
-        initSeriesStyle(renderer, 1, Color.decode("#f43f5e"));
-
-        renderer.setDefaultItemLabelPaint(foreground);
-        plot.setRenderer(renderer);
-
-        panel.setZoomFillPaint(alphaColor(selectionColor, 0.2f));
+        panel.setZoomFillPaint(ChartUtils.alphaColor(selectionColor, 0.2f));
 
         MultiXYTextAnnotation annotation = (MultiXYTextAnnotation) plot.getAnnotations().get(0);
         annotation.setBackgroundPaint(background);
@@ -83,16 +87,6 @@ public class TimeSeriesChart extends ChartCustomPanel {
         annotation.setGridLinePaint(selectionColor);
     }
 
-    private void initSeriesStyle(XYBezierRenderer renderer, int series, Color color) {
-        renderer.setSeriesPaint(series, color);
-        renderer.setSeriesStroke(series, new BasicStroke(UIScale.scale(1.5f)));
-        int s = UIScale.scale(3);
-        renderer.setSeriesShape(series, new Ellipse2D.Float(-s, -s, s * 2, s * 2));
-
-        renderer.setSeriesOutlinePaint(series, alphaColor(color, 0.2f));
-        renderer.setSeriesOutlineStroke(series, new BasicStroke(UIScale.scale(6f)));
-        renderer.setUseOutlinePaint(true);
-    }
 
     @Override
     protected void createAnnotation(ChartPanel chartPanel) {
@@ -141,5 +135,12 @@ public class TimeSeriesChart extends ChartCustomPanel {
                 }
             }
         });
+    }
+
+    public XYItemRenderer getDefaultRender() {
+        if (renderer == null) {
+            renderer = new ChartXYCurveRenderer();
+        }
+        return renderer;
     }
 }

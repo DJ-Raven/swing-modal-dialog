@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.demo.component.chart.TimeSeriesChart;
+import raven.modal.demo.component.chart.utils.ToolBarTimeSeriesChartRenderer;
 import raven.modal.demo.component.dashboard.CardBox;
 import raven.modal.demo.system.Form;
 import raven.modal.demo.utils.SystemForm;
@@ -71,11 +72,19 @@ public class FormDashboard extends Form {
     }
 
     private void createChart() {
-        JPanel panel = new JPanel(new MigLayout("fillx", "[fill]", "[350]"));
+        JPanel panel = new JPanel(new MigLayout("wrap,fillx", "[fill]", "[350]"));
         TimeSeriesChart timeSeriesChart = new TimeSeriesChart();
-
+        timeSeriesChart.add(createChartRendererOption(timeSeriesChart), 0);
         panel.add(timeSeriesChart);
         panelLayout.add(panel);
+    }
+
+    private JComponent createChartRendererOption(TimeSeriesChart chart) {
+        JPanel panel = new JPanel(new MigLayout("insets 3,al trailing"));
+        panel.putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:null;");
+        panel.add(new ToolBarTimeSeriesChartRenderer(chart));
+        return panel;
     }
 
     private Icon createIcon(String icon, Color color) {
