@@ -18,7 +18,7 @@ public abstract class ChartCustomPanel extends JPanel {
     }
 
     private void init() {
-        setLayout(new MigLayout("wrap,fill,gap 0", "[fill]", ""));
+        setLayout(new MigLayout("wrap,fillx,gap 0", "[fill]"));
         putClientProperty(FlatClientProperties.STYLE_CLASS, "dashboardBackground");
 
         freeChart = createChart();
@@ -42,9 +42,11 @@ public abstract class ChartCustomPanel extends JPanel {
         chart.getPlot().setOutlinePaint(background);
 
         // legend
-        chart.getLegend().setBackgroundPaint(background);
-        chart.getLegend().setItemPaint(foreground);
-        chart.getLegend().setItemFont(font);
+        if (chart.getLegend() != null) {
+            chart.getLegend().setBackgroundPaint(background);
+            chart.getLegend().setItemPaint(foreground);
+            chart.getLegend().setItemFont(font);
+        }
 
         // panel
         chartPanel.setPopupMenu(null);

@@ -2,7 +2,9 @@ package raven.modal.demo.forms;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.util.UIScale;
 import net.miginfocom.swing.MigLayout;
+import raven.modal.demo.component.chart.SpiderChart;
 import raven.modal.demo.component.chart.TimeSeriesChart;
 import raven.modal.demo.component.chart.utils.ToolBarTimeSeriesChartRenderer;
 import raven.modal.demo.component.dashboard.CardBox;
@@ -20,11 +22,12 @@ public class FormDashboard extends Form {
     }
 
     private void init() {
-        setLayout(new MigLayout("wrap,fillx", "[fill]"));
+        setLayout(new MigLayout("wrap,fill", "[fill]", "[grow 0][fill]"));
         createTitle();
         createPanelLayout();
         createCard();
         createChart();
+        createOtherChart();
     }
 
     @Override
@@ -56,8 +59,17 @@ public class FormDashboard extends Form {
     }
 
     private void createPanelLayout() {
-        panelLayout = new JPanel(new MigLayout("insets 0,wrap,fillx", "[fill]"));
-        add(panelLayout);
+        panelLayout = new JPanel(new DashboardLayout());
+        JScrollPane scrollPane = new JScrollPane(panelLayout);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" +
+                "width:5;" +
+                "trackArc:$ScrollBar.thumbArc;" +
+                "trackInsets:0,0,0,0;" +
+                "thumbInsets:0,0,0,0;");
+        add(scrollPane);
     }
 
     private void createCard() {
@@ -74,17 +86,16 @@ public class FormDashboard extends Form {
     private void createChart() {
         JPanel panel = new JPanel(new MigLayout("wrap,fillx", "[fill]", "[350]"));
         TimeSeriesChart timeSeriesChart = new TimeSeriesChart();
-        timeSeriesChart.add(createChartRendererOption(timeSeriesChart), 0);
+        timeSeriesChart.add(new ToolBarTimeSeriesChartRenderer(timeSeriesChart), "al trailing,grow 0", 0);
         panel.add(timeSeriesChart);
         panelLayout.add(panel);
     }
 
-    private JComponent createChartRendererOption(TimeSeriesChart chart) {
-        JPanel panel = new JPanel(new MigLayout("insets 3,al trailing"));
-        panel.putClientProperty(FlatClientProperties.STYLE, "" +
-                "background:null;");
-        panel.add(new ToolBarTimeSeriesChartRenderer(chart));
-        return panel;
+    private void createOtherChart() {
+        JPanel panel = new JPanel(new MigLayout("", "[350]", "[300]"));
+        SpiderChart spiderChart = new SpiderChart();
+        panel.add(spiderChart);
+        panelLayout.add(panel);
     }
 
     private Icon createIcon(String icon, Color color) {
@@ -93,4 +104,62 @@ public class FormDashboard extends Form {
 
     private JPanel panelLayout;
     private CardBox cardBox;
+
+    private class DashboardLayout implements LayoutManager {
+
+        private int gap = 0;
+
+        @Override
+        public void addLayoutComponent(String name, Component comp) {
+        }
+
+        @Override
+        public void removeLayoutComponent(Component comp) {
+        }
+
+        @Override
+        public Dimension preferredLayoutSize(Container parent) {
+            synchronized (parent.getTreeLock()) {
+                Insets insets = parent.getInsets();
+                int width = (insets.left + insets.right);
+                int height = insets.top + insets.bottom;
+                int g = UIScale.scale(gap);
+                int count = parent.getComponentCount();
+                for (int i = 0; i < count; i++) {
+                    Component com = parent.getComponent(i);
+                    Dimension size = com.getPreferredSize();
+                    height += size.height;
+                }
+                if (count > 1) {
+                    height += (count - 1) * g;
+                }
+                return new Dimension(width, height);
+            }
+        }
+
+        @Override
+        public Dimension minimumLayoutSize(Container parent) {
+            synchronized (parent.getTreeLock()) {
+                return new Dimension(10, 10);
+            }
+        }
+
+        @Override
+        public void layoutContainer(Container parent) {
+            synchronized (parent.getTreeLock()) {
+                Insets insets = parent.getInsets();
+                int x = insets.left;
+                int y = insets.top;
+                int width = parent.getWidth() - (insets.left + insets.right);
+                int g = UIScale.scale(gap);
+                int count = parent.getComponentCount();
+                for (int i = 0; i < count; i++) {
+                    Component com = parent.getComponent(i);
+                    Dimension size = com.getPreferredSize();
+                    com.setBounds(x, y, width, size.height);
+                    y += size.height + g;
+                }
+            }
+        }
+    }
 }

@@ -1,5 +1,7 @@
 package raven.modal.demo.sample;
 
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.time.Month;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
@@ -97,6 +99,41 @@ public class SampleData {
         TimeSeriesCollection dataset = new TimeSeriesCollection();
         dataset.addSeries(s1);
         dataset.addSeries(s2);
+        return dataset;
+    }
+
+    public static CategoryDataset getCategoryDataset() {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+        // series key
+        String series1 = "Sales";
+        String series2 = "Adjust";
+        String series3 = "Return";
+        String series4 = "Custom";
+
+        // product names
+        String product1 = "Laptop";
+        String product2 = "Phone";
+        String product3 = "Accessory";
+
+        // product 1
+        dataset.addValue(200, product1, series1);
+        dataset.addValue(50, product1, series2);
+        dataset.addValue(80, product1, series3);
+        dataset.addValue(150, product1, series4);
+
+        // product 2
+        dataset.addValue(50, product2, series1);
+        dataset.addValue(180, product2, series2);
+        dataset.addValue(250, product2, series3);
+        dataset.addValue(230, product2, series4);
+
+        // product 3
+        dataset.addValue(180, product3, series1);
+        dataset.addValue(100, product3, series2);
+        dataset.addValue(250, product3, series3);
+        dataset.addValue(80, product3, series4);
+
         return dataset;
     }
 
