@@ -3,8 +3,8 @@ package raven.modal.demo;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
-import raven.modal.demo.menu.MyDrawerBuilder;
 import raven.modal.Drawer;
+import raven.modal.demo.menu.MyDrawerBuilder;
 import raven.modal.demo.system.FormManager;
 import raven.modal.demo.utils.DemoPreferences;
 

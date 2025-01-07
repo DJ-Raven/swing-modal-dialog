@@ -44,7 +44,7 @@ public class PasswordRevealIcon implements AnimatedIcon {
             Shape shape = new Line2D.Float(startX, startY, startX + (endX - startX) * animatedValue, startY + (endY - startY) * animatedValue);
 
             drawLine(g2, shape, c.getParent().getBackground(), 4f);
-            drawLine(g2, shape, color, 1.5f);
+            drawLine(g2, shape, color, 1.2f);
         }
         g2.dispose();
     }
