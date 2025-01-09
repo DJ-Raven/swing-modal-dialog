@@ -8,6 +8,7 @@ import raven.modal.option.Option;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowStateListener;
 import java.awt.image.VolatileImage;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,6 +25,7 @@ public class ModalContainerLayer extends JLayeredPane {
     private JLayeredPane layeredSnapshot;
     private DrawerLayoutResponsive drawerLayoutResponsive;
     private Object propertyData;
+    private WindowStateListener windowListener;
 
     public ModalContainerLayer(RootPaneContainer rootPaneContainer) {
         this.rootPaneContainer = rootPaneContainer;
@@ -35,12 +37,12 @@ public class ModalContainerLayer extends JLayeredPane {
         setLayout(new FullContentLayout());
     }
 
-    public void addModal(Modal modal, Option option, String id) {
-        addModalWithoutShowing(modal, option, id).showModal();
+    public void addModal(Component owner, Modal modal, Option option, String id) {
+        addModalWithoutShowing(owner, modal, option, id).showModal();
     }
 
-    public ModalContainer addModalWithoutShowing(Modal modal, Option option, String id) {
-        ModalContainer modalContainer = new ModalContainer(this, option, id);
+    public ModalContainer addModalWithoutShowing(Component owner, Modal modal, Option option, String id) {
+        ModalContainer modalContainer = new ModalContainer(this, owner, option, id);
         setLayer(modalContainer, JLayeredPane.MODAL_LAYER + (option.getLayoutOption().isOnTop() ? 1 : 0));
         add(modalContainer, 0);
         modalContainer.addModal(modal);
@@ -219,6 +221,14 @@ public class ModalContainerLayer extends JLayeredPane {
         this.propertyData = propertyData;
     }
 
+    public WindowStateListener getWindowListener() {
+        return windowListener;
+    }
+
+    public void setWindowListener(WindowStateListener windowListener) {
+        this.windowListener = windowListener;
+    }
+
     public Component getComponentSnapshot() {
         return componentSnapshot;
     }
@@ -230,5 +240,6 @@ public class ModalContainerLayer extends JLayeredPane {
         layeredSnapshot = null;
         drawerLayoutResponsive = null;
         propertyData = null;
+        windowListener = null;
     }
 }

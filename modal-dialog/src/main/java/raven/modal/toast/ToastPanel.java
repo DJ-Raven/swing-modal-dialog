@@ -27,7 +27,12 @@ public class ToastPanel extends JPanel {
         return animate;
     }
 
+    public Component getOwner() {
+        return owner;
+    }
+
     private final ToastContainerLayer toastContainerLayer;
+    private final Component owner;
     private ToastData toastData;
     private ToastContent content;
     private JTextArea textMessage;
@@ -45,8 +50,9 @@ public class ToastPanel extends JPanel {
     private ToastPromise.PromiseCallback promiseCallback;
     private boolean available = true;
 
-    public ToastPanel(ToastContainerLayer toastContainerLayer, ToastData toastData) {
+    public ToastPanel(ToastContainerLayer toastContainerLayer, Component owner, ToastData toastData) {
         this.toastContainerLayer = toastContainerLayer;
+        this.owner = owner;
         this.toastData = toastData;
         init();
     }

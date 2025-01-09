@@ -7,9 +7,11 @@ import raven.modal.toast.ToastPanel;
 import raven.modal.toast.ToastPromise;
 import raven.modal.toast.option.ToastLocation;
 import raven.modal.toast.option.ToastOption;
+import raven.modal.utils.ModalUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowStateListener;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
@@ -100,7 +102,7 @@ public class Toast {
         RootPaneContainer rootPaneContainer = ModalDialog.getRootPaneContainer(owner);
         ToastContainerLayer toastContainerLayer = getInstance().getToastContainerLayered(rootPaneContainer);
         String message = object instanceof String ? object.toString() : null;
-        ToastPanel toastPanel = new ToastPanel(toastContainerLayer, new ToastPanel.ToastData(type, option, themesData, message));
+        ToastPanel toastPanel = new ToastPanel(toastContainerLayer, owner, new ToastPanel.ToastData(type, option, themesData, message));
         if (object instanceof Component) {
             toastContainerLayer.add(toastPanel.createToastCustom((Component) object), 0);
         } else if (promise != null) {
@@ -207,6 +209,7 @@ public class Toast {
 
             // install property to remove the root pane map after windows removed
             toastContainerLayer.setPropertyData(installProperty(rootPaneContainer.getRootPane()));
+            toastContainerLayer.setWindowListener(installWindowStateChanged(rootPaneContainer));
         }
         return toastContainerLayer;
     }
@@ -221,11 +224,24 @@ public class Toast {
         return propertyChangeListener;
     }
 
+    private WindowStateListener installWindowStateChanged(RootPaneContainer rootPane) {
+        return ModalUtils.installWindowStateListener(rootPane, e -> {
+            if (e.getNewState() == 6 || e.getNewState() == 0) {
+                SwingUtilities.invokeLater(() -> {
+                    if (map.containsKey(rootPane)) {
+                        map.get(rootPane).revalidate();
+                    }
+                });
+            }
+        });
+    }
+
     private void uninstall(RootPaneContainer rootPaneContainer) {
         if (map.containsKey(rootPaneContainer)) {
             ToastContainerLayer toastContainerLayer = map.get(rootPaneContainer);
             JLayeredPane windowLayeredPane = rootPaneContainer.getLayeredPane();
             rootPaneContainer.getRootPane().removePropertyChangeListener("ancestor", (PropertyChangeListener) toastContainerLayer.getPropertyData());
+            ModalUtils.uninstallWindowStateListener(rootPaneContainer, toastContainerLayer.getWindowListener());
 
             // uninstall layout
             LayoutManager oldLayout = windowLayeredPane.getLayout();

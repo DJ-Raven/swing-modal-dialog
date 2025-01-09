@@ -4,6 +4,7 @@ import raven.modal.layout.ToastLayout;
 import raven.modal.toast.option.ToastLocation;
 
 import javax.swing.*;
+import java.awt.event.WindowStateListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,7 @@ public class ToastContainerLayer extends JLayeredPane {
 
     private List<ToastPanel> toastPanels;
     private Object propertyData;
+    private WindowStateListener windowListener;
 
     public ToastContainerLayer() {
         init();
@@ -91,9 +93,18 @@ public class ToastContainerLayer extends JLayeredPane {
         this.propertyData = propertyData;
     }
 
+    public WindowStateListener getWindowListener() {
+        return windowListener;
+    }
+
+    public void setWindowListener(WindowStateListener windowListener) {
+        this.windowListener = windowListener;
+    }
+
     public void remove() {
         closeAllAsRemove();
         toastPanels = null;
         propertyData = null;
+        windowListener = null;
     }
 }

@@ -8,9 +8,11 @@ import raven.modal.drawer.DrawerPanel;
 import raven.modal.layout.FrameModalLayout;
 import raven.modal.layout.FrameToastLayout;
 import raven.modal.option.Option;
+import raven.modal.utils.ModalUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowStateListener;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,25 +39,25 @@ public class ModalDialog {
         return instance;
     }
 
-    public static void showModal(Component parentComponent, Modal modal) {
-        showModal(parentComponent, modal, getDefaultOption());
+    public static void showModal(Component owner, Modal modal) {
+        showModal(owner, modal, getDefaultOption());
     }
 
-    public static void showModal(Component parentComponent, Modal modal, String id) {
-        showModal(parentComponent, modal, getDefaultOption(), id);
+    public static void showModal(Component owner, Modal modal, String id) {
+        showModal(owner, modal, getDefaultOption(), id);
     }
 
-    public static void showModal(Component parentComponent, Modal modal, Option option) {
-        showModal(parentComponent, modal, option, null);
+    public static void showModal(Component owner, Modal modal, Option option) {
+        showModal(owner, modal, option, null);
     }
 
-    public static void showModal(Component parentComponent, Modal modal, Option option, String id) {
+    public static void showModal(Component owner, Modal modal, Option option, String id) {
         if (getInstance().isIdExist(id)) {
             throw new IllegalArgumentException("id '" + id + "' already exist");
         }
         SwingUtilities.invokeLater(() -> {
-            ModalContainerLayer modalContainerLayer = getInstance().getModalContainerLayered(getRootPaneContainer(parentComponent));
-            modalContainerLayer.addModal(modal, option, id);
+            ModalContainerLayer modalContainerLayer = getInstance().getModalContainerLayered(getRootPaneContainer(owner));
+            modalContainerLayer.addModal(owner, modal, option, id);
             modalContainerLayer.repaint();
             modalContainerLayer.revalidate();
         });
@@ -132,7 +134,7 @@ public class ModalDialog {
             throw new IllegalArgumentException("id '" + id + "' already exist");
         }
         ModalContainerLayer modalContainerLayer = getInstance().getModalContainerLayered(rootPaneContainer);
-        return modalContainerLayer.addModalWithoutShowing(modal, option, id);
+        return modalContainerLayer.addModalWithoutShowing(null, modal, option, id);
     }
 
     protected static void closeModalAsRemove(String id) {
@@ -202,6 +204,7 @@ public class ModalDialog {
 
             // install property to remove the root pane map after windows removed
             modalContainerLayer.setPropertyData(installProperty(rootPaneContainer.getRootPane()));
+            modalContainerLayer.setWindowListener(installWindowStateChanged(rootPaneContainer));
         }
         return modalContainerLayer;
     }
@@ -216,11 +219,24 @@ public class ModalDialog {
         return propertyChangeListener;
     }
 
+    private WindowStateListener installWindowStateChanged(RootPaneContainer rootPane) {
+        return ModalUtils.installWindowStateListener(rootPane, e -> {
+            if (e.getNewState() == 6 || e.getNewState() == 0) {
+                SwingUtilities.invokeLater(() -> {
+                    if (map.containsKey(rootPane)) {
+                        map.get(rootPane).getSetModalContainer().forEach(container -> container.revalidate());
+                    }
+                });
+            }
+        });
+    }
+
     private void uninstall(RootPaneContainer rootPaneContainer) {
         if (map.containsKey(rootPaneContainer)) {
             ModalContainerLayer modalContainerLayer = map.get(rootPaneContainer);
             JLayeredPane windowLayeredPane = rootPaneContainer.getLayeredPane();
             rootPaneContainer.getRootPane().removePropertyChangeListener("ancestor", (PropertyChangeListener) modalContainerLayer.getPropertyData());
+            ModalUtils.uninstallWindowStateListener(rootPaneContainer, modalContainerLayer.getWindowListener());
 
             // uninstall layout
             LayoutManager oldLayout = windowLayeredPane.getLayout();

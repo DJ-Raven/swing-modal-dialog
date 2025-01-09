@@ -24,15 +24,21 @@ public class ModalContainer extends JComponent {
         return modalLayout;
     }
 
+    public Component getOwner() {
+        return owner;
+    }
+
     private final String id;
     private ModalContainerLayer modalContainerLayer;
+    private Component owner;
     private ModalController modalController;
     private MouseListener mouseListener;
     private ActionListener escapeAction;
     private ModalLayout modalLayout;
 
-    public ModalContainer(ModalContainerLayer modalContainerLayer, Option option, String id) {
+    public ModalContainer(ModalContainerLayer modalContainerLayer, Component owner, Option option, String id) {
         this.modalContainerLayer = modalContainerLayer;
+        this.owner = owner;
         this.id = id;
         init(modalContainerLayer, option);
     }
