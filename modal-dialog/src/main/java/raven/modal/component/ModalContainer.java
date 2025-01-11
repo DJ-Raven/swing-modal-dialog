@@ -2,7 +2,6 @@ package raven.modal.component;
 
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.util.ColorFunctions;
-import com.formdev.flatlaf.util.ScaledEmptyBorder;
 import raven.modal.layout.ModalLayout;
 import raven.modal.option.Option;
 
@@ -29,28 +28,26 @@ public class ModalContainer extends JComponent {
     }
 
     private final String id;
-    private ModalContainerLayer modalContainerLayer;
-    private Component owner;
+    private AbstractModalContainerLayer modalContainerLayer;
     private ModalController modalController;
+    private Component owner;
     private MouseListener mouseListener;
     private ActionListener escapeAction;
     private ModalLayout modalLayout;
 
-    public ModalContainer(ModalContainerLayer modalContainerLayer, Component owner, Option option, String id) {
+    public ModalContainer(AbstractModalContainerLayer modalContainerLayer, Component owner, Option option, String id) {
         this.modalContainerLayer = modalContainerLayer;
         this.owner = owner;
         this.id = id;
         init(modalContainerLayer, option);
     }
 
-    private void init(ModalContainerLayer modalContainerLayer, Option option) {
-        setBorder(new ScaledEmptyBorder(option.getLayoutOption().getMargin()));
+    private void init(AbstractModalContainerLayer modalContainerLayer, Option option) {
         modalController = new ModalController(modalContainerLayer, this, option);
         modalLayout = new ModalLayout(modalController, option.getLayoutOption());
         setLayout(modalLayout);
         installOption(option);
         add(modalController);
-        modalController.setComponentOrientation(modalContainerLayer.getComponentOrientation());
     }
 
     private void installOption(Option option) {
@@ -73,68 +70,38 @@ public class ModalContainer extends JComponent {
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     if (hover && clickType == Option.BackgroundClickType.CLOSE_MODAL) {
-                        closeModal();
+                        modalController.closeModal();
                     }
                 }
             };
             addMouseListener(mouseListener);
         }
         if (option.isCloseOnPressedEscape()) {
-            escapeAction = e -> closeModal();
+            escapeAction = e -> modalController.closeModal();
             registerKeyboardAction(escapeAction, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
         }
     }
 
-    private void uninstallOption() {
+    public void initModal(Modal modal) {
+        modalController.initModal(modal);
+    }
+
+    public void showModal() {
+        modalController.showModal();
+        modalContainerLayer.showContainer(true);
+    }
+
+    public ModalController getController() {
+        return modalController;
+    }
+
+    protected void uninstallOption() {
         if (mouseListener != null) {
             removeMouseListener(mouseListener);
         }
         if (escapeAction != null) {
             unregisterKeyboardAction(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
         }
-    }
-
-    public void addModal(Modal modal) {
-        modalController.addModal(modal);
-    }
-
-    public void pushModal(Modal modal) {
-        modalController.pushModal(modal);
-    }
-
-    public void popModal() {
-        modalController.popModal();
-    }
-
-    public void showModal() {
-        modalController.showModal();
-        modalContainerLayer.setVisible(true);
-    }
-
-    public void closeModal() {
-        if (modalController != null) {
-            modalController.closeModal();
-        }
-        uninstallOption();
-    }
-
-    public void close() {
-        if (modalController != null) {
-            modalController.close();
-        }
-        uninstallOption();
-    }
-
-    protected void showSnapshot() {
-        modalContainerLayer.showSnapshot();
-    }
-
-    protected void hideSnapshot() {
-        modalContainerLayer.hideSnapshot();
-    }
-
-    public ModalController getController() {
-        return modalController;
     }
 
     @Override
@@ -171,14 +138,14 @@ public class ModalContainer extends JComponent {
 
     public void checkLayerVisible() {
         if (isVisible()) {
-            modalContainerLayer.setVisible(true);
+            modalContainerLayer.showContainer(true);
         } else {
-            for (ModalContainer c : modalContainerLayer.getSetModalContainer()) {
+            for (ModalContainer c : modalContainerLayer.getContainers()) {
                 if (c != this) {
                     return;
                 }
             }
-            modalContainerLayer.setVisible(false);
+            modalContainerLayer.showContainer(false);
         }
     }
 

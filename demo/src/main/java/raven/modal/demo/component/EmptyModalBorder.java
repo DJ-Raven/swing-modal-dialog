@@ -33,7 +33,7 @@ public class EmptyModalBorder extends Modal {
         return new ModalController(this) {
             @Override
             public void close() {
-                getController().getModalContainer().closeModal();
+                getController().closeModal();
             }
         };
     }

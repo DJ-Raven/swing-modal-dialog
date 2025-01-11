@@ -17,6 +17,7 @@ public class OptionLayoutUtils {
     public static Rectangle getLayoutLocation(Container parent, Component owner, Component component, float animate, LayoutOption layoutOption) {
         Insets parentInsert = parent.getInsets();
         Insets insets = layoutOption.getMargin();
+        Dimension defaultComSize = getComponentSize(parent, insets);
         if (layoutOption.isRelativeToOwner()) {
             insets = getOwnerInsert(parent, owner, insets);
         }
@@ -25,7 +26,7 @@ public class OptionLayoutUtils {
         int y = insets.top;
         int width = parent.getWidth() - (insets.left + insets.right);
         int height = parent.getHeight() - (insets.top + insets.bottom);
-        Dimension comSize = getComponentSize(component, width, height, animate, layoutOption);
+        Dimension comSize = getComponentSize(component, defaultComSize.width, defaultComSize.height, animate, layoutOption);
         boolean rightToLeft = !parent.getComponentOrientation().isLeftToRight();
         Location lh = layoutOption.getHorizontalLocation();
         Number lx = layoutOption.getLocation().getX();
@@ -111,5 +112,12 @@ public class OptionLayoutUtils {
             x *= -1;
         }
         return new Point(x, y);
+    }
+
+    protected static Dimension getComponentSize(Container parent, Insets layoutInsets) {
+        Insets insets = FlatUIUtils.addInsets(parent.getInsets(), UIScale.scale(layoutInsets));
+        int width = parent.getWidth() - (insets.left + insets.right);
+        int height = parent.getHeight() - (insets.top + insets.bottom);
+        return new Dimension(width, height);
     }
 }

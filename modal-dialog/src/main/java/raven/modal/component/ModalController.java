@@ -2,152 +2,30 @@ package raven.modal.component;
 
 import com.formdev.flatlaf.util.Animator;
 import com.formdev.flatlaf.util.CubicBezierEasing;
-import net.miginfocom.swing.MigLayout;
-import raven.modal.option.BorderOption;
 import raven.modal.option.Option;
 import raven.modal.slider.PanelSlider;
-import raven.modal.slider.SimpleTransition;
-import raven.modal.slider.SliderTransition;
 import raven.modal.utils.ImageSnapshots;
-import raven.modal.utils.ModalUtils;
 
-import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.util.Stack;
-import java.util.function.Consumer;
 
 /**
  * @author Raven
  */
-public class ModalController extends JPanel {
+public class ModalController extends AbstractModalController {
 
-    private final ModalContainerLayer modalContainerLayer;
+    private final AbstractModalContainerLayer modalContainerLayer;
     private final ModalContainer modalContainer;
-    private Modal modal;
-    private PanelSlider panelSlider;
-    private Option option;
-    private Animator animator;
-    private boolean showing;
-    private float animated;
     private boolean display;
+    private boolean showing;
+    private Animator animator;
+    private float animated;
     private Image snapshotsImage;
 
-    private Stack<Modal> modalStack;
-    private Consumer onBackAction;
-
-    public ModalController(ModalContainerLayer modalContainerLayer, ModalContainer modalContainer, Option option) {
+    public ModalController(AbstractModalContainerLayer modalContainerLayer, ModalContainer modalContainer, Option option) {
+        super(option);
         this.modalContainerLayer = modalContainerLayer;
         this.modalContainer = modalContainer;
-        this.option = option;
-        init();
-    }
-
-    private void init() {
-        // create mouse event to block the component
-        addMouseListener(new MouseAdapter() {
-        });
-
-        Insets shadowSize = option.getBorderOption().getShadowSize();
-        int minimumSize = ModalUtils.maximumInsets(shadowSize);
-        setLayout(new MigLayout("fill,insets 0", "[fill," + minimumSize + "::]", "[fill," + minimumSize + "::]"));
-        setOpaque(false);
-
-        panelSlider = new PanelSlider(createSliderLayoutSize());
-        panelSlider.setRequestFocusAfterSlide(true);
-        panelSlider.setUseSlideAsBackground(true);
-        panelSlider.setOpaque(true);
-        initBorder();
-        add(panelSlider);
-    }
-
-    private PanelSlider.PaneSliderLayoutSize createSliderLayoutSize() {
-        return (container, component) -> modalContainer.getModalComponentSize(component, container);
-    }
-
-    private void initBorder() {
-        if (option == null) {
-            return;
-        }
-        BorderOption borderOption = option.getBorderOption();
-        Border border = borderOption.createBorder();
-        if (border != null) {
-            setBorder(border);
-        }
-    }
-
-    private void pushStack(Modal modal) {
-        if (modalStack == null) {
-            modalStack = new Stack<>();
-        }
-        modalStack.push(modal);
-    }
-
-    public void addModal(Modal modal) {
-        display = false;
-        modal.setController(this);
-        panelSlider.addSlide(modal, null);
-        this.modal = modal;
-    }
-
-    public void pushModal(Modal modal) {
-        installModalComponent(modal);
-        if (modal instanceof SimpleModalBorder) {
-            SimpleModalBorder simpleModalBorder = (SimpleModalBorder) modal;
-            simpleModalBorder.applyBackButton(getOnBackAction());
-        }
-        pushStack(this.modal);
-        this.modal = modal;
-        modal.setController(this);
-        int sliderDuration = option.getSliderDuration();
-        SliderTransition sliderTransition = sliderDuration > 0 ? SimpleTransition.get(SimpleTransition.SliderType.FORWARD) : null;
-        panelSlider.addSlide(modal, sliderTransition, sliderDuration);
-    }
-
-    public void popModal() {
-        if (modalStack != null && !modalStack.isEmpty()) {
-            Modal component = modalStack.pop();
-            this.modal = component;
-            int sliderDuration = option.getSliderDuration();
-            SliderTransition sliderTransition = sliderDuration > 0 ? SimpleTransition.get(SimpleTransition.SliderType.BACK) : null;
-            panelSlider.addSlide(component, sliderTransition, sliderDuration);
-        }
-    }
-
-    public void showModal() {
-        setFocusCycleRoot(true);
-        installModalComponent(modal);
-        startAnimator(true);
-    }
-
-    public void closeModal() {
-        if (showing) {
-            startAnimator(false);
-        }
-    }
-
-    public void close() {
-        if (option.isAnimationEnabled()) {
-            if (animator != null && animator.isRunning()) {
-                showing = false;
-                animator.stop();
-            } else {
-                remove();
-            }
-        } else {
-            remove();
-        }
-    }
-
-    public void removeModal() {
-        panelSlider.remove(modal);
-    }
-
-    public void addModal() {
-        if (panelSlider != null) {
-            panelSlider.add(modal);
-        }
     }
 
     public void startAnimator(boolean show) {
@@ -164,7 +42,7 @@ public class ModalController extends JPanel {
 
                     @Override
                     public void begin() {
-                        modalContainer.showSnapshot();
+                        modalContainerLayer.animatedBegin();
                         Border border = getBorder();
                         if (border != null) {
                             snapshotsImage = ImageSnapshots.createSnapshotsImage(panelSlider, ModalController.this, getBorder());
@@ -177,7 +55,7 @@ public class ModalController extends JPanel {
 
                     @Override
                     public void end() {
-                        modalContainer.hideSnapshot();
+                        modalContainerLayer.animatedEnd();
                         if (!showing) {
                             remove();
                         } else {
@@ -216,47 +94,44 @@ public class ModalController extends JPanel {
         }
     }
 
-    private void modalOpened() {
-        SwingUtilities.invokeLater(() -> {
-            initFocus();
-            modal.modalOpened();
-        });
+    @Override
+    protected PanelSlider.PaneSliderLayoutSize createSliderLayoutSize() {
+        return (container, component) -> modalContainer.getModalComponentSize(component, container);
     }
 
-    private void initFocus() {
-        modal.requestFocus();
+    @Override
+    protected void onModalComponentInstalled() {
     }
 
-    private void installModalComponent(Modal modal) {
-        // install the modal component for the first show
-        if (!modal.isInstalled()) {
-            modal.installComponent();
-            modal.setInstalled(true);
+    @Override
+    protected void onShowing() {
+        setFocusCycleRoot(true);
+        startAnimator(true);
+    }
+
+    @Override
+    public void closeModal() {
+        if (showing) {
+            startAnimator(false);
         }
-
-        // apply component orientation
-        ComponentOrientation orientation = modalContainerLayer.getRootPaneContainer().getRootPane().getComponentOrientation();
-        modal.applyComponentOrientation(orientation);
     }
 
-    private void remove() {
+    public void closeImmediately() {
+        if (option.isAnimationEnabled()) {
+            if (animator != null && animator.isRunning()) {
+                showing = false;
+                animator.stop();
+            } else {
+                remove();
+            }
+        } else {
+            remove();
+        }
+    }
+
+    protected void remove() {
+        modalContainer.uninstallOption();
         modalContainerLayer.removeContainer(modalContainer);
-        modalContainerLayer.repaint();
-        modalContainerLayer.revalidate();
-    }
-
-    @Override
-    public Color getBackground() {
-        if (panelSlider == null) {
-            return super.getBackground();
-        }
-        return panelSlider.getBackground();
-    }
-
-    @Override
-    public void updateUI() {
-        super.updateUI();
-        initBorder();
     }
 
     @Override
@@ -292,28 +167,11 @@ public class ModalController extends JPanel {
         }
     }
 
-    public Option getOption() {
-        return option;
-    }
-
     public float getAnimated() {
         return animated;
     }
 
     public ModalContainer getModalContainer() {
         return modalContainer;
-    }
-
-    public ModalContainerLayer getModalContainerLayer() {
-        return modalContainerLayer;
-    }
-
-    private Consumer getOnBackAction() {
-        if (onBackAction == null) {
-            onBackAction = o -> {
-                popModal();
-            };
-        }
-        return onBackAction;
     }
 }

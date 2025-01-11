@@ -1,96 +1,50 @@
 package raven.modal.component;
 
-import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.ui.FlatTitlePane;
 import raven.modal.drawer.DrawerLayoutResponsive;
+import raven.modal.layout.FrameModalLayout;
 import raven.modal.layout.FullContentLayout;
-import raven.modal.option.Option;
+import raven.modal.utils.ModalUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowStateListener;
 import java.awt.image.VolatileImage;
-import java.util.HashSet;
-import java.util.Set;
+import java.beans.PropertyChangeListener;
+import java.util.Map;
 
 /**
  * @author Raven
  */
-public class ModalContainerLayer extends JLayeredPane {
+public class ModalContainerLayer extends AbstractModalContainerLayer {
 
+    private final Map<RootPaneContainer, ModalContainerLayer> map;
     private final RootPaneContainer rootPaneContainer;
     private Component componentSnapshot;
     private boolean isShowSnapshot;
-    private Set<ModalContainer> setModalContainer;
     private JLayeredPane layeredSnapshot;
     private DrawerLayoutResponsive drawerLayoutResponsive;
-    private Object propertyData;
-    private WindowStateListener windowListener;
+    private PropertyChangeListener propertyListener;
+    private WindowStateListener stateListener;
 
-    public ModalContainerLayer(RootPaneContainer rootPaneContainer) {
+    public ModalContainerLayer(Map<RootPaneContainer, ModalContainerLayer> map, RootPaneContainer rootPaneContainer) {
+        this.map = map;
         this.rootPaneContainer = rootPaneContainer;
-        init();
     }
 
-    private void init() {
-        setModalContainer = new HashSet<>();
-        setLayout(new FullContentLayout());
+    @Override
+    protected void animatedBegin() {
+        showSnapshot();
     }
 
-    public void addModal(Component owner, Modal modal, Option option, String id) {
-        addModalWithoutShowing(owner, modal, option, id).showModal();
+    @Override
+    protected void animatedEnd() {
+        hideSnapshot();
     }
 
-    public ModalContainer addModalWithoutShowing(Component owner, Modal modal, Option option, String id) {
-        ModalContainer modalContainer = new ModalContainer(this, owner, option, id);
-        setLayer(modalContainer, JLayeredPane.MODAL_LAYER + (option.getLayoutOption().isOnTop() ? 1 : 0));
-        add(modalContainer, 0);
-        modalContainer.addModal(modal);
-        modal.setId(id);
-        modalContainer.setComponentOrientation(rootPaneContainer.getRootPane().getComponentOrientation());
-        setModalContainer.add(modalContainer);
-        return modalContainer;
-    }
-
-    public void pushModal(Modal modal, String id) {
-        getModalContainerById(id).pushModal(modal);
-    }
-
-    public void popModal(String id) {
-        getModalContainerById(id).popModal();
-    }
-
-    public void closeModal(String id) {
-        ModalContainer con = getModalContainerById(id);
-        con.closeModal();
-    }
-
-    public void closeAllModal() {
-        for (ModalContainer con : setModalContainer) {
-            con.closeModal();
-        }
-        setModalContainer.clear();
-    }
-
-    public void closeAsRemove(String id) {
-        ModalContainer con = getModalContainerById(id);
-        con.close();
-    }
-
-    public void closeAllAsRemove() {
-        for (ModalContainer con : setModalContainer) {
-            con.close();
-        }
-        setModalContainer.clear();
-    }
-
-    private ModalContainer getModalContainerById(String id) {
-        for (ModalContainer con : setModalContainer) {
-            if (con.getId() != null && con.getId().equals(id)) {
-                return con;
-            }
-        }
-        throw new IllegalArgumentException("id '" + id + "' not found");
+    @Override
+    public void showContainer(boolean show) {
+        layeredPane.setVisible(show);
     }
 
     protected void showSnapshot() {
@@ -103,11 +57,11 @@ public class ModalContainerLayer extends JLayeredPane {
         if (snapshot == null) {
             return;
         }
-        boolean isFullWindowContent = FlatClientProperties.clientPropertyBoolean(rootPaneContainer.getRootPane(), FlatClientProperties.FULL_WINDOW_CONTENT, false);
+        boolean isFullWindowContent = ModalUtils.isFullWindowContent(rootPaneContainer.getRootPane());
         Graphics g = snapshot.createGraphics();
         int y = contentPane.getY();
         if (!isFullWindowContent) {
-            y -= getY();
+            y -= layeredPane.getY();
         }
         g.translate(contentPane.getX(), y);
         contentPane.paint(g);
@@ -175,23 +129,6 @@ public class ModalContainerLayer extends JLayeredPane {
         }
     }
 
-    public boolean checkId(String id) {
-        for (ModalContainer con : setModalContainer) {
-            if (con.getId() != null && con.getId().equals(id)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public Set<ModalContainer> getSetModalContainer() {
-        return setModalContainer;
-    }
-
-    public RootPaneContainer getRootPaneContainer() {
-        return rootPaneContainer;
-    }
-
     public JLayeredPane createLayeredSnapshot() {
         if (layeredSnapshot == null) {
             layeredSnapshot = new JLayeredPane();
@@ -205,41 +142,71 @@ public class ModalContainerLayer extends JLayeredPane {
         this.drawerLayoutResponsive = drawerLayoutResponsive;
     }
 
-    protected void removeContainer(ModalContainer container) {
-        remove(container);
-        setModalContainer.remove(container);
-        if (setModalContainer.isEmpty()) {
-            setVisible(false);
+    @Override
+    public void removeContainer(ModalContainer container) {
+        super.removeContainer(container);
+        if (containers.isEmpty()) {
+            layeredPane.setVisible(false);
         }
     }
 
-    public Object getPropertyData() {
-        return propertyData;
-    }
-
-    public void setPropertyData(Object propertyData) {
-        this.propertyData = propertyData;
-    }
-
-    public WindowStateListener getWindowListener() {
-        return windowListener;
-    }
-
-    public void setWindowListener(WindowStateListener windowListener) {
-        this.windowListener = windowListener;
-    }
-
-    public Component getComponentSnapshot() {
-        return componentSnapshot;
-    }
-
     public void remove() {
-        closeAllAsRemove();
+        closeAllModalImmediately();
         componentSnapshot = null;
-        setModalContainer = null;
         layeredSnapshot = null;
         drawerLayoutResponsive = null;
-        propertyData = null;
-        windowListener = null;
+        propertyListener = null;
+        stateListener = null;
+    }
+
+    public void installWindowListener() {
+        JRootPane rootPane = rootPaneContainer.getRootPane();
+        Window window = SwingUtilities.getWindowAncestor(rootPane);
+        if (window != null) {
+            stateListener = e -> {
+                if (e.getNewState() == 6 || e.getNewState() == 0) {
+                    SwingUtilities.invokeLater(() -> updateModalLayout());
+                }
+            };
+            window.addWindowStateListener(stateListener);
+        }
+        propertyListener = evt -> {
+            if (evt.getNewValue() == null && evt.getOldValue() instanceof RootPaneContainer) {
+                uninstallWindowListener((RootPaneContainer) evt.getOldValue());
+            }
+        };
+        rootPane.addPropertyChangeListener("ancestor", propertyListener);
+    }
+
+    public void uninstallWindowListener(RootPaneContainer rootPaneContainer) {
+        if (map.containsKey(rootPaneContainer)) {
+            JRootPane rootPane = rootPaneContainer.getRootPane();
+            Window window = SwingUtilities.getWindowAncestor(rootPane);
+            if (window != null) {
+                window.removeWindowStateListener(stateListener);
+            }
+            JLayeredPane windowLayeredPane = rootPaneContainer.getLayeredPane();
+            rootPane.removePropertyChangeListener("ancestor", propertyListener);
+
+            // uninstall layout
+            LayoutManager oldLayout = windowLayeredPane.getLayout();
+            if (oldLayout != null) {
+                if (oldLayout instanceof FrameModalLayout) {
+                    FrameModalLayout frameModalLayout = (FrameModalLayout) oldLayout;
+                    if (frameModalLayout.getOldOtherComponentLayout() != null) {
+                        windowLayeredPane.setLayout(frameModalLayout.getOldOtherComponentLayout());
+                    } else {
+                        windowLayeredPane.setLayout(null);
+                    }
+                }
+            }
+            // remove
+            map.remove(rootPaneContainer);
+            windowLayeredPane.remove(layeredPane);
+            if (componentSnapshot != null) {
+                windowLayeredPane.remove(componentSnapshot);
+            }
+            remove();
+        }
     }
 }

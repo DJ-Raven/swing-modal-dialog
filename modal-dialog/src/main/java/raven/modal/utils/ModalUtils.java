@@ -1,5 +1,7 @@
 package raven.modal.utils;
 
+import com.formdev.flatlaf.FlatClientProperties;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowStateListener;
@@ -34,5 +36,9 @@ public class ModalUtils {
         if (window != null) {
             window.removeWindowStateListener(listener);
         }
+    }
+
+    public static boolean isFullWindowContent(JRootPane rootPane) {
+        return FlatClientProperties.clientPropertyBoolean(rootPane, FlatClientProperties.FULL_WINDOW_CONTENT, false);
     }
 }
