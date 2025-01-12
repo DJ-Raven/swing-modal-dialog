@@ -46,7 +46,6 @@ public class ModalContainer extends JComponent {
         modalController = new ModalController(modalContainerLayer, this, option);
         modalLayout = new ModalLayout(modalController, option.getLayoutOption());
         setLayout(modalLayout);
-        installOption(option);
         add(modalController);
     }
 
@@ -89,6 +88,7 @@ public class ModalContainer extends JComponent {
     public void showModal() {
         modalController.showModal();
         modalContainerLayer.showContainer(true);
+        installOption(modalController.getOption());
     }
 
     public ModalController getController() {
@@ -106,17 +106,30 @@ public class ModalContainer extends JComponent {
 
     @Override
     protected void paintComponent(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g.create();
-        g2.setColor(getBackgroundColor());
-        float opacity = modalController.getOption().getOpacity() * modalController.getAnimated();
+        float opacity = modalController.getOption().getOpacity();
+        Option opt = modalController.getOption();
+        if (opt.isHeavyWeight()) {
+            if (opt.getBackgroundClickType() == Option.BackgroundClickType.NONE) {
+                if (opacity != 0) {
+                    opacity = 0;
+                }
+            } else if (opt.getBackgroundClickType() != Option.BackgroundClickType.NONE && opacity == 0) {
+                opacity = 0.01f;
+            }
+        }
+        opacity = opacity * modalController.getAnimated();
         if (opacity > 1) {
             opacity = 1;
         } else if (opacity < 0) {
             opacity = 0;
         }
-        g2.setComposite(AlphaComposite.SrcOver.derive(opacity));
-        g2.fill(new Rectangle2D.Double(0, 0, getWidth(), getHeight()));
-        g2.dispose();
+        if (opacity > 0) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setColor(getBackgroundColor());
+            g2.setComposite(AlphaComposite.SrcOver.derive(opacity));
+            g2.fill(new Rectangle2D.Double(0, 0, getWidth(), getHeight()));
+            g2.dispose();
+        }
         super.paintComponent(g);
     }
 
