@@ -116,6 +116,7 @@ public class FormModal extends Form {
         chOpacity = new JCheckBox("Background opacity");
         chScale = new JCheckBox("Animate scale");
         chHeavyWeight = new JCheckBox("Heavy Weight");
+        chRelativeToOwner = new JCheckBox("Relative to owner");
 
         // event
         chAnimation.addActionListener(e -> {
@@ -133,6 +134,7 @@ public class FormModal extends Form {
         panel.add(chOpacity);
         panel.add(chScale);
         panel.add(chHeavyWeight);
+        panel.add(chRelativeToOwner);
 
         return panel;
     }
@@ -247,7 +249,8 @@ public class FormModal extends Form {
         option.getBorderOption()
                 .setBorderWidth(chBorder.isSelected() ? 1f : 0)
                 .setShadow(chShadow.isSelected() ? BorderOption.Shadow.MEDIUM : BorderOption.Shadow.NONE);
-        option.getLayoutOption().setLocation(h, v);
+        option.getLayoutOption().setLocation(h, v)
+                .setRelativeToOwner(chRelativeToOwner.isSelected());
         if (scale != 0) {
             option.getLayoutOption().setAnimateDistance(0, 0)
                     .setAnimateScale(scale);
@@ -275,6 +278,7 @@ public class FormModal extends Form {
     private JCheckBox chOpacity;
     private JCheckBox chScale;
     private JCheckBox chHeavyWeight;
+    private JCheckBox chRelativeToOwner;
 
     // background click option
     private JRadioButton jrClose;

@@ -87,8 +87,8 @@ public class ModalDialog {
     }
 
     public static boolean isIdExist(String id) {
-        for (Map.Entry<RootPaneContainer, ModalContainerLayer> entry : getInstance().map.entrySet()) {
-            if (entry.getValue().checkId(id)) {
+        for (ModalContainerLayer con : getInstance().map.values()) {
+            if (con.checkId(id)) {
                 return true;
             }
         }
@@ -138,9 +138,9 @@ public class ModalDialog {
     }
 
     private ModalContainerLayer getRootPaneContainerById(String id) {
-        for (Map.Entry<RootPaneContainer, ModalContainerLayer> entry : map.entrySet()) {
-            if (entry.getValue().checkId(id)) {
-                return entry.getValue();
+        for (ModalContainerLayer con : map.values()) {
+            if (con.checkId(id)) {
+                return con;
             }
         }
         return null;

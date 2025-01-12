@@ -70,8 +70,7 @@ public class ModalHeavyWeight {
         if (map.containsKey(window)) {
             return map.get(window);
         } else {
-            ModalHeavyWeightContainerLayer modalHeavyWeightContainerLayer = new ModalHeavyWeightContainerLayer(window);
-            modalHeavyWeightContainerLayer.installWindowListener();
+            ModalHeavyWeightContainerLayer modalHeavyWeightContainerLayer = new ModalHeavyWeightContainerLayer(map, window);
             map.put(window, modalHeavyWeightContainerLayer);
             return modalHeavyWeightContainerLayer;
         }

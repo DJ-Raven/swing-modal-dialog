@@ -1,110 +1,87 @@
 package raven.modal.toast;
 
-import raven.modal.layout.ToastLayout;
-import raven.modal.toast.option.ToastLocation;
+import raven.modal.layout.FrameModalLayout;
+import raven.modal.layout.FrameToastLayout;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowStateListener;
-import java.util.ArrayList;
-import java.util.List;
+import java.beans.PropertyChangeListener;
+import java.util.Map;
 
 /**
  * @author Raven
  */
-public class ToastContainerLayer extends JLayeredPane {
+public class ToastContainerLayer extends AbstractToastContainerLayer {
 
-    private List<ToastPanel> toastPanels;
-    private Object propertyData;
-    private WindowStateListener windowListener;
+    private final Map<RootPaneContainer, ToastContainerLayer> map;
+    private final RootPaneContainer rootPaneContainer;
+    private PropertyChangeListener propertyListener;
+    private WindowStateListener stateListener;
 
-    public ToastContainerLayer() {
-        init();
+    public ToastContainerLayer(Map<RootPaneContainer, ToastContainerLayer> map, RootPaneContainer rootPaneContainer) {
+        this.map = map;
+        this.rootPaneContainer = rootPaneContainer;
     }
 
-    private void init() {
-        toastPanels = new ArrayList<>();
-        setLayout(new ToastLayout());
-    }
-
-    public void addToastPanel(ToastPanel toastPanel) {
-        toastPanels.add(toastPanel);
-        setVisible(true);
-    }
-
-    public void removeToastPanel(ToastPanel toastPanel) {
-        if (toastPanels != null) {
-            toastPanels.remove(toastPanel);
-            if (toastPanels.isEmpty()) {
-                setVisible(false);
-            }
-        }
-    }
-
-    public void closeAll() {
-        synchronized (toastPanels) {
-            for (int i = toastPanels.size() - 1; i >= 0; i--) {
-                ToastPanel p = toastPanels.get(i);
-                if (!p.isCurrenPromise()) {
-                    toastPanels.get(i).stop();
-                }
-            }
-        }
-    }
-
-    public boolean checkPromiseId(String id) {
-        synchronized (toastPanels) {
-            for (int i = toastPanels.size() - 1; i >= 0; i--) {
-                ToastPanel p = toastPanels.get(i);
-                if (p.checkPromiseId(id)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
-    public void closeAll(ToastLocation location) {
-        synchronized (toastPanels) {
-            for (int i = toastPanels.size() - 1; i >= 0; i--) {
-                ToastPanel p = toastPanels.get(i);
-                if (p.checkSameLayout(location)) {
-                    if (!p.isCurrenPromise()) {
-                        p.stop();
-                    }
-                }
-            }
-        }
-    }
-
-    private void closeAllAsRemove() {
-        synchronized (toastPanels) {
-            for (int i = toastPanels.size() - 1; i >= 0; i--) {
-                ToastPanel p = toastPanels.get(i);
-                p.close();
-            }
-        }
-    }
-
-    public Object getPropertyData() {
-        return propertyData;
-    }
-
-    public void setPropertyData(Object propertyData) {
-        this.propertyData = propertyData;
-    }
-
-    public WindowStateListener getWindowListener() {
-        return windowListener;
-    }
-
-    public void setWindowListener(WindowStateListener windowListener) {
-        this.windowListener = windowListener;
+    @Override
+    public void showContainer(boolean show) {
+        layeredPane.setVisible(show);
     }
 
     public void remove() {
-        closeAllAsRemove();
-        toastPanels = null;
-        propertyData = null;
-        windowListener = null;
+        closeAllImmediately();
+        propertyListener = null;
+        stateListener = null;
+    }
+
+    public void installWindowListener() {
+        JRootPane rootPane = rootPaneContainer.getRootPane();
+        Window window = SwingUtilities.getWindowAncestor(rootPane);
+        if (window != null) {
+            stateListener = e -> {
+                if (e.getNewState() == 6 || e.getNewState() == 0) {
+                    SwingUtilities.invokeLater(() -> {
+                        if (map.containsKey(rootPaneContainer)) {
+                            map.get(rootPaneContainer).getLayeredPane().revalidate();
+                        }
+                    });
+                }
+            };
+            window.addWindowStateListener(stateListener);
+        }
+        propertyListener = evt -> {
+            if (evt.getNewValue() == null && evt.getOldValue() instanceof RootPaneContainer) {
+                uninstallWindowListener((RootPaneContainer) evt.getOldValue());
+            }
+        };
+        rootPane.addPropertyChangeListener("ancestor", propertyListener);
+    }
+
+    public void uninstallWindowListener(RootPaneContainer rootPaneContainer) {
+        if (map.containsKey(rootPaneContainer)) {
+            JRootPane rootPane = rootPaneContainer.getRootPane();
+            Window window = SwingUtilities.getWindowAncestor(rootPane);
+            if (window != null) {
+                window.removeWindowStateListener(stateListener);
+            }
+            rootPaneContainer.getRootPane().removePropertyChangeListener("ancestor", propertyListener);
+
+            // uninstall layout
+            JLayeredPane windowLayeredPane = rootPaneContainer.getLayeredPane();
+            LayoutManager oldLayout = windowLayeredPane.getLayout();
+            if (oldLayout != null) {
+                if (oldLayout instanceof FrameToastLayout) {
+                    windowLayeredPane.setLayout(null);
+                } else if (oldLayout instanceof FrameModalLayout) {
+                    ((FrameModalLayout) oldLayout).setOtherComponent(null, null);
+                }
+            }
+
+            // remove
+            map.remove(rootPaneContainer);
+            windowLayeredPane.remove(layeredPane);
+            remove();
+        }
     }
 }
