@@ -71,7 +71,7 @@ public class OutlineBorder extends FlatEmptyBorder {
 
     private static float getBorderWidth(float borderWidth, float round) {
         float innerArc = round - (borderWidth * 2f);
-        return borderWidth + (innerArc * inner);
+        return (float) Math.ceil((borderWidth + Math.max((innerArc * inner), 0)));
     }
 
     @Override
