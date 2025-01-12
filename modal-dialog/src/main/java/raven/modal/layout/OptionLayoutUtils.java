@@ -6,6 +6,7 @@ import raven.modal.option.LayoutOption;
 import raven.modal.option.Location;
 import raven.modal.utils.DynamicSize;
 
+import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -13,13 +14,19 @@ import java.awt.*;
  */
 public class OptionLayoutUtils {
 
-    public static Rectangle getLayoutLocation(Container parent, Component component, float animate, LayoutOption layoutOption) {
-        Insets insets = FlatUIUtils.addInsets(parent.getInsets(), UIScale.scale(layoutOption.getMargin()));
+    public static Rectangle getLayoutLocation(Container parent, Component owner, Component component, float animate, LayoutOption layoutOption) {
+        Insets parentInsert = parent.getInsets();
+        Insets insets = layoutOption.getMargin();
+        Dimension defaultComSize = getComponentSize(parent, insets);
+        if (layoutOption.isRelativeToOwner()) {
+            insets = getOwnerInsert(parent, owner, insets);
+        }
+        insets = FlatUIUtils.addInsets(parentInsert, UIScale.scale(insets));
         int x = insets.left;
         int y = insets.top;
         int width = parent.getWidth() - (insets.left + insets.right);
         int height = parent.getHeight() - (insets.top + insets.bottom);
-        Dimension comSize = getComponentSize(component, width, height, animate, layoutOption);
+        Dimension comSize = getComponentSize(component, defaultComSize.width, defaultComSize.height, animate, layoutOption);
         boolean rightToLeft = !parent.getComponentOrientation().isLeftToRight();
         Location lh = layoutOption.getHorizontalLocation();
         Number lx = layoutOption.getLocation().getX();
@@ -42,6 +49,23 @@ public class OptionLayoutUtils {
         int cx = x + point.x + animatePoint.x;
         int cy = y + point.y + animatePoint.y;
         return new Rectangle(cx, cy, comSize.width, comSize.height);
+    }
+
+    public static Insets getOwnerInsert(Component parent, Component owner, Insets insets) {
+        if (owner == null || owner instanceof RootPaneContainer) {
+            return insets;
+        }
+        Rectangle ownerRec = SwingUtilities.convertRectangle(owner.getParent(), owner.getBounds(), parent);
+        int x = UIScale.unscale(ownerRec.x);
+        int y = UIScale.unscale(ownerRec.y);
+        int width = UIScale.unscale(parent.getWidth() - (ownerRec.x + ownerRec.width));
+        int height = UIScale.unscale(parent.getHeight() - (ownerRec.y + ownerRec.height));
+
+        int top = insets.top + y;
+        int left = insets.left + x;
+        int bottom = insets.bottom + height;
+        int right = insets.right + width;
+        return new Insets(top, left, bottom, right);
     }
 
     protected static Point location(int width, int height, Dimension componentSize, DynamicSize size) {
@@ -88,5 +112,12 @@ public class OptionLayoutUtils {
             x *= -1;
         }
         return new Point(x, y);
+    }
+
+    protected static Dimension getComponentSize(Container parent, Insets layoutInsets) {
+        Insets insets = FlatUIUtils.addInsets(parent.getInsets(), UIScale.scale(layoutInsets));
+        int width = parent.getWidth() - (insets.left + insets.right);
+        int height = parent.getHeight() - (insets.top + insets.bottom);
+        return new Dimension(width, height);
     }
 }

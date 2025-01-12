@@ -25,16 +25,16 @@ public abstract class Modal extends JPanel {
         this.installed = installed;
     }
 
-    public ModalController getController() {
+    public ControllerAction getController() {
         return controller;
     }
 
-    public void setController(ModalController controller) {
+    public void setController(ControllerAction controller) {
         this.controller = controller;
         controllerInit();
     }
 
-    private ModalController controller;
+    private ControllerAction controller;
     private String id;
     private boolean installed;
 

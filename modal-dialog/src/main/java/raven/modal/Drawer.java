@@ -72,7 +72,7 @@ public class Drawer {
         }
         if (!visible) {
             if (ModalDialog.isIdExist(DRAWER_ID)) {
-                ModalDialog.closeModalAsRemove(DRAWER_ID);
+                ModalDialog.closeModalImmediately(DRAWER_ID);
             }
         }
     }

@@ -2,15 +2,12 @@ package raven.modal;
 
 import raven.modal.layout.FrameModalLayout;
 import raven.modal.layout.FrameToastLayout;
-import raven.modal.toast.ToastContainerLayer;
-import raven.modal.toast.ToastPanel;
-import raven.modal.toast.ToastPromise;
+import raven.modal.toast.*;
 import raven.modal.toast.option.ToastLocation;
 import raven.modal.toast.option.ToastOption;
 
 import javax.swing.*;
 import java.awt.*;
-import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -98,47 +95,54 @@ public class Toast {
     private static void show(Component owner, Type type, Object object, ToastOption option, ToastPromise promise) {
         ToastPanel.ThemesData themesData = getInstance().themesDataMap.get(type);
         RootPaneContainer rootPaneContainer = ModalDialog.getRootPaneContainer(owner);
-        ToastContainerLayer toastContainerLayer = getInstance().getToastContainerLayered(rootPaneContainer);
+        AbstractToastContainerLayer toastContainerLayer = getInstance().getToastContainer(owner, option.isHeavyWeight());
         String message = object instanceof String ? object.toString() : null;
-        ToastPanel toastPanel = new ToastPanel(toastContainerLayer, new ToastPanel.ToastData(type, option, themesData, message));
+        ToastPanel toastPanel = new ToastPanel(toastContainerLayer, owner, new ToastPanel.ToastData(type, option, themesData, message));
         if (object instanceof Component) {
-            toastContainerLayer.add(toastPanel.createToastCustom((Component) object), 0);
+            toastContainerLayer.add(toastPanel.createToastCustom((Component) object));
         } else if (promise != null) {
-            toastContainerLayer.add(toastPanel.createToastPromise(promise), 0);
+            toastContainerLayer.add(toastPanel.createToastPromise(promise));
         } else {
-            toastContainerLayer.add(toastPanel.createToast(), 0);
+            toastContainerLayer.add(toastPanel.createToast());
         }
         if (rootPaneContainer.getRootPane().getComponentOrientation().isLeftToRight() != toastPanel.getComponentOrientation().isLeftToRight()) {
             toastPanel.applyComponentOrientation(rootPaneContainer.getRootPane().getComponentOrientation());
         }
-        toastContainerLayer.setVisible(true);
-        toastPanel.start();
-        toastContainerLayer.revalidate();
         toastContainerLayer.addToastPanel(toastPanel);
+        toastPanel.start();
     }
 
     public static boolean checkPromiseId(String id) {
         if (id == null) {
             throw new IllegalArgumentException("id must not null");
         }
-        for (Map.Entry<RootPaneContainer, ToastContainerLayer> entry : getInstance().map.entrySet()) {
-            if (entry.getValue().checkPromiseId(id)) {
+        for (ToastContainerLayer com : getInstance().map.values()) {
+            if (com.checkPromiseId(id)) {
                 return true;
             }
         }
-        return false;
+        return ToastHeavyWeight.getInstance().checkPromiseId(id);
     }
 
     public static void closeAll() {
-        for (Map.Entry<RootPaneContainer, ToastContainerLayer> entry : getInstance().map.entrySet()) {
-            entry.getValue().closeAll();
-        }
+        getInstance().map.values().forEach(com -> {
+            com.closeAll();
+        });
+        ToastHeavyWeight.getInstance().closeAll();
     }
 
     public static void closeAll(ToastLocation location) {
-        for (Map.Entry<RootPaneContainer, ToastContainerLayer> entry : getInstance().map.entrySet()) {
-            entry.getValue().closeAll(location);
-        }
+        getInstance().map.values().forEach(com -> {
+            com.closeAll(location);
+        });
+        ToastHeavyWeight.getInstance().closeAll(location);
+    }
+
+    public static void closeAllImmediately() {
+        getInstance().map.values().forEach(com -> {
+            com.closeAllImmediately();
+        });
+        ToastHeavyWeight.getInstance().closeAllImmediately();
     }
 
     public static void setReverseOrder(boolean reverseOrder) {
@@ -165,9 +169,10 @@ public class Toast {
     }
 
     private void updateLayout() {
-        for (Map.Entry<RootPaneContainer, ToastContainerLayer> entry : map.entrySet()) {
-            entry.getValue().revalidate();
+        for (ToastContainerLayer com : map.values()) {
+            com.getLayeredPane().revalidate();
         }
+        ToastHeavyWeight.getInstance().updateLayout();
     }
 
     /**
@@ -185,18 +190,18 @@ public class Toast {
             toastContainerLayer = createToastContainerLayered(rootPaneContainer);
 
             // add toast container layered to window layeredPane
-            windowLayeredPane.add(toastContainerLayer, LAYER);
+            windowLayeredPane.add(toastContainerLayer.getLayeredPane(), LAYER);
 
             // check layout right to left
-            if (rootPaneContainer.getRootPane().getComponentOrientation().isLeftToRight() != toastContainerLayer.getComponentOrientation().isLeftToRight()) {
-                toastContainerLayer.applyComponentOrientation(rootPaneContainer.getRootPane().getComponentOrientation());
+            if (rootPaneContainer.getRootPane().getComponentOrientation().isLeftToRight() != toastContainerLayer.getLayeredPane().getComponentOrientation().isLeftToRight()) {
+                toastContainerLayer.getLayeredPane().applyComponentOrientation(rootPaneContainer.getRootPane().getComponentOrientation());
             }
 
             // set custom layout to window layeredPane
             LayoutManager layout = windowLayeredPane.getLayout();
-            FrameToastLayout frameToastLayout = new FrameToastLayout(toastContainerLayer);
+            FrameToastLayout frameToastLayout = new FrameToastLayout(toastContainerLayer.getLayeredPane());
             if (layout != null && layout instanceof FrameModalLayout) {
-                ((FrameModalLayout) layout).setOtherComponent(toastContainerLayer, frameToastLayout);
+                ((FrameModalLayout) layout).setOtherComponent(toastContainerLayer.getLayeredPane(), frameToastLayout);
             } else {
                 // install toast layout
                 windowLayeredPane.setLayout(frameToastLayout);
@@ -205,49 +210,23 @@ public class Toast {
             // store toast container layered to map
             map.put(rootPaneContainer, toastContainerLayer);
 
-            // install property to remove the root pane map after windows removed
-            toastContainerLayer.setPropertyData(installProperty(rootPaneContainer.getRootPane()));
+            // install property to windows
+            toastContainerLayer.installWindowListener();
         }
         return toastContainerLayer;
     }
 
-    private Object installProperty(JRootPane rootPane) {
-        PropertyChangeListener propertyChangeListener = e -> {
-            if (e.getNewValue() == null && e.getOldValue() instanceof RootPaneContainer) {
-                uninstall((RootPaneContainer) e.getOldValue());
-            }
-        };
-        rootPane.addPropertyChangeListener("ancestor", propertyChangeListener);
-        return propertyChangeListener;
-    }
-
-    private void uninstall(RootPaneContainer rootPaneContainer) {
-        if (map.containsKey(rootPaneContainer)) {
-            ToastContainerLayer toastContainerLayer = map.get(rootPaneContainer);
-            JLayeredPane windowLayeredPane = rootPaneContainer.getLayeredPane();
-            rootPaneContainer.getRootPane().removePropertyChangeListener("ancestor", (PropertyChangeListener) toastContainerLayer.getPropertyData());
-
-            // uninstall layout
-            LayoutManager oldLayout = windowLayeredPane.getLayout();
-            if (oldLayout != null) {
-                if (oldLayout instanceof FrameToastLayout) {
-                    windowLayeredPane.setLayout(null);
-                } else if (oldLayout instanceof FrameModalLayout) {
-                    ((FrameModalLayout) oldLayout).setOtherComponent(null, null);
-                }
-            }
-
-            // remove
-            map.remove(rootPaneContainer);
-            windowLayeredPane.remove(toastContainerLayer);
-            toastContainerLayer.remove();
-        }
-    }
-
     private ToastContainerLayer createToastContainerLayered(RootPaneContainer rootPaneContainer) {
-        ToastContainerLayer layeredPane = new ToastContainerLayer();
-        layeredPane.setVisible(false);
+        ToastContainerLayer layeredPane = new ToastContainerLayer(map, rootPaneContainer);
+        layeredPane.getLayeredPane().setVisible(false);
         return layeredPane;
+    }
+
+    private AbstractToastContainerLayer getToastContainer(Component owner, boolean isHeavyWeight) {
+        if (isHeavyWeight) {
+            return ToastHeavyWeight.getInstance().getToastHeavyWeightContainer(owner);
+        }
+        return getToastContainerLayered(ModalDialog.getRootPaneContainer(owner));
     }
 
     public enum Type {

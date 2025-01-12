@@ -222,7 +222,7 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
         return new ModalController(this) {
             @Override
             public void close() {
-                getController().getModalContainer().closeModal();
+                getController().closeModal();
             }
         };
     }
@@ -238,12 +238,12 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
     @Override
     public void doAction(int action) {
         if (callback == null) {
-            getController().getModalContainer().closeModal();
+            getController().closeModal();
         } else {
             ModalController controller = createController();
             callback.action(controller, action);
             if (!controller.getConsume()) {
-                getController().getModalContainer().closeModal();
+                getController().closeModal();
             }
         }
     }

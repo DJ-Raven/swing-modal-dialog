@@ -112,7 +112,7 @@ public class DrawerLayoutResponsive {
     }
 
     public Rectangle getDrawerLayout(Container parent) {
-        return OptionLayoutUtils.getLayoutLocation(parent, drawerPanel, 1f, drawerPanel.getDrawerOption().getLayoutOption());
+        return OptionLayoutUtils.getLayoutLocation(parent, null, drawerPanel, 1f, drawerPanel.getDrawerOption().getLayoutOption());
     }
 
     public boolean isHorizontalDrawer() {

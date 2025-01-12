@@ -27,7 +27,12 @@ public class ToastPanel extends JPanel {
         return animate;
     }
 
-    private final ToastContainerLayer toastContainerLayer;
+    public Component getOwner() {
+        return owner;
+    }
+
+    private final AbstractToastContainerLayer toastContainerLayer;
+    private final Component owner;
     private ToastData toastData;
     private ToastContent content;
     private JTextArea textMessage;
@@ -45,8 +50,9 @@ public class ToastPanel extends JPanel {
     private ToastPromise.PromiseCallback promiseCallback;
     private boolean available = true;
 
-    public ToastPanel(ToastContainerLayer toastContainerLayer, ToastData toastData) {
+    public ToastPanel(AbstractToastContainerLayer toastContainerLayer, Component owner, ToastData toastData) {
         this.toastContainerLayer = toastContainerLayer;
+        this.owner = owner;
         this.toastData = toastData;
         init();
     }
@@ -54,6 +60,9 @@ public class ToastPanel extends JPanel {
     private void init() {
         setLayout(new BorderLayout());
         setOpaque(false);
+        if (toastData.getOption().isAnimationEnabled()) {
+            animate = 0f;
+        }
         putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:$TextArea.background;");
     }
@@ -335,7 +344,7 @@ public class ToastPanel extends JPanel {
                     @Override
                     public void timingEvent(float v) {
                         animate = showing ? v : 1f - v;
-                        toastContainerLayer.revalidate();
+                        toastContainerLayer.getLayeredPane().revalidate();
                     }
 
                     @Override
@@ -440,8 +449,6 @@ public class ToastPanel extends JPanel {
         }
         toastData = null;
         toastContainerLayer.remove(this);
-        toastContainerLayer.repaint();
-        toastContainerLayer.revalidate();
         content = null;
         textMessage = null;
         labelIcon = null;

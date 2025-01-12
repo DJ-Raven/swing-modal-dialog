@@ -35,6 +35,10 @@ public class LayoutOption {
         return animateDistance;
     }
 
+    public boolean isRelativeToOwner() {
+        return relativeToOwner;
+    }
+
     public float getAnimateScale() {
         return animateScale;
     }
@@ -43,11 +47,12 @@ public class LayoutOption {
         return onTop;
     }
 
-    private LayoutOption(DynamicSize location, Insets margin, DynamicSize size, DynamicSize animateDistance, float animateScale, boolean onTop) {
+    private LayoutOption(DynamicSize location, Insets margin, DynamicSize size, DynamicSize animateDistance, boolean relativeToOwner, float animateScale, boolean onTop) {
         this.location = location;
         this.margin = margin;
         this.size = size;
         this.animateDistance = animateDistance;
+        this.relativeToOwner = relativeToOwner;
         this.animateScale = animateScale;
         this.onTop = onTop;
     }
@@ -61,6 +66,7 @@ public class LayoutOption {
     private Insets margin = new Insets(7, 7, 7, 7);
     private DynamicSize size = new DynamicSize(-1, -1);
     private DynamicSize animateDistance = new DynamicSize(0, 20);
+    private boolean relativeToOwner;
     private float animateScale;
     private boolean onTop = false;
 
@@ -102,6 +108,11 @@ public class LayoutOption {
         return this;
     }
 
+    public LayoutOption setRelativeToOwner(boolean relativeToOwner) {
+        this.relativeToOwner = relativeToOwner;
+        return this;
+    }
+
     public LayoutOption setOnTop(boolean onTop) {
         this.onTop = onTop;
         return this;
@@ -116,6 +127,6 @@ public class LayoutOption {
     }
 
     public LayoutOption copy() {
-        return new LayoutOption(location, new Insets(margin.top, margin.left, margin.bottom, margin.right), new DynamicSize(size), new DynamicSize(animateDistance), animateScale, onTop);
+        return new LayoutOption(location, new Insets(margin.top, margin.left, margin.bottom, margin.right), new DynamicSize(size), new DynamicSize(animateDistance), relativeToOwner, animateScale, onTop);
     }
 }

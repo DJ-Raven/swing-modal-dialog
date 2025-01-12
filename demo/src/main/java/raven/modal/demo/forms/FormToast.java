@@ -106,6 +106,8 @@ public class FormToast extends Form {
         chPauseDelayOnHover = new JCheckBox("Pause delay on hover");
         chAutoClose = new JCheckBox("Auto close");
         chCloseOnClick = new JCheckBox("Close on click");
+        chHeavyWeight = new JCheckBox("Heavy Weight");
+        chRelativeToOwner = new JCheckBox("Relative to owner");
         JCheckBox chReverseOrder = new JCheckBox("Reverse Order");
 
         chAnimation.setSelected(true);
@@ -118,6 +120,8 @@ public class FormToast extends Form {
         panel.add(chPauseDelayOnHover);
         panel.add(chAutoClose);
         panel.add(chCloseOnClick);
+        panel.add(chHeavyWeight);
+        panel.add(chRelativeToOwner);
         panel.add(chReverseOrder);
 
         return panel;
@@ -293,10 +297,12 @@ public class FormToast extends Form {
         option.setAnimationEnabled(chAnimation.isSelected())
                 .setPauseDelayOnHover(chPauseDelayOnHover.isSelected())
                 .setAutoClose(chAutoClose.isSelected())
-                .setCloseOnClick(chCloseOnClick.isSelected());
+                .setCloseOnClick(chCloseOnClick.isSelected())
+                .setHeavyWeight(chHeavyWeight.isSelected());
 
         option.getLayoutOption()
-                .setLocation(ToastLocation.from(h, v));
+                .setLocation(ToastLocation.from(h, v))
+                .setRelativeToOwner(chRelativeToOwner.isSelected());
         option.getStyle().setBackgroundType(backgroundType)
                 .setBorderType(borderType)
                 .setShowLabel(chShowLabel.isSelected())
@@ -321,6 +327,8 @@ public class FormToast extends Form {
     private JCheckBox chPauseDelayOnHover;
     private JCheckBox chAutoClose;
     private JCheckBox chCloseOnClick;
+    private JCheckBox chHeavyWeight;
+    private JCheckBox chRelativeToOwner;
 
     // style background
     private JRadioButton jrBackgroundDefault;

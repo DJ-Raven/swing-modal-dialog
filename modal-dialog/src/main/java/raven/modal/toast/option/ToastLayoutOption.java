@@ -1,5 +1,6 @@
 package raven.modal.toast.option;
 
+import raven.modal.layout.OptionLayoutUtils;
 import raven.modal.option.LayoutOption;
 import raven.modal.utils.DynamicSize;
 
@@ -22,6 +23,10 @@ public class ToastLayoutOption {
         return locationSize;
     }
 
+    public boolean isRelativeToOwner() {
+        return relativeToOwner;
+    }
+
     public ToastDirection getDirection() {
         if (direction != null) {
             return direction;
@@ -29,10 +34,11 @@ public class ToastLayoutOption {
         return location.getDirection();
     }
 
-    private ToastLayoutOption(ToastLocation location, DynamicSize locationSize, ToastDirection direction) {
+    private ToastLayoutOption(ToastLocation location, DynamicSize locationSize, ToastDirection direction, boolean relativeToOwner) {
         this.location = location;
         this.locationSize = locationSize;
         this.direction = direction;
+        this.relativeToOwner = relativeToOwner;
     }
 
     public ToastLayoutOption() {
@@ -41,6 +47,7 @@ public class ToastLayoutOption {
     private ToastLocation location = ToastLocation.TOP_CENTER;
     private DynamicSize locationSize;
     private ToastDirection direction;
+    private boolean relativeToOwner;
     private Insets margin = new Insets(7, 7, 7, 7);
 
     public ToastLayoutOption setLocation(ToastLocation location) {
@@ -59,6 +66,11 @@ public class ToastLayoutOption {
         return this;
     }
 
+    public ToastLayoutOption setRelativeToOwner(boolean relativeToOwner) {
+        this.relativeToOwner = relativeToOwner;
+        return this;
+    }
+
     public ToastLayoutOption setMargin(int top, int left, int bottom, int right) {
         this.margin = new Insets(top, left, bottom, right);
         return this;
@@ -69,10 +81,15 @@ public class ToastLayoutOption {
         return this;
     }
 
-    public LayoutOption createLayoutOption() {
+    public LayoutOption createLayoutOption(Component parent, Component owner) {
         ToastDirection direction = getDirection();
+        Insets insets = new Insets(margin.top, margin.left, margin.bottom, margin.right);
+        if (isRelativeToOwner()) {
+            insets = OptionLayoutUtils.getOwnerInsert(parent, owner, insets);
+        }
         LayoutOption layoutOption = new LayoutOption()
-                .setMargin(margin.top, margin.left, margin.bottom, margin.right)
+                .setRelativeToOwner(isRelativeToOwner())
+                .setMargin(insets.top, insets.left, insets.bottom, insets.right)
                 .setAnimateDistance(direction.getValue().getX(), direction.getValue().getY());
 
         if (locationSize != null) {
@@ -85,6 +102,6 @@ public class ToastLayoutOption {
     }
 
     public ToastLayoutOption copy() {
-        return new ToastLayoutOption(location, locationSize, direction);
+        return new ToastLayoutOption(location, locationSize, direction, relativeToOwner);
     }
 }

@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.3.0]-SNAPSHOT
+
+### New features and improvements
+
+- Modal dialog and Toast
+    - Add new option `heavyWeight` by default `false` if set to true, the modal and toast will show by create `JWindow`
+    - Add new layout option `relativeToOwner` by default `false` if set to true, the location modal and toast will show
+      relative to the owner component
+
+### Fixed bugs
+
+- Modal dialog
+    - Fixed `borderWidth`
+        - fixed border not paint when value `1` and round border is active
+        - fixed border not paint when value `0.5f`
+
+## Demo
+
+- Create dashboard form using `JFreeChart`
+
 ## [2.2.0] - 2024-12-31
 
 ### New features and improvements
