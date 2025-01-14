@@ -34,12 +34,14 @@ public class ModalContainerLayer extends AbstractModalContainerLayer {
 
     @Override
     protected void animatedBegin() {
+        containers.forEach(container -> container.setEnableHierarchy(false));
         showSnapshot();
     }
 
     @Override
     protected void animatedEnd() {
         hideSnapshot();
+        containers.forEach(container -> container.setEnableHierarchy(true));
     }
 
     @Override

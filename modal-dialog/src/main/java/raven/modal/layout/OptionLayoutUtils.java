@@ -18,7 +18,7 @@ public class OptionLayoutUtils {
         Insets parentInsert = parent.getInsets();
         Insets insets = layoutOption.getMargin();
         Dimension defaultComSize = getComponentSize(parent, insets);
-        if (layoutOption.isRelativeToOwner()) {
+        if (layoutOption.isRelativeToOwner() && layoutOption.getRelativeToOwnerType() != LayoutOption.RelativeToOwnerType.RELATIVE_CONTAINED) {
             insets = getOwnerInsert(parent, owner, insets);
         }
         insets = FlatUIUtils.addInsets(parentInsert, UIScale.scale(insets));

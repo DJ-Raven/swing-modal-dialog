@@ -8,6 +8,13 @@
     - Add new option `heavyWeight` by default `false` if set to true, the modal and toast will show by create `JWindow`
     - Add new layout option `relativeToOwner` by default `false` if set to true, the location modal and toast will show
       relative to the owner component
+- Modal dialog
+    - Add new option `relativeToOwnerType`  (requires `relativeToOwner` = `true`) with 3 types:
+        - `RELATIVE_CONTAINED`: modal and background are confined to the owner's bounds and track the owner's
+          visibility (`default`)
+        - `RELATIVE_GLOBAL`: background spans the entire window.
+        - `RELATIVE_BOUNDLESS`: background covers the owner, but the modal can extend outside the owner. Tracks owner's
+          visibility. (requires `heavyWeight` = `true`)
 
 ### Fixed bugs
 

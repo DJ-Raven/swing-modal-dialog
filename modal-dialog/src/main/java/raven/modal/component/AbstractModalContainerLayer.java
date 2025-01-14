@@ -1,6 +1,6 @@
 package raven.modal.component;
 
-import raven.modal.layout.FullContentLayout;
+import raven.modal.layout.ModalContainerLayout;
 import raven.modal.option.Option;
 
 import javax.swing.*;
@@ -19,7 +19,7 @@ public abstract class AbstractModalContainerLayer {
     public AbstractModalContainerLayer() {
         containers = new HashSet<>();
         layeredPane = new JLayeredPane();
-        layeredPane.setLayout(new FullContentLayout());
+        layeredPane.setLayout(new ModalContainerLayout());
     }
 
     protected void animatedBegin() {
@@ -81,9 +81,7 @@ public abstract class AbstractModalContainerLayer {
     }
 
     public void updateModalLayout() {
-        for (ModalContainer con : containers) {
-            con.revalidate();
-        }
+        layeredPane.revalidate();
     }
 
     public boolean checkId(String id) {

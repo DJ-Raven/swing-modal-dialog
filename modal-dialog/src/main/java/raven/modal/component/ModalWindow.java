@@ -39,6 +39,7 @@ public class ModalWindow extends JWindow {
         layeredPane.setLayout(new FullContentLayout());
         setContentPane(layeredPane);
         setBackground(new Color(0, 0, 0, 0));
+        setFocusable(true);
         installParentWindowListener();
     }
 

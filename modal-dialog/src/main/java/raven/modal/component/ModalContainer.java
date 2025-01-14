@@ -3,6 +3,7 @@ package raven.modal.component;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.util.ColorFunctions;
 import raven.modal.layout.ModalLayout;
+import raven.modal.option.LayoutOption;
 import raven.modal.option.Option;
 
 import javax.swing.*;
@@ -33,7 +34,10 @@ public class ModalContainer extends JComponent {
     private Component owner;
     private MouseListener mouseListener;
     private ActionListener escapeAction;
+    private HierarchyBoundsListener hierarchyBoundsListener;
+    private HierarchyListener hierarchyListener;
     private ModalLayout modalLayout;
+    private boolean enableHierarchy = true;
 
     public ModalContainer(AbstractModalContainerLayer modalContainerLayer, Component owner, Option option, String id) {
         this.modalContainerLayer = modalContainerLayer;
@@ -95,6 +99,10 @@ public class ModalContainer extends JComponent {
         return modalController;
     }
 
+    protected void setEnableHierarchy(boolean enableHierarchy) {
+        this.enableHierarchy = enableHierarchy;
+    }
+
     protected void uninstallOption() {
         if (mouseListener != null) {
             removeMouseListener(mouseListener);
@@ -127,10 +135,23 @@ public class ModalContainer extends JComponent {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setColor(getBackgroundColor());
             g2.setComposite(AlphaComposite.SrcOver.derive(opacity));
-            g2.fill(new Rectangle2D.Double(0, 0, getWidth(), getHeight()));
+            g2.fill(getBackgroundShape());
             g2.dispose();
         }
         super.paintComponent(g);
+    }
+
+    private Shape getBackgroundShape() {
+        LayoutOption layoutOption = modalController.getOption().getLayoutOption();
+        if (modalController.getOption().isHeavyWeight()
+                && layoutOption.isRelativeToOwner()
+                && layoutOption.getRelativeToOwnerType() == LayoutOption.RelativeToOwnerType.RELATIVE_BOUNDLESS
+                && !(owner instanceof RootPaneContainer)
+        ) {
+            Point location = SwingUtilities.convertPoint(owner.getParent(), owner.getLocation(), this);
+            return new Rectangle2D.Double(location.getX(), location.getY(), owner.getWidth(), owner.getHeight());
+        }
+        return new Rectangle(0, 0, getWidth(), getHeight());
     }
 
     protected Color getBackgroundColor() {
@@ -177,5 +198,72 @@ public class ModalContainer extends JComponent {
         if (container.getParent() != this) {
             addParentInsets(container.getParent(), insets);
         }
+    }
+
+    private void installOwnerListener() {
+        Option option = getController().getOption();
+        if (owner != null && option.getLayoutOption().isRelativeToOwner()) {
+            hierarchyBoundsListener = new HierarchyBoundsListener() {
+                @Override
+                public void ancestorMoved(HierarchyEvent e) {
+                    repaint();
+                    revalidate();
+                }
+
+                @Override
+                public void ancestorResized(HierarchyEvent e) {
+                    repaint();
+                    revalidate();
+                }
+            };
+            owner.addHierarchyBoundsListener(hierarchyBoundsListener);
+
+            if (option.getLayoutOption().getRelativeToOwnerType() == LayoutOption.RelativeToOwnerType.RELATIVE_CONTAINED
+                    || (option.isHeavyWeight()
+                    && option.getLayoutOption().getRelativeToOwnerType() == LayoutOption.RelativeToOwnerType.RELATIVE_BOUNDLESS)
+            ) {
+                hierarchyListener = e -> {
+                    if (!enableHierarchy) return;
+                    if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0 || (e.getChangeFlags() & HierarchyEvent.DISPLAYABILITY_CHANGED) != 0) {
+                        if (e.getChanged().isShowing()) {
+                            if (owner.isShowing()) {
+                                setVisible(true);
+                            }
+                        } else {
+                            if (!owner.isShowing()) {
+                                setVisible(false);
+                            }
+                        }
+                    }
+                };
+                owner.addHierarchyListener(hierarchyListener);
+                setVisible(owner.isShowing());
+            }
+        }
+    }
+
+    private void uninstallOwnerListener() {
+        if (owner != null) {
+            if (hierarchyBoundsListener != null) {
+                owner.removeHierarchyBoundsListener(hierarchyBoundsListener);
+                hierarchyBoundsListener = null;
+            }
+            if (hierarchyListener != null) {
+                owner.removeHierarchyListener(hierarchyListener);
+                hierarchyListener = null;
+            }
+        }
+    }
+
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        installOwnerListener();
+    }
+
+    @Override
+    public void removeNotify() {
+        super.removeNotify();
+        uninstallOwnerListener();
     }
 }
