@@ -28,7 +28,7 @@ public class ToastHeavyWeight {
 
     public void updateLayout() {
         for (ToastHeavyWeightContainerLayer com : map.values()) {
-            com.getLayeredPane().revalidate();
+            com.revalidateAll();
         }
     }
 

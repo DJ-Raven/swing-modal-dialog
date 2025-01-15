@@ -156,7 +156,7 @@ public class LayoutOption {
 
     /**
      * RELATIVE_CONTAINED: Modal and background are confined to the owner's bounds and track the owner's visibility. (default)
-     * RELATIVE_GLOBAL: Background spans the entire window.
+     * RELATIVE_GLOBAL: Background spans the entire window and does not track the owner's visibility
      * RELATIVE_BOUNDLESS: Background covers the owner, but the modal can extend outside the owner. Tracks owner's visibility. (requires heavyWeight = true)
      */
     public enum RelativeToOwnerType {

@@ -31,6 +31,10 @@ public class ToastPanel extends JPanel {
         return owner;
     }
 
+    public ToastOption getOption() {
+        return toastData.getOption();
+    }
+
     private final AbstractToastContainerLayer toastContainerLayer;
     private final Component owner;
     private ToastData toastData;
@@ -93,7 +97,7 @@ public class ToastPanel extends JPanel {
         }
     }
 
-    public Component createToast() {
+    public ToastPanel createToast() {
         ThemesData themesData = toastData.getThemes();
         installDefault(themesData);
         Icon icon = createIcon(themesData);
@@ -107,7 +111,7 @@ public class ToastPanel extends JPanel {
         return this;
     }
 
-    public Component createToastPromise(ToastPromise promise) {
+    public ToastPanel createToastPromise(ToastPromise promise) {
         this.toastPromise = promise;
         ThemesData themesData = toastData.getThemes();
         installDefault(themesData);
@@ -121,7 +125,7 @@ public class ToastPanel extends JPanel {
         return this;
     }
 
-    public Component createToastCustom(Component component) {
+    public ToastPanel createToastCustom(Component component) {
         content = new ToastContent(new MigLayout(), toastData);
         if (component instanceof ToastCustom) {
             ToastCustom toastCustom = (ToastCustom) component;
@@ -344,7 +348,7 @@ public class ToastPanel extends JPanel {
                     @Override
                     public void timingEvent(float v) {
                         animate = showing ? v : 1f - v;
-                        toastContainerLayer.getLayeredPane().revalidate();
+                        toastContainerLayer.revalidate(owner);
                     }
 
                     @Override
@@ -434,7 +438,6 @@ public class ToastPanel extends JPanel {
     }
 
     private void removeToast() {
-        toastContainerLayer.removeToastPanel(this);
         if (mouseListener != null) {
             content.removeMouseListener(mouseListener);
             if (textMessage != null) {
@@ -447,8 +450,8 @@ public class ToastPanel extends JPanel {
             toastPromise.setDone(true);
             toastPromise.reject();
         }
-        toastData = null;
         toastContainerLayer.remove(this);
+        toastData = null;
         content = null;
         textMessage = null;
         labelIcon = null;

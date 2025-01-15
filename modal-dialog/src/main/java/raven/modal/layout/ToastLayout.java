@@ -8,8 +8,8 @@ import raven.modal.toast.option.ToastLayoutOption;
 import raven.modal.toast.option.ToastOption;
 
 import java.awt.*;
-import java.util.List;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * @author Raven
@@ -41,16 +41,17 @@ public class ToastLayout implements LayoutManager {
     @Override
     public void layoutContainer(Container parent) {
         synchronized (parent.getTreeLock()) {
-            Map<Component, List<ToastPanel>> map = mapComponent(parent);
+            int count = parent.getComponentCount();
             boolean reverseOrder = Toast.isReverseOrder();
-            for (Map.Entry<Component, List<ToastPanel>> entry : map.entrySet()) {
-                List<ToastPanel> list = entry.getValue();
-                if (reverseOrder) {
-                    Collections.reverse(list);
-                }
-                Insets baseMargin = new Insets(0, 0, 0, 0);
-                for (int i = 0; i < list.size(); i++) {
-                    ToastPanel toastPanel = list.get(i);
+            Component[] components = Arrays.copyOf(parent.getComponents(), count);
+            if (reverseOrder) {
+                Collections.reverse(Arrays.asList(components));
+            }
+            Insets baseMargin = new Insets(0, 0, 0, 0);
+            for (int i = 0; i < count; i++) {
+                Component component = components[i];
+                if (component instanceof ToastPanel) {
+                    ToastPanel toastPanel = (ToastPanel) component;
                     ToastOption option = toastPanel.getToastData().getOption();
                     LayoutOption layoutOption = option.getLayoutOption().createLayoutOption(parent, toastPanel.getOwner());
                     Rectangle rec = OptionLayoutUtils.getLayoutLocation(parent, null, toastPanel, toastPanel.getAnimate(), layoutOption);
@@ -58,27 +59,14 @@ public class ToastLayout implements LayoutManager {
                     int y = rec.y;
                     if (index > 0) {
                         float ly = getLayoutY(parent, rec.getSize(), layoutOption);
-                        y = getY(list, toastPanel, option.getLayoutOption(), index, rec, baseMargin, ly, toastPanel.getAnimate());
+                        y = getY(components, toastPanel, option.getLayoutOption(), index, rec, baseMargin, ly, toastPanel.getAnimate());
                     } else {
                         baseMargin = UIScale.scale(layoutOption.getMargin());
                     }
-                    toastPanel.setBounds(rec.x, y, rec.width, rec.height);
+                    component.setBounds(rec.x, y, rec.width, rec.height);
                 }
             }
         }
-    }
-
-    public Map<Component, List<ToastPanel>> mapComponent(Container parent) {
-        Map<Component, List<ToastPanel>> map = new LinkedHashMap<>();
-        Component[] components = parent.getComponents();
-        for (Component com : components) {
-            if (com instanceof ToastPanel) {
-                ToastPanel toastPanel = (ToastPanel) com;
-                Component key = toastPanel.getToastData().getOption().getLayoutOption().isRelativeToOwner() ? toastPanel.getOwner() : parent;
-                map.computeIfAbsent(key, k -> new ArrayList<>()).add(toastPanel);
-            }
-        }
-        return map;
     }
 
     private float getLayoutY(Container parent, Dimension comSize, LayoutOption layoutOption) {
@@ -88,7 +76,7 @@ public class ToastLayout implements LayoutManager {
         return point.y;
     }
 
-    private int getY(List<ToastPanel> components, ToastPanel parentPanel, ToastLayoutOption layoutOption, int index, Rectangle rec, Insets baseMargin, float ly, float animate) {
+    private int getY(Component[] components, ToastPanel parentPanel, ToastLayoutOption layoutOption, int index, Rectangle rec, Insets baseMargin, float ly, float animate) {
         ToastPanel previousToast = getToastPanel(components, parentPanel, index - 1);
         if (previousToast == null) {
             return rec.y;
@@ -113,15 +101,19 @@ public class ToastLayout implements LayoutManager {
         return (int) y;
     }
 
-    private ToastPanel getToastPanel(List<ToastPanel> components, ToastPanel parentPanel, int index) {
+    private ToastPanel getToastPanel(Component[] components, ToastPanel parentPanel, int index) {
         if (index <= -1) {
             return null;
         }
-        ToastPanel component = components.get(index);
-        if (component.checkSameLayout(parentPanel.getToastData().getOption().getLayoutOption())) {
-            return component;
-        } else {
-            return getToastPanel(components, parentPanel, index - 1);
+        Component component = components[index];
+        if (component instanceof ToastPanel) {
+            ToastPanel toastPanel = (ToastPanel) component;
+            if (toastPanel.checkSameLayout(parentPanel.getToastData().getOption().getLayoutOption())) {
+                return toastPanel;
+            } else {
+                return getToastPanel(components, parentPanel, index - 1);
+            }
         }
+        return null;
     }
 }
