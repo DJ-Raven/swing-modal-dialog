@@ -35,7 +35,7 @@ public class ModalContainer extends JComponent {
     private Component owner;
     private MouseListener mouseListener;
     private ActionListener escapeAction;
-    private HierarchyBoundsListener hierarchyBoundsListener;
+    private ComponentListener componentListener;
     private HierarchyListener hierarchyListener;
     private ModalLayout modalLayout;
     private boolean enableHierarchy = true;
@@ -209,20 +209,20 @@ public class ModalContainer extends JComponent {
     private void installOwnerListener() {
         Option option = getController().getOption();
         if (owner != null && option.getLayoutOption().isRelativeToOwner()) {
-            hierarchyBoundsListener = new HierarchyBoundsListener() {
+            componentListener = new ComponentAdapter() {
                 @Override
-                public void ancestorMoved(HierarchyEvent e) {
+                public void componentResized(ComponentEvent e) {
                     repaint();
                     revalidate();
                 }
 
                 @Override
-                public void ancestorResized(HierarchyEvent e) {
+                public void componentMoved(ComponentEvent e) {
                     repaint();
                     revalidate();
                 }
             };
-            owner.addHierarchyBoundsListener(hierarchyBoundsListener);
+            owner.addComponentListener(componentListener);
 
             if (option.getLayoutOption().getRelativeToOwnerType() == LayoutOption.RelativeToOwnerType.RELATIVE_CONTAINED
                     || (option.isHeavyWeight()
@@ -250,9 +250,9 @@ public class ModalContainer extends JComponent {
 
     private void uninstallOwnerListener() {
         if (owner != null) {
-            if (hierarchyBoundsListener != null) {
-                owner.removeHierarchyBoundsListener(hierarchyBoundsListener);
-                hierarchyBoundsListener = null;
+            if (componentListener != null) {
+                owner.removeComponentListener(componentListener);
+                componentListener = null;
             }
             if (hierarchyListener != null) {
                 owner.removeHierarchyListener(hierarchyListener);

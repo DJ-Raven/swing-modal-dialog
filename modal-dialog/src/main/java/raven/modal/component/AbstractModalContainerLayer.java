@@ -82,6 +82,9 @@ public abstract class AbstractModalContainerLayer {
 
     public void updateModalLayout() {
         layeredPane.revalidate();
+        for (ModalContainer con : containers) {
+            con.revalidate();
+        }
     }
 
     public boolean checkId(String id) {
