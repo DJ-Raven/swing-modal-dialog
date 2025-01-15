@@ -1,7 +1,9 @@
 package raven.modal.component;
 
 import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.ColorFunctions;
+import com.formdev.flatlaf.util.UIScale;
 import raven.modal.layout.ModalLayout;
 import raven.modal.option.LayoutOption;
 import raven.modal.option.Option;
@@ -9,7 +11,6 @@ import raven.modal.option.Option;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.Rectangle2D;
 
 /**
  * @author Raven
@@ -149,7 +150,12 @@ public class ModalContainer extends JComponent {
                 && !(owner instanceof RootPaneContainer)
         ) {
             Point location = SwingUtilities.convertPoint(owner.getParent(), owner.getLocation(), this);
-            return new Rectangle2D.Double(location.getX(), location.getY(), owner.getWidth(), owner.getHeight());
+            Rectangle rec = new Rectangle(location, owner.getSize());
+            Insets padding = layoutOption.getBackgroundPadding();
+            if (!FlatUIUtils.isInsetsEmpty(padding)) {
+                rec = FlatUIUtils.subtractInsets(rec, UIScale.scale(padding));
+            }
+            return rec;
         }
         return new Rectangle(0, 0, getWidth(), getHeight());
     }

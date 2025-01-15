@@ -1,5 +1,7 @@
 package raven.modal.layout;
 
+import com.formdev.flatlaf.ui.FlatUIUtils;
+import com.formdev.flatlaf.util.UIScale;
 import raven.modal.component.ModalContainer;
 import raven.modal.option.LayoutOption;
 
@@ -49,11 +51,17 @@ public class ModalContainerLayout implements LayoutManager {
                 Component com = parent.getComponent(i);
                 if (com instanceof ModalContainer) {
                     ModalContainer container = (ModalContainer) com;
+                    Rectangle bound;
                     if (isUseOwnerBounds(container)) {
-                        container.setBounds(getOwnerBounds(parent, container));
+                        bound = getOwnerBounds(parent, container);
                     } else {
-                        container.setBounds(x, y, width, height);
+                        bound = new Rectangle(x, y, width, height);
                     }
+                    Insets backgroundPadding = container.getController().getOption().getLayoutOption().getBackgroundPadding();
+                    if (!FlatUIUtils.isInsetsEmpty(backgroundPadding)) {
+                        bound = FlatUIUtils.subtractInsets(bound, UIScale.scale(backgroundPadding));
+                    }
+                    container.setBounds(bound);
                 }
             }
         }

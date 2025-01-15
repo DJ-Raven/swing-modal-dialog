@@ -15,6 +15,7 @@
         - `RELATIVE_GLOBAL`: background spans the entire window.
         - `RELATIVE_BOUNDLESS`: background covers the owner, but the modal can extend outside the owner. Tracks owner's
           visibility. (requires `heavyWeight` = `true`)
+    - Add new option `backgroundPadding` to padding the background. by default `insets(0,0,0,0)`
 
 ### Fixed bugs
 
