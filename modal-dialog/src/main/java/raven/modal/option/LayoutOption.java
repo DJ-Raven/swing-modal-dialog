@@ -55,7 +55,8 @@ public class LayoutOption {
         return onTop;
     }
 
-    private LayoutOption(DynamicSize location, Insets margin, Insets backgroundPadding, DynamicSize size, DynamicSize animateDistance, RelativeToOwnerType relativeToOwnerType, boolean relativeToOwner, float animateScale, boolean onTop) {
+    private LayoutOption(Location horizontalLocation, DynamicSize location, Insets margin, Insets backgroundPadding, DynamicSize size, DynamicSize animateDistance, RelativeToOwnerType relativeToOwnerType, boolean relativeToOwner, float animateScale, boolean onTop) {
+        this.horizontalLocation = horizontalLocation;
         this.location = location;
         this.margin = margin;
         this.backgroundPadding = backgroundPadding;
@@ -163,7 +164,7 @@ public class LayoutOption {
     }
 
     public LayoutOption copy() {
-        return new LayoutOption(location, copyInsets(margin), copyInsets(backgroundPadding), new DynamicSize(size), new DynamicSize(animateDistance), relativeToOwnerType, relativeToOwner, animateScale, onTop);
+        return new LayoutOption(horizontalLocation, location, copyInsets(margin), copyInsets(backgroundPadding), new DynamicSize(size), new DynamicSize(animateDistance), relativeToOwnerType, relativeToOwner, animateScale, onTop);
     }
 
     private Insets copyInsets(Insets insets) {
