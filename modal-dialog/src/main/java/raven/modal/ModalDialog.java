@@ -163,6 +163,9 @@ public class ModalDialog {
             // add modal container layered to window layeredPane
             windowLayeredPane.add(modalContainerLayer.getLayeredPane(), LAYER);
 
+            // init component orientation
+            modalContainerLayer.initComponentOrientation(rootPaneContainer.getRootPane().getComponentOrientation());
+
             // create snapshot layered
             Component snapshot = modalContainerLayer.createLayeredSnapshot();
 

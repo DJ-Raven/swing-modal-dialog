@@ -47,6 +47,7 @@ public abstract class AbstractModalContainerLayer {
         layeredPane.setLayer(modalContainer, JLayeredPane.MODAL_LAYER + (option.getLayoutOption().isOnTop() ? 1 : 0));
         layeredPane.add(modalContainer, 0);
         modalContainer.initModal(modal);
+        modalContainer.setComponentOrientation(layeredPane.getComponentOrientation());
         modal.setId(id);
         containers.add(modalContainer);
         return modalContainer;
@@ -111,5 +112,9 @@ public abstract class AbstractModalContainerLayer {
 
     public JLayeredPane getLayeredPane() {
         return layeredPane;
+    }
+
+    public void initComponentOrientation(ComponentOrientation orientation) {
+        layeredPane.setComponentOrientation(orientation);
     }
 }

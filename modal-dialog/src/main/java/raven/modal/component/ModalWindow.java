@@ -37,6 +37,7 @@ public class ModalWindow extends JWindow {
         layeredPane = new JLayeredPane();
         list = new ArrayList<>();
         layeredPane.setLayout(new FullContentLayout());
+        layeredPane.setComponentOrientation(parentWindow.getComponentOrientation());
         setContentPane(layeredPane);
         setBackground(new Color(0, 0, 0, 0));
         installParentWindowListener();
@@ -44,11 +45,13 @@ public class ModalWindow extends JWindow {
 
     public void addToast(ToastHeavyWeightContainerLayer toast) {
         list.add(toast);
+        toast.initComponentOrientation(parentWindow.getComponentOrientation());
         layeredPane.add(toast.getLayeredPane(), JLayeredPane.POPUP_LAYER);
     }
 
     public void addModal(ModalHeavyWeightContainerLayer modal) {
         list.add(modal);
+        modal.initComponentOrientation(parentWindow.getComponentOrientation());
         layeredPane.add(modal.getLayeredPane(), JLayeredPane.MODAL_LAYER + 1);
     }
 

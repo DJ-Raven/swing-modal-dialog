@@ -39,14 +39,12 @@ public class RelativeLayerPane extends JLayeredPane {
             componentListener = new ComponentAdapter() {
                 @Override
                 public void componentResized(ComponentEvent e) {
-                    repaint();
                     revalidate();
                 }
             };
             hierarchyBoundsListener = new HierarchyBoundsAdapter() {
                 @Override
                 public void ancestorMoved(HierarchyEvent e) {
-                    repaint();
                     revalidate();
                 }
             };

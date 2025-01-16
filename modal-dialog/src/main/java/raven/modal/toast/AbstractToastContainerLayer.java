@@ -50,6 +50,7 @@ public abstract class AbstractToastContainerLayer {
         if (layer == null) {
             layer = new RelativeLayerPane(toastPanel.getOwner(), controlVisibility, fixedLayout);
             layer.setLayout(new ToastLayout());
+            layer.setComponentOrientation(layeredPane.getComponentOrientation());
             listToastLayer.add(layer);
             layeredPane.add(layer, JLayeredPane.MODAL_LAYER, 0);
         }
@@ -142,6 +143,10 @@ public abstract class AbstractToastContainerLayer {
     public void revalidateAll() {
         layeredPane.revalidate();
         listToastLayer.forEach(layer -> layer.revalidate());
+    }
+
+    public void initComponentOrientation(ComponentOrientation orientation) {
+        layeredPane.setComponentOrientation(orientation);
     }
 
     public List<ToastPanel> getToastPanels() {

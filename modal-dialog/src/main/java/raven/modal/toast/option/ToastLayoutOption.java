@@ -52,7 +52,7 @@ public class ToastLayoutOption {
     private ToastLocation location = ToastLocation.TOP_CENTER;
     private DynamicSize locationSize;
     private ToastDirection direction;
-    private RelativeToOwnerType relativeToOwnerType;
+    private RelativeToOwnerType relativeToOwnerType = RelativeToOwnerType.RELATIVE_CONTAINED;
     private boolean relativeToOwner;
     private Insets margin = new Insets(7, 7, 7, 7);
 

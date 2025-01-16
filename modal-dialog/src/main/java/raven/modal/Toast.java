@@ -193,10 +193,8 @@ public class Toast {
             // add toast container layered to window layeredPane
             windowLayeredPane.add(toastContainerLayer.getLayeredPane(), LAYER);
 
-            // check layout right to left
-            if (rootPaneContainer.getRootPane().getComponentOrientation().isLeftToRight() != toastContainerLayer.getLayeredPane().getComponentOrientation().isLeftToRight()) {
-                toastContainerLayer.getLayeredPane().applyComponentOrientation(rootPaneContainer.getRootPane().getComponentOrientation());
-            }
+            // init component orientation
+            toastContainerLayer.initComponentOrientation(rootPaneContainer.getRootPane().getComponentOrientation());
 
             // set custom layout to window layeredPane
             LayoutManager layout = windowLayeredPane.getLayout();
