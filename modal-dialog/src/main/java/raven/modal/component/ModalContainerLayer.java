@@ -34,12 +34,14 @@ public class ModalContainerLayer extends AbstractModalContainerLayer {
 
     @Override
     protected void animatedBegin() {
+        setEnableHierarchy(false);
         showSnapshot();
     }
 
     @Override
     protected void animatedEnd() {
         hideSnapshot();
+        setEnableHierarchy(true);
     }
 
     @Override
@@ -165,7 +167,7 @@ public class ModalContainerLayer extends AbstractModalContainerLayer {
         if (window != null) {
             stateListener = e -> {
                 if (e.getNewState() == 6 || e.getNewState() == 0) {
-                    SwingUtilities.invokeLater(() -> updateModalLayout());
+                    SwingUtilities.invokeLater(() -> updateLayout());
                 }
             };
             window.addWindowStateListener(stateListener);

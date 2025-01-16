@@ -1,6 +1,7 @@
 package raven.modal.component;
 
-import raven.modal.layout.FullContentLayout;
+import raven.modal.layout.ModalContainerLayout;
+import raven.modal.option.LayoutOption;
 import raven.modal.option.Option;
 
 import javax.swing.*;
@@ -11,15 +12,14 @@ import java.util.Set;
 /**
  * @author Raven
  */
-public abstract class AbstractModalContainerLayer {
+public abstract class AbstractModalContainerLayer extends AbstractRelativeContainer implements RelativeLayerPane.LayoutCallback {
 
     protected final Set<ModalContainer> containers;
-    protected final JLayeredPane layeredPane;
 
     public AbstractModalContainerLayer() {
+        super(new ModalContainerLayout());
         containers = new HashSet<>();
-        layeredPane = new JLayeredPane();
-        layeredPane.setLayout(new FullContentLayout());
+        setLayoutCallback(this);
     }
 
     protected void animatedBegin() {
@@ -31,10 +31,11 @@ public abstract class AbstractModalContainerLayer {
     public abstract void showContainer(boolean show);
 
     public void removeContainer(ModalContainer container) {
+        Option option = container.getOption();
+        boolean visibility = isVisibility(option);
+        boolean fixedLayout = isFixedLayout(option);
+        removeLayer(container, container.getOwner(), visibility, fixedLayout);
         containers.remove(container);
-        layeredPane.remove(container);
-        layeredPane.repaint();
-        layeredPane.revalidate();
     }
 
     public void addModal(Component owner, Modal modal, Option option, String id) {
@@ -44,9 +45,12 @@ public abstract class AbstractModalContainerLayer {
 
     public ModalContainer addModalWithoutShowing(Component owner, Modal modal, Option option, String id) {
         ModalContainer modalContainer = new ModalContainer(this, owner, option, id);
-        layeredPane.setLayer(modalContainer, JLayeredPane.MODAL_LAYER + (option.getLayoutOption().isOnTop() ? 1 : 0));
-        layeredPane.add(modalContainer, 0);
+        int layer = JLayeredPane.MODAL_LAYER + (option.getLayoutOption().isOnTop() ? 1 : 0);
+        boolean visibility = isVisibility(option);
+        boolean fixedLayout = isFixedLayout(option);
+        getLayerAndCreate(owner, visibility, fixedLayout).add(modalContainer, layer, 0);
         modalContainer.initModal(modal);
+        modalContainer.setComponentOrientation(layeredPane.getComponentOrientation());
         modal.setId(id);
         containers.add(modalContainer);
         return modalContainer;
@@ -80,10 +84,20 @@ public abstract class AbstractModalContainerLayer {
         }
     }
 
-    public void updateModalLayout() {
+    @Override
+    public void updateLayout() {
+        layeredPane.revalidate();
         for (ModalContainer con : containers) {
             con.revalidate();
         }
+    }
+
+    @Override
+    public void doLayout() {
+        for (ModalContainer con : containers) {
+            con.revalidate();
+        }
+        layeredPane.repaint();
     }
 
     public boolean checkId(String id) {
@@ -108,7 +122,11 @@ public abstract class AbstractModalContainerLayer {
         return containers;
     }
 
-    public JLayeredPane getLayeredPane() {
-        return layeredPane;
+    private boolean isVisibility(Option option) {
+        return option.getLayoutOption().isRelativeToOwner() && option.getLayoutOption().getRelativeToOwnerType() != LayoutOption.RelativeToOwnerType.RELATIVE_GLOBAL;
+    }
+
+    private boolean isFixedLayout(Option option) {
+        return !option.getLayoutOption().isRelativeToOwner() || option.getLayoutOption().getRelativeToOwnerType() != LayoutOption.RelativeToOwnerType.RELATIVE_CONTAINED;
     }
 }

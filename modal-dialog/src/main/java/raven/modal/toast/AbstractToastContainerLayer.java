@@ -1,37 +1,45 @@
 package raven.modal.toast;
 
+import raven.modal.component.AbstractRelativeContainer;
 import raven.modal.layout.ToastLayout;
+import raven.modal.toast.option.ToastLayoutOption;
 import raven.modal.toast.option.ToastLocation;
+import raven.modal.toast.option.ToastOption;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Raven
  */
-public abstract class AbstractToastContainerLayer {
+public abstract class AbstractToastContainerLayer extends AbstractRelativeContainer {
 
     protected final List<ToastPanel> toastPanels;
-    protected final JLayeredPane layeredPane;
 
     public abstract void showContainer(boolean show);
 
     public AbstractToastContainerLayer() {
+        super(new ToastLayout());
         toastPanels = new ArrayList<>();
-        layeredPane = new JLayeredPane();
-        layeredPane.setLayout(new ToastLayout());
     }
 
-    public void add(Component component) {
-        layeredPane.add(component, 0);
+    public void add(ToastPanel toastPanel) {
+        ToastOption option = toastPanel.getOption();
+        boolean visibility = isVisibility(option);
+        boolean fixedLayout = isFixedLayout(option);
+        getLayerAndCreate(toastPanel.getOwner(), visibility, fixedLayout).add(toastPanel, JLayeredPane.PALETTE_LAYER, 0);
     }
 
-    public void remove(Component component) {
-        layeredPane.remove(component);
-        layeredPane.repaint();
-        layeredPane.revalidate();
+    public void remove(ToastPanel toastPanel) {
+        ToastOption option = toastPanel.getOption();
+        boolean visibility = isVisibility(option);
+        boolean fixedLayout = isFixedLayout(option);
+        removeLayer(toastPanel, toastPanel.getOwner(), visibility, fixedLayout);
+        toastPanels.remove(toastPanel);
+        if (toastPanels.isEmpty()) {
+            showContainer(false);
+        }
     }
 
     public void addToastPanel(ToastPanel toastPanel) {
@@ -39,15 +47,6 @@ public abstract class AbstractToastContainerLayer {
         toastPanel.revalidate();
         toastPanel.repaint();
         showContainer(true);
-    }
-
-    public void removeToastPanel(ToastPanel toastPanel) {
-        if (toastPanels != null) {
-            toastPanels.remove(toastPanel);
-            if (toastPanels.isEmpty()) {
-                showContainer(false);
-            }
-        }
     }
 
     public void closeAll() {
@@ -99,7 +98,11 @@ public abstract class AbstractToastContainerLayer {
         return toastPanels;
     }
 
-    public JLayeredPane getLayeredPane() {
-        return layeredPane;
+    private boolean isVisibility(ToastOption option) {
+        return option.getLayoutOption().isRelativeToOwner() && option.getLayoutOption().getRelativeToOwnerType() != ToastLayoutOption.RelativeToOwnerType.RELATIVE_GLOBAL;
+    }
+
+    private boolean isFixedLayout(ToastOption option) {
+        return !option.getLayoutOption().isRelativeToOwner() || option.getLayoutOption().getRelativeToOwnerType() != ToastLayoutOption.RelativeToOwnerType.RELATIVE_CONTAINED;
     }
 }

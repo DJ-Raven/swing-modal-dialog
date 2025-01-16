@@ -97,7 +97,8 @@ public class Toast {
         RootPaneContainer rootPaneContainer = ModalDialog.getRootPaneContainer(owner);
         AbstractToastContainerLayer toastContainerLayer = getInstance().getToastContainer(owner, option.isHeavyWeight());
         String message = object instanceof String ? object.toString() : null;
-        ToastPanel toastPanel = new ToastPanel(toastContainerLayer, owner, new ToastPanel.ToastData(type, option, themesData, message));
+        Component toastOwner = option.getLayoutOption().isRelativeToOwner() ? owner : null;
+        ToastPanel toastPanel = new ToastPanel(toastContainerLayer, toastOwner, new ToastPanel.ToastData(type, option, themesData, message));
         if (object instanceof Component) {
             toastContainerLayer.add(toastPanel.createToastCustom((Component) object));
         } else if (promise != null) {
@@ -170,7 +171,7 @@ public class Toast {
 
     private void updateLayout() {
         for (ToastContainerLayer com : map.values()) {
-            com.getLayeredPane().revalidate();
+            com.updateLayout();
         }
         ToastHeavyWeight.getInstance().updateLayout();
     }
@@ -192,10 +193,8 @@ public class Toast {
             // add toast container layered to window layeredPane
             windowLayeredPane.add(toastContainerLayer.getLayeredPane(), LAYER);
 
-            // check layout right to left
-            if (rootPaneContainer.getRootPane().getComponentOrientation().isLeftToRight() != toastContainerLayer.getLayeredPane().getComponentOrientation().isLeftToRight()) {
-                toastContainerLayer.getLayeredPane().applyComponentOrientation(rootPaneContainer.getRootPane().getComponentOrientation());
-            }
+            // init component orientation
+            toastContainerLayer.initComponentOrientation(rootPaneContainer.getRootPane().getComponentOrientation());
 
             // set custom layout to window layeredPane
             LayoutManager layout = windowLayeredPane.getLayout();

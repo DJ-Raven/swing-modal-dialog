@@ -1,14 +1,16 @@
 package raven.modal.component;
 
 import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.ColorFunctions;
+import com.formdev.flatlaf.util.UIScale;
 import raven.modal.layout.ModalLayout;
+import raven.modal.option.LayoutOption;
 import raven.modal.option.Option;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.Rectangle2D;
 
 /**
  * @author Raven
@@ -25,6 +27,10 @@ public class ModalContainer extends JComponent {
 
     public Component getOwner() {
         return owner;
+    }
+
+    public Option getOption() {
+        return modalController.getOption();
     }
 
     private final String id;
@@ -127,10 +133,28 @@ public class ModalContainer extends JComponent {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setColor(getBackgroundColor());
             g2.setComposite(AlphaComposite.SrcOver.derive(opacity));
-            g2.fill(new Rectangle2D.Double(0, 0, getWidth(), getHeight()));
+            g2.fill(getBackgroundShape());
             g2.dispose();
         }
         super.paintComponent(g);
+    }
+
+    private Shape getBackgroundShape() {
+        LayoutOption layoutOption = modalController.getOption().getLayoutOption();
+        if (modalController.getOption().isHeavyWeight()
+                && layoutOption.isRelativeToOwner()
+                && layoutOption.getRelativeToOwnerType() == LayoutOption.RelativeToOwnerType.RELATIVE_BOUNDLESS
+                && !(owner instanceof RootPaneContainer)
+        ) {
+            Point location = SwingUtilities.convertPoint(owner.getParent(), owner.getLocation(), this);
+            Rectangle rec = new Rectangle(location, owner.getSize());
+            Insets padding = layoutOption.getBackgroundPadding();
+            if (!FlatUIUtils.isInsetsEmpty(padding)) {
+                rec = FlatUIUtils.subtractInsets(rec, UIScale.scale(padding));
+            }
+            return rec;
+        }
+        return new Rectangle(0, 0, getWidth(), getHeight());
     }
 
     protected Color getBackgroundColor() {

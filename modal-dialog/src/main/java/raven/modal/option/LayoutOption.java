@@ -27,12 +27,20 @@ public class LayoutOption {
         return margin;
     }
 
+    public Insets getBackgroundPadding() {
+        return backgroundPadding;
+    }
+
     public DynamicSize getSize() {
         return size;
     }
 
     public DynamicSize getAnimateDistance() {
         return animateDistance;
+    }
+
+    public RelativeToOwnerType getRelativeToOwnerType() {
+        return relativeToOwnerType;
     }
 
     public boolean isRelativeToOwner() {
@@ -47,11 +55,14 @@ public class LayoutOption {
         return onTop;
     }
 
-    private LayoutOption(DynamicSize location, Insets margin, DynamicSize size, DynamicSize animateDistance, boolean relativeToOwner, float animateScale, boolean onTop) {
+    private LayoutOption(Location horizontalLocation, DynamicSize location, Insets margin, Insets backgroundPadding, DynamicSize size, DynamicSize animateDistance, RelativeToOwnerType relativeToOwnerType, boolean relativeToOwner, float animateScale, boolean onTop) {
+        this.horizontalLocation = horizontalLocation;
         this.location = location;
         this.margin = margin;
+        this.backgroundPadding = backgroundPadding;
         this.size = size;
         this.animateDistance = animateDistance;
+        this.relativeToOwnerType = relativeToOwnerType;
         this.relativeToOwner = relativeToOwner;
         this.animateScale = animateScale;
         this.onTop = onTop;
@@ -64,8 +75,10 @@ public class LayoutOption {
     private Location horizontalLocation = Location.CENTER;
     private DynamicSize location = new DynamicSize(horizontalLocation.getValue(), Location.CENTER.getValue());
     private Insets margin = new Insets(7, 7, 7, 7);
+    private Insets backgroundPadding = new Insets(0, 0, 0, 0);
     private DynamicSize size = new DynamicSize(-1, -1);
     private DynamicSize animateDistance = new DynamicSize(0, 20);
+    private RelativeToOwnerType relativeToOwnerType = RelativeToOwnerType.RELATIVE_CONTAINED;
     private boolean relativeToOwner;
     private float animateScale;
     private boolean onTop = false;
@@ -98,6 +111,16 @@ public class LayoutOption {
         return this;
     }
 
+    public LayoutOption setBackgroundPadding(int top, int left, int bottom, int right) {
+        this.backgroundPadding = new Insets(top, left, bottom, right);
+        return this;
+    }
+
+    public LayoutOption setBackgroundPadding(int adding) {
+        this.backgroundPadding = new Insets(adding, adding, adding, adding);
+        return this;
+    }
+
     public LayoutOption setSize(Number width, Number height) {
         this.size = new DynamicSize(width, height);
         return this;
@@ -105,6 +128,11 @@ public class LayoutOption {
 
     public LayoutOption setAnimateDistance(Number x, Number y) {
         this.animateDistance = new DynamicSize(x, y);
+        return this;
+    }
+
+    public LayoutOption setRelativeToOwnerType(RelativeToOwnerType relativeToOwnerType) {
+        this.relativeToOwnerType = relativeToOwnerType;
         return this;
     }
 
@@ -126,7 +154,20 @@ public class LayoutOption {
         return this;
     }
 
+    /**
+     * RELATIVE_CONTAINED: Modal and background are confined to the owner's bounds and track the owner's visibility. (default)
+     * RELATIVE_GLOBAL: Background spans the entire window and does not track the owner's visibility
+     * RELATIVE_BOUNDLESS: Background covers the owner, but the modal can extend outside the owner. Tracks owner's visibility. (requires heavyWeight = true)
+     */
+    public enum RelativeToOwnerType {
+        RELATIVE_CONTAINED, RELATIVE_GLOBAL, RELATIVE_BOUNDLESS
+    }
+
     public LayoutOption copy() {
-        return new LayoutOption(location, new Insets(margin.top, margin.left, margin.bottom, margin.right), new DynamicSize(size), new DynamicSize(animateDistance), relativeToOwner, animateScale, onTop);
+        return new LayoutOption(horizontalLocation, location, copyInsets(margin), copyInsets(backgroundPadding), new DynamicSize(size), new DynamicSize(animateDistance), relativeToOwnerType, relativeToOwner, animateScale, onTop);
+    }
+
+    private Insets copyInsets(Insets insets) {
+        return new Insets(insets.top, insets.left, insets.bottom, insets.right);
     }
 }

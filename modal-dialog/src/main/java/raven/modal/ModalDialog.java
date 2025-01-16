@@ -52,7 +52,8 @@ public class ModalDialog {
         }
         SwingUtilities.invokeLater(() -> {
             boolean isHeavyWeight = option.isHeavyWeight();
-            getInstance().getModalContainer(owner, isHeavyWeight).addModal(owner, modal, option, id);
+            Component modelOwner = option.getLayoutOption().isRelativeToOwner() ? owner : null;
+            getInstance().getModalContainer(owner, isHeavyWeight).addModal(modelOwner, modal, option, id);
         });
     }
 
@@ -162,6 +163,9 @@ public class ModalDialog {
 
             // add modal container layered to window layeredPane
             windowLayeredPane.add(modalContainerLayer.getLayeredPane(), LAYER);
+
+            // init component orientation
+            modalContainerLayer.initComponentOrientation(rootPaneContainer.getRootPane().getComponentOrientation());
 
             // create snapshot layered
             Component snapshot = modalContainerLayer.createLayeredSnapshot();

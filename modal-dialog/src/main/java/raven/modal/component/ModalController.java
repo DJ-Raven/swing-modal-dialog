@@ -101,6 +101,11 @@ public class ModalController extends AbstractModalController {
 
     @Override
     protected void onModalComponentInstalled() {
+        ComponentOrientation orientation = modalContainer.getComponentOrientation();
+        setComponentOrientation(orientation);
+        if (modal.getComponentOrientation().isLeftToRight() != orientation.isLeftToRight()) {
+            modal.applyComponentOrientation(orientation);
+        }
     }
 
     @Override

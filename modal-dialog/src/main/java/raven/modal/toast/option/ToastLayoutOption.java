@@ -23,6 +23,10 @@ public class ToastLayoutOption {
         return locationSize;
     }
 
+    public RelativeToOwnerType getRelativeToOwnerType() {
+        return relativeToOwnerType;
+    }
+
     public boolean isRelativeToOwner() {
         return relativeToOwner;
     }
@@ -34,10 +38,11 @@ public class ToastLayoutOption {
         return location.getDirection();
     }
 
-    private ToastLayoutOption(ToastLocation location, DynamicSize locationSize, ToastDirection direction, boolean relativeToOwner) {
+    private ToastLayoutOption(ToastLocation location, DynamicSize locationSize, ToastDirection direction, RelativeToOwnerType relativeToOwnerType, boolean relativeToOwner) {
         this.location = location;
         this.locationSize = locationSize;
         this.direction = direction;
+        this.relativeToOwnerType = relativeToOwnerType;
         this.relativeToOwner = relativeToOwner;
     }
 
@@ -47,6 +52,7 @@ public class ToastLayoutOption {
     private ToastLocation location = ToastLocation.TOP_CENTER;
     private DynamicSize locationSize;
     private ToastDirection direction;
+    private RelativeToOwnerType relativeToOwnerType = RelativeToOwnerType.RELATIVE_CONTAINED;
     private boolean relativeToOwner;
     private Insets margin = new Insets(7, 7, 7, 7);
 
@@ -63,6 +69,11 @@ public class ToastLayoutOption {
 
     public ToastLayoutOption setDirection(ToastDirection direction) {
         this.direction = direction;
+        return this;
+    }
+
+    public ToastLayoutOption setRelativeToOwnerType(RelativeToOwnerType relativeToOwnerType) {
+        this.relativeToOwnerType = relativeToOwnerType;
         return this;
     }
 
@@ -84,7 +95,7 @@ public class ToastLayoutOption {
     public LayoutOption createLayoutOption(Component parent, Component owner) {
         ToastDirection direction = getDirection();
         Insets insets = new Insets(margin.top, margin.left, margin.bottom, margin.right);
-        if (isRelativeToOwner()) {
+        if (owner != null && getRelativeToOwnerType() != RelativeToOwnerType.RELATIVE_CONTAINED) {
             insets = OptionLayoutUtils.getOwnerInsert(parent, owner, insets);
         }
         LayoutOption layoutOption = new LayoutOption()
@@ -101,7 +112,16 @@ public class ToastLayoutOption {
         return layoutOption;
     }
 
+    /**
+     * RELATIVE_CONTAINED: Toast is confined to the owner's bounds and tracks the owner's visibility. (default)
+     * RELATIVE_GLOBAL: Toast spans the entire window and does not track the owner's visibility
+     * RELATIVE_BOUNDLESS: Toast can extend outside the owner's bounds and tracks the owner's visibility
+     */
+    public enum RelativeToOwnerType {
+        RELATIVE_CONTAINED, RELATIVE_GLOBAL, RELATIVE_BOUNDLESS
+    }
+
     public ToastLayoutOption copy() {
-        return new ToastLayoutOption(location, locationSize, direction, relativeToOwner);
+        return new ToastLayoutOption(location, locationSize, direction, relativeToOwnerType, relativeToOwner);
     }
 }
