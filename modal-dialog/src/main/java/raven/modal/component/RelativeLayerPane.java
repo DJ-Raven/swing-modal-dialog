@@ -21,17 +21,24 @@ public class RelativeLayerPane extends JLayeredPane {
         return fixedLayout;
     }
 
+    public void setEnableHierarchy(boolean enableHierarchy) {
+        this.enableHierarchy = enableHierarchy;
+    }
+
     private final Component owner;
     private final boolean controlVisibility;
     private final boolean fixedLayout;
+    private final LayoutCallback layoutCallback;
+    private boolean enableHierarchy = true;
     private HierarchyListener hierarchyListener;
     private HierarchyBoundsListener hierarchyBoundsListener;
     private ComponentListener componentListener;
 
-    public RelativeLayerPane(Component owner, boolean controlVisibility, boolean fixedLayout) {
+    public RelativeLayerPane(Component owner, boolean controlVisibility, boolean fixedLayout, LayoutCallback layoutCallback) {
         this.owner = owner;
         this.controlVisibility = controlVisibility;
         this.fixedLayout = fixedLayout;
+        this.layoutCallback = layoutCallback;
     }
 
     protected void installOwnerListener() {
@@ -39,12 +46,18 @@ public class RelativeLayerPane extends JLayeredPane {
             componentListener = new ComponentAdapter() {
                 @Override
                 public void componentResized(ComponentEvent e) {
+                    if (layoutCallback != null) {
+                        layoutCallback.doLayout();
+                    }
                     revalidate();
                 }
             };
             hierarchyBoundsListener = new HierarchyBoundsAdapter() {
                 @Override
                 public void ancestorMoved(HierarchyEvent e) {
+                    if (layoutCallback != null) {
+                        layoutCallback.doLayout();
+                    }
                     revalidate();
                 }
             };
@@ -52,6 +65,7 @@ public class RelativeLayerPane extends JLayeredPane {
             owner.addHierarchyBoundsListener(hierarchyBoundsListener);
             if (controlVisibility) {
                 hierarchyListener = e -> {
+                    if (!enableHierarchy) return;
                     if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0 || (e.getChangeFlags() & HierarchyEvent.DISPLAYABILITY_CHANGED) != 0) {
                         if (e.getChanged().isShowing()) {
                             if (owner.isShowing()) {
@@ -97,5 +111,9 @@ public class RelativeLayerPane extends JLayeredPane {
     public void removeNotify() {
         super.removeNotify();
         uninstallOwnerListener();
+    }
+
+    public interface LayoutCallback {
+        void doLayout();
     }
 }

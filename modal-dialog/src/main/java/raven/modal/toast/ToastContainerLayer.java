@@ -43,7 +43,7 @@ public class ToastContainerLayer extends AbstractToastContainerLayer {
                 if (e.getNewState() == 6 || e.getNewState() == 0) {
                     SwingUtilities.invokeLater(() -> {
                         if (map.containsKey(rootPaneContainer)) {
-                            map.get(rootPaneContainer).revalidateAll();
+                            map.get(rootPaneContainer).updateLayout();
                         }
                     });
                 }

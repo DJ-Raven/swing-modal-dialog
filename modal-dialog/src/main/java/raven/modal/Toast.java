@@ -171,7 +171,7 @@ public class Toast {
 
     private void updateLayout() {
         for (ToastContainerLayer com : map.values()) {
-            com.revalidateAll();
+            com.updateLayout();
         }
         ToastHeavyWeight.getInstance().updateLayout();
     }

@@ -29,16 +29,17 @@ public class ModalContainer extends JComponent {
         return owner;
     }
 
+    public Option getOption() {
+        return modalController.getOption();
+    }
+
     private final String id;
     private AbstractModalContainerLayer modalContainerLayer;
     private ModalController modalController;
     private Component owner;
     private MouseListener mouseListener;
     private ActionListener escapeAction;
-    private ComponentListener componentListener;
-    private HierarchyListener hierarchyListener;
     private ModalLayout modalLayout;
-    private boolean enableHierarchy = true;
 
     public ModalContainer(AbstractModalContainerLayer modalContainerLayer, Component owner, Option option, String id) {
         this.modalContainerLayer = modalContainerLayer;
@@ -98,10 +99,6 @@ public class ModalContainer extends JComponent {
 
     public ModalController getController() {
         return modalController;
-    }
-
-    protected void setEnableHierarchy(boolean enableHierarchy) {
-        this.enableHierarchy = enableHierarchy;
     }
 
     protected void uninstallOption() {
@@ -204,72 +201,5 @@ public class ModalContainer extends JComponent {
         if (container.getParent() != this) {
             addParentInsets(container.getParent(), insets);
         }
-    }
-
-    private void installOwnerListener() {
-        Option option = getController().getOption();
-        if (owner != null && option.getLayoutOption().isRelativeToOwner()) {
-            componentListener = new ComponentAdapter() {
-                @Override
-                public void componentResized(ComponentEvent e) {
-                    repaint();
-                    revalidate();
-                }
-
-                @Override
-                public void componentMoved(ComponentEvent e) {
-                    repaint();
-                    revalidate();
-                }
-            };
-            owner.addComponentListener(componentListener);
-
-            if (option.getLayoutOption().getRelativeToOwnerType() == LayoutOption.RelativeToOwnerType.RELATIVE_CONTAINED
-                    || (option.isHeavyWeight()
-                    && option.getLayoutOption().getRelativeToOwnerType() == LayoutOption.RelativeToOwnerType.RELATIVE_BOUNDLESS)
-            ) {
-                hierarchyListener = e -> {
-                    if (!enableHierarchy) return;
-                    if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0 || (e.getChangeFlags() & HierarchyEvent.DISPLAYABILITY_CHANGED) != 0) {
-                        if (e.getChanged().isShowing()) {
-                            if (owner.isShowing()) {
-                                setVisible(true);
-                            }
-                        } else {
-                            if (!owner.isShowing()) {
-                                setVisible(false);
-                            }
-                        }
-                    }
-                };
-                owner.addHierarchyListener(hierarchyListener);
-                setVisible(owner.isShowing());
-            }
-        }
-    }
-
-    private void uninstallOwnerListener() {
-        if (owner != null) {
-            if (componentListener != null) {
-                owner.removeComponentListener(componentListener);
-                componentListener = null;
-            }
-            if (hierarchyListener != null) {
-                owner.removeHierarchyListener(hierarchyListener);
-                hierarchyListener = null;
-            }
-        }
-    }
-
-    @Override
-    public void addNotify() {
-        super.addNotify();
-        installOwnerListener();
-    }
-
-    @Override
-    public void removeNotify() {
-        super.removeNotify();
-        uninstallOwnerListener();
     }
 }

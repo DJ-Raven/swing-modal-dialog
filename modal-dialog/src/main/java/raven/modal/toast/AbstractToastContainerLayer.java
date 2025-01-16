@@ -1,80 +1,42 @@
 package raven.modal.toast;
 
-import raven.modal.component.RelativeLayerPane;
-import raven.modal.layout.RelativeLayout;
+import raven.modal.component.AbstractRelativeContainer;
 import raven.modal.layout.ToastLayout;
 import raven.modal.toast.option.ToastLayoutOption;
 import raven.modal.toast.option.ToastLocation;
 import raven.modal.toast.option.ToastOption;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Raven
  */
-public abstract class AbstractToastContainerLayer {
+public abstract class AbstractToastContainerLayer extends AbstractRelativeContainer {
 
     protected final List<ToastPanel> toastPanels;
-    protected final List<RelativeLayerPane> listToastLayer;
-    protected final JLayeredPane layeredPane;
 
     public abstract void showContainer(boolean show);
 
     public AbstractToastContainerLayer() {
+        super(new ToastLayout());
         toastPanels = new ArrayList<>();
-        listToastLayer = new ArrayList<>();
-        layeredPane = new JLayeredPane();
-        layeredPane.setLayout(new RelativeLayout());
-    }
-
-    private RelativeLayerPane getLayer(Component owner, boolean controlVisibility, boolean fixedLayout) {
-        for (int i = 0; i < listToastLayer.size(); i++) {
-            RelativeLayerPane l = listToastLayer.get(i);
-            if (l.getOwner() == owner
-                    && l.isControlVisibility() == controlVisibility
-                    && l.isFixedLayout() == fixedLayout
-            ) {
-                return l;
-            }
-        }
-        return null;
-    }
-
-    private RelativeLayerPane getToastLayer(ToastPanel toastPanel) {
-        boolean controlVisibility = isVisibility(toastPanel.getOption());
-        boolean fixedLayout = isFixedLayout(toastPanel.getOption());
-        RelativeLayerPane layer = getLayer(toastPanel.getOwner(), controlVisibility, fixedLayout);
-        if (layer == null) {
-            layer = new RelativeLayerPane(toastPanel.getOwner(), controlVisibility, fixedLayout);
-            layer.setLayout(new ToastLayout());
-            layer.setComponentOrientation(layeredPane.getComponentOrientation());
-            listToastLayer.add(layer);
-            layeredPane.add(layer, JLayeredPane.MODAL_LAYER, 0);
-        }
-        return layer;
     }
 
     public void add(ToastPanel toastPanel) {
-        getToastLayer(toastPanel).add(toastPanel, 0);
+        ToastOption option = toastPanel.getOption();
+        boolean visibility = isVisibility(option);
+        boolean fixedLayout = isFixedLayout(option);
+        getLayerAndCreate(toastPanel.getOwner(), visibility, fixedLayout).add(toastPanel, JLayeredPane.PALETTE_LAYER, 0);
     }
 
     public void remove(ToastPanel toastPanel) {
-        toastPanels.remove(toastPanel);
         ToastOption option = toastPanel.getOption();
-        RelativeLayerPane layer = getLayer(toastPanel.getOwner(), isVisibility(option), isFixedLayout(option));
-        if (layer != null) {
-            layer.remove(toastPanel);
-        }
-        if (layer.getComponentCount() == 0) {
-            layeredPane.remove(layer);
-            listToastLayer.remove(layer);
-        }
-        layer.repaint();
-        layer.revalidate();
-
+        boolean visibility = isVisibility(option);
+        boolean fixedLayout = isFixedLayout(option);
+        removeLayer(toastPanel, toastPanel.getOwner(), visibility, fixedLayout);
+        toastPanels.remove(toastPanel);
         if (toastPanels.isEmpty()) {
             showContainer(false);
         }
@@ -132,29 +94,8 @@ public abstract class AbstractToastContainerLayer {
         }
     }
 
-    public void revalidate(Component owner) {
-        listToastLayer.forEach(layer -> {
-            if (layer.getOwner() == owner) {
-                layer.revalidate();
-            }
-        });
-    }
-
-    public void revalidateAll() {
-        layeredPane.revalidate();
-        listToastLayer.forEach(layer -> layer.revalidate());
-    }
-
-    public void initComponentOrientation(ComponentOrientation orientation) {
-        layeredPane.setComponentOrientation(orientation);
-    }
-
     public List<ToastPanel> getToastPanels() {
         return toastPanels;
-    }
-
-    public JLayeredPane getLayeredPane() {
-        return layeredPane;
     }
 
     private boolean isVisibility(ToastOption option) {

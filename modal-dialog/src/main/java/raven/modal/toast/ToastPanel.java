@@ -348,7 +348,7 @@ public class ToastPanel extends JPanel {
                     @Override
                     public void timingEvent(float v) {
                         animate = showing ? v : 1f - v;
-                        toastContainerLayer.revalidate(owner);
+                        toastContainerLayer.updateLayout(owner);
                     }
 
                     @Override

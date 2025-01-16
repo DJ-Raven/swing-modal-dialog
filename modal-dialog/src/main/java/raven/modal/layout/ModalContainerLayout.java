@@ -3,9 +3,7 @@ package raven.modal.layout;
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.UIScale;
 import raven.modal.component.ModalContainer;
-import raven.modal.option.LayoutOption;
 
-import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -51,13 +49,8 @@ public class ModalContainerLayout implements LayoutManager {
                 Component com = parent.getComponent(i);
                 if (com instanceof ModalContainer) {
                     ModalContainer container = (ModalContainer) com;
-                    Rectangle bound;
-                    if (isUseOwnerBounds(container)) {
-                        bound = getOwnerBounds(parent, container);
-                    } else {
-                        bound = new Rectangle(x, y, width, height);
-                    }
-                    Insets backgroundPadding = container.getController().getOption().getLayoutOption().getBackgroundPadding();
+                    Rectangle bound = new Rectangle(x, y, width, height);
+                    Insets backgroundPadding = container.getOption().getLayoutOption().getBackgroundPadding();
                     if (!FlatUIUtils.isInsetsEmpty(backgroundPadding)) {
                         bound = FlatUIUtils.subtractInsets(bound, UIScale.scale(backgroundPadding));
                     }
@@ -65,19 +58,5 @@ public class ModalContainerLayout implements LayoutManager {
                 }
             }
         }
-    }
-
-    private boolean isUseOwnerBounds(ModalContainer container) {
-        LayoutOption option = container.getController().getOption().getLayoutOption();
-        Component owner = container.getOwner();
-        return option.isRelativeToOwner()
-                && option.getRelativeToOwnerType() == LayoutOption.RelativeToOwnerType.RELATIVE_CONTAINED
-                && !(owner instanceof RootPaneContainer);
-    }
-
-    private Rectangle getOwnerBounds(Container parent, ModalContainer container) {
-        Component owner = container.getOwner();
-        Point ownerLocation = SwingUtilities.convertPoint(owner.getParent(), owner.getLocation(), parent);
-        return new Rectangle(ownerLocation, owner.getSize());
     }
 }
