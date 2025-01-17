@@ -15,9 +15,24 @@ import java.awt.*;
 public class SimpleMessageModal extends SimpleModalBorder {
 
     private final Type type;
+    private Component titleComponent;
 
     public SimpleMessageModal(Type type, String message, String title, int optionType, ModalCallback callback) {
-        super(createMessage(type, message), title, optionType, callback);
+        this(type, createMessage(type, message), title, optionType, callback);
+    }
+
+    public SimpleMessageModal(Type type, Component messageComponent, String title, int optionType, ModalCallback callback) {
+        super(messageComponent, title, optionType, callback);
+        this.type = type;
+    }
+
+    public SimpleMessageModal(Type type, String message, Component titleComponent, int optionType, ModalCallback callback) {
+        this(type, createMessage(type, message), titleComponent, optionType, callback);
+    }
+
+    public SimpleMessageModal(Type type, Component messageComponent, Component titleComponent, int optionType, ModalCallback callback) {
+        super(messageComponent, null, optionType, callback);
+        this.titleComponent = titleComponent;
         this.type = type;
     }
 
@@ -40,6 +55,9 @@ public class SimpleMessageModal extends SimpleModalBorder {
 
     @Override
     protected JComponent createTitleComponent(String title) {
+        if (titleComponent != null && titleComponent instanceof JComponent) {
+            return (JComponent) titleComponent;
+        }
         if (type == Type.DEFAULT) {
             return super.createTitleComponent(title);
         }
