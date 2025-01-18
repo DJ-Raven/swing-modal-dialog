@@ -8,6 +8,7 @@ import org.jfree.chart.plot.SpiderWebPlot;
 import org.jfree.chart.renderer.AbstractRenderer;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.StandardBarPainter;
+import org.jfree.chart.renderer.xy.CandlestickRenderer;
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
 import org.jfree.chart.renderer.xy.XYDifferenceRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
@@ -117,10 +118,20 @@ public class DefaultChartTheme extends StandardChartTheme {
     @Override
     protected void applyToXYItemRenderer(XYItemRenderer renderer) {
         super.applyToXYItemRenderer(renderer);
-        if (renderer != null && renderer instanceof XYDifferenceRenderer) {
-            XYDifferenceRenderer r = (XYDifferenceRenderer) renderer;
-            r.setPositivePaint(getColor(0));
-            r.setNegativePaint(getColor(1));
+        if (renderer != null) {
+            if (renderer instanceof XYDifferenceRenderer) {
+                XYDifferenceRenderer r = (XYDifferenceRenderer) renderer;
+                if (r.getAutoPopulateSeriesPaint()) {
+                    r.setPositivePaint(getColor(0));
+                    r.setNegativePaint(getColor(1));
+                }
+            } else if (renderer instanceof CandlestickRenderer) {
+                CandlestickRenderer r = (CandlestickRenderer) renderer;
+                if (r.getAutoPopulateSeriesPaint()) {
+                    r.setDownPaint(getColor(0));
+                    r.setUpPaint(getColor(1));
+                }
+            }
         }
     }
 

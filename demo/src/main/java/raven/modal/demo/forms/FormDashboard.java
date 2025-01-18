@@ -4,11 +4,10 @@ import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.util.UIScale;
 import net.miginfocom.swing.MigLayout;
+import org.jfree.chart.renderer.xy.CandlestickRenderer;
 import raven.modal.demo.component.ToolBarSelection;
-import raven.modal.demo.component.chart.BarChart;
-import raven.modal.demo.component.chart.PieChart;
-import raven.modal.demo.component.chart.SpiderChart;
-import raven.modal.demo.component.chart.TimeSeriesChart;
+import raven.modal.demo.component.chart.*;
+import raven.modal.demo.component.chart.renderer.other.ChartCandlestickRenderer;
 import raven.modal.demo.component.chart.themes.ColorThemes;
 import raven.modal.demo.component.chart.themes.DefaultChartTheme;
 import raven.modal.demo.component.chart.utils.ToolBarCategoryOrientation;
@@ -56,6 +55,7 @@ public class FormDashboard extends Form {
 
         // load data chart
         timeSeriesChart.setDataset(SampleData.getTimeSeriesDataset());
+        candlestickChart.setDataset(SampleData.getOhlcDataset());
         barChart.setDataset(SampleData.getCategoryDataset());
         spiderChart.setDataset(SampleData.getCategoryDataset());
         pieChart.setDataset(SampleData.getPieDataset());
@@ -71,6 +71,7 @@ public class FormDashboard extends Form {
         ToolBarSelection<ColorThemes> toolBarSelection = new ToolBarSelection<>(ColorThemes.values(), colorThemes -> {
             if (DefaultChartTheme.setChartColors(colorThemes)) {
                 DefaultChartTheme.applyTheme(timeSeriesChart.getFreeChart());
+                DefaultChartTheme.applyTheme(candlestickChart.getFreeChart());
                 DefaultChartTheme.applyTheme(barChart.getFreeChart());
                 DefaultChartTheme.applyTheme(pieChart.getFreeChart());
                 DefaultChartTheme.applyTheme(spiderChart.getFreeChart());
@@ -113,10 +114,22 @@ public class FormDashboard extends Form {
     private void createChart() {
         JPanel panel = new JPanel(new MigLayout("gap 14,wrap,fillx", "[fill]", "[350]"));
         timeSeriesChart = new TimeSeriesChart();
+        candlestickChart = new CandlestickChart();
         barChart = new BarChart();
         timeSeriesChart.add(new ToolBarTimeSeriesChartRenderer(timeSeriesChart), "al trailing,grow 0", 0);
+        candlestickChart.add(new ToolBarSelection<>(new String[]{"default", "red_green"}, s -> {
+            CandlestickRenderer renderer = (CandlestickRenderer) candlestickChart.getFreeChart().getXYPlot().getRenderer();
+            if (s == "default") {
+                renderer.setAutoPopulateSeriesPaint(true);
+                DefaultChartTheme.applyTheme(candlestickChart.getFreeChart());
+            } else {
+                renderer.setAutoPopulateSeriesPaint(false);
+                ChartCandlestickRenderer.initRedGreenColor(renderer);
+            }
+        }), "al trailing,grow 0", 0);
         barChart.add(new ToolBarCategoryOrientation(barChart.getFreeChart()), "al trailing,grow 0", 0);
         panel.add(timeSeriesChart);
+        panel.add(candlestickChart);
         panel.add(barChart);
         panelLayout.add(panel);
     }
@@ -138,6 +151,7 @@ public class FormDashboard extends Form {
     private CardBox cardBox;
 
     private TimeSeriesChart timeSeriesChart;
+    private CandlestickChart candlestickChart;
     private BarChart barChart;
     private SpiderChart spiderChart;
     private PieChart pieChart;
