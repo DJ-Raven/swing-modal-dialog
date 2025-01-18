@@ -135,7 +135,7 @@ public class FormToast extends Form {
         jrBackgroundGradient = new JRadioButton("Gradient");
         jrBackgroundNone = new JRadioButton("None");
 
-        jrBackgroundDefault.setSelected(true);
+        jrBackgroundNone.setSelected(true);
 
         ButtonGroup group = new ButtonGroup();
         group.add(jrBackgroundDefault);
