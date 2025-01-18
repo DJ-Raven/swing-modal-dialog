@@ -95,6 +95,11 @@ public class ModalController extends AbstractModalController {
     }
 
     @Override
+    public ModalContainer getModalContainer() {
+        return modalContainer;
+    }
+
+    @Override
     protected PanelSlider.PaneSliderLayoutSize createSliderLayoutSize() {
         return (container, component) -> modalContainer.getModalComponentSize(component, container);
     }
@@ -174,9 +179,5 @@ public class ModalController extends AbstractModalController {
 
     public float getAnimated() {
         return animated;
-    }
-
-    public ModalContainer getModalContainer() {
-        return modalContainer;
     }
 }

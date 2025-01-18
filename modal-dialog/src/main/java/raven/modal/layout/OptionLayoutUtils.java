@@ -79,17 +79,25 @@ public class OptionLayoutUtils {
             y -= componentSize.height / 2f;
         }
         if (!size.isHorizontalCenter()) {
-            if (x < 0) {
-                x = 0;
-            } else if (x > width - componentSize.width) {
-                x = width - componentSize.width;
+            if (componentSize.width > width) {
+                x = (width - componentSize.width) / 2;
+            } else {
+                if (x < 0) {
+                    x = 0;
+                } else if (x > width - componentSize.width) {
+                    x = width - componentSize.width;
+                }
             }
         }
         if (!size.isVerticalCenter()) {
-            if (y < 0) {
-                y = 0;
-            } else if (y > height - componentSize.height) {
-                y = height - componentSize.height;
+            if (componentSize.height > height) {
+                y = (height - componentSize.height) / 2;
+            } else {
+                if (y < 0) {
+                    y = 0;
+                } else if (y > height - componentSize.height) {
+                    y = height - componentSize.height;
+                }
             }
         }
         return new Point((int) x, (int) y);
