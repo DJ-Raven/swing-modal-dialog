@@ -7,6 +7,7 @@ import raven.modal.toast.option.ToastLocation;
 import raven.modal.toast.option.ToastOption;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,14 +28,14 @@ public abstract class AbstractToastContainerLayer extends AbstractRelativeContai
     public void add(ToastPanel toastPanel) {
         ToastOption option = toastPanel.getOption();
         boolean visibility = isVisibility(option);
-        boolean fixedLayout = isFixedLayout(option);
+        boolean fixedLayout = isFixedLayout(option, toastPanel.getOwner());
         getLayerAndCreate(toastPanel.getOwner(), visibility, fixedLayout).add(toastPanel, JLayeredPane.PALETTE_LAYER, 0);
     }
 
     public void remove(ToastPanel toastPanel) {
         ToastOption option = toastPanel.getOption();
         boolean visibility = isVisibility(option);
-        boolean fixedLayout = isFixedLayout(option);
+        boolean fixedLayout = isFixedLayout(option, toastPanel.getOwner());
         removeLayer(toastPanel, toastPanel.getOwner(), visibility, fixedLayout);
         toastPanels.remove(toastPanel);
         if (toastPanels.isEmpty()) {
@@ -102,7 +103,7 @@ public abstract class AbstractToastContainerLayer extends AbstractRelativeContai
         return option.getLayoutOption().isRelativeToOwner() && option.getLayoutOption().getRelativeToOwnerType() != ToastLayoutOption.RelativeToOwnerType.RELATIVE_GLOBAL;
     }
 
-    private boolean isFixedLayout(ToastOption option) {
-        return !option.getLayoutOption().isRelativeToOwner() || option.getLayoutOption().getRelativeToOwnerType() != ToastLayoutOption.RelativeToOwnerType.RELATIVE_CONTAINED;
+    private boolean isFixedLayout(ToastOption option, Component owner) {
+        return !option.getLayoutOption().isRelativeToOwner() || option.getLayoutOption().getRelativeToOwnerType() != ToastLayoutOption.RelativeToOwnerType.RELATIVE_CONTAINED || owner instanceof RootPaneContainer;
     }
 }
