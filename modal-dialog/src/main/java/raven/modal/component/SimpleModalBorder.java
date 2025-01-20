@@ -12,8 +12,7 @@ import java.awt.*;
 import java.util.function.Consumer;
 
 /**
- * This class contain with title and close button
- * And two action button, ok and close
+ * This class contain with title, action button options and close button
  *
  * @author Raven
  */
@@ -24,7 +23,6 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
 
     protected final ModalBorderOption option;
     protected final String title;
-    private final int optionType;
     private Option[] optionsType;
     private final ModalCallback callback;
 
@@ -70,7 +68,6 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
         this.component = component;
         this.option = option;
         this.title = title;
-        this.optionType = optionType;
         this.callback = callback;
         if (optionType == -1) {
             this.optionsType = optionsType;

@@ -115,8 +115,9 @@ public class FormModal extends Form {
         chShadow = new JCheckBox("Shadow border");
         chOpacity = new JCheckBox("Background opacity");
         chScale = new JCheckBox("Animate scale");
-        chHeavyWeight = new JCheckBox("Heavy Weight");
+        chHeavyWeight = new JCheckBox("Heavy weight");
         chRelativeToOwner = new JCheckBox("Relative to owner");
+        chMovable = new JCheckBox("Movable");
 
         // event
         chAnimation.addActionListener(e -> {
@@ -135,6 +136,7 @@ public class FormModal extends Form {
         panel.add(chScale);
         panel.add(chHeavyWeight);
         panel.add(chRelativeToOwner);
+        panel.add(chMovable);
 
         return panel;
     }
@@ -250,7 +252,8 @@ public class FormModal extends Form {
                 .setBorderWidth(chBorder.isSelected() ? 1f : 0)
                 .setShadow(chShadow.isSelected() ? BorderOption.Shadow.MEDIUM : BorderOption.Shadow.NONE);
         option.getLayoutOption().setLocation(h, v)
-                .setRelativeToOwner(chRelativeToOwner.isSelected());
+                .setRelativeToOwner(chRelativeToOwner.isSelected())
+                .setMovable(chMovable.isSelected());
         if (scale != 0) {
             option.getLayoutOption().setAnimateDistance(0, 0)
                     .setAnimateScale(scale);
@@ -279,6 +282,7 @@ public class FormModal extends Form {
     private JCheckBox chScale;
     private JCheckBox chHeavyWeight;
     private JCheckBox chRelativeToOwner;
+    private JCheckBox chMovable;
 
     // background click option
     private JRadioButton jrClose;

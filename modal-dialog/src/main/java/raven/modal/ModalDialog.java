@@ -51,9 +51,11 @@ public class ModalDialog {
             throw new IllegalArgumentException("id '" + id + "' already exist");
         }
         SwingUtilities.invokeLater(() -> {
-            boolean isHeavyWeight = option.isHeavyWeight();
-            Component modelOwner = option.getLayoutOption().isRelativeToOwner() ? owner : null;
-            getInstance().getModalContainer(owner, isHeavyWeight).addModal(modelOwner, modal, option, id);
+            // need copy if the option is the default option
+            Option copyOption = option == getDefaultOption() ? option.copy() : option;
+            boolean isHeavyWeight = copyOption.isHeavyWeight();
+            Component modelOwner = copyOption.getLayoutOption().isRelativeToOwner() ? owner : null;
+            getInstance().getModalContainer(owner, isHeavyWeight).addModal(modelOwner, modal, copyOption, id);
         });
     }
 

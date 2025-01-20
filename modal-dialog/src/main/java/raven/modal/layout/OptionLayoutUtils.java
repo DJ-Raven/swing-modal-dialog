@@ -44,7 +44,7 @@ public class OptionLayoutUtils {
             lx = lh.getValue();
         }
         DynamicSize size = new DynamicSize(lx, ly);
-        Point point = location(width, height, comSize, size);
+        Point point = location(width, height, comSize, size, layoutOption.isOverflowAlignmentAuto());
         Point animatePoint = getAnimatePoint(comSize, animate, rightToLeft, layoutOption);
         int cx = x + point.x + animatePoint.x;
         int cy = y + point.y + animatePoint.y;
@@ -68,7 +68,7 @@ public class OptionLayoutUtils {
         return new Insets(top, left, bottom, right);
     }
 
-    protected static Point location(int width, int height, Dimension componentSize, DynamicSize size) {
+    protected static Point location(int width, int height, Dimension componentSize, DynamicSize size, boolean overflowAlignmentAuto) {
         Dimension location = size.getSize(new Dimension(width, height));
         double x = location.width;
         double y = location.height;
@@ -79,20 +79,34 @@ public class OptionLayoutUtils {
             y -= componentSize.height / 2f;
         }
         if (!size.isHorizontalCenter()) {
-            if (x < 0) {
-                x = 0;
-            } else if (x > width - componentSize.width) {
-                x = width - componentSize.width;
-            }
+            x = adjustValue(size.getX(), x, componentSize.width, width, overflowAlignmentAuto);
         }
         if (!size.isVerticalCenter()) {
-            if (y < 0) {
-                y = 0;
-            } else if (y > height - componentSize.height) {
-                y = height - componentSize.height;
-            }
+            y = adjustValue(size.getY(), y, componentSize.height, height, overflowAlignmentAuto);
         }
         return new Point((int) x, (int) y);
+    }
+
+    protected static double adjustValue(Number location, double value, int componentSize, int containerSize, boolean overflowAlignmentAuto) {
+        if (componentSize > containerSize) {
+            if (overflowAlignmentAuto) {
+                value = (containerSize - componentSize) / 2f;
+            } else {
+                boolean alightRight = location instanceof Float && location.floatValue() > 0.5f;
+                if (alightRight) {
+                    value = containerSize - componentSize;
+                } else {
+                    value = 0;
+                }
+            }
+        } else {
+            if (value < 0) {
+                value = 0;
+            } else if (value > containerSize - componentSize) {
+                value = containerSize - componentSize;
+            }
+        }
+        return value;
     }
 
     protected static Dimension getComponentSize(Component component, int width, int height, float animate, LayoutOption layoutOption) {

@@ -6,6 +6,7 @@ import raven.modal.option.Option;
 import raven.modal.slider.PanelSlider;
 import raven.modal.slider.SimpleTransition;
 import raven.modal.slider.SliderTransition;
+import raven.modal.utils.ModalMouseMovableListener;
 import raven.modal.utils.ModalUtils;
 
 import javax.swing.*;
@@ -33,9 +34,16 @@ public abstract class AbstractModalController extends JPanel implements Controll
     }
 
     private void init() {
-        // create mouse event to block the component
-        addMouseListener(new MouseAdapter() {
-        });
+        boolean movable = option.getLayoutOption().isMovable();
+        if (movable) {
+            MouseAdapter mouseListener = createMouseMovableListener();
+            addMouseListener(mouseListener);
+            addMouseMotionListener(mouseListener);
+        } else {
+            // create mouse event to block the component
+            addMouseListener(new MouseAdapter() {
+            });
+        }
 
         Insets shadowSize = option.getBorderOption().getShadowSize();
         int minimumSize = ModalUtils.maximumInsets(shadowSize);
@@ -59,6 +67,10 @@ public abstract class AbstractModalController extends JPanel implements Controll
         if (border != null) {
             setBorder(border);
         }
+    }
+
+    protected MouseAdapter createMouseMovableListener() {
+        return new ModalMouseMovableListener(this);
     }
 
     protected void installModalComponent(Modal modal) {
@@ -168,6 +180,8 @@ public abstract class AbstractModalController extends JPanel implements Controll
     public String getId() {
         return modal.getId();
     }
+
+    public abstract ModalContainer getModalContainer();
 
     protected abstract PanelSlider.PaneSliderLayoutSize createSliderLayoutSize();
 
