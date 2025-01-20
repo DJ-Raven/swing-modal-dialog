@@ -31,6 +31,10 @@ public class ToastLayoutOption {
         return relativeToOwner;
     }
 
+    public boolean isOverflowAlignmentAuto() {
+        return overflowAlignmentAuto;
+    }
+
     public ToastDirection getDirection() {
         if (direction != null) {
             return direction;
@@ -38,12 +42,13 @@ public class ToastLayoutOption {
         return location.getDirection();
     }
 
-    private ToastLayoutOption(ToastLocation location, DynamicSize locationSize, ToastDirection direction, RelativeToOwnerType relativeToOwnerType, boolean relativeToOwner) {
+    private ToastLayoutOption(ToastLocation location, DynamicSize locationSize, ToastDirection direction, RelativeToOwnerType relativeToOwnerType, boolean relativeToOwner, boolean overflowAlignmentAuto) {
         this.location = location;
         this.locationSize = locationSize;
         this.direction = direction;
         this.relativeToOwnerType = relativeToOwnerType;
         this.relativeToOwner = relativeToOwner;
+        this.overflowAlignmentAuto = overflowAlignmentAuto;
     }
 
     public ToastLayoutOption() {
@@ -54,6 +59,7 @@ public class ToastLayoutOption {
     private ToastDirection direction;
     private RelativeToOwnerType relativeToOwnerType = RelativeToOwnerType.RELATIVE_CONTAINED;
     private boolean relativeToOwner;
+    private boolean overflowAlignmentAuto;
     private Insets margin = new Insets(7, 7, 7, 7);
 
     public ToastLayoutOption setLocation(ToastLocation location) {
@@ -82,6 +88,11 @@ public class ToastLayoutOption {
         return this;
     }
 
+    public ToastLayoutOption setOverflowAlignmentAuto(boolean overflowAlignmentAuto) {
+        this.overflowAlignmentAuto = overflowAlignmentAuto;
+        return this;
+    }
+
     public ToastLayoutOption setMargin(int top, int left, int bottom, int right) {
         this.margin = new Insets(top, left, bottom, right);
         return this;
@@ -100,6 +111,7 @@ public class ToastLayoutOption {
         }
         LayoutOption layoutOption = new LayoutOption()
                 .setRelativeToOwner(isRelativeToOwner())
+                .setOverflowAlignmentAuto(overflowAlignmentAuto)
                 .setMargin(insets.top, insets.left, insets.bottom, insets.right)
                 .setAnimateDistance(direction.getValue().getX(), direction.getValue().getY());
 
@@ -122,6 +134,6 @@ public class ToastLayoutOption {
     }
 
     public ToastLayoutOption copy() {
-        return new ToastLayoutOption(location, locationSize, direction, relativeToOwnerType, relativeToOwner);
+        return new ToastLayoutOption(location, locationSize, direction, relativeToOwnerType, relativeToOwner, overflowAlignmentAuto);
     }
 }

@@ -47,6 +47,10 @@ public class LayoutOption {
         return relativeToOwner;
     }
 
+    public boolean isOverflowAlignmentAuto() {
+        return overflowAlignmentAuto;
+    }
+
     public boolean isMovable() {
         return movable;
     }
@@ -59,7 +63,7 @@ public class LayoutOption {
         return onTop;
     }
 
-    private LayoutOption(Location horizontalLocation, DynamicSize location, Insets margin, Insets backgroundPadding, DynamicSize size, DynamicSize animateDistance, RelativeToOwnerType relativeToOwnerType, boolean relativeToOwner, boolean movable, float animateScale, boolean onTop) {
+    private LayoutOption(Location horizontalLocation, DynamicSize location, Insets margin, Insets backgroundPadding, DynamicSize size, DynamicSize animateDistance, RelativeToOwnerType relativeToOwnerType, boolean relativeToOwner, boolean overflowAlignmentAuto, boolean movable, float animateScale, boolean onTop) {
         this.horizontalLocation = horizontalLocation;
         this.location = location;
         this.margin = margin;
@@ -68,6 +72,7 @@ public class LayoutOption {
         this.animateDistance = animateDistance;
         this.relativeToOwnerType = relativeToOwnerType;
         this.relativeToOwner = relativeToOwner;
+        this.overflowAlignmentAuto = overflowAlignmentAuto;
         this.movable = movable;
         this.animateScale = animateScale;
         this.onTop = onTop;
@@ -85,6 +90,7 @@ public class LayoutOption {
     private DynamicSize animateDistance = new DynamicSize(0, 20);
     private RelativeToOwnerType relativeToOwnerType = RelativeToOwnerType.RELATIVE_CONTAINED;
     private boolean relativeToOwner;
+    private boolean overflowAlignmentAuto = true;
     private boolean movable;
     private float animateScale;
     private boolean onTop = false;
@@ -147,6 +153,11 @@ public class LayoutOption {
         return this;
     }
 
+    public LayoutOption setOverflowAlignmentAuto(boolean overflowAlignmentAuto) {
+        this.overflowAlignmentAuto = overflowAlignmentAuto;
+        return this;
+    }
+
     public LayoutOption setMovable(boolean movable) {
         this.movable = movable;
         return this;
@@ -175,7 +186,7 @@ public class LayoutOption {
     }
 
     public LayoutOption copy() {
-        return new LayoutOption(horizontalLocation, location, copyInsets(margin), copyInsets(backgroundPadding), new DynamicSize(size), new DynamicSize(animateDistance), relativeToOwnerType, relativeToOwner, movable, animateScale, onTop);
+        return new LayoutOption(horizontalLocation, location, copyInsets(margin), copyInsets(backgroundPadding), new DynamicSize(size), new DynamicSize(animateDistance), relativeToOwnerType, relativeToOwner, overflowAlignmentAuto, movable, animateScale, onTop);
     }
 
     private Insets copyInsets(Insets insets) {

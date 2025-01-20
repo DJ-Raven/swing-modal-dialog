@@ -72,7 +72,7 @@ public class ToastLayout implements LayoutManager {
     private float getLayoutY(Container parent, Dimension comSize, LayoutOption layoutOption) {
         int insets = parent.getInsets().top + parent.getInsets().bottom + UIScale.scale(layoutOption.getMargin().top + layoutOption.getMargin().bottom);
         int height = parent.getHeight() - insets;
-        Point point = OptionLayoutUtils.location(0, height, comSize, layoutOption.getLocation());
+        Point point = OptionLayoutUtils.location(0, height, comSize, layoutOption.getLocation(), layoutOption.isOverflowAlignmentAuto());
         return point.y;
     }
 
