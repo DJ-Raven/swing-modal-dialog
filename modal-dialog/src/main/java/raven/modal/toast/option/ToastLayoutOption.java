@@ -42,13 +42,14 @@ public class ToastLayoutOption {
         return location.getDirection();
     }
 
-    private ToastLayoutOption(ToastLocation location, DynamicSize locationSize, ToastDirection direction, RelativeToOwnerType relativeToOwnerType, boolean relativeToOwner, boolean overflowAlignmentAuto) {
+    private ToastLayoutOption(ToastLocation location, DynamicSize locationSize, ToastDirection direction, RelativeToOwnerType relativeToOwnerType, boolean relativeToOwner, boolean overflowAlignmentAuto, Insets margin) {
         this.location = location;
         this.locationSize = locationSize;
         this.direction = direction;
         this.relativeToOwnerType = relativeToOwnerType;
         this.relativeToOwner = relativeToOwner;
         this.overflowAlignmentAuto = overflowAlignmentAuto;
+        this.margin = margin;
     }
 
     public ToastLayoutOption() {
@@ -134,6 +135,10 @@ public class ToastLayoutOption {
     }
 
     public ToastLayoutOption copy() {
-        return new ToastLayoutOption(location, locationSize, direction, relativeToOwnerType, relativeToOwner, overflowAlignmentAuto);
+        return new ToastLayoutOption(location, locationSize, direction, relativeToOwnerType, relativeToOwner, overflowAlignmentAuto, copyInsets(margin));
+    }
+
+    private Insets copyInsets(Insets insets) {
+        return new Insets(insets.top, insets.left, insets.bottom, insets.right);
     }
 }
