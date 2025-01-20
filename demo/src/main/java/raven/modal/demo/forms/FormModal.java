@@ -115,7 +115,7 @@ public class FormModal extends Form {
         chShadow = new JCheckBox("Shadow border");
         chOpacity = new JCheckBox("Background opacity");
         chScale = new JCheckBox("Animate scale");
-        chHeavyWeight = new JCheckBox("Heavy Weight");
+        chHeavyWeight = new JCheckBox("Heavy weight");
         chRelativeToOwner = new JCheckBox("Relative to owner");
         chMovable = new JCheckBox("Movable");
 

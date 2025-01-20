@@ -106,9 +106,9 @@ public class FormToast extends Form {
         chPauseDelayOnHover = new JCheckBox("Pause delay on hover");
         chAutoClose = new JCheckBox("Auto close");
         chCloseOnClick = new JCheckBox("Close on click");
-        chHeavyWeight = new JCheckBox("Heavy Weight");
+        chHeavyWeight = new JCheckBox("Heavy weight");
         chRelativeToOwner = new JCheckBox("Relative to owner");
-        JCheckBox chReverseOrder = new JCheckBox("Reverse Order");
+        JCheckBox chReverseOrder = new JCheckBox("Reverse order");
 
         chAnimation.setSelected(true);
         chPauseDelayOnHover.setSelected(true);
