@@ -127,8 +127,9 @@ public class ModalDialog {
         if (getInstance().isIdExist(id)) {
             throw new IllegalArgumentException("id '" + id + "' already exist");
         }
-        ModalContainerLayer modalContainerLayer = getInstance().getModalContainerLayered(rootPaneContainer);
-        return modalContainerLayer.addModalWithoutShowing(null, modal, option, id);
+        boolean isHeavyWeight = option.isHeavyWeight();
+        Component modelOwner = option.getLayoutOption().isRelativeToOwner() ? rootPaneContainer.getRootPane() : null;
+        return getInstance().getModalContainer(rootPaneContainer.getRootPane(), isHeavyWeight).addModalWithoutShowing(modelOwner, modal, option, id);
     }
 
     protected static RootPaneContainer getRootPaneContainer(Component component) {
