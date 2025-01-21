@@ -228,6 +228,13 @@ public class Toast {
         return getToastContainerLayered(ModalDialog.getRootPaneContainer(owner));
     }
 
+    public static void setEnableHierarchy(boolean enable) {
+        if (instance != null) {
+            instance.map.values().forEach(container -> container.setEnableHierarchy(enable));
+        }
+        ToastHeavyWeight.getInstance().setEnableHierarchy(enable);
+    }
+
     public enum Type {
         DEFAULT, SUCCESS, INFO, WARNING, ERROR
     }

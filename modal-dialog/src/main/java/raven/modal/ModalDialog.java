@@ -11,6 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * @author Raven
@@ -196,7 +197,7 @@ public class ModalDialog {
     }
 
     private ModalContainerLayer createModalContainerLayered(RootPaneContainer rootPaneContainer) {
-        ModalContainerLayer layeredPane = new ModalContainerLayer(map, rootPaneContainer);
+        ModalContainerLayer layeredPane = new ModalContainerLayer(map, rootPaneContainer, createSnapshotChangedCallback());
         layeredPane.getLayeredPane().setVisible(false);
         return layeredPane;
     }
@@ -218,5 +219,18 @@ public class ModalDialog {
             return ModalHeavyWeight.getInstance().getModalHeavyWeightContainer(owner);
         }
         return getModalContainerLayered(getRootPaneContainer(owner));
+    }
+
+    private Consumer<Boolean> createSnapshotChangedCallback() {
+        return show -> {
+            // modal
+            map.values().forEach(container -> container.setEnableHierarchy(show));
+
+            // heavyweight modal
+            ModalHeavyWeight.getInstance().setEnableHierarchy(show);
+
+            // toast
+            Toast.setEnableHierarchy(show);
+        };
     }
 }

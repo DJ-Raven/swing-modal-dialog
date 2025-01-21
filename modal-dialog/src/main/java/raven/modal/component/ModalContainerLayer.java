@@ -12,6 +12,7 @@ import java.awt.event.WindowStateListener;
 import java.awt.image.VolatileImage;
 import java.beans.PropertyChangeListener;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * @author Raven
@@ -20,6 +21,7 @@ public class ModalContainerLayer extends AbstractModalContainerLayer {
 
     private final Map<RootPaneContainer, ModalContainerLayer> map;
     private final RootPaneContainer rootPaneContainer;
+    private final Consumer<Boolean> snapshotChanged;
     private Component componentSnapshot;
     private boolean isShowSnapshot;
     private JLayeredPane layeredSnapshot;
@@ -27,21 +29,30 @@ public class ModalContainerLayer extends AbstractModalContainerLayer {
     private PropertyChangeListener propertyListener;
     private WindowStateListener stateListener;
 
-    public ModalContainerLayer(Map<RootPaneContainer, ModalContainerLayer> map, RootPaneContainer rootPaneContainer) {
+    public ModalContainerLayer(Map<RootPaneContainer, ModalContainerLayer> map, RootPaneContainer rootPaneContainer, Consumer<Boolean> snapshotChanged) {
         this.map = map;
         this.rootPaneContainer = rootPaneContainer;
+        this.snapshotChanged = snapshotChanged;
     }
 
     @Override
     protected void animatedBegin() {
-        setEnableHierarchy(false);
-        showSnapshot();
+        try {
+            snapshotChanged.accept(false);
+            showSnapshot();
+        } finally {
+            snapshotChanged.accept(true);
+        }
     }
 
     @Override
     protected void animatedEnd() {
-        hideSnapshot();
-        setEnableHierarchy(true);
+        try {
+            snapshotChanged.accept(false);
+            hideSnapshot();
+        } finally {
+            snapshotChanged.accept(true);
+        }
     }
 
     @Override
