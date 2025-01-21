@@ -90,7 +90,7 @@ public class MainForm extends JPanel {
     }
 
     private JPanel createSearchBox() {
-        JPanel panel = new JPanel(new MigLayout("fill", "[fill,center,160:200:]", "[fill]"));
+        JPanel panel = new JPanel(new MigLayout("fill", "[fill,center,200:250:]", "[fill]"));
         FormSearchButton button = new FormSearchButton();
         button.addActionListener(e -> FormSearch.getInstance().showSearch());
         panel.add(button);

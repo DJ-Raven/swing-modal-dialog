@@ -39,6 +39,7 @@
 ## Demo
 
 - Create dashboard form using `JFreeChart`
+- Update improvements the UI `FormSearchButton`
 
 ## [2.2.0] - 2024-12-31
 

@@ -17,16 +17,19 @@ public class FormSearchButton extends JButton {
         setLayout(new MigLayout("insets 0,al trailing,filly", "", "[center]"));
         setHorizontalAlignment(JButton.LEADING);
         putClientProperty(FlatClientProperties.STYLE, "" +
-                "margin:3,7,3,10;" +
-                "background:$TextField.background;" +
-                "arc:999;" +
-                "borderWidth:1;" +
+                "margin:5,7,5,10;" +
+                "arc:10;" +
+                "borderWidth:0;" +
                 "focusWidth:0;" +
                 "innerFocusWidth:0;" +
-                "foreground:$TextField.placeholderForeground;");
+                "[light]background:shade($Panel.background,10%);" +
+                "[dark]background:tint($Panel.background,10%);" +
+                "[light]foreground:tint($Button.foreground,40%);" +
+                "[dark]foreground:shade($Button.foreground,30%);");
         JLabel label = new JLabel("Ctrl F");
         label.putClientProperty(FlatClientProperties.STYLE, "" +
-                "foreground:$Label.disabledForeground;");
+                "[light]foreground:tint($Button.foreground,40%);" +
+                "[dark]foreground:shade($Button.foreground,30%);");
         add(label);
     }
 }
