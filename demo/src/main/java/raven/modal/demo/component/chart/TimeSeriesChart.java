@@ -6,7 +6,7 @@ import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.xy.TableXYDataset;
 import org.jfree.data.xy.XYDataset;
 import raven.modal.demo.component.chart.renderer.ChartXYCurveRenderer;
 import raven.modal.demo.component.chart.themes.ChartDrawingSupplier;
@@ -117,7 +117,7 @@ public class TimeSeriesChart extends DefaultChartPanel {
                     return;
                 }
                 double x = plot.getDomainAxis().java2DToValue(event.getTrigger().getX(), dataArea, plot.getDomainAxisEdge());
-                TimeSeriesCollection dataset = (TimeSeriesCollection) plot.getDataset();
+                TableXYDataset dataset = (TableXYDataset) plot.getDataset();
                 int seriesCount = plot.getSeriesCount();
 
                 double minDistance = Double.MAX_VALUE;

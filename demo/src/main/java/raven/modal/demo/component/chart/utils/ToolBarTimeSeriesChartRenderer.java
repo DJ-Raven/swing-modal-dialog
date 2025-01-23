@@ -18,6 +18,7 @@ public class ToolBarTimeSeriesChartRenderer extends ToolBarSelection<XYItemRende
                 new ChartXYCurveRenderer(),
                 new ChartXYLineRenderer(),
                 new ChartXYBarRenderer(),
+                new ChartStackedXYBarRenderer(),
                 new ChartDeviationStepRenderer(),
                 new ChartXYDifferenceRenderer()
         };
