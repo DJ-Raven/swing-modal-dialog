@@ -13,12 +13,12 @@ public class ToastStyle {
         return new ToastStyle();
     }
 
-    public BackgroundType getBackgroundType() {
-        return backgroundType;
+    public ToastBorderStyle getBorderStyle() {
+        return borderStyle;
     }
 
-    public BorderType getBorderType() {
-        return borderType;
+    public BackgroundType getBackgroundType() {
+        return backgroundType;
     }
 
     public boolean isShowLabel() {
@@ -35,10 +35,6 @@ public class ToastStyle {
 
     public boolean isPaintTextColor() {
         return paintTextColor;
-    }
-
-    public int getLineSize() {
-        return lineSize;
     }
 
     public String getPromiseLabel() {
@@ -58,18 +54,13 @@ public class ToastStyle {
         }
     }
 
-    public int getOutlineSize() {
-        return 1;
-    }
-
-    public ToastStyle(BackgroundType backgroundType, BorderType borderType, boolean showLabel, boolean iconSeparateLine, boolean showCloseButton, boolean paintTextColor, int lineSize, String promiseLabel, Icon icon) {
+    private ToastStyle(ToastBorderStyle borderStyle, BackgroundType backgroundType, boolean showLabel, boolean iconSeparateLine, boolean showCloseButton, boolean paintTextColor, String promiseLabel, Icon icon) {
+        this.borderStyle = borderStyle;
         this.backgroundType = backgroundType;
-        this.borderType = borderType;
         this.showLabel = showLabel;
         this.iconSeparateLine = iconSeparateLine;
         this.showCloseButton = showCloseButton;
         this.paintTextColor = paintTextColor;
-        this.lineSize = lineSize;
         this.promiseLabel = promiseLabel;
         this.customIcon = icon;
     }
@@ -77,23 +68,22 @@ public class ToastStyle {
     public ToastStyle() {
     }
 
+    private ToastBorderStyle borderStyle = ToastBorderStyle.getDefault();
     private BackgroundType backgroundType = BackgroundType.DEFAULT;
-    private BorderType borderType = BorderType.NONE;
     private boolean showLabel;
     private boolean iconSeparateLine;
     private boolean showCloseButton = true;
     private boolean paintTextColor;
-    private int lineSize = 3;
     private String promiseLabel = "Loading";
     private Icon customIcon;
 
-    public ToastStyle setBackgroundType(BackgroundType backgroundType) {
-        this.backgroundType = backgroundType;
+    public ToastStyle setBorderStyle(ToastBorderStyle borderStyle) {
+        this.borderStyle = borderStyle;
         return this;
     }
 
-    public ToastStyle setBorderType(BorderType borderType) {
-        this.borderType = borderType;
+    public ToastStyle setBackgroundType(BackgroundType backgroundType) {
+        this.backgroundType = backgroundType;
         return this;
     }
 
@@ -117,11 +107,6 @@ public class ToastStyle {
         return this;
     }
 
-    public ToastStyle setLineSize(int lineSize) {
-        this.lineSize = lineSize;
-        return this;
-    }
-
     public ToastStyle setPromiseLabel(String promiseLabel) {
         this.promiseLabel = promiseLabel;
         return this;
@@ -133,14 +118,10 @@ public class ToastStyle {
     }
 
     public ToastStyle copy() {
-        return new ToastStyle(backgroundType, borderType, showLabel, iconSeparateLine, showCloseButton, paintTextColor, lineSize, promiseLabel, customIcon);
+        return new ToastStyle(borderStyle.copy(), backgroundType, showLabel, iconSeparateLine, showCloseButton, paintTextColor, promiseLabel, customIcon);
     }
 
     public enum BackgroundType {
         DEFAULT, GRADIENT, NONE
-    }
-
-    public enum BorderType {
-        OUTLINE, TRAILING_LINE, LEADING_LINE, TOP_LINE, BOTTOM_LINE, NONE
     }
 }

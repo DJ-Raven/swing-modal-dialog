@@ -1,5 +1,32 @@
 # Changelog
 
+## [2.4.0]-SNAPSHOT
+
+### New features and improvements
+
+- Toast
+    - Add new `ToastBorderStyle`
+        - `borderType` default `BorderType.NONE`
+        - `round` default `10`
+        - `shadowSize` default `insets(0,0,10,10)`
+        - `shadowColor` default `null` (use `Popup.dropShadowColor` as the value)
+        - `shadowOpactity` default `-1` (use `Popup.dropShadowOpacity` as the value)
+        - `lineSize` default `3` (use when`borderType` as `TRAILING_LINE`, `LEADING_LINE`,`TOP_LINE` and `BOTTOM_LINE`)
+        - `borderWidth` default `1` (use when `borderType` as `OUTLINE`)
+        - `padding` default `insets(0,0,0,0)`
+    - Add new layout option `gap` by default `5`
+
+### Changed
+
+- Toast
+    - option `borderType` move from `ToastStyle` to `ToastBorderStyle`
+    - option `lineSize` move from `ToastStyle` to `ToastBorderStyle`
+
+### Demo
+
+- Dashboard form
+    - `TimeSeriesChart` add new `ChartStackedXYBarRenderer`
+
 ## [2.3.0] - 2025-01-21
 
 ### New features and improvements

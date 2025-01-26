@@ -1,6 +1,7 @@
 package raven.modal.option;
 
 import raven.modal.utils.DynamicSize;
+import raven.modal.utils.ModalUtils;
 
 import java.awt.*;
 
@@ -128,8 +129,8 @@ public class LayoutOption {
         return this;
     }
 
-    public LayoutOption setBackgroundPadding(int adding) {
-        this.backgroundPadding = new Insets(adding, adding, adding, adding);
+    public LayoutOption setBackgroundPadding(int padding) {
+        this.backgroundPadding = new Insets(padding, padding, padding, padding);
         return this;
     }
 
@@ -186,10 +187,6 @@ public class LayoutOption {
     }
 
     public LayoutOption copy() {
-        return new LayoutOption(horizontalLocation, location, copyInsets(margin), copyInsets(backgroundPadding), new DynamicSize(size), new DynamicSize(animateDistance), relativeToOwnerType, relativeToOwner, overflowAlignmentAuto, movable, animateScale, onTop);
-    }
-
-    private Insets copyInsets(Insets insets) {
-        return new Insets(insets.top, insets.left, insets.bottom, insets.right);
+        return new LayoutOption(horizontalLocation, location, ModalUtils.copyInsets(margin), ModalUtils.copyInsets(backgroundPadding), new DynamicSize(size), new DynamicSize(animateDistance), relativeToOwnerType, relativeToOwner, overflowAlignmentAuto, movable, animateScale, onTop);
     }
 }

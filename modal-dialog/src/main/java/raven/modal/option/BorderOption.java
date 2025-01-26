@@ -106,8 +106,7 @@ public class BorderOption {
     }
 
     public BorderOption copy() {
-        Insets newShadowSize = new Insets(shadowSize.top, shadowSize.left, shadowSize.bottom, shadowSize.right);
-        return new BorderOption(round, newShadowSize, shadowColor, shadowOpacity, borderWidth, borderColor);
+        return new BorderOption(round, ModalUtils.copyInsets(shadowSize), shadowColor, shadowOpacity, borderWidth, borderColor);
     }
 
     public boolean isBorderAble() {

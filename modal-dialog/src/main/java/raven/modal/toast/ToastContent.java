@@ -32,11 +32,13 @@ class ToastContent extends JComponent {
         try {
             if (toastData.getOption().getStyle().getBackgroundType() == ToastStyle.BackgroundType.GRADIENT) {
                 ToastPanel.ThemesData themesData = toastData.getThemes();
-
+                boolean ltr = getComponentOrientation().isLeftToRight();
                 // gradient paint base on the parent component
                 Rectangle rec = FlatUIUtils.addInsets(new Rectangle(0, 0, getWidth(), getHeight()), parent.getInsets());
                 Color color = ColorFunctions.mix(Color.decode(FlatLaf.isLafDark() ? themesData.getColors()[1] : themesData.getColors()[0]), parent.getBackground(), 0.3f);
-                g2.setPaint(new GradientPaint(rec.x, 0, color, (rec.x + rec.width) * 0.8f, 0, parent.getBackground()));
+                float start = ltr ? rec.x : (rec.x + rec.width) * 0.8f;
+                float end = ltr ? (rec.x + rec.width) * 0.8f : rec.x;
+                g2.setPaint(new GradientPaint(start, 0, color, end, 0, parent.getBackground()));
                 g2.fill(new Rectangle2D.Float(0, 0, getWidth(), getHeight()));
             } else {
                 g2.setColor(parent.getBackground());

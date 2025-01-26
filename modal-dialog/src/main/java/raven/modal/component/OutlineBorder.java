@@ -133,4 +133,12 @@ public class OutlineBorder extends FlatEmptyBorder {
     private Color getBackgroundColor() {
         return UIManager.getColor("Panel.background");
     }
+
+    public Insets getShadowSize() {
+        return new Insets(shadowSize.top, shadowSize.left, shadowSize.bottom, shadowSize.right);
+    }
+
+    public float getRound() {
+        return round;
+    }
 }
