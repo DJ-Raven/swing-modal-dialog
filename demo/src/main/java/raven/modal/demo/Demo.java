@@ -13,7 +13,7 @@ import java.awt.*;
 
 public class Demo extends JFrame {
 
-    public static final String DEMO_VERSION = "2.3.0";
+    public static final String DEMO_VERSION = "2.4.0-SNAPSHOT";
 
     public Demo() {
         init();
