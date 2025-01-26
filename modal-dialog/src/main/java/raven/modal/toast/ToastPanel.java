@@ -75,7 +75,7 @@ public class ToastPanel extends JPanel {
     public void updateUI() {
         super.updateUI();
         if (toastData != null && content != null) {
-            setBorder(new ToastBorder(content, toastData));
+            setBorder(toastData.getOption().getStyle().getBorderStyle().createBorder(content, toastData));
         }
     }
 
@@ -126,13 +126,13 @@ public class ToastPanel extends JPanel {
     }
 
     public ToastPanel createToastCustom(Component component) {
-        content = new ToastContent(new MigLayout(), toastData);
+        content = new ToastContent(new MigLayout(getLayoutInsets()), toastData);
         if (component instanceof ToastCustom) {
             ToastCustom toastCustom = (ToastCustom) component;
             toastCustom.initToastAction(getCustomAction());
         }
         content.add(component);
-        setBorder(new ToastBorder(content, toastData));
+        setBorder(toastData.getOption().getStyle().getBorderStyle().createBorder(content, toastData));
         installStyle(toastData.themes);
         add(content);
         return this;
@@ -171,6 +171,12 @@ public class ToastPanel extends JPanel {
         return promiseCallback;
     }
 
+    private String getLayoutInsets() {
+        Insets padding = toastData.getOption().getStyle().getBorderStyle().getPadding();
+        final int add = 7;
+        return String.format("insets %d %d %d %d", padding.top + add, padding.left + add, padding.bottom + add, padding.right + add);
+    }
+
     private String getLayoutColumn(ThemesData themesData) {
         String columnLayout;
         boolean isShowCloseButton = toastData.getOption().getStyle().isShowCloseButton();
@@ -189,12 +195,12 @@ public class ToastPanel extends JPanel {
     }
 
     private void installDefault(ThemesData themesData) {
-        content = new ToastContent(new MigLayout("filly", getLayoutColumn(themesData), "[center]"), toastData);
+        content = new ToastContent(new MigLayout("filly," + getLayoutInsets(), getLayoutColumn(themesData), "[center]"), toastData);
         content.add(createTextMessage());
         if (toastData.getOption().getStyle().isShowCloseButton()) {
             content.add(createCloseButton());
         }
-        setBorder(new ToastBorder(content, toastData));
+        setBorder(toastData.getOption().getStyle().getBorderStyle().createBorder(content, toastData));
         installStyle(themesData);
         add(content);
     }

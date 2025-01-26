@@ -4,7 +4,6 @@ import com.formdev.flatlaf.FlatClientProperties;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowStateListener;
 
 /**
  * @author Raven
@@ -23,22 +22,11 @@ public class ModalUtils {
         return Math.min(maxTopBottom, maxLeftRight);
     }
 
-    public static WindowStateListener installWindowStateListener(RootPaneContainer rootPane, WindowStateListener listener) {
-        Window window = SwingUtilities.getWindowAncestor(rootPane.getRootPane());
-        if (window != null) {
-            window.addWindowStateListener(listener);
-        }
-        return listener;
-    }
-
-    public static void uninstallWindowStateListener(RootPaneContainer rootPane, WindowStateListener listener) {
-        Window window = SwingUtilities.getWindowAncestor(rootPane.getRootPane());
-        if (window != null) {
-            window.removeWindowStateListener(listener);
-        }
-    }
-
     public static boolean isFullWindowContent(JRootPane rootPane) {
         return FlatClientProperties.clientPropertyBoolean(rootPane, FlatClientProperties.FULL_WINDOW_CONTENT, false);
+    }
+
+    public static Insets copyInsets(Insets insets) {
+        return new Insets(insets.top, insets.left, insets.bottom, insets.right);
     }
 }

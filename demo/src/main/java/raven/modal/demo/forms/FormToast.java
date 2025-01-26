@@ -9,6 +9,7 @@ import raven.modal.demo.system.Form;
 import raven.modal.demo.utils.SystemForm;
 import raven.modal.option.Location;
 import raven.modal.toast.ToastPromise;
+import raven.modal.toast.option.ToastBorderStyle;
 import raven.modal.toast.option.ToastLocation;
 import raven.modal.toast.option.ToastOption;
 import raven.modal.toast.option.ToastStyle;
@@ -293,7 +294,7 @@ public class FormToast extends Form {
         Location h = jrLeading.isSelected() ? Location.LEADING : jrTrailing.isSelected() ? Location.TRAILING : Location.CENTER;
         Location v = jrTop.isSelected() ? Location.TOP : Location.BOTTOM;
         ToastStyle.BackgroundType backgroundType = jrBackgroundDefault.isSelected() ? ToastStyle.BackgroundType.DEFAULT : jrBackgroundGradient.isSelected() ? ToastStyle.BackgroundType.GRADIENT : ToastStyle.BackgroundType.NONE;
-        ToastStyle.BorderType borderType = jrBorderOutline.isSelected() ? ToastStyle.BorderType.OUTLINE : jrBorderRightLine.isSelected() ? ToastStyle.BorderType.TRAILING_LINE : jrBorderLeftLine.isSelected() ? ToastStyle.BorderType.LEADING_LINE : jrBorderTopLine.isSelected() ? ToastStyle.BorderType.TOP_LINE : jrBorderBottomLine.isSelected() ? ToastStyle.BorderType.BOTTOM_LINE : ToastStyle.BorderType.NONE;
+        ToastBorderStyle.BorderType borderType = jrBorderOutline.isSelected() ? ToastBorderStyle.BorderType.OUTLINE : jrBorderRightLine.isSelected() ? ToastBorderStyle.BorderType.TRAILING_LINE : jrBorderLeftLine.isSelected() ? ToastBorderStyle.BorderType.LEADING_LINE : jrBorderTopLine.isSelected() ? ToastBorderStyle.BorderType.TOP_LINE : jrBorderBottomLine.isSelected() ? ToastBorderStyle.BorderType.BOTTOM_LINE : ToastBorderStyle.BorderType.NONE;
         option.setAnimationEnabled(chAnimation.isSelected())
                 .setPauseDelayOnHover(chPauseDelayOnHover.isSelected())
                 .setAutoClose(chAutoClose.isSelected())
@@ -304,12 +305,14 @@ public class FormToast extends Form {
                 .setLocation(ToastLocation.from(h, v))
                 .setRelativeToOwner(chRelativeToOwner.isSelected());
         option.getStyle().setBackgroundType(backgroundType)
-                .setBorderType(borderType)
                 .setShowLabel(chShowLabel.isSelected())
                 .setIconSeparateLine(chIconSeparateLine.isSelected())
                 .setShowCloseButton(chShowCloseButton.isSelected())
                 .setPaintTextColor(chPaintTextColor.isSelected())
-                .setPromiseLabel("Saving...");
+                .setPromiseLabel("Saving...")
+                .getBorderStyle()
+                .setBorderType(borderType)
+        ;
         return option;
     }
 
