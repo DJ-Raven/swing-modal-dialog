@@ -83,12 +83,13 @@ public class ToastLayout implements LayoutManager {
         }
         boolean isVerticalDirection = layoutOption.getDirection().isVerticalDirection();
         double y;
+        float gap = UIScale.scale((float) layoutOption.getGap()) * previousToast.getAnimate();
         if (layoutOption.getDirection().isToBottomDirection()) {
-            int h = previousToast.getHeight();
+            float h = previousToast.getHeight();
             if (!isVerticalDirection) {
                 h *= previousToast.getAnimate();
             }
-            y = rec.y + previousToast.getY() + h - (baseMargin.top + ly);
+            y = rec.y + previousToast.getY() + h - (baseMargin.top + ly) + gap;
         } else {
             float h;
             if (!isVerticalDirection) {
@@ -96,7 +97,7 @@ public class ToastLayout implements LayoutManager {
             } else {
                 h = rec.height * (animate);
             }
-            y = previousToast.getY() - h;
+            y = previousToast.getY() - h - gap;
         }
         return (int) y;
     }

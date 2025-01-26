@@ -3,6 +3,7 @@ package raven.modal.toast.option;
 import raven.modal.layout.OptionLayoutUtils;
 import raven.modal.option.LayoutOption;
 import raven.modal.utils.DynamicSize;
+import raven.modal.utils.ModalUtils;
 
 import java.awt.*;
 
@@ -35,6 +36,10 @@ public class ToastLayoutOption {
         return overflowAlignmentAuto;
     }
 
+    public int getGap() {
+        return gap;
+    }
+
     public ToastDirection getDirection() {
         if (direction != null) {
             return direction;
@@ -42,13 +47,14 @@ public class ToastLayoutOption {
         return location.getDirection();
     }
 
-    private ToastLayoutOption(ToastLocation location, DynamicSize locationSize, ToastDirection direction, RelativeToOwnerType relativeToOwnerType, boolean relativeToOwner, boolean overflowAlignmentAuto, Insets margin) {
+    private ToastLayoutOption(ToastLocation location, DynamicSize locationSize, ToastDirection direction, RelativeToOwnerType relativeToOwnerType, boolean relativeToOwner, boolean overflowAlignmentAuto, int gap, Insets margin) {
         this.location = location;
         this.locationSize = locationSize;
         this.direction = direction;
         this.relativeToOwnerType = relativeToOwnerType;
         this.relativeToOwner = relativeToOwner;
         this.overflowAlignmentAuto = overflowAlignmentAuto;
+        this.gap = gap;
         this.margin = margin;
     }
 
@@ -61,6 +67,7 @@ public class ToastLayoutOption {
     private RelativeToOwnerType relativeToOwnerType = RelativeToOwnerType.RELATIVE_CONTAINED;
     private boolean relativeToOwner;
     private boolean overflowAlignmentAuto;
+    private int gap = 5;
     private Insets margin = new Insets(7, 7, 7, 7);
 
     public ToastLayoutOption setLocation(ToastLocation location) {
@@ -91,6 +98,11 @@ public class ToastLayoutOption {
 
     public ToastLayoutOption setOverflowAlignmentAuto(boolean overflowAlignmentAuto) {
         this.overflowAlignmentAuto = overflowAlignmentAuto;
+        return this;
+    }
+
+    public ToastLayoutOption setGap(int gap) {
+        this.gap = gap;
         return this;
     }
 
@@ -135,10 +147,6 @@ public class ToastLayoutOption {
     }
 
     public ToastLayoutOption copy() {
-        return new ToastLayoutOption(location, locationSize, direction, relativeToOwnerType, relativeToOwner, overflowAlignmentAuto, copyInsets(margin));
-    }
-
-    private Insets copyInsets(Insets insets) {
-        return new Insets(insets.top, insets.left, insets.bottom, insets.right);
+        return new ToastLayoutOption(location, locationSize, direction, relativeToOwnerType, relativeToOwner, overflowAlignmentAuto, gap, ModalUtils.copyInsets(margin));
     }
 }
