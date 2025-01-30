@@ -84,7 +84,7 @@ public class TimeSeriesChart extends DefaultChartPanel {
 
         // annotation
         MultiXYTextAnnotation annotation = (MultiXYTextAnnotation) plot.getAnnotations().get(0);
-        annotation.setBackgroundPaint(background);
+        annotation.setBackgroundPaint(ChartDrawingSupplier.alpha(background, 0.7f));
         annotation.setDefaultPaint(foreground);
         annotation.setFont(font);
         annotation.setOutlinePaint(border);
