@@ -34,6 +34,8 @@ public class RollingIcon extends PromiseIcon {
         Graphics2D g2 = (Graphics2D) g.create();
         FlatUIUtils.setRenderingHints(g2);
 
+        g2.translate(x, y);
+
         Area area = new Area(new Ellipse2D.Float(margin, margin, width, height));
         area.subtract(new Area(new Ellipse2D.Float(lx, ly, w, h)));
         g2.setColor(UIManager.getColor("Component.borderColor"));
