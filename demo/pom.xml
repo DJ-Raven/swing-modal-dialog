@@ -33,7 +33,11 @@
             <artifactId>modal-dialog</artifactId>
             <version>${version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>${parent.groupId}</groupId>
+            <artifactId>raven-flatlaf-themes</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>io.github.dj-raven</groupId>
             <artifactId>swing-datetime-picker</artifactId>
