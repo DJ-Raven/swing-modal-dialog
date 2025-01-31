@@ -290,7 +290,7 @@ public class ToastPanel extends JPanel {
     }
 
     private PromiseIcon createIconPromise(ToastPromise promise) {
-        return new RollingIcon(promise, 24);
+        return new RollingIcon(promise, 20);
     }
 
     private Icon createIcon(ThemesData themesData) {

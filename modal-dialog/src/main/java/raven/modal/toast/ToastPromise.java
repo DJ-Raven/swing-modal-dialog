@@ -5,9 +5,10 @@ import raven.modal.Toast;
 /**
  * @author Raven
  */
-public abstract class ToastPromise {
+public abstract class ToastPromise implements PromiseIcon.PromiseIconAction {
 
-    protected boolean isDone() {
+    @Override
+    public boolean isDone() {
         return done;
     }
 
@@ -57,6 +58,7 @@ public abstract class ToastPromise {
 
     public abstract static class PromiseCallback {
         public abstract void update(String message);
+
         public abstract void done(Toast.Type type, String message);
     }
 }
