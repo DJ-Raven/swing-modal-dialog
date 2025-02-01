@@ -91,7 +91,7 @@ public class Test extends JFrame {
 
     private JPanel createTextField() {
         JPanel panel = new JPanel(new MigLayout("wrap,gap 10", "[trailing][200,fill]"));
-        panel.setBorder(new TitledBorder("Button"));
+        panel.setBorder(new TitledBorder("Input"));
 
         // component
         JTextField txtDefault = new JTextField();
@@ -102,7 +102,9 @@ public class Test extends JFrame {
         JTextField txtSuccess = new JTextField();
         JTextField txtWarning = new JTextField();
         JTextField txtDanger = new JTextField();
-        JTextField txtGhost = new JTextField();
+        JTextArea txtArea = new JTextArea();
+        txtArea.setLineWrap(true);
+        JScrollPane scrollPane = new JScrollPane(txtArea);
 
         // style class
         ThemesStyles.build().color(ThemesStyles.Color.DEFAULT).apply(txtDefault);
@@ -113,7 +115,7 @@ public class Test extends JFrame {
         ThemesStyles.build().color(ThemesStyles.Color.SUCCESS).apply(txtSuccess);
         ThemesStyles.build().color(ThemesStyles.Color.WARNING).apply(txtWarning);
         ThemesStyles.build().color(ThemesStyles.Color.DANGER).apply(txtDanger);
-        ThemesStyles.build().color(ThemesStyles.Color.GHOST).apply(txtGhost);
+        ThemesStyles.build().color(ThemesStyles.Color.PRIMARY).apply(scrollPane);
 
         panel.add(new JLabel("Default style"));
         panel.add(txtDefault);
@@ -131,6 +133,9 @@ public class Test extends JFrame {
         panel.add(txtWarning);
         panel.add(new JLabel("Danger style"));
         panel.add(txtDanger);
+
+        panel.add(new JLabel("Text Area"));
+        panel.add(scrollPane, "height 200");
         return panel;
     }
 
