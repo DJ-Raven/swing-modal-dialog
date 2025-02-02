@@ -76,14 +76,16 @@ public class Test extends JFrame {
         panel.add(cmdWarning);
         panel.add(cmdDanger);
         panel.add(cmdGhost);
+
         main.add(panel);
         main.add(createLoadingButtonComponent());
+
         return main;
     }
 
     private JPanel createLoadingButtonComponent() {
         JPanel panel = new JPanel(new MigLayout("gap 10"));
-        panel.setBorder(new TitledBorder("Loading"));
+        panel.setBorder(new TitledBorder("Loading and ToggleButton"));
 
         // component
         LoadingButton cmdLoading = new LoadingButton("Loading Button");
@@ -94,11 +96,31 @@ public class Test extends JFrame {
                 cmdLoading.start();
             }
         });
+        JToggleButton cmdDefault = new JToggleButton("Default");
+        JToggleButton cmdNeutral = new JToggleButton("Neutral");
+        JToggleButton cmdAccent = new JToggleButton("Accent");
+        JToggleButton cmdPrimary = new JToggleButton("Primary");
+        JToggleButton cmdInfo = new JToggleButton("Secondary");
+        JToggleButton cmdGhost = new JToggleButton("Ghost");
 
         // style class
         ThemesStyles.build().color(ThemesStyles.Color.NEUTRAL).apply(cmdLoading);
 
+        ThemesStyles.build().color(ThemesStyles.Color.DEFAULT).apply(cmdDefault);
+        ThemesStyles.build().color(ThemesStyles.Color.NEUTRAL).apply(cmdNeutral);
+        ThemesStyles.build().color(ThemesStyles.Color.ACCENT).apply(cmdAccent);
+        ThemesStyles.build().color(ThemesStyles.Color.PRIMARY).apply(cmdPrimary);
+        ThemesStyles.build().color(ThemesStyles.Color.INFO).apply(cmdInfo);
+        ThemesStyles.build().color(ThemesStyles.Color.GHOST).apply(cmdGhost);
+
         panel.add(cmdLoading);
+        panel.add(cmdDefault);
+        panel.add(cmdNeutral);
+        panel.add(cmdAccent);
+        panel.add(cmdPrimary);
+        panel.add(cmdInfo);
+        panel.add(cmdGhost);
+
         return panel;
     }
 
