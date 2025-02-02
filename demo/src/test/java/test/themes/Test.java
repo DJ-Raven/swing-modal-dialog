@@ -44,6 +44,7 @@ public class Test extends JFrame {
 
         // component
         JButton cmdDefault = new JButton("Default");
+        JButton cmdNeutral = new JButton("Neutral");
         JButton cmdAccent = new JButton("Accent");
         JButton cmdPrimary = new JButton("Primary");
         JButton cmdSecondary = new JButton("Secondary");
@@ -55,6 +56,7 @@ public class Test extends JFrame {
 
         // style class
         ThemesStyles.build().color(ThemesStyles.Color.DEFAULT).apply(cmdDefault);
+        ThemesStyles.build().color(ThemesStyles.Color.NEUTRAL).apply(cmdNeutral);
         ThemesStyles.build().color(ThemesStyles.Color.ACCENT).apply(cmdAccent);
         ThemesStyles.build().color(ThemesStyles.Color.PRIMARY).apply(cmdPrimary);
         ThemesStyles.build().color(ThemesStyles.Color.SECONDARY).apply(cmdSecondary);
@@ -65,6 +67,7 @@ public class Test extends JFrame {
         ThemesStyles.build().color(ThemesStyles.Color.GHOST).apply(cmdGhost);
 
         panel.add(cmdDefault);
+        panel.add(cmdNeutral);
         panel.add(cmdAccent);
         panel.add(cmdPrimary);
         panel.add(cmdSecondary);
@@ -91,8 +94,9 @@ public class Test extends JFrame {
                 cmdLoading.start();
             }
         });
+
         // style class
-        ThemesStyles.build().color(ThemesStyles.Color.DEFAULT).apply(cmdLoading);
+        ThemesStyles.build().color(ThemesStyles.Color.NEUTRAL).apply(cmdLoading);
 
         panel.add(cmdLoading);
         return panel;
@@ -105,6 +109,7 @@ public class Test extends JFrame {
 
         // component
         JTextField txtDefault = new JTextField();
+        JTextField txtNeutral = new JTextField();
         JTextField txtAccent = new JTextField();
         JTextField txtPrimary = new JTextField();
         JTextField txtSecondary = new JTextField();
@@ -116,6 +121,7 @@ public class Test extends JFrame {
 
         // style class
         ThemesStyles.build().color(ThemesStyles.Color.DEFAULT).apply(txtDefault);
+        ThemesStyles.build().color(ThemesStyles.Color.NEUTRAL).apply(txtNeutral);
         ThemesStyles.build().color(ThemesStyles.Color.ACCENT).apply(txtAccent);
         ThemesStyles.build().color(ThemesStyles.Color.PRIMARY).apply(txtPrimary);
         ThemesStyles.build().color(ThemesStyles.Color.SECONDARY).apply(txtSecondary);
@@ -127,6 +133,8 @@ public class Test extends JFrame {
 
         panel.add(new JLabel("Default style"));
         panel.add(txtDefault);
+        panel.add(new JLabel("Neutral style"));
+        panel.add(txtNeutral);
         panel.add(new JLabel("Accent style"));
         panel.add(txtAccent);
         panel.add(new JLabel("Primary style"));
@@ -181,6 +189,7 @@ public class Test extends JFrame {
 
         // component
         JComboBox comboDefault = new JComboBox(createComboBoxItems());
+        JComboBox comboNeutral = new JComboBox(createComboBoxItems());
         JComboBox comboAccent = new JComboBox(createComboBoxItems());
         JComboBox comboPrimary = new JComboBox(createComboBoxItems());
         JComboBox comboSecondary = new JComboBox(createComboBoxItems());
@@ -191,9 +200,11 @@ public class Test extends JFrame {
         JComboBox comboGhost = new JComboBox(createComboBoxItems());
         comboWarning.setEditable(true);
         comboDanger.setEditable(true);
+        comboGhost.setEditable(true);
 
         // style class
         ThemesStyles.build().color(ThemesStyles.Color.DEFAULT).apply(comboDefault);
+        ThemesStyles.build().color(ThemesStyles.Color.NEUTRAL).apply(comboNeutral);
         ThemesStyles.build().color(ThemesStyles.Color.ACCENT).apply(comboAccent);
         ThemesStyles.build().color(ThemesStyles.Color.PRIMARY).apply(comboPrimary);
         ThemesStyles.build().color(ThemesStyles.Color.SECONDARY).apply(comboSecondary);
@@ -205,6 +216,8 @@ public class Test extends JFrame {
 
         panel.add(new JLabel("Default style"));
         panel.add(comboDefault);
+        panel.add(new JLabel("Neutral style"));
+        panel.add(comboNeutral);
         panel.add(new JLabel("Accent style"));
         panel.add(comboAccent);
         panel.add(new JLabel("Primary style"));
@@ -228,7 +241,7 @@ public class Test extends JFrame {
     }
 
     private String[] createComboBoxItems() {
-        return new String[]{"Default style", "Accent style", "Primary style", "Secondary style", "Info style", "Success style", "Warning style", "Danger style", "Ghost style"};
+        return new String[]{"Default style", "Neutral style", "Accent style", "Primary style", "Secondary style", "Info style", "Success style", "Warning style", "Danger style", "Ghost style"};
     }
 
     public static void main(String[] args) {

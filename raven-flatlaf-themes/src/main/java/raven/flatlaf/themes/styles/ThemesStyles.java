@@ -33,6 +33,7 @@ public class ThemesStyles {
 
     public enum Color implements StyleValue {
         DEFAULT("default"),
+        NEUTRAL("neutral"),
         ACCENT("accent"),
         PRIMARY("primary"),
         SECONDARY("secondary"),
