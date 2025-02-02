@@ -114,22 +114,29 @@ public class ThemesStyles {
             }
 
             for (JComponent component : components) {
+                String borderStyle = getStyleValue(component, Border.KEY, border);
                 String styles[] = {
                         "style",
                         getStyleValue(component, Color.KEY, color),
-                        getStyleValue(component, Border.KEY, border)
+                        borderStyle
                 };
                 component.putClientProperty(FlatClientProperties.STYLE_CLASS, styles);
-                adjustComponent(component);
+                adjustComponent(component, borderStyle);
             }
         }
 
-        private void adjustComponent(JComponent component) {
+        private void adjustComponent(JComponent component, String borderStyle) {
             if (component instanceof JScrollPane) {
                 MigLayoutVisualPadding.uninstall(component);
-                MigLayoutVisualPadding.install(component, new Insets(2, 0, 2, 0));
-                component.putClientProperty(FlatClientProperties.STYLE, "" +
-                        "viewportBorder:3,-2,3,-2");
+                MigLayoutVisualPadding.install(component, new Insets(2, 2, 2, 2));
+                boolean outline = borderStyle == Border.OUTLINE.getValue();
+                if (outline) {
+                    component.putClientProperty(FlatClientProperties.STYLE, "" +
+                            "viewportBorder:3,-2,3,-2");
+                } else {
+                    component.putClientProperty(FlatClientProperties.STYLE, "" +
+                            "viewportBorder:3,0,3,0");
+                }
             }
         }
     }
