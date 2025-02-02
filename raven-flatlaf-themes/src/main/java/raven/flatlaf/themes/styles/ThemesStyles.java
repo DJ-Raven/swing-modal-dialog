@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.ui.MigLayoutVisualPadding;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * @author Raven
@@ -113,12 +114,12 @@ public class ThemesStyles {
             }
 
             for (JComponent component : components) {
-                String style = ""
-                        + getStyleValue(component, Color.KEY, color) + " "
-                        + getStyleValue(component, Border.KEY, border);
-                if (!style.isEmpty()) {
-                    component.putClientProperty(FlatClientProperties.STYLE_CLASS, style);
-                }
+                String styles[] = {
+                        "style",
+                        getStyleValue(component, Color.KEY, color),
+                        getStyleValue(component, Border.KEY, border)
+                };
+                component.putClientProperty(FlatClientProperties.STYLE_CLASS, styles);
                 adjustComponent(component);
             }
         }
@@ -126,6 +127,7 @@ public class ThemesStyles {
         private void adjustComponent(JComponent component) {
             if (component instanceof JScrollPane) {
                 MigLayoutVisualPadding.uninstall(component);
+                MigLayoutVisualPadding.install(component, new Insets(2, 0, 2, 0));
                 component.putClientProperty(FlatClientProperties.STYLE, "" +
                         "viewportBorder:3,-2,3,-2");
             }
