@@ -63,7 +63,7 @@ public class ThemesStyles {
 
     public enum Border implements StyleValue {
         DEFAULT("borderDefault"),
-        OUTLINE("borderOutline");
+        NONE("borderNone");
 
         public static String KEY = "border";
         private final String value;
@@ -135,7 +135,7 @@ public class ThemesStyles {
             if (component instanceof JScrollPane) {
                 MigLayoutVisualPadding.uninstall(component);
                 MigLayoutVisualPadding.install(component, new Insets(2, 2, 2, 2));
-                boolean outline = borderStyle == Border.OUTLINE.getValue();
+                boolean outline = borderStyle == Border.DEFAULT.getValue();
                 if (outline) {
                     component.putClientProperty(FlatClientProperties.STYLE, "" +
                             "viewportBorder:3,-2,3,-2");

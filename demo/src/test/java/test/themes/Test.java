@@ -357,7 +357,7 @@ public class Test extends JFrame {
         FlatRobotoFont.install();
 
         DefaultThemesStyles defaultThemesStyles = new DefaultThemesStyles();
-        defaultThemesStyles.setDefaultStyleClass(ThemesStyles.Border.OUTLINE);
+        // defaultThemesStyles.setDefaultStyleClass(ThemesStyles.Border.NONE);
         RavenFlatLafThemes.install(defaultThemesStyles);
 
         FlatLaf.registerCustomDefaultsSource("raven.modal.demo.themes");
