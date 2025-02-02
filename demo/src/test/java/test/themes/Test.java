@@ -79,6 +79,8 @@ public class Test extends JFrame {
 
         main.add(panel);
         main.add(createLoadingButtonComponent());
+        main.add(createRadioButton());
+        main.add(createCheckBox());
 
         return main;
     }
@@ -119,6 +121,90 @@ public class Test extends JFrame {
         panel.add(cmdAccent);
         panel.add(cmdPrimary);
         panel.add(cmdInfo);
+        panel.add(cmdGhost);
+
+        return panel;
+    }
+
+    private JPanel createRadioButton() {
+        JPanel panel = new JPanel(new MigLayout("gap 10"));
+        panel.setBorder(new TitledBorder("Button"));
+
+        // component
+        JRadioButton cmdDefault = new JRadioButton("Default");
+        JRadioButton cmdNeutral = new JRadioButton("Neutral");
+        JRadioButton cmdAccent = new JRadioButton("Accent");
+        JRadioButton cmdPrimary = new JRadioButton("Primary");
+        JRadioButton cmdSecondary = new JRadioButton("Secondary");
+        JRadioButton cmdInfo = new JRadioButton("Secondary");
+        JRadioButton cmdSuccess = new JRadioButton("Success");
+        JRadioButton cmdWarning = new JRadioButton("Warning");
+        JRadioButton cmdDanger = new JRadioButton("Danger");
+        JRadioButton cmdGhost = new JRadioButton("Ghost");
+
+        // style class
+        ThemesStyles.build().color(ThemesStyles.Color.DEFAULT).apply(cmdDefault);
+        ThemesStyles.build().color(ThemesStyles.Color.NEUTRAL).apply(cmdNeutral);
+        ThemesStyles.build().color(ThemesStyles.Color.ACCENT).apply(cmdAccent);
+        ThemesStyles.build().color(ThemesStyles.Color.PRIMARY).apply(cmdPrimary);
+        ThemesStyles.build().color(ThemesStyles.Color.SECONDARY).apply(cmdSecondary);
+        ThemesStyles.build().color(ThemesStyles.Color.INFO).apply(cmdInfo);
+        ThemesStyles.build().color(ThemesStyles.Color.SUCCESS).apply(cmdSuccess);
+        ThemesStyles.build().color(ThemesStyles.Color.WARNING).apply(cmdWarning);
+        ThemesStyles.build().color(ThemesStyles.Color.DANGER).apply(cmdDanger);
+        ThemesStyles.build().color(ThemesStyles.Color.GHOST).apply(cmdGhost);
+
+        panel.add(cmdDefault);
+        panel.add(cmdNeutral);
+        panel.add(cmdAccent);
+        panel.add(cmdPrimary);
+        panel.add(cmdSecondary);
+        panel.add(cmdInfo);
+        panel.add(cmdSuccess);
+        panel.add(cmdWarning);
+        panel.add(cmdDanger);
+        panel.add(cmdGhost);
+
+        return panel;
+    }
+
+    private JPanel createCheckBox() {
+        JPanel panel = new JPanel(new MigLayout("gap 10"));
+        panel.setBorder(new TitledBorder("Button"));
+
+        // component
+        JCheckBox cmdDefault = new JCheckBox("Default");
+        JCheckBox cmdNeutral = new JCheckBox("Neutral");
+        JCheckBox cmdAccent = new JCheckBox("Accent");
+        JCheckBox cmdPrimary = new JCheckBox("Primary");
+        JCheckBox cmdSecondary = new JCheckBox("Secondary");
+        JCheckBox cmdInfo = new JCheckBox("Secondary");
+        JCheckBox cmdSuccess = new JCheckBox("Success");
+        JCheckBox cmdWarning = new JCheckBox("Warning");
+        JCheckBox cmdDanger = new JCheckBox("Danger");
+        JCheckBox cmdGhost = new JCheckBox("Ghost");
+
+        // style class
+        ThemesStyles.build().color(ThemesStyles.Color.DEFAULT).apply(cmdDefault);
+        ThemesStyles.build().color(ThemesStyles.Color.NEUTRAL).apply(cmdNeutral);
+        ThemesStyles.build().color(ThemesStyles.Color.ACCENT).apply(cmdAccent);
+        ThemesStyles.build().color(ThemesStyles.Color.PRIMARY).apply(cmdPrimary);
+        ThemesStyles.build().color(ThemesStyles.Color.SECONDARY).apply(cmdSecondary);
+        ThemesStyles.build().color(ThemesStyles.Color.INFO).apply(cmdInfo);
+        ThemesStyles.build().color(ThemesStyles.Color.SUCCESS).apply(cmdSuccess);
+        ThemesStyles.build().color(ThemesStyles.Color.WARNING).apply(cmdWarning);
+        ThemesStyles.build().color(ThemesStyles.Color.DANGER).apply(cmdDanger);
+        ThemesStyles.build().color(ThemesStyles.Color.GHOST).apply(cmdGhost);
+
+        panel.add(cmdDefault);
+        panel.add(cmdNeutral);
+        panel.add(cmdAccent);
+        panel.add(cmdPrimary);
+        panel.add(cmdSecondary);
+        panel.add(cmdInfo);
+        panel.add(cmdSuccess);
+        panel.add(cmdWarning);
+        panel.add(cmdDanger);
         panel.add(cmdGhost);
 
         return panel;

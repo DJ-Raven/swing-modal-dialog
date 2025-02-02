@@ -116,14 +116,19 @@ public class ThemesStyles {
 
             for (JComponent component : components) {
                 String borderStyle = getStyleValue(component, Border.KEY, border);
+                String prefix = isIcon(component) ? "icon." : "";
                 String styles[] = {
-                        "style",
-                        getStyleValue(component, Color.KEY, color),
-                        borderStyle
+                        prefix + "style",
+                        prefix + getStyleValue(component, Color.KEY, color),
+                        prefix + borderStyle
                 };
                 component.putClientProperty(FlatClientProperties.STYLE_CLASS, styles);
                 adjustComponent(component, borderStyle);
             }
+        }
+
+        private boolean isIcon(JComponent component) {
+            return component instanceof JRadioButton || component instanceof JCheckBox;
         }
 
         private void adjustComponent(JComponent component, String borderStyle) {
