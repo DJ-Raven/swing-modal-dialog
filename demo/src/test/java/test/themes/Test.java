@@ -271,6 +271,8 @@ public class Test extends JFrame {
         panel.setBorder(new TitledBorder("Other Input"));
 
         JTextField txtDefault = new JTextField();
+        JFormattedTextField txtFormatted = new JFormattedTextField();
+        JFormattedTextField txtFormattedGhost = new JFormattedTextField();
         JPasswordField password = new JPasswordField();
         JSpinner spinner = new JSpinner();
         JSpinner spinnerGhost = new JSpinner();
@@ -279,18 +281,22 @@ public class Test extends JFrame {
         JScrollPane scrollPane = new JScrollPane(txtArea);
 
         // style class
-        ThemesStyles.build().color(ThemesStyles.Color.DEFAULT).apply(txtDefault, scrollPane);
+        ThemesStyles.build().color(ThemesStyles.Color.DEFAULT).apply(txtDefault, scrollPane, txtFormatted);
         ThemesStyles.build().color(ThemesStyles.Color.SECONDARY).apply(password, spinner);
-        ThemesStyles.build().color(ThemesStyles.Color.GHOST).apply(password, spinnerGhost);
+        ThemesStyles.build().color(ThemesStyles.Color.GHOST).apply(password, spinnerGhost,txtFormattedGhost);
 
         panel.add(new JLabel("TextField"));
         panel.add(txtDefault);
-        panel.add(new JLabel("Password"));
+        panel.add(new JLabel("Formatted"));
+        panel.add(txtFormatted);
+        panel.add(new JLabel("Formatted ghost"));
+        panel.add(txtFormattedGhost);
+        panel.add(new JLabel("Password ghost"));
         panel.add(password);
         panel.add(new JLabel("Spinner"));
         panel.add(spinner);
 
-        panel.add(new JLabel("Spinner Ghost"));
+        panel.add(new JLabel("Spinner ghost"));
         panel.add(spinnerGhost);
 
         panel.add(new JLabel("TextArea"));
