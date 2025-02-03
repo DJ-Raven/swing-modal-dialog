@@ -272,18 +272,27 @@ public class Test extends JFrame {
 
         JTextField txtDefault = new JTextField();
         JPasswordField password = new JPasswordField();
+        JSpinner spinner = new JSpinner();
+        JSpinner spinnerGhost = new JSpinner();
         JTextArea txtArea = new JTextArea();
         txtArea.setLineWrap(true);
         JScrollPane scrollPane = new JScrollPane(txtArea);
 
         // style class
         ThemesStyles.build().color(ThemesStyles.Color.DEFAULT).apply(txtDefault, scrollPane);
-        ThemesStyles.build().color(ThemesStyles.Color.SECONDARY).apply(password);
+        ThemesStyles.build().color(ThemesStyles.Color.SECONDARY).apply(password, spinner);
+        ThemesStyles.build().color(ThemesStyles.Color.GHOST).apply(password, spinnerGhost);
 
         panel.add(new JLabel("TextField"));
         panel.add(txtDefault);
         panel.add(new JLabel("Password"));
         panel.add(password);
+        panel.add(new JLabel("Spinner"));
+        panel.add(spinner);
+
+        panel.add(new JLabel("Spinner Ghost"));
+        panel.add(spinnerGhost);
+
         panel.add(new JLabel("TextArea"));
         panel.add(scrollPane, "height 200");
 
