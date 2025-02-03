@@ -20,7 +20,7 @@ public class Test extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(new Dimension(1000, 768));
         setLocationRelativeTo(null);
-        setLayout(new MigLayout("wrap,al center top,fill", "fill", "fill"));
+        setLayout(new MigLayout("wrap,al center top,fill", "fill", "[fill][grow 0]"));
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Button", createButton());
@@ -28,6 +28,7 @@ public class Test extends JFrame {
         tabbedPane.addTab("ComboBox", createComboBox());
         tabbedPane.addTab("Themes", createThemePanel());
         add(tabbedPane);
+        add(createControlBar(tabbedPane));
     }
 
     private JPanel createThemePanel() {
@@ -276,9 +277,8 @@ public class Test extends JFrame {
         JScrollPane scrollPane = new JScrollPane(txtArea);
 
         // style class
-        ThemesStyles.build().color(ThemesStyles.Color.DEFAULT).apply(txtDefault);
+        ThemesStyles.build().color(ThemesStyles.Color.DEFAULT).apply(txtDefault, scrollPane);
         ThemesStyles.build().color(ThemesStyles.Color.SECONDARY).apply(password);
-        ThemesStyles.build().color(ThemesStyles.Color.DANGER).apply(scrollPane);
 
         panel.add(new JLabel("TextField"));
         panel.add(txtDefault);
@@ -350,6 +350,46 @@ public class Test extends JFrame {
 
     private String[] createComboBoxItems() {
         return new String[]{"Default style", "Neutral style", "Accent style", "Primary style", "Secondary style", "Info style", "Success style", "Warning style", "Danger style", "Ghost style"};
+    }
+
+    private JPanel createControlBar(JTabbedPane tabbed) {
+        JPanel panel = new JPanel(new MigLayout());
+        JCheckBox chEnabled = new JCheckBox("Enabled", true);
+        chEnabled.addActionListener(e -> {
+            boolean enabled = chEnabled.isSelected();
+            enabledDisable(tabbed, enabled);
+            tabbed.repaint();
+        });
+        tabbed.repaint();
+        panel.add(chEnabled);
+        return panel;
+    }
+
+    private void enabledDisable(Container container, boolean enabled) {
+        for (Component c : container.getComponents()) {
+            if (c instanceof JPanel) {
+                enabledDisable((JPanel) c, enabled);
+                continue;
+            }
+
+            c.setEnabled(enabled);
+
+            if (c instanceof JScrollPane) {
+                Component view = ((JScrollPane) c).getViewport().getView();
+                if (view != null)
+                    view.setEnabled(enabled);
+            } else if (c instanceof JTabbedPane) {
+                JTabbedPane tabPane = (JTabbedPane) c;
+                int tabCount = tabPane.getTabCount();
+                for (int i = 0; i < tabCount; i++) {
+                    Component tab = tabPane.getComponentAt(i);
+                    if (tab != null)
+                        tab.setEnabled(enabled);
+                }
+            }
+            if (c instanceof JToolBar)
+                enabledDisable((JToolBar) c, enabled);
+        }
     }
 
     public static void main(String[] args) {
