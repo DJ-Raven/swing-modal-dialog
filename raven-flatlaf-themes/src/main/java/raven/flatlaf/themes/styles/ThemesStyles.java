@@ -116,7 +116,7 @@ public class ThemesStyles {
 
             for (JComponent component : components) {
                 String borderStyle = getStyleValue(component, Border.KEY, border);
-                String prefix = isIcon(component) ? "icon." : "";
+                String prefix = getPrefix(component);
                 String styles[] = {
                         prefix + "style",
                         prefix + getStyleValue(component, Color.KEY, color),
@@ -127,8 +127,21 @@ public class ThemesStyles {
             }
         }
 
+        private String getPrefix(JComponent component) {
+            if (isIcon(component)) {
+                return "icon.";
+            } else if (isUnSupportBorder(component)) {
+                return "noBorder.";
+            }
+            return "";
+        }
+
         private boolean isIcon(JComponent component) {
             return component instanceof JRadioButton || component instanceof JCheckBox;
+        }
+
+        private boolean isUnSupportBorder(JComponent component) {
+            return component instanceof JList || component instanceof JTextArea || component instanceof JTable;
         }
 
         private void adjustComponent(JComponent component, String borderStyle) {

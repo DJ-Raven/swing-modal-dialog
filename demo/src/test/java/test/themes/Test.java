@@ -26,6 +26,8 @@ public class Test extends JFrame {
         tabbedPane.addTab("Button", createButton());
         tabbedPane.addTab("TextField", createTextField());
         tabbedPane.addTab("ComboBox", createComboBox());
+        tabbedPane.addTab("Data Component", createDataComponent());
+
         tabbedPane.addTab("Themes", createThemePanel());
         add(tabbedPane);
         add(createControlBar(tabbedPane));
@@ -277,13 +279,15 @@ public class Test extends JFrame {
         JSpinner spinner = new JSpinner();
         JSpinner spinnerGhost = new JSpinner();
         JTextArea txtArea = new JTextArea();
+        JTextArea txtAreaGhost = new JTextArea();
         txtArea.setLineWrap(true);
         JScrollPane scrollPane = new JScrollPane(txtArea);
+        JScrollPane scrollPaneGhost = new JScrollPane(txtAreaGhost);
 
         // style class
         ThemesStyles.build().color(ThemesStyles.Color.DEFAULT).apply(txtDefault, scrollPane, txtFormatted);
         ThemesStyles.build().color(ThemesStyles.Color.SECONDARY).apply(password, spinner);
-        ThemesStyles.build().color(ThemesStyles.Color.GHOST).apply(password, spinnerGhost,txtFormattedGhost);
+        ThemesStyles.build().color(ThemesStyles.Color.GHOST).apply(password, spinnerGhost, txtFormattedGhost, scrollPaneGhost, txtAreaGhost);
 
         panel.add(new JLabel("TextField"));
         panel.add(txtDefault);
@@ -301,7 +305,8 @@ public class Test extends JFrame {
 
         panel.add(new JLabel("TextArea"));
         panel.add(scrollPane, "height 200");
-
+        panel.add(new JLabel("TextArea ghost"));
+        panel.add(scrollPaneGhost, "height 200");
         return panel;
     }
 
@@ -357,6 +362,37 @@ public class Test extends JFrame {
         panel.add(comboDanger);
         panel.add(new JLabel("Ghost style"));
         panel.add(comboGhost);
+
+        main.add(panel);
+
+        return main;
+    }
+
+    private JPanel createDataComponent() {
+        JPanel main = new JPanel(new MigLayout("fill", "fill", "fill"));
+        JPanel panel = new JPanel(new MigLayout("wrap,gap 10", "[trailing][200,fill]"));
+        panel.setBorder(new TitledBorder("List"));
+
+        // component
+        JList listDefault = new JList(createComboBoxItems());
+        JList listSuccess = new JList(createComboBoxItems());
+        JList listGhost = new JList(createComboBoxItems());
+
+        JScrollPane scrollDefault = new JScrollPane(listDefault);
+        JScrollPane scrollSuccess = new JScrollPane(listSuccess);
+        JScrollPane scrollGhost = new JScrollPane(listGhost);
+
+        // style class
+        ThemesStyles.build().color(ThemesStyles.Color.DEFAULT).apply(scrollDefault, listDefault);
+        ThemesStyles.build().color(ThemesStyles.Color.SUCCESS).apply(scrollSuccess, listSuccess);
+        ThemesStyles.build().color(ThemesStyles.Color.GHOST).apply(scrollGhost, listGhost);
+
+        panel.add(new JLabel("Default style"));
+        panel.add(scrollDefault);
+        panel.add(new JLabel("Success style"));
+        panel.add(scrollSuccess);
+        panel.add(new JLabel("Ghost style"));
+        panel.add(scrollGhost);
 
         main.add(panel);
 
