@@ -12,6 +12,8 @@ import raven.modal.demo.utils.DemoPreferences;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
 
 public class Test extends JFrame {
@@ -285,7 +287,7 @@ public class Test extends JFrame {
         JScrollPane scrollPaneGhost = new JScrollPane(txtAreaGhost);
 
         // style class
-        ThemesStyles.build().color(ThemesStyles.Color.DEFAULT).apply(txtDefault, scrollPane, txtFormatted);
+        ThemesStyles.build().color(ThemesStyles.Color.DEFAULT).apply(txtArea, txtDefault, scrollPane, txtFormatted);
         ThemesStyles.build().color(ThemesStyles.Color.SECONDARY).apply(password, spinner);
         ThemesStyles.build().color(ThemesStyles.Color.GHOST).apply(password, spinnerGhost, txtFormattedGhost, scrollPaneGhost, txtAreaGhost);
 
@@ -395,12 +397,81 @@ public class Test extends JFrame {
         panel.add(scrollGhost);
 
         main.add(panel);
-
+        main.add(createTable());
         return main;
+    }
+
+    private JPanel createTable() {
+        JPanel panel = new JPanel(new MigLayout("wrap,gap 10,width 600", "[trailing][fill]"));
+        panel.setBorder(new TitledBorder("Table"));
+
+        // component
+        JTable tblAccent = new JTable(createTableRow());
+        JTable tblSecondary = new JTable(createTableRow());
+        JTable tblWarning = new JTable(createTableRow());
+
+        JScrollPane scrollAccent = new JScrollPane(tblAccent);
+        JScrollPane scrollSecondary = new JScrollPane(tblSecondary);
+        JScrollPane scrollWarning = new JScrollPane(tblWarning);
+
+        // style class
+        ThemesStyles.build().color(ThemesStyles.Color.ACCENT).apply(scrollAccent, tblAccent);
+        ThemesStyles.build().color(ThemesStyles.Color.SECONDARY).apply(scrollSecondary, tblSecondary);
+        ThemesStyles.build().color(ThemesStyles.Color.WARNING).apply(scrollWarning, tblWarning);
+
+        panel.add(new JLabel("Accent style"));
+        panel.add(scrollAccent);
+        panel.add(new JLabel("Secondary style"));
+        panel.add(scrollSecondary);
+        panel.add(new JLabel("Warning style"));
+        panel.add(scrollWarning);
+
+        return panel;
     }
 
     private String[] createComboBoxItems() {
         return new String[]{"Default style", "Neutral style", "Accent style", "Primary style", "Secondary style", "Info style", "Success style", "Warning style", "Danger style", "Ghost style"};
+    }
+
+    private TableModel createTableRow() {
+        Object[][] data = new Object[][]{
+                {false, "ID-001", "John", 25, "Male", "Engineer", 50000},
+                {false, "ID-002", "Alice", 30, "Female", "Doctor", 70000},
+                {false, "ID-003", "Robert", 28, "Male", "Teacher", 45000},
+                {false, "ID-004", "Sophia", 32, "Female", "Lawyer", 80000},
+                {false, "ID-005", "Michael", 26, "Male", "Developer", 60000},
+                {false, "ID-006", "Emma", 29, "Female", "Designer", 55000},
+                {false, "ID-007", "David", 35, "Male", "Manager", 90000},
+                {false, "ID-008", "Olivia", 27, "Female", "Nurse", 50000},
+                {false, "ID-009", "James", 31, "Male", "Analyst", 62000},
+                {false, "ID-010", "Emily", 33, "Female", "Architect", 75000},
+                {false, "ID-011", "Daniel", 24, "Male", "Scientist", 58000},
+                {false, "ID-012", "Charlotte", 28, "Female", "Accountant", 53000},
+                {false, "ID-013", "Ethan", 29, "Male", "Consultant", 67000},
+                {false, "ID-014", "Ava", 30, "Female", "Marketing", 72000},
+                {false, "ID-015", "Liam", 26, "Male", "Technician", 49000},
+                {false, "ID-016", "Mia", 34, "Female", "HR", 71000},
+                {false, "ID-017", "Noah", 27, "Male", "Sales", 55000},
+                {false, "ID-018", "Isabella", 31, "Female", "Pharmacist", 68000},
+                {false, "ID-019", "Logan", 25, "Male", "Support", 48000},
+                {false, "ID-020", "Amelia", 29, "Female", "Writer", 52000},
+        };
+        Object[] columns = new Object[]{"Action", "ID", "Name", "Age", "Gender", "Job", "Salary"};
+        TableModel model = new DefaultTableModel(data, columns) {
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                if (columnIndex == 0) {
+                    return Boolean.class;
+                }
+                return super.getColumnClass(columnIndex);
+            }
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 0;
+            }
+        };
+        return model;
     }
 
     private JPanel createControlBar(JTabbedPane tabbed) {

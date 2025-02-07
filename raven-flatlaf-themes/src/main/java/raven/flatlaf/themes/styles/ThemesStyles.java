@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.ui.MigLayoutVisualPadding;
 
 import javax.swing.*;
+import javax.swing.table.JTableHeader;
 import java.awt.*;
 
 /**
@@ -123,7 +124,7 @@ public class ThemesStyles {
                         prefix + borderStyle
                 };
                 component.putClientProperty(FlatClientProperties.STYLE_CLASS, styles);
-                adjustComponent(component, borderStyle);
+                adjustComponent(component, styles);
             }
         }
 
@@ -144,17 +145,16 @@ public class ThemesStyles {
             return component instanceof JList || component instanceof JTextArea || component instanceof JTable;
         }
 
-        private void adjustComponent(JComponent component, String borderStyle) {
+        private void adjustComponent(JComponent component, String[] styles) {
             if (component instanceof JScrollPane) {
                 MigLayoutVisualPadding.uninstall(component);
                 MigLayoutVisualPadding.install(component, new Insets(2, 2, 2, 2));
-                boolean outline = borderStyle == Border.DEFAULT.getValue();
-                if (outline) {
-                    component.putClientProperty(FlatClientProperties.STYLE, "" +
-                            "viewportBorder:3,-2,3,-2");
-                } else {
-                    component.putClientProperty(FlatClientProperties.STYLE, "" +
-                            "viewportBorder:3,0,3,0");
+                component.putClientProperty(FlatClientProperties.STYLE, "" +
+                        "viewportBorder:3,0,3,0;");
+            } else if (component instanceof JTable) {
+                JTableHeader tableHeader = ((JTable) component).getTableHeader();
+                if (tableHeader != null) {
+                    tableHeader.putClientProperty(FlatClientProperties.STYLE_CLASS, styles);
                 }
             }
         }
