@@ -22,6 +22,11 @@
     - option `borderType` move from `ToastStyle` to `ToastBorderStyle`
     - option `lineSize` move from `ToastStyle` to `ToastBorderStyle`
 
+### Fixed bugs
+
+- Drawer
+    - Fixed animation menu items
+
 ### Demo
 
 - Dashboard form

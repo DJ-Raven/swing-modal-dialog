@@ -426,6 +426,7 @@ public class DrawerMenu extends AbstractMenuElement {
         private final int[] index;
         private final int[] validationIndex;
         private int iconWidth;
+        private MenuAnimation animation;
 
         public void setAnimate(float animate) {
             menuLayout.setAnimate(animate);
@@ -514,7 +515,10 @@ public class DrawerMenu extends AbstractMenuElement {
             button.addActionListener(e -> {
                 if (getMenuOpenMode() == MenuOption.MenuOpenMode.FULL) {
                     menuShow = !menuShow;
-                    new MenuAnimation(this).run(menuShow);
+                    if (animation == null) {
+                        animation = new MenuAnimation(this);
+                    }
+                    animation.run(menuShow);
                 } else {
                     new PopupSubmenu(DrawerMenu.this, this, menu).show(button);
                 }
