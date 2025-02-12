@@ -1,23 +1,18 @@
 package test;
 
 import com.formdev.flatlaf.FlatClientProperties;
-import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatLaf;
-import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.Drawer;
-import raven.modal.ModalDialog;
 import raven.modal.demo.menu.MyDrawerBuilder;
+import test.base.BaseFrame;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class TestDrawer extends JFrame {
+public class TestDrawer extends BaseFrame {
 
     public TestDrawer() {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(new Dimension(1366, 768));
-        setLocationRelativeTo(null);
+        super(null);
         getRootPane().putClientProperty(FlatClientProperties.FULL_WINDOW_CONTENT, true);
         setLayout(new MigLayout("al center center"));
         JButton button = new JButton("show");
@@ -30,10 +25,7 @@ public class TestDrawer extends JFrame {
     }
 
     public static void main(String[] args) {
-        FlatRobotoFont.install();
-        FlatLaf.registerCustomDefaultsSource("raven.modal.demo.themes");
-        FlatDarculaLaf.setup();
-        UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN, 13));
+        installLaf();
         EventQueue.invokeLater(() -> new TestDrawer().setVisible(true));
     }
 }

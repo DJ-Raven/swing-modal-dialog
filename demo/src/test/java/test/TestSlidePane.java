@@ -1,24 +1,21 @@
 package test;
 
-import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
-import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import net.miginfocom.swing.MigLayout;
 import raven.extras.SlidePane;
 import raven.extras.SlidePaneTransition;
 import raven.modal.demo.simple.SimpleInputForms;
 import raven.modal.demo.simple.SimpleInputForms2;
+import test.base.BaseFrame;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class TestSlidePane extends JFrame {
+public class TestSlidePane extends BaseFrame {
 
     private int state = 1;
 
     public TestSlidePane() {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(new Dimension(800, 800));
-        setLocationRelativeTo(null);
+        super("Test Slide");
         setLayout(new MigLayout("wrap,al center", "[center]"));
         JButton button = new JButton("slide");
 
@@ -37,9 +34,7 @@ public class TestSlidePane extends JFrame {
     }
 
     public static void main(String[] args) {
-        FlatRobotoFont.install();
-        FlatMacLightLaf.setup();
-        UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN, 13));
+        installLaf();
         EventQueue.invokeLater(() -> new TestSlidePane().setVisible(true));
     }
 }

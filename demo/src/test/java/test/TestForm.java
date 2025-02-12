@@ -1,29 +1,22 @@
 package test;
 
-import com.formdev.flatlaf.FlatLaf;
-import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.Drawer;
 import raven.modal.ModalDialog;
 import raven.modal.Toast;
 import raven.modal.component.SimpleModalBorder;
 import raven.modal.demo.menu.MyDrawerBuilder;
-import raven.modal.demo.utils.DemoPreferences;
 import raven.modal.toast.ToastPromise;
+import test.base.BaseFrame;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class TestForm extends JFrame {
-
+public class TestForm extends BaseFrame {
 
     public TestForm() {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(new Dimension(800, 600));
-        setLocationRelativeTo(null);
+        super("Test Form");
         setLayout(new MigLayout("al center center"));
-        // add(new FormToast());
-        // add(new FormDateTime());
         JButton show = new JButton("Show");
         show.addActionListener(e -> {
             Box b = new Box(this);
@@ -77,11 +70,7 @@ public class TestForm extends JFrame {
     }
 
     public static void main(String[] args) {
-        DemoPreferences.init();
-        FlatRobotoFont.install();
-        FlatLaf.registerCustomDefaultsSource("raven.modal.demo.themes");
-        UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN, 13));
-        DemoPreferences.setupLaf();
+        installLaf();
         EventQueue.invokeLater(() -> new TestForm().setVisible(true));
     }
 }

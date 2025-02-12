@@ -1,24 +1,19 @@
 package test;
 
-import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
-import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.Toast;
 import raven.modal.toast.option.ToastDirection;
 import raven.modal.toast.option.ToastOption;
+import test.base.BaseFrame;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class TestToast extends JFrame {
+public class TestToast extends BaseFrame {
 
     public TestToast() {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(new Dimension(800, 600));
-        setLocationRelativeTo(null);
+        super("Test Toast");
         setLayout(new MigLayout("al center center"));
-        //add(new FormToast());
-
         JButton cmdShow = new JButton("Show Toast");
         cmdShow.addActionListener(e -> {
             ToastOption toastOption = Toast.createOption();
@@ -32,9 +27,7 @@ public class TestToast extends JFrame {
     }
 
     public static void main(String[] args) {
-        FlatRobotoFont.install();
-        FlatMacLightLaf.setup();
-        UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN, 13));
+        installLaf();
         EventQueue.invokeLater(() -> new TestToast().setVisible(true));
     }
 }
