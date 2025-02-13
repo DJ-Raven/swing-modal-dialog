@@ -15,7 +15,7 @@ public class NotificationPanel extends JPanel {
     }
 
     private void init() {
-        setLayout(new MigLayout("wrap,fillx,width 300", "[fill]"));
+        setLayout(new MigLayout("insets 0,wrap,fillx,width 300", "[fill]"));
 
         JPanel panel = new JPanel(new MigLayout("wrap,fill", "fill"));
         JScrollPane scrollPane = new JScrollPane(panel);

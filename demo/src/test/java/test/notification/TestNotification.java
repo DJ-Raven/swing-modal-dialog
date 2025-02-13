@@ -38,7 +38,8 @@ public class TestNotification extends BaseFrame {
                     .getBorderOption()
                     .setBorderWidth(0.5f)
                     .setShadow(BorderOption.Shadow.MEDIUM);
-            ModalDialog.showModal(cmd, new SimpleModalBorder(new NotificationPanel(), "Notifications", new ModalBorderOption()), option);
+            ModalBorderOption borderOption = new ModalBorderOption().setPadding(ModalBorderOption.PaddingType.MEDIUM);
+            ModalDialog.showModal(cmd, new SimpleModalBorder(new NotificationPanel(), "Notifications", borderOption), option);
         });
         add(cmd);
     }
