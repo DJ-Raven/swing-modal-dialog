@@ -9,7 +9,9 @@ import javax.swing.*;
 public class NotificationItem extends JPanel {
 
     public NotificationItem(String icon, String name, String message, String description) {
-        setLayout(new MigLayout("insets 3","[]10[][]"));
+        putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:null;");
+        setLayout(new MigLayout("insets 3", "[]10[][]"));
         add(new JLabel(new AvatarIcon(getClass().getResource("/raven/modal/demo/images/" + icon + ".jpg"), 45, 45, 999)), "cell 0 0,span 1 2");
         JLabel lbName = new JLabel(name);
         JLabel lbMessage = new JLabel(message);

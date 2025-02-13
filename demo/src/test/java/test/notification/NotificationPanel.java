@@ -17,12 +17,22 @@ public class NotificationPanel extends JPanel {
     private void init() {
         setLayout(new MigLayout("insets 0,wrap,fillx,width 300", "[fill]"));
 
+        putClientProperty(FlatClientProperties.STYLE, "" +
+                "[light]background:shade($Panel.background,3%);" +
+                "[dark]background:tint($Panel.background,3%);");
+
         JPanel panel = new JPanel(new MigLayout("wrap,fill", "fill"));
+        panel.putClientProperty(FlatClientProperties.STYLE, "" +
+                "[light]background:shade($Panel.background,3%);" +
+                "[dark]background:tint($Panel.background,3%);");
+
         JScrollPane scrollPane = new JScrollPane(panel);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);
         scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" +
+                "[light]background:shade($Panel.background,3%);" +
+                "[dark]background:tint($Panel.background,3%);" +
                 "trackInsets:0,3,0,3;" +
                 "thumbInsets:0,3,0,3;" +
                 "trackArc:$ScrollBar.thumbArc");
