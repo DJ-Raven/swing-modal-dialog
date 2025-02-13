@@ -15,6 +15,12 @@
         - `borderWidth` default `1` (use when `borderType` as `OUTLINE`)
         - `padding` default `insets(0,0,0,0)`
     - Add new layout option `gap` by default `5`
+- Modal dialog
+    - SimpleModalBorder: modalBorderOption add padding
+        - `SMALL`
+        - `MEDIUM`
+        - `LARGE`
+        - `EXTRA_LARGE` (default)
 
 ### Changed
 

@@ -82,7 +82,8 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
      */
     @Override
     public void installComponent() {
-        setLayout(new MigLayout("wrap,fillx,insets 18 0 18 0", "[fill]", "[][fill,grow][]"));
+        String insets = String.format("insets %d 0 %d 0", option.getPadding().top, option.getPadding().bottom);
+        setLayout(new MigLayout("wrap,fillx," + insets, "[fill]", "[][fill,grow][]"));
         header = createHeader();
         add(header);
         if (option.isUseScroll()) {
@@ -111,7 +112,8 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
     }
 
     protected JComponent createHeader() {
-        JPanel panel = new JPanel(new MigLayout("fill,insets 3 30 3 30"));
+        String insets = String.format("insets 0 %d 0 %d", option.getPadding().left, option.getPadding().right);
+        JPanel panel = new JPanel(new MigLayout("novisualpadding,fill," + insets));
         panel.putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:null;");
         panel.add(createTitleComponent(title), "push");
@@ -146,7 +148,8 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
         if (optionsType == null || optionsType.length == 0) {
             return null;
         }
-        JPanel panel = new JPanel(new MigLayout("insets 3 30 3 30,al trailing"));
+        String insets = String.format("insets 3 %d 3 %d", option.getPadding().left, option.getPadding().right);
+        JPanel panel = new JPanel(new MigLayout(insets + ",al trailing"));
         panel.putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:null;");
         for (Option option : optionsType) {
