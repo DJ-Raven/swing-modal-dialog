@@ -1,4 +1,4 @@
-package raven.modal.drawer.menu;
+package raven.modal.utils;
 
 import com.formdev.flatlaf.util.Animator;
 import com.formdev.flatlaf.util.CubicBezierEasing;
@@ -6,27 +6,34 @@ import com.formdev.flatlaf.util.CubicBezierEasing;
 /**
  * @author Raven
  */
-public class MenuAnimation {
+public class CustomAnimation {
 
-    private final DrawerMenu.SubMenuItem subMenuItem;
-    private final int DURATION = 250;
+    private final AnimationChanged animationChanged;
+    private final int DURATION;
     private Animator animator;
     private boolean start;
     private float startFraction;
     private float fraction;
 
-    public MenuAnimation(DrawerMenu.SubMenuItem subMenuItem) {
-        this.subMenuItem = subMenuItem;
+    public CustomAnimation(AnimationChanged animationChanged) {
+        this(250, animationChanged);
+    }
+
+    public CustomAnimation(int duration, AnimationChanged animationChanged) {
+        this.DURATION = duration;
+        this.animationChanged = animationChanged;
     }
 
     public void run(final boolean start) {
+        if (this.start == start) return;
+
         this.start = start;
         if (animator == null) {
             animator = new Animator(DURATION, v -> {
                 float value = startFraction + ((1f - startFraction) * v);
                 fraction = value;
                 float f = this.start ? value : 1f - value;
-                subMenuItem.setAnimate(f);
+                animationChanged.changed(f);
             });
             animator.setInterpolator(CubicBezierEasing.EASE_IN_OUT);
         }
@@ -39,5 +46,18 @@ public class MenuAnimation {
         }
         animator.setDuration(duration);
         animator.start();
+    }
+
+    public Animator getAnimator() {
+        return animator;
+    }
+
+    private float getFraction() {
+        return fraction;
+    }
+
+    public interface AnimationChanged {
+
+        void changed(float animate);
     }
 }

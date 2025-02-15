@@ -27,6 +27,9 @@
 - Toast
     - option `borderType` move from `ToastStyle` to `ToastBorderStyle`
     - option `lineSize` move from `ToastStyle` to `ToastBorderStyle`
+- Other
+    - Changed `raven.modal.drawer.menu.MenuAnimation.java`
+      to `raven.modal.utils.CustomAnimation.java` for reusable class
 
 ### Fixed bugs
 

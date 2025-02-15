@@ -6,6 +6,7 @@ import raven.modal.drawer.data.Item;
 import raven.modal.drawer.data.MenuItem;
 import raven.modal.drawer.renderer.AbstractDrawerLineStyleRenderer;
 import raven.modal.layout.DrawerMenuLayout;
+import raven.modal.utils.CustomAnimation;
 import raven.modal.utils.FlatLafStyleUtils;
 
 import javax.swing.*;
@@ -426,7 +427,7 @@ public class DrawerMenu extends AbstractMenuElement {
         private final int[] index;
         private final int[] validationIndex;
         private int iconWidth;
-        private MenuAnimation animation;
+        private CustomAnimation animation;
 
         public void setAnimate(float animate) {
             menuLayout.setAnimate(animate);
@@ -516,7 +517,7 @@ public class DrawerMenu extends AbstractMenuElement {
                 if (getMenuOpenMode() == MenuOption.MenuOpenMode.FULL) {
                     menuShow = !menuShow;
                     if (animation == null) {
-                        animation = new MenuAnimation(this);
+                        animation = new CustomAnimation(f -> setAnimate(f));
                     }
                     animation.run(menuShow);
                 } else {
