@@ -44,8 +44,10 @@ public class CustomAnimation {
             duration = (int) (fraction * DURATION);
             startFraction = 1f - fraction;
         }
-        animator.setDuration(duration);
-        animator.start();
+        if (duration > 0) {
+            animator.setDuration(duration);
+            animator.start();
+        }
     }
 
     public Animator getAnimator() {
