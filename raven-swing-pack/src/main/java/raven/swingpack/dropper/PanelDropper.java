@@ -276,6 +276,9 @@ public class PanelDropper extends JPanel implements ActionListener {
             float scrollY = scrollPane.getY() - rec.y;
             float x = insets.left + dropLocation.x + (scrollX + getX() - dropLocation.x) * animate;
             float y = insets.top + dropLocation.y + (scrollY + getY() - dropLocation.y) * animate;
+            if (rec.getY() > getY()) {
+                g2.setClip(scrollPane.getBounds());
+            }
             g2.translate(x, y);
             icon.paintIcon(PanelDropper.this, g2, 0, 0);
             g2.dispose();
