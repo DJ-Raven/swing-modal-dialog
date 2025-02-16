@@ -4,12 +4,15 @@ import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.Animator;
 import com.formdev.flatlaf.util.CubicBezierEasing;
 import com.formdev.flatlaf.util.UIScale;
+import net.miginfocom.swing.MigLayout;
 import raven.extras.AvatarIcon;
 import raven.swingpack.dropper.event.FileDropperEvent;
 import raven.swingpack.layout.ResponsiveLayout;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +21,11 @@ import java.util.function.Consumer;
 /**
  * @author Raven
  */
-public class PanelDropper extends JPanel {
+public class PanelDropper extends JPanel implements ActionListener {
 
+    private Component dropPlaceholder;
     private final FileDropper fileDropper;
+    private JPanel panelItem;
     private final List<Item> dropFiles = new ArrayList<>();
     private ResponsiveLayout responsiveLayout;
 
@@ -30,8 +35,45 @@ public class PanelDropper extends JPanel {
     }
 
     private void init() {
+        setLayout(new MigLayout("wrap,fillx,al center", "[fill]"));
         responsiveLayout = new ResponsiveLayout(ResponsiveLayout.JustifyContent.START);
-        setLayout(responsiveLayout);
+        panelItem = new JPanel(responsiveLayout);
+        setDropPlaceholder(createDefaultDropPlaceholder());
+        add(panelItem);
+    }
+
+    public void setDropPlaceholder(Component dropPlaceholder) {
+        if (this.dropPlaceholder != null) {
+            remove(this.dropPlaceholder);
+            uninstallDropPlaceholderEvent(this.dropPlaceholder);
+        }
+        this.dropPlaceholder = dropPlaceholder;
+        if (this.dropPlaceholder != null) {
+            add(this.dropPlaceholder, 0);
+            installDropPlaceholderEvent(this.dropPlaceholder);
+        }
+    }
+
+    public Component getDropPlaceholder() {
+        return dropPlaceholder;
+    }
+
+    private Component createDefaultDropPlaceholder() {
+        return new DefaultFileDropPlaceholder();
+    }
+
+    private void installDropPlaceholderEvent(Component component) {
+        if (component instanceof AbstractButton) {
+            AbstractButton button = (AbstractButton) component;
+            button.addActionListener(this);
+        }
+    }
+
+    private void uninstallDropPlaceholderEvent(Component component) {
+        if (component instanceof AbstractButton) {
+            AbstractButton button = (AbstractButton) component;
+            button.removeActionListener(this);
+        }
     }
 
     protected boolean prepareFile(List<File> files) {
@@ -41,7 +83,7 @@ public class PanelDropper extends JPanel {
             fileDropper.fireFileDragEnter(event);
             if (event.getType() != FileDropperEvent.REJECT) {
                 Item item = new Item(file);
-                add(item);
+                panelItem.add(item);
                 added = true;
             }
         }
@@ -62,7 +104,7 @@ public class PanelDropper extends JPanel {
 
     protected void drop(Point location) {
         List<Item> list = new ArrayList<>();
-        for (Component com : getComponents()) {
+        for (Component com : panelItem.getComponents()) {
             if (com instanceof Item) {
                 Item item = (Item) com;
                 if (item.getType() == Type.PREPARE) {
@@ -82,7 +124,7 @@ public class PanelDropper extends JPanel {
                     i.dropped();
                     FileDropperEvent event = new FileDropperEvent(i, i.file);
                     fileDropper.fireFileDropped(event);
-                    remove(i);
+                    panelItem.remove(i);
                     dropFiles.remove(i);
                     refresh();
                     if (event.getType() != FileDropperEvent.REJECT) {
@@ -97,32 +139,35 @@ public class PanelDropper extends JPanel {
         for (File file : files) {
             Item item = new Item(file);
             item.createAndDrop();
-            add(item);
+            panelItem.add(item);
         }
-        repaint();
-        revalidate();
+        refresh();
     }
 
     protected void removeFile(int index) {
-        remove(index);
+        panelItem.remove(index);
+    }
+
+    protected void removeAllFile() {
+        panelItem.removeAll();
+        refresh();
     }
 
     protected void refresh() {
-        repaint();
-        revalidate();
+        panelItem.repaint();
+        panelItem.revalidate();
     }
 
     protected void exit() {
-        for (Component com : getComponents()) {
+        for (Component com : panelItem.getComponents()) {
             if (com instanceof Item) {
                 Item item = (Item) com;
                 if (item.getType() == Type.PREPARE) {
-                    remove(com);
+                    panelItem.remove(com);
                 }
             }
         }
-        repaint();
-        revalidate();
+        refresh();
     }
 
     @Override
@@ -141,6 +186,13 @@ public class PanelDropper extends JPanel {
             }
         }
         g2.dispose();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent event) {
+        // change event source to fileDropper
+        ActionEvent newEvent = new ActionEvent(fileDropper, event.getID(), event.getActionCommand(), event.getWhen(), event.getModifiers());
+        fileDropper.fireDropPlaceholderSelected(newEvent);
     }
 
     public class Item extends JPanel {
@@ -162,7 +214,7 @@ public class PanelDropper extends JPanel {
                     FileDropperEvent event = new FileDropperEvent(this, file);
                     fileDropper.fireFileDelete(event);
                     if (event.getType() != FileDropperEvent.REJECT) {
-                        fileDropper.getModel().removeAt(PanelDropper.this.getComponentZOrder(this));
+                        fileDropper.getModel().removeAt(panelItem.getComponentZOrder(this));
                     }
                 }
             });
@@ -193,8 +245,8 @@ public class PanelDropper extends JPanel {
         protected void paintIcon(Graphics g) {
             Graphics2D g2 = (Graphics2D) g.create();
             Insets insets = fileItem.getInsets();
-            float x = insets.left + dropLocation.x + (getX() - dropLocation.x) * animate;
-            float y = insets.top + dropLocation.y + (getY() - dropLocation.y) * animate;
+            float x = insets.left + dropLocation.x + (panelItem.getX() + getX() - dropLocation.x) * animate;
+            float y = insets.top + dropLocation.y + (panelItem.getY() + getY() - dropLocation.y) * animate;
             g2.translate(x, y);
             icon.paintIcon(PanelDropper.this, g2, 0, 0);
             g2.dispose();

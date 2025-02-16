@@ -4,7 +4,6 @@ import com.formdev.flatlaf.FlatClientProperties;
 import net.miginfocom.swing.MigLayout;
 import raven.extras.LightDarkButton;
 import raven.swingpack.dropper.FileDropper;
-import raven.swingpack.dropper.event.FileDropperAdapter;
 import raven.swingpack.dropper.event.FileDropperEvent;
 import raven.swingpack.dropper.event.FileDropperListener;
 import test.base.BaseFrame;
@@ -63,9 +62,14 @@ public class TestFileDropper extends BaseFrame {
                 }
             }
         });
+        fileDropper.addDropFilePlaceholderListener(actionEvent -> {
+            JFileChooser chooser = new JFileChooser();
+            chooser.showOpenDialog(TestFileDropper.this);
+        });
 
         // dropper 2
         FileDropper fileDropper2 = new FileDropper(fileDropper.getModel());
+        fileDropper2.setDropPlaceholder(new JButton("New Custom placeholder file"));
         JScrollPane scrollPane2 = new JScrollPane(fileDropper2);
         scrollPane2.putClientProperty(FlatClientProperties.STYLE, "" +
                 "border:5,5,5,5,$Component.borderColor,1,15;");

@@ -9,6 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.List;
 
@@ -38,7 +40,7 @@ public class FileDropper extends JPanel implements FileDropperModelListener {
         }
         setModel(model);
 
-        installLayer(this);
+        installLayer(panelDropper);
         add(panelDropper);
     }
 
@@ -61,6 +63,14 @@ public class FileDropper extends JPanel implements FileDropperModelListener {
         updateFileDropperComponent();
     }
 
+    public Component getDropPlaceholder() {
+        return panelDropper.getDropPlaceholder();
+    }
+
+    public void setDropPlaceholder(Component dropPlaceholder) {
+        panelDropper.setDropPlaceholder(dropPlaceholder);
+    }
+
     @Override
     public void fileDropperChanged(FileDropperModalEvent evt) {
         if (evt.getType() == FileDropperModalEvent.INSERT) {
@@ -74,8 +84,7 @@ public class FileDropper extends JPanel implements FileDropperModelListener {
     }
 
     private void updateFileDropperComponent() {
-        panelDropper.removeAll();
-        panelDropper.refresh();
+        panelDropper.removeAllFile();
 
         if (model != null) {
             panelDropper.addFileAsDropped(model.getFiles());
@@ -136,6 +145,14 @@ public class FileDropper extends JPanel implements FileDropperModelListener {
         listenerList.remove(FileDropperListener.class, listener);
     }
 
+    public void addDropFilePlaceholderListener(ActionListener listener) {
+        listenerList.add(ActionListener.class, listener);
+    }
+
+    public void removeDropFilePlaceholderListener(ActionListener listener) {
+        listenerList.remove(ActionListener.class, listener);
+    }
+
     public void fireFileDragEnter(FileDropperEvent event) {
         Object[] listeners = listenerList.getListenerList();
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
@@ -168,6 +185,15 @@ public class FileDropper extends JPanel implements FileDropperModelListener {
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
             if (listeners[i] == FileDropperListener.class) {
                 ((FileDropperListener) listeners[i + 1]).fileOnView(event);
+            }
+        }
+    }
+
+    public void fireDropPlaceholderSelected(ActionEvent event) {
+        Object[] listeners = listenerList.getListenerList();
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+            if (listeners[i] == ActionListener.class) {
+                ((ActionListener) listeners[i + 1]).actionPerformed(event);
             }
         }
     }
