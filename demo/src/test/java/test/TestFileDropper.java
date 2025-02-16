@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatClientProperties;
 import net.miginfocom.swing.MigLayout;
 import raven.extras.LightDarkButton;
 import raven.swingpack.dropper.FileDropper;
+import raven.swingpack.dropper.event.FileDropperAdapter;
 import raven.swingpack.dropper.event.FileDropperEvent;
 import raven.swingpack.dropper.event.FileDropperListener;
 import test.base.BaseFrame;
@@ -29,6 +30,14 @@ public class TestFileDropper extends BaseFrame {
         });
 
         fileDropper.addFileDropperListener(new FileDropperListener() {
+
+            @Override
+            public void fileDragEnter(FileDropperEvent fileDropperEvent) {
+                if (fileDropperEvent.getFile().length() > 204800) {
+                    fileDropperEvent.reject();
+                }
+            }
+
             @Override
             public void fileDropped(FileDropperEvent fileDropperEvent) {
                 if (fileDropperEvent.getFile().length() > 204800) {

@@ -34,12 +34,16 @@ public class PanelDropper extends JPanel {
         setLayout(responsiveLayout);
     }
 
-    protected void prepareFile(List<File> files) {
+    protected boolean prepareFile(List<File> files) {
         boolean added = false;
         for (File file : files) {
-            Item item = new Item(file);
-            add(item);
-            added = true;
+            FileDropperEvent event = new FileDropperEvent(fileDropper, file);
+            fileDropper.fireFileDragEnter(event);
+            if (event.getType() != FileDropperEvent.REJECT) {
+                Item item = new Item(file);
+                add(item);
+                added = true;
+            }
         }
         if (added) {
             repaint();
@@ -53,6 +57,7 @@ public class PanelDropper extends JPanel {
                 });
             }
         }
+        return added;
     }
 
     protected void drop(Point location) {

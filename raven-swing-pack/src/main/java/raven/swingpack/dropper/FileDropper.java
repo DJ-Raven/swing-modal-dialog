@@ -38,7 +38,7 @@ public class FileDropper extends JPanel implements FileDropperModelListener {
         }
         setModel(model);
 
-        installLayer(panelDropper);
+        installLayer(this);
         add(panelDropper);
     }
 
@@ -92,7 +92,10 @@ public class FileDropper extends JPanel implements FileDropperModelListener {
                         dte.acceptDrag(DnDConstants.ACTION_COPY);
                         List<File> files = (List<File>) dte.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
                         if (!files.isEmpty()) {
-                            panelDropper.prepareFile(files);
+                            boolean added = panelDropper.prepareFile(files);
+                            if (!added) {
+                                dte.rejectDrag();
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -107,7 +110,6 @@ public class FileDropper extends JPanel implements FileDropperModelListener {
 
             @Override
             public void dropActionChanged(DropTargetDragEvent dte) {
-
             }
 
             @Override
@@ -132,6 +134,15 @@ public class FileDropper extends JPanel implements FileDropperModelListener {
 
     public void removeFileDropperListener(FileDropperListener listener) {
         listenerList.remove(FileDropperListener.class, listener);
+    }
+
+    public void fireFileDragEnter(FileDropperEvent event) {
+        Object[] listeners = listenerList.getListenerList();
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+            if (listeners[i] == FileDropperListener.class) {
+                ((FileDropperListener) listeners[i + 1]).fileDragEnter(event);
+            }
+        }
     }
 
     public void fireFileDropped(FileDropperEvent event) {

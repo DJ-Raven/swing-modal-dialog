@@ -7,6 +7,8 @@ import java.util.EventListener;
  */
 public interface FileDropperListener extends EventListener {
 
+    void fileDragEnter(FileDropperEvent fileDropperEvent);
+
     void fileDropped(FileDropperEvent fileDropperEvent);
 
     void fileOnDelete(FileDropperEvent fileDropperEvent);
