@@ -37,7 +37,7 @@ public class PanelDropper extends JPanel implements ActionListener {
     }
 
     private void init() {
-        setLayout(new MigLayout("wrap,fillx,al center,gapy 10", "[fill]"));
+        setLayout(new MigLayout("novisualpadding,wrap,fillx,al center,gapy 10", "[fill]"));
         putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:null;");
         responsiveLayout = new ResponsiveLayout(ResponsiveLayout.JustifyContent.START);
@@ -76,8 +76,9 @@ public class PanelDropper extends JPanel implements ActionListener {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);
         scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" +
-                "trackInsets:0,3,0,3;" +
-                "thumbInsets:0,3,0,3;" +
+                "width:6;" +
+                "trackInsets:0,0,0,0;" +
+                "thumbInsets:0,0,0,0;" +
                 "trackArc:$ScrollBar.thumbArc;");
         scrollPane.getVerticalScrollBar().setOpaque(false);
         return scrollPane;
