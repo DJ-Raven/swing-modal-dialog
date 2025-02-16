@@ -1,5 +1,6 @@
 package raven.swingpack.dropper;
 
+import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.Animator;
 import com.formdev.flatlaf.util.CubicBezierEasing;
@@ -25,6 +26,7 @@ public class PanelDropper extends JPanel implements ActionListener {
 
     private Component dropPlaceholder;
     private final FileDropper fileDropper;
+    private JScrollPane scrollPane;
     private JPanel panelItem;
     private final List<Item> dropFiles = new ArrayList<>();
     private ResponsiveLayout responsiveLayout;
@@ -35,11 +37,21 @@ public class PanelDropper extends JPanel implements ActionListener {
     }
 
     private void init() {
-        setLayout(new MigLayout("wrap,fillx,al center", "[fill]"));
+        setLayout(new MigLayout("wrap,fillx,al center,gapy 10", "[fill]"));
+        putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:null;");
         responsiveLayout = new ResponsiveLayout(ResponsiveLayout.JustifyContent.START);
-        panelItem = new JPanel(responsiveLayout);
+        panelItem = new JPanel(responsiveLayout) {
+            @Override
+            public Color getBackground() {
+                return fileDropper.getBackground();
+            }
+        };
         setDropPlaceholder(createDefaultDropPlaceholder());
-        add(panelItem);
+
+        scrollPane = createScroll();
+        scrollPane.setViewportView(panelItem);
+        add(scrollPane);
     }
 
     public void setDropPlaceholder(Component dropPlaceholder) {
@@ -56,6 +68,19 @@ public class PanelDropper extends JPanel implements ActionListener {
 
     public Component getDropPlaceholder() {
         return dropPlaceholder;
+    }
+
+    private JScrollPane createScroll() {
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" +
+                "trackInsets:0,3,0,3;" +
+                "thumbInsets:0,3,0,3;" +
+                "trackArc:$ScrollBar.thumbArc;");
+        scrollPane.getVerticalScrollBar().setOpaque(false);
+        return scrollPane;
     }
 
     private Component createDefaultDropPlaceholder() {
@@ -88,14 +113,13 @@ public class PanelDropper extends JPanel implements ActionListener {
             }
         }
         if (added) {
-            repaint();
-            revalidate();
+            refresh();
 
             // scroll to visible item
-            int count = getComponentCount();
+            int count = panelItem.getComponentCount();
             if (count > 0) {
                 SwingUtilities.invokeLater(() -> {
-                    scrollRectToVisible(getComponent(count - 1).getBounds());
+                    panelItem.scrollRectToVisible(panelItem.getComponent(count - 1).getBounds());
                 });
             }
         }
@@ -155,7 +179,7 @@ public class PanelDropper extends JPanel implements ActionListener {
 
     protected void refresh() {
         panelItem.repaint();
-        panelItem.revalidate();
+        revalidate();
     }
 
     protected void exit() {
@@ -206,6 +230,8 @@ public class PanelDropper extends JPanel implements ActionListener {
 
         public Item(File file) {
             this.file = file;
+            putClientProperty(FlatClientProperties.STYLE, "" +
+                    "background:null;");
             setLayout(new BorderLayout());
             fileItem = new FileItem(action -> {
                 if (action == 0) {
@@ -245,8 +271,11 @@ public class PanelDropper extends JPanel implements ActionListener {
         protected void paintIcon(Graphics g) {
             Graphics2D g2 = (Graphics2D) g.create();
             Insets insets = fileItem.getInsets();
-            float x = insets.left + dropLocation.x + (panelItem.getX() + getX() - dropLocation.x) * animate;
-            float y = insets.top + dropLocation.y + (panelItem.getY() + getY() - dropLocation.y) * animate;
+            Rectangle rec = scrollPane.getViewport().getViewRect();
+            float scrollX = scrollPane.getX() - rec.x;
+            float scrollY = scrollPane.getY() - rec.y;
+            float x = insets.left + dropLocation.x + (scrollX + getX() - dropLocation.x) * animate;
+            float y = insets.top + dropLocation.y + (scrollY + getY() - dropLocation.y) * animate;
             g2.translate(x, y);
             icon.paintIcon(PanelDropper.this, g2, 0, 0);
             g2.dispose();

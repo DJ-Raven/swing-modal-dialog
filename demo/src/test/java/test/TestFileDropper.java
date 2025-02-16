@@ -17,12 +17,10 @@ public class TestFileDropper extends BaseFrame {
         super("Test File Dropper");
         setLayout(new MigLayout("wrap,al center center"));
         FileDropper fileDropper = new FileDropper();
-        JScrollPane scrollPane = new JScrollPane(fileDropper);
-        scrollPane.putClientProperty(FlatClientProperties.STYLE, "" +
-                "border:5,5,5,5,$Component.borderColor,1,15;");
-        scrollPane.getVerticalScrollBar().setUnitIncrement(10);
-        add(scrollPane, "w 500,h 200");
+        fileDropper.putClientProperty(FlatClientProperties.STYLE, "" +
+                "border:3,3,3,3,$Component.borderColor,1,15;");
 
+        add(fileDropper, "w 500,h 250");
         JButton cmdClear = new JButton("Clear");
         cmdClear.addActionListener(e -> {
             fileDropper.clearAllFile();
@@ -69,12 +67,11 @@ public class TestFileDropper extends BaseFrame {
 
         // dropper 2
         FileDropper fileDropper2 = new FileDropper(fileDropper.getModel());
-        fileDropper2.setDropPlaceholder(new JButton("New Custom placeholder file"));
-        JScrollPane scrollPane2 = new JScrollPane(fileDropper2);
-        scrollPane2.putClientProperty(FlatClientProperties.STYLE, "" +
+        fileDropper2.putClientProperty(FlatClientProperties.STYLE, "" +
                 "border:5,5,5,5,$Component.borderColor,1,15;");
-        scrollPane2.getVerticalScrollBar().setUnitIncrement(10);
-        add(scrollPane2, "w 500,h 200");
+        fileDropper2.setDropPlaceholder(null);
+
+        add(fileDropper2, "w 500,h 250");
 
         add(cmdClear);
         LightDarkButton lightDarkButton = new LightDarkButton();
