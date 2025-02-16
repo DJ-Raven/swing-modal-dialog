@@ -35,6 +35,12 @@
         </dependency>
 
         <dependency>
+            <groupId>${parent.groupId}</groupId>
+            <artifactId>raven-swing-pack</artifactId>
+            <version>${version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>io.github.dj-raven</groupId>
             <artifactId>swing-datetime-picker</artifactId>
             <version>2.0.0</version>

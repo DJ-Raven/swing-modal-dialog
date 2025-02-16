@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>modal-dialog</module>
+        <module>raven-swing-pack</module>
         <module>demo</module>
     </modules>
 

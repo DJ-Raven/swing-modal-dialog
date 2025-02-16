@@ -3,7 +3,7 @@ package raven.modal.demo.forms;
 import com.formdev.flatlaf.FlatClientProperties;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.demo.forms.other.Card;
-import raven.modal.demo.layout.ResponsiveLayout;
+import raven.swingpack.layout.ResponsiveLayout;
 import raven.modal.demo.model.ModelEmployee;
 import raven.modal.demo.sample.SampleData;
 import raven.modal.demo.system.Form;
