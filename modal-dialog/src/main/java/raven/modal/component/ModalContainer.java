@@ -43,7 +43,7 @@ public class ModalContainer extends JComponent {
     private ModalLayout modalLayout;
 
     private JWindow window;
-    private ComponentListener componentListener;
+    private HierarchyBoundsListener hierarchyBoundsListener;
 
     public ModalContainer(AbstractModalContainerLayer modalContainerLayer, Component owner, Option option, String id) {
         this.modalContainerLayer = modalContainerLayer;
@@ -110,14 +110,16 @@ public class ModalContainer extends JComponent {
             return;
         }
         Window parentWindow = SwingUtilities.getWindowAncestor(this);
-        componentListener = new ComponentAdapter() {
+        hierarchyBoundsListener = new HierarchyBoundsAdapter() {
             @Override
-            public void componentResized(ComponentEvent e) {
+            public void ancestorMoved(HierarchyEvent hierarchyEvent) {
                 window.revalidate();
                 revalidate();
+                repaint();
             }
         };
-        addComponentListener(componentListener);
+
+        addHierarchyBoundsListener(hierarchyBoundsListener);
         window = new JWindow(parentWindow);
         modalLayout.setWindow(window);
         window.setContentPane(modalController);
@@ -128,7 +130,7 @@ public class ModalContainer extends JComponent {
         if (window == null || !modalController.isUseEmbedWindow()) {
             return;
         }
-        removeComponentListener(componentListener);
+        removeHierarchyBoundsListener(hierarchyBoundsListener);
         modalLayout.setWindow(null);
         add(modalController);
         window.dispose();
