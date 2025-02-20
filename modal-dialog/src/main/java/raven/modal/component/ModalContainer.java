@@ -121,6 +121,9 @@ public class ModalContainer extends JComponent {
 
         addHierarchyBoundsListener(hierarchyBoundsListener);
         window = new JWindow(parentWindow);
+        // set window background color because jdk-8 the JWindow may inherit that transparency from parent window
+        window.setBackground(SystemColor.window);
+
         modalLayout.setWindow(window);
         window.setContentPane(modalController);
         window.setVisible(true);
