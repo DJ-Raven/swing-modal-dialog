@@ -106,6 +106,9 @@ public class PanelSlider extends JLayeredPane {
 
     public interface PaneSliderLayoutSize {
         Dimension getComponentSize(Container container, Component component);
+
+        default void layoutUpdate() {
+        }
     }
 
     public class PanelSnapshot extends JComponent {
@@ -127,6 +130,7 @@ public class PanelSlider extends JLayeredPane {
                     animatedLayout.setAnimate(animate);
                     if (animatedLayout.isUpdateAble()) {
                         PanelSlider.this.revalidate();
+                        paneSliderLayoutSize.layoutUpdate();
                     }
                 }
 

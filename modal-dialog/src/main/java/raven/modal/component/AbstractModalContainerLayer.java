@@ -100,6 +100,15 @@ public abstract class AbstractModalContainerLayer extends AbstractRelativeContai
         layeredPane.repaint();
     }
 
+    @Override
+    public void visibleChanged(boolean show) {
+        for (ModalContainer con : containers) {
+            if (con.getController().isUseEmbedWindow()) {
+                con.getController().showWindow(show);
+            }
+        }
+    }
+
     public boolean checkId(String id) {
         for (ModalContainer con : containers) {
             if (con.getId() != null && con.getId() == id) {

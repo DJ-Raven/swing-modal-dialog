@@ -70,10 +70,16 @@ public class RelativeLayerPane extends JLayeredPane {
                         if (e.getChanged().isShowing()) {
                             if (owner.isShowing()) {
                                 setVisible(true);
+                                if (layoutCallback != null) {
+                                    layoutCallback.visibleChanged(true);
+                                }
                             }
                         } else {
                             if (!owner.isShowing()) {
                                 setVisible(false);
+                                if (layoutCallback != null) {
+                                    layoutCallback.visibleChanged(false);
+                                }
                             }
                         }
                     }
@@ -115,5 +121,7 @@ public class RelativeLayerPane extends JLayeredPane {
 
     public interface LayoutCallback {
         void doLayout();
+
+        void visibleChanged(boolean show);
     }
 }

@@ -41,6 +41,7 @@ public class ModalWindow extends JWindow {
         setContentPane(layeredPane);
         setBackground(new Color(0, 0, 0, 0));
         installParentWindowListener();
+        setAutoRequestFocus(false);
     }
 
     public void addToast(ToastHeavyWeightContainerLayer toast) {

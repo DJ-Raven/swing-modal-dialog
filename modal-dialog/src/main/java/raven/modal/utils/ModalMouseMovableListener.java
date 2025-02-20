@@ -86,9 +86,9 @@ public class ModalMouseMovableListener extends MouseAdapter {
                     numY = between(UIScale.scale(numY.floatValue()) / height + comHeight, 0, 1f);
                 }
                 layoutOption.setLocation(numX, numY);
-                Component parent = modalController.getParent();
+                ModalContainer parent = modalController.getModalContainer();
                 if (parent != null) {
-                    parent.doLayout();
+                    parent.updateLayout();
                 }
             }
         }
@@ -97,16 +97,14 @@ public class ModalMouseMovableListener extends MouseAdapter {
     @Override
     public void mouseDragged(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
-            Point dragged = e.getPoint();
-            Point location = modalController.getLocation();
-            int x = UIScale.unscale(location.x + (dragged.x - initialPressed.x));
-            int y = UIScale.unscale(location.y + (dragged.y - initialPressed.y));
-
-            layoutOption.setLocation(x, y);
-
-            Component parent = modalController.getParent();
+            ModalContainer parent = modalController.getModalContainer();
             if (parent != null) {
-                parent.doLayout();
+                Point dragged = e.getPoint();
+                Point location = parent.getControllerLocation();
+                int x = UIScale.unscale(location.x + (dragged.x - initialPressed.x));
+                int y = UIScale.unscale(location.y + (dragged.y - initialPressed.y));
+                layoutOption.setLocation(x, y);
+                parent.updateLayout();
             }
         }
     }

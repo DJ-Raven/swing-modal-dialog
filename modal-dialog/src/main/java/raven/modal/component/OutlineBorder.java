@@ -109,7 +109,7 @@ public class OutlineBorder extends FlatEmptyBorder {
 
             // paint background
             g2.setColor(c.getBackground());
-            g2.fill(new RoundRectangle2D.Float(0, 0, w, h, arc, arc));
+            g2.fill(new RoundRectangle2D.Float(x, y, w, h, arc, arc));
 
             // paint outline
             if (borderWidth > 0) {

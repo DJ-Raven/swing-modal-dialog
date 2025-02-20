@@ -27,6 +27,7 @@ public abstract class AbstractModalController extends JPanel implements Controll
     protected PanelSlider panelSlider;
     protected Stack<Modal> modalStack;
     protected Consumer onBackAction;
+    protected Border modalBorder;
 
     public AbstractModalController(Option option) {
         this.option = option;
@@ -63,10 +64,16 @@ public abstract class AbstractModalController extends JPanel implements Controll
             return;
         }
         BorderOption borderOption = option.getBorderOption();
-        Border border = borderOption.createBorder();
-        if (border != null) {
-            setBorder(border);
+        modalBorder = borderOption.createBorder();
+        if (modalBorder != null) {
+            if (!isUseEmbedWindow()) {
+                setBorder(modalBorder);
+            }
         }
+    }
+
+    protected boolean isUseEmbedWindow() {
+        return option.isHeavyWeight() && option.isHeavyWeightEmbedWindow();
     }
 
     protected MouseAdapter createMouseMovableListener() {
@@ -171,6 +178,10 @@ public abstract class AbstractModalController extends JPanel implements Controll
             };
         }
         return onBackAction;
+    }
+
+    public Border getModalBorder() {
+        return modalBorder;
     }
 
     public Option getOption() {

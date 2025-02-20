@@ -5,6 +5,7 @@ import com.formdev.flatlaf.util.UIScale;
 import raven.modal.component.ModalController;
 import raven.modal.option.LayoutOption;
 
+import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -16,6 +17,11 @@ public class ModalLayout implements LayoutManager {
         this.animate = animate;
     }
 
+    public void setWindow(JWindow window) {
+        this.window = window;
+    }
+
+    private JWindow window;
     private ModalController component;
     private final LayoutOption layoutOption;
     private float animate;
@@ -52,7 +58,15 @@ public class ModalLayout implements LayoutManager {
         synchronized (parent.getTreeLock()) {
             if (component != null && component.isVisible()) {
                 Rectangle rec = OptionLayoutUtils.getLayoutLocation(parent, component.getModalContainer().getOwner(), component, animate, layoutOption);
-                component.setBounds(rec.x, rec.y, rec.width, rec.height);
+                if (window != null) {
+                    Point point = window.getParent().getLocation();
+                    Point p = SwingUtilities.convertPoint(parent.getParent(), point, null);
+                    int x = p.x + rec.x;
+                    int y = p.y + rec.y;
+                    window.setBounds(x, y, rec.width, rec.height);
+                } else {
+                    component.setBounds(rec.x, rec.y, rec.width, rec.height);
+                }
             }
         }
     }

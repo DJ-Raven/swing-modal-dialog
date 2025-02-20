@@ -9,6 +9,7 @@ import raven.modal.option.LayoutOption;
 import raven.modal.option.Option;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -40,6 +41,9 @@ public class ModalContainer extends JComponent {
     private MouseListener mouseListener;
     private ActionListener escapeAction;
     private ModalLayout modalLayout;
+
+    private JWindow window;
+    private ComponentListener componentListener;
 
     public ModalContainer(AbstractModalContainerLayer modalContainerLayer, Component owner, Option option, String id) {
         this.modalContainerLayer = modalContainerLayer;
@@ -83,7 +87,11 @@ public class ModalContainer extends JComponent {
         }
         if (option.isCloseOnPressedEscape()) {
             escapeAction = e -> modalController.closeModal();
-            registerKeyboardAction(escapeAction, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
+            if (modalController.isUseEmbedWindow()) {
+                window.getRootPane().registerKeyboardAction(escapeAction, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
+            } else {
+                registerKeyboardAction(escapeAction, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
+            }
         }
     }
 
@@ -97,8 +105,60 @@ public class ModalContainer extends JComponent {
         installOption(modalController.getOption());
     }
 
+    protected void showWindow() {
+        if (!modalController.isUseEmbedWindow()) {
+            return;
+        }
+        Window parentWindow = SwingUtilities.getWindowAncestor(this);
+        componentListener = new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                window.revalidate();
+                revalidate();
+            }
+        };
+        addComponentListener(componentListener);
+        window = new JWindow(parentWindow);
+        modalLayout.setWindow(window);
+        window.setContentPane(modalController);
+        window.setVisible(true);
+    }
+
+    protected void closeWindow() {
+        if (window == null || !modalController.isUseEmbedWindow()) {
+            return;
+        }
+        removeComponentListener(componentListener);
+        modalLayout.setWindow(null);
+        add(modalController);
+        window.dispose();
+    }
+
     public ModalController getController() {
         return modalController;
+    }
+
+    public Point getControllerLocation() {
+        if (window != null && modalController.isUseEmbedWindow()) {
+            return getWindowControllerLocation();
+        }
+        return modalController.getLocation();
+    }
+
+    public void updateLayout() {
+        if (modalController.isUseEmbedWindow()) {
+            repaint();
+        }
+        revalidate();
+    }
+
+    private Point getWindowControllerLocation() {
+        Point point = SwingUtilities.convertPoint(getParent(), getLocation(), window.getParent());
+        Point windowLocation = window.getLocation();
+        Point windowParentLocation = window.getParent().getLocation();
+        int x = windowLocation.x - (windowParentLocation.x + point.x);
+        int y = windowLocation.y - (windowParentLocation.y + point.y);
+        return new Point(x, y);
     }
 
     protected void uninstallOption() {
@@ -106,7 +166,11 @@ public class ModalContainer extends JComponent {
             removeMouseListener(mouseListener);
         }
         if (escapeAction != null) {
-            unregisterKeyboardAction(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
+            if (modalController.isUseEmbedWindow()) {
+                window.getRootPane().unregisterKeyboardAction(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
+            } else {
+                unregisterKeyboardAction(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
+            }
         }
     }
 
@@ -136,7 +200,23 @@ public class ModalContainer extends JComponent {
             g2.fill(getBackgroundShape());
             g2.dispose();
         }
+        paintModalBorder(g);
         super.paintComponent(g);
+    }
+
+    private void paintModalBorder(Graphics g) {
+        Border border = modalController.getModalBorder();
+        if (window != null && modalController.isUseEmbedWindow() && border != null) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            Rectangle rec = window.getBounds();
+            Point point = SwingUtilities.convertPoint(getParent(), getLocation(), window.getParent());
+            Insets insets = border.getBorderInsets(modalController);
+            Point windowParentLocation = window.getParent().getLocation();
+            int x = rec.x - windowParentLocation.x - point.x - insets.left;
+            int y = rec.y - windowParentLocation.y - point.y - insets.top;
+            border.paintBorder(this, g, x, y, rec.width + (insets.left + insets.right), rec.height + (insets.top + insets.bottom));
+            g2.dispose();
+        }
     }
 
     private Shape getBackgroundShape() {
@@ -193,6 +273,9 @@ public class ModalContainer extends JComponent {
     }
 
     private void addParentInsets(Container container, Insets insets) {
+        if (container == null) {
+            return;
+        }
         Insets in = container.getInsets();
         insets.top += in.top;
         insets.left += in.left;
