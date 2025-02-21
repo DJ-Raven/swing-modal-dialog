@@ -146,13 +146,18 @@ public class PanelDropper extends JPanel implements ActionListener {
             }
             AnimationItem.drop(this, items, object -> {
                 for (Item i : object) {
-                    i.dropped();
                     FileDropperEvent event = new FileDropperEvent(i, i.file);
                     fileDropper.fireFileDropped(event);
-                    panelItem.remove(i);
                     dropFiles.remove(i);
-                    refresh();
-                    if (event.getType() != FileDropperEvent.REJECT) {
+                    if (event.getType() == FileDropperEvent.REJECT) {
+                        panelItem.remove(i);
+                        refresh();
+                        continue;
+                    }
+                    if (event.getFileProgress() != null) {
+                        i.progress(event.getFileProgress());
+                    } else {
+                        i.dropped();
                         fileDropper.getModel().add(i.file);
                     }
                 }
@@ -160,17 +165,38 @@ public class PanelDropper extends JPanel implements ActionListener {
         }
     }
 
-    protected void addFileAsDropped(File... files) {
+    protected synchronized void addFileAsDropped(File beforeOf, File[] files) {
+        synchronized (panelItem.getTreeLock()) {
+            if (files == null) return;
+            int index = getIndexOf(beforeOf);
+            for (File file : files) {
+                if (isExist(file)) continue;
+                Item item = new Item(file);
+                item.createAndDrop();
+                panelItem.add(item, index);
+                index++;
+            }
+            movePrepared();
+            refresh();
+        }
+    }
+
+    protected void removeFile(File[] files) {
+        if (files == null) return;
         for (File file : files) {
-            Item item = new Item(file);
-            item.createAndDrop();
-            panelItem.add(item);
+            removeFile(file);
         }
         refresh();
     }
 
-    protected void removeFile(int index) {
-        panelItem.remove(index);
+    protected void removeFile(File file) {
+        if (file == null) return;
+        for (Component com : panelItem.getComponents()) {
+            if (((Item) com).getFile() == file) {
+                panelItem.remove(com);
+                return;
+            }
+        }
     }
 
     protected void removeAllFile() {
@@ -183,6 +209,38 @@ public class PanelDropper extends JPanel implements ActionListener {
         revalidate();
     }
 
+    private int getIndexOf(File file) {
+        if (file == null) {
+            return panelItem.getComponentCount();
+        }
+        for (Component com : panelItem.getComponents()) {
+            Item item = (Item) com;
+            if (item.getType() == Type.COMPLETE && item.getFile() == file) {
+                return panelItem.getComponentZOrder(com);
+            }
+        }
+        return panelItem.getComponentCount();
+    }
+
+    private void movePrepared() {
+        // move the prepared component to last index
+        for (Component com : panelItem.getComponents()) {
+            if (((Item) com).getType() == Type.PREPARE) {
+                panelItem.setComponentZOrder(com, panelItem.getComponentCount() - 1);
+            }
+        }
+    }
+
+    protected boolean isExist(File file) {
+        for (Component com : panelItem.getComponents()) {
+            Item item = (Item) com;
+            if (item.getFile() == file) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     protected void exit() {
         for (Component com : panelItem.getComponents()) {
             if (com instanceof Item) {
@@ -193,6 +251,10 @@ public class PanelDropper extends JPanel implements ActionListener {
             }
         }
         refresh();
+    }
+
+    public JPanel getPanelItem() {
+        return panelItem;
     }
 
     @Override
@@ -235,9 +297,15 @@ public class PanelDropper extends JPanel implements ActionListener {
                     "background:null;");
             setLayout(new BorderLayout());
             fileItem = new FileItem(action -> {
-                if (action == 0) {
+                if (action == -1) {
+                    // file progress done
+                    dropped();
+                    fileDropper.getModel().add(getProgressIndex(), file);
+                } else if (action == 0) {
+                    // file action view
                     fileDropper.fireFileView(new FileDropperEvent(this, file));
                 } else if (action == 1) {
+                    // file action delete
                     FileDropperEvent event = new FileDropperEvent(this, file);
                     fileDropper.fireFileDelete(event);
                     if (event.getType() != FileDropperEvent.REJECT) {
@@ -246,6 +314,18 @@ public class PanelDropper extends JPanel implements ActionListener {
                 }
             });
             add(fileItem);
+        }
+
+        private int getProgressIndex() {
+            synchronized (panelItem.getTreeLock()) {
+                int index = fileDropper.getModel().getSize();
+                for (int i = panelItem.getComponentZOrder(this) + 1; i < panelItem.getComponentCount(); i++) {
+                    if (((Item) panelItem.getComponent(i)).type == Type.COMPLETE) {
+                        index--;
+                    }
+                }
+                return Math.min(index, fileDropper.getModel().getSize());
+            }
         }
 
         protected void drop(Point dropLocation) {
@@ -264,8 +344,13 @@ public class PanelDropper extends JPanel implements ActionListener {
             dropped();
         }
 
+        protected void progress(Consumer<FileProgress> fileProgress) {
+            fileItem.progress(icon, fileProgress);
+            type = Type.PROGRESS;
+        }
+
         protected void dropped() {
-            fileItem.dropped(icon);
+            fileItem.dropped(type == Type.PROGRESS ? null : icon);
             type = Type.COMPLETE;
         }
 
@@ -331,6 +416,6 @@ public class PanelDropper extends JPanel implements ActionListener {
     }
 
     protected enum Type {
-        PREPARE, DROP, COMPLETE
+        PREPARE, DROP, PROGRESS, COMPLETE
     }
 }

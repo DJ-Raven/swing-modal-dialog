@@ -74,12 +74,9 @@ public class FileDropper extends JPanel implements FileDropperModelListener {
     @Override
     public void fileDropperChanged(FileDropperModalEvent evt) {
         if (evt.getType() == FileDropperModalEvent.INSERT) {
-            panelDropper.addFileAsDropped(model.getFile(evt.getFirstIndex()));
+            panelDropper.addFileAsDropped(evt.getBeforeOf(), evt.getFiles());
         } else if (evt.getType() == FileDropperModalEvent.DELETE) {
-            for (int i = evt.getLastIndex(); i >= evt.getFirstIndex(); i--) {
-                panelDropper.removeFile(i);
-            }
-            panelDropper.refresh();
+            panelDropper.removeFile(evt.getFiles());
         }
     }
 
@@ -87,7 +84,7 @@ public class FileDropper extends JPanel implements FileDropperModelListener {
         panelDropper.removeAllFile();
 
         if (model != null) {
-            panelDropper.addFileAsDropped(model.getFiles());
+            panelDropper.addFileAsDropped(null, model.getFiles());
         }
     }
 

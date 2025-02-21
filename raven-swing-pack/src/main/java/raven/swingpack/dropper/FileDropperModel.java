@@ -29,30 +29,42 @@ public class FileDropperModel {
         return lists.size();
     }
 
-    public void removeAt(int index) {
+    public synchronized void removeAt(int index) {
         if (index < lists.size()) {
-            lists.remove(index);
-            fireFileDropperModelChanged(new FileDropperModalEvent(this, index, FileDropperModalEvent.DELETE));
+            File file = lists.remove(index);
+            if (file != null) {
+                fireFileDropperModelChanged(new FileDropperModalEvent(this, FileDropperModalEvent.DELETE, null, file));
+            }
         }
     }
 
-    public void removeAll() {
+    public void removeAt(File file) {
+        int index = lists.indexOf(file);
+        removeAt(index);
+    }
+
+    public synchronized void removeAll() {
         if (!lists.isEmpty()) {
-            int startIndex = 0;
-            int lastIndex = lists.size() - 1;
+            File[] files = getFiles();
             lists.clear();
-            fireFileDropperModelChanged(new FileDropperModalEvent(this, startIndex, lastIndex, FileDropperModalEvent.DELETE));
+            fireFileDropperModelChanged(new FileDropperModalEvent(this, FileDropperModalEvent.DELETE, null, files));
         }
     }
 
     public void add(File file) {
-        lists.add(file);
-        fireFileDropperModelChanged(new FileDropperModalEvent(this, lists.size() - 1, FileDropperModalEvent.INSERT));
+        add(lists.size(), file);
     }
 
-    public void add(int index, File file) {
+    public synchronized void add(int index, File file) {
         lists.add(index, file);
-        fireFileDropperModelChanged(new FileDropperModalEvent(this, index, FileDropperModalEvent.INSERT));
+        fireFileDropperModelChanged(new FileDropperModalEvent(this, FileDropperModalEvent.INSERT, getBeforeOf(index), file));
+    }
+
+    private File getBeforeOf(int index) {
+        if (index + 1 < lists.size()) {
+            return lists.get(index + 1);
+        }
+        return null;
     }
 
     public void addFileDropperModelListener(FileDropperModelListener listener) {

@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -20,7 +21,7 @@ import java.util.function.Consumer;
  */
 public class FileItem extends JPanel {
 
-    private Consumer<Integer> actionCallback;
+    private final Consumer<Integer> actionCallback;
     private JLayeredPane layeredPane;
     private final Dimension iconSize = new Dimension(100, 100);
     private FileAction fileAction;
@@ -43,9 +44,26 @@ public class FileItem extends JPanel {
         add(layeredPane);
     }
 
-    public void dropped(AvatarIcon icon) {
-        layeredPane.add(createFileAction());
+    protected void progress(AvatarIcon icon, Consumer<FileProgress> fileProgress) {
+        layeredPane.add(createUploadProgress(fileProgress));
         layeredPane.add(new JLabel(icon));
+        repaint();
+        revalidate();
+    }
+
+    protected void removeProgress() {
+        if (uploadProgress != null) {
+            layeredPane.remove(uploadProgress);
+            uploadProgress = null;
+        }
+    }
+
+    public void dropped(AvatarIcon icon) {
+        removeProgress();
+        layeredPane.add(createFileAction(), 0);
+        if (icon != null) {
+            layeredPane.add(new JLabel(icon));
+        }
         repaint();
         revalidate();
     }
@@ -61,9 +79,9 @@ public class FileItem extends JPanel {
         return fileAction;
     }
 
-    private UploadProgress createUploadProgress() {
+    private UploadProgress createUploadProgress(Consumer<FileProgress> fileProgress) {
         if (uploadProgress == null) {
-            uploadProgress = new UploadProgress();
+            uploadProgress = new UploadProgress(fileProgress);
         }
         return uploadProgress;
     }
@@ -178,14 +196,38 @@ public class FileItem extends JPanel {
         }
     }
 
-    private static class UploadProgress extends JComponent {
+    private class UploadProgress extends JComponent implements FileProgress.ProgressCallback {
 
-        public UploadProgress() {
+        private final JLabel label;
+        private final JProgressBar progressBar;
+
+        public UploadProgress(Consumer<FileProgress> fileProgress) {
             setLayout(new MigLayout("wrap,al center bottom", "[center]"));
-            JProgressBar progressBar = new JProgressBar();
-            progressBar.setValue(50);
-            add(new JLabel("Uploading ..."));
+            progressBar = new JProgressBar();
+            label = new JLabel();
+            add(label);
             add(progressBar, "width 80%");
+            fileProgress.accept(new FileProgress(this));
+        }
+
+        @Override
+        public void valueChanged(float value) {
+            progressBar.setValue((int) (value * 100));
+        }
+
+        @Override
+        public void messageChanged(String message) {
+            label.setText(Objects.toString(message, ""));
+        }
+
+        @Override
+        public void error(String message) {
+            label.setText(Objects.toString(message, ""));
+        }
+
+        @Override
+        public void complete() {
+            actionCallback.accept(-1);
         }
     }
 

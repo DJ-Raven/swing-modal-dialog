@@ -1,5 +1,6 @@
 package raven.swingpack.dropper.event;
 
+import java.io.File;
 import java.util.EventObject;
 
 /**
@@ -12,29 +13,32 @@ public class FileDropperModalEvent extends EventObject {
     public static final int DELETE = -1;
 
     protected int type;
-    protected int firstIndex;
-    protected int lastIndex;
+    protected File[] files;
+    protected File beforeOf;
 
-    public FileDropperModalEvent(Object source, int index, int type) {
-        this(source, index, index, type);
-    }
-
-    public FileDropperModalEvent(Object source, int firstIndex, int lastIndex, int type) {
+    public FileDropperModalEvent(Object source, int type, File beforeOf, File... files) {
         super(source);
-        this.firstIndex = firstIndex;
-        this.lastIndex = lastIndex;
         this.type = type;
+        this.beforeOf = beforeOf;
+        this.files = files;
     }
 
     public int getType() {
         return type;
     }
 
-    public int getFirstIndex() {
-        return firstIndex;
+    public File getBeforeOf() {
+        return beforeOf;
     }
 
-    public int getLastIndex() {
-        return lastIndex;
+    public File[] getFiles() {
+        return files;
+    }
+
+    public File getFile() {
+        if (files == null || files.length == 0) {
+            return null;
+        }
+        return files[0];
     }
 }
