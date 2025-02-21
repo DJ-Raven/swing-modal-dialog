@@ -33,7 +33,7 @@ public abstract class AbstractModalContainerLayer extends AbstractRelativeContai
     public void removeContainer(ModalContainer container) {
         Option option = container.getOption();
         boolean visibility = isVisibility(option);
-        boolean fixedLayout = isFixedLayout(option);
+        boolean fixedLayout = isFixedLayout(option, container.getOwner());
         removeLayer(container, container.getOwner(), visibility, fixedLayout);
         containers.remove(container);
     }
@@ -47,7 +47,7 @@ public abstract class AbstractModalContainerLayer extends AbstractRelativeContai
         ModalContainer modalContainer = new ModalContainer(this, owner, option, id);
         int layer = JLayeredPane.MODAL_LAYER + (option.getLayoutOption().isOnTop() ? 1 : 0);
         boolean visibility = isVisibility(option);
-        boolean fixedLayout = isFixedLayout(option);
+        boolean fixedLayout = isFixedLayout(option, owner);
         getLayerAndCreate(owner, visibility, fixedLayout).add(modalContainer, layer, 0);
         modalContainer.initModal(modal);
         modalContainer.setComponentOrientation(layeredPane.getComponentOrientation());
@@ -135,7 +135,7 @@ public abstract class AbstractModalContainerLayer extends AbstractRelativeContai
         return option.getLayoutOption().isRelativeToOwner() && option.getLayoutOption().getRelativeToOwnerType() != LayoutOption.RelativeToOwnerType.RELATIVE_GLOBAL;
     }
 
-    private boolean isFixedLayout(Option option) {
-        return !option.getLayoutOption().isRelativeToOwner() || option.getLayoutOption().getRelativeToOwnerType() != LayoutOption.RelativeToOwnerType.RELATIVE_CONTAINED;
+    private boolean isFixedLayout(Option option, Component owner) {
+        return !option.getLayoutOption().isRelativeToOwner() || option.getLayoutOption().getRelativeToOwnerType() != LayoutOption.RelativeToOwnerType.RELATIVE_CONTAINED || owner instanceof RootPaneContainer;
     }
 }
