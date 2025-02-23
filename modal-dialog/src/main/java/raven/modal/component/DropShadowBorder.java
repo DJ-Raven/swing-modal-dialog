@@ -13,7 +13,7 @@ import java.awt.geom.RoundRectangle2D;
 /**
  * @author Raven
  */
-public class OutlineBorder extends FlatEmptyBorder {
+public class DropShadowBorder extends FlatEmptyBorder {
 
     private static final float inner = 0.2f;
     private final float borderWidth;
@@ -23,23 +23,23 @@ public class OutlineBorder extends FlatEmptyBorder {
     private final Color borderColor;
     private FlatDropShadowBorder shadowBorder;
 
-    public OutlineBorder(int shadowSize, float round) {
+    public DropShadowBorder(int shadowSize, float round) {
         this(new Insets(shadowSize, shadowSize, shadowSize, shadowSize), 0, round);
     }
 
-    public OutlineBorder(Insets shadowSize, float round) {
+    public DropShadowBorder(Insets shadowSize, float round) {
         this(shadowSize, 0, null, round);
     }
 
-    public OutlineBorder(Insets shadowSize, float borderWidth, float round) {
+    public DropShadowBorder(Insets shadowSize, float borderWidth, float round) {
         this(shadowSize, borderWidth, null, round);
     }
 
-    public OutlineBorder(Insets shadowSize, float borderWidth, Color borderColor, float round) {
+    public DropShadowBorder(Insets shadowSize, float borderWidth, Color borderColor, float round) {
         this(shadowSize, -1, null, borderWidth, borderColor, round);
     }
 
-    public OutlineBorder(Insets shadowSize, float shadowOpacity, Color shadowColor, float borderWidth, Color borderColor, float round) {
+    public DropShadowBorder(Insets shadowSize, float shadowOpacity, Color shadowColor, float borderWidth, Color borderColor, float round) {
         super(getShadowInsets(shadowSize, borderWidth, round));
         this.shadowSize = shadowSize;
         this.borderWidth = borderWidth;
@@ -82,7 +82,7 @@ public class OutlineBorder extends FlatEmptyBorder {
             FlatUIUtils.setRenderingHints(g2);
             if (c.isOpaque()) {
                 g2.setColor(getBackgroundColor());
-                g2.fill(new Rectangle(0, 0, c.getWidth(), c.getHeight()));
+                g2.fill(new Rectangle(x, y, c.getWidth(), c.getHeight()));
             }
             // paint shadow
             if (shadowBorder != null) {

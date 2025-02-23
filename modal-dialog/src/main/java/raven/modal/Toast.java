@@ -18,7 +18,7 @@ public class Toast {
 
     private static Toast instance;
     private final Integer LAYER = JLayeredPane.POPUP_LAYER;
-    private Map<RootPaneContainer, ToastContainerLayer> map;
+    private Map<RootPaneContainer, ToastController> map;
     private Map<Type, ToastPanel.ThemesData> themesDataMap;
     private ToastOption defaultOption;
     private boolean reverseOrder;
@@ -95,7 +95,7 @@ public class Toast {
     private static void show(Component owner, Type type, Object object, ToastOption option, ToastPromise promise) {
         ToastPanel.ThemesData themesData = getInstance().themesDataMap.get(type);
         RootPaneContainer rootPaneContainer = ModalDialog.getRootPaneContainer(owner);
-        AbstractToastContainerLayer toastContainerLayer = getInstance().getToastContainer(owner, option.isHeavyWeight());
+        ToastController toastContainerLayer = getInstance().getToastContainer(owner, option.isHeavyWeight());
         String message = object instanceof String ? object.toString() : null;
         Component toastOwner = option.getLayoutOption().isRelativeToOwner() ? owner : null;
         ToastPanel toastPanel = new ToastPanel(toastContainerLayer, toastOwner, new ToastPanel.ToastData(type, option, themesData, message));
@@ -109,7 +109,6 @@ public class Toast {
         if (rootPaneContainer.getRootPane().getComponentOrientation().isLeftToRight() != toastPanel.getComponentOrientation().isLeftToRight()) {
             toastPanel.applyComponentOrientation(rootPaneContainer.getRootPane().getComponentOrientation());
         }
-        toastContainerLayer.addToastPanel(toastPanel);
         toastPanel.start();
     }
 
@@ -117,7 +116,7 @@ public class Toast {
         if (id == null) {
             throw new IllegalArgumentException("id must not null");
         }
-        for (ToastContainerLayer com : getInstance().map.values()) {
+        for (ToastController com : getInstance().map.values()) {
             if (com.checkPromiseId(id)) {
                 return true;
             }
@@ -170,7 +169,7 @@ public class Toast {
     }
 
     private void updateLayout() {
-        for (ToastContainerLayer com : map.values()) {
+        for (ToastController com : map.values()) {
             com.updateLayout();
         }
         ToastHeavyWeight.getInstance().updateLayout();
@@ -182,7 +181,7 @@ public class Toast {
     private ToastContainerLayer getToastContainerLayered(RootPaneContainer rootPaneContainer) {
         ToastContainerLayer toastContainerLayer;
         if (map.containsKey(rootPaneContainer)) {
-            toastContainerLayer = map.get(rootPaneContainer);
+            toastContainerLayer = (ToastContainerLayer) map.get(rootPaneContainer);
         } else {
             // get layeredPane from window
             JLayeredPane windowLayeredPane = rootPaneContainer.getLayeredPane();
@@ -221,7 +220,7 @@ public class Toast {
         return layeredPane;
     }
 
-    private AbstractToastContainerLayer getToastContainer(Component owner, boolean isHeavyWeight) {
+    private ToastController getToastContainer(Component owner, boolean isHeavyWeight) {
         if (isHeavyWeight) {
             return ToastHeavyWeight.getInstance().getToastHeavyWeightContainer(owner);
         }
@@ -230,7 +229,8 @@ public class Toast {
 
     public static void setEnableHierarchy(boolean enable) {
         if (instance != null) {
-            instance.map.values().forEach(container -> container.setEnableHierarchy(enable));
+            // todo
+            // instance.map.values().forEach(container -> container.setEnableHierarchy(enable));
         }
         ToastHeavyWeight.getInstance().setEnableHierarchy(enable);
     }

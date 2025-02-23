@@ -1,7 +1,7 @@
 package raven.modal.option;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
-import raven.modal.component.OutlineBorder;
+import raven.modal.component.DropShadowBorder;
 import raven.modal.utils.ModalUtils;
 
 import javax.swing.border.Border;
@@ -115,7 +115,7 @@ public class BorderOption {
 
     public Border createBorder() {
         if (isBorderAble()) {
-            return new OutlineBorder(shadowSize, shadowOpacity, shadowColor, borderWidth, borderColor, round);
+            return new DropShadowBorder(shadowSize, shadowOpacity, shadowColor, borderWidth, borderColor, round);
         }
         return null;
     }

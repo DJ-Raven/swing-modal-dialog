@@ -2,7 +2,6 @@ package raven.modal.component;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import raven.modal.layout.FullContentLayout;
-import raven.modal.toast.ToastHeavyWeightContainerLayer;
 import raven.modal.utils.ModalUtils;
 
 import javax.swing.*;
@@ -42,12 +41,6 @@ public class ModalWindow extends JWindow {
         setBackground(new Color(0, 0, 0, 0));
         installParentWindowListener();
         setAutoRequestFocus(false);
-    }
-
-    public void addToast(ToastHeavyWeightContainerLayer toast) {
-        list.add(toast);
-        toast.initComponentOrientation(parentWindow.getComponentOrientation());
-        layeredPane.add(toast.getLayeredPane(), JLayeredPane.POPUP_LAYER);
     }
 
     public void addModal(ModalHeavyWeightContainerLayer modal) {

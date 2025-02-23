@@ -1,10 +1,10 @@
 package raven.modal.toast;
 
 import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.ui.FlatEmptyBorder;
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.ColorFunctions;
 import com.formdev.flatlaf.util.UIScale;
-import raven.modal.component.OutlineBorder;
 import raven.modal.toast.option.ToastBorderStyle;
 import raven.modal.toast.option.ToastStyle;
 
@@ -16,14 +16,11 @@ import java.awt.image.BufferedImage;
 /**
  * @author Raven
  */
-public class ToastBorder extends OutlineBorder {
+public class ToastBorder extends FlatEmptyBorder {
 
-    private Component component;
     private ToastPanel.ToastData toastData;
 
-    public ToastBorder(Component component, ToastPanel.ToastData toastData, Insets shadowSize, float shadowOpacity, Color shadowColor, float round) {
-        super(shadowSize, shadowOpacity, shadowColor, 0, null, round);
-        this.component = component;
+    public ToastBorder(ToastPanel.ToastData toastData) {
         this.toastData = toastData;
     }
 
@@ -65,16 +62,6 @@ public class ToastBorder extends OutlineBorder {
         }
     }
 
-    private Insets getInsets(Component c) {
-        Insets insets = getShadowSize();
-        if (!c.getComponentOrientation().isLeftToRight()) {
-            int temp = insets.left;
-            insets.left = insets.right;
-            insets.right = temp;
-        }
-        return UIScale.scale(insets);
-    }
-
     @Override
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
         Graphics2D g2 = null;
@@ -82,34 +69,33 @@ public class ToastBorder extends OutlineBorder {
             BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
             g2 = image.createGraphics();
             FlatUIUtils.setRenderingHints(g2);
-            super.paintBorder(c, g2, x, y, width, height);
             ToastStyle style = toastData.getOption().getStyle();
             ToastBorderStyle borderStyle = style.getBorderStyle();
             boolean ltr = c.getComponentOrientation().isLeftToRight();
-            Insets insets = getInsets(c);
-            int lx = insets.left;
-            int ly = insets.top;
-            int bw = width - (insets.left + insets.right);
-            int bh = height - (insets.bottom + insets.top);
-            float arc = Math.min(UIScale.scale(getRound()), height) / 2f;
+
+            int lx = 0;
+            int ly = 0;
+            int bw = width;
+            int bh = height;
+            float arc = Math.min(UIScale.scale(0), height) / 2f;
 
             // create background style
             ToastPanel.ThemesData themesData = toastData.getThemes();
             Color defaultColor = Color.decode(FlatLaf.isLafDark() ? themesData.getColors()[1] : themesData.getColors()[0]);
             if (style.getBackgroundType() == ToastStyle.BackgroundType.GRADIENT) {
-                Color color = ColorFunctions.mix(defaultColor, component.getBackground(), 0.3f);
-                float start = ltr ? x : (x + width) * 0.8f;
-                float end = ltr ? (x + width) * 0.8f : x;
-                g2.setPaint(new GradientPaint(start, y, color, end, y, component.getBackground()));
+                Color color = ColorFunctions.mix(defaultColor, c.getBackground(), 0.3f);
+                float start = ltr ? 0 : (width) * 0.8f;
+                float end = ltr ? (width) * 0.8f : 0;
+                g2.setPaint(new GradientPaint(start, 0, color, end, 0, c.getBackground()));
             } else {
-                g2.setColor(component.getBackground());
+                g2.setColor(c.getBackground());
             }
             Shape shapeBackground = FlatUIUtils.createRoundRectanglePath(lx, ly, bw, bh, arc, arc, arc, arc);
             g2.fill(shapeBackground);
 
             // create border style
             if (borderStyle.getBorderType() != ToastBorderStyle.BorderType.NONE) {
-                Color color = ColorFunctions.mix(defaultColor, component.getBackground(), 0.6f);
+                Color color = ColorFunctions.mix(defaultColor, c.getBackground(), 0.6f);
                 g2.setColor(color);
                 if (borderStyle.getBorderType() == ToastBorderStyle.BorderType.OUTLINE) {
                     float lineWidth = UIScale.scale(borderStyle.getBorderWidth());

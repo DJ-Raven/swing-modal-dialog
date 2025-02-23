@@ -132,8 +132,8 @@ public class ToastBorderStyle {
         return this;
     }
 
-    public Border createBorder(Component component, ToastPanel.ToastData toastData) {
-        return new ToastBorder(component, toastData, shadowSize, shadowOpacity, shadowColor, round);
+    public Border createBorder(ToastPanel.ToastData toastData) {
+        return new ToastBorder(toastData);
     }
 
     public ToastBorderStyle copy() {
