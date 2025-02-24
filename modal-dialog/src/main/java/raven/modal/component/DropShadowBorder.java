@@ -8,7 +8,9 @@ import raven.modal.utils.ModalUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.RoundRectangle2D;
+import java.awt.geom.Area;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 
 /**
  * @author Raven
@@ -76,17 +78,18 @@ public class DropShadowBorder extends FlatEmptyBorder {
 
     @Override
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-        Graphics2D g2 = (Graphics2D) g.create();
-
+        Graphics2D g2 = null;
         try {
+            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            g2 = image.createGraphics();
             FlatUIUtils.setRenderingHints(g2);
-            if (c.isOpaque()) {
-                g2.setColor(getBackgroundColor());
-                g2.fill(new Rectangle(x, y, c.getWidth(), c.getHeight()));
-            }
+
             // paint shadow
             if (shadowBorder != null) {
-                shadowBorder.paintBorder(c, g2, x, y, width, height);
+                g2.fill(getPaintShape(width, height));
+                g2.setComposite(AlphaComposite.SrcIn);
+                shadowBorder.paintBorder(c, g2, 0, 0, width, height);
+                g2.setComposite(AlphaComposite.SrcOver);
             }
 
             int top = shadowSize.top;
@@ -108,17 +111,23 @@ public class DropShadowBorder extends FlatEmptyBorder {
             g2.translate(lx, ly);
 
             // paint background
-            g2.setColor(c.getBackground());
-            g2.fill(new RoundRectangle2D.Float(x, y, w, h, arc, arc));
+            Shape shape = getBorderShape(0, 0, w, h, arc);
+            if (shape != null) {
+                g2.setColor(c.getBackground());
+                g2.fill(shape);
+            }
 
             // paint outline
             if (borderWidth > 0) {
                 Color color = getBorderColor();
                 g2.setColor(color);
-                FlatUIUtils.paintOutline(g2, x, y, w, h, lineWidth, arc);
+                FlatUIUtils.paintOutline(g2, 0, 0, w, h, lineWidth, arc);
             }
+            g.drawImage(image, x, y, null);
         } finally {
-            g2.dispose();
+            if (g2 != null) {
+                g2.dispose();
+            }
         }
     }
 
@@ -130,8 +139,34 @@ public class DropShadowBorder extends FlatEmptyBorder {
         return color;
     }
 
-    private Color getBackgroundColor() {
-        return UIManager.getColor("Panel.background");
+    private Shape getPaintShape(float width, float height) {
+        Area area = new Area(new Rectangle2D.Float(0, 0, width, height));
+        Insets insets = getBorderInsets();
+        float innerWidth = width - (insets.left + insets.right);
+        float innerHeight = height - (insets.top + insets.bottom);
+        if (innerWidth > 0 && innerHeight > 0) {
+            area.subtract(new Area(new Rectangle2D.Float(insets.left, insets.top, innerWidth, innerHeight)));
+        }
+        return area;
+    }
+
+    private Shape getBorderShape(float x, float y, float width, float height, float arc) {
+        if (round == 0) {
+            return null;
+        }
+        Area area = new Area(FlatUIUtils.createComponentRectangle(x, y, width, height, arc));
+        Insets insets = getBorderInsets();
+        Insets shadowSize = UIScale.scale(getShadowSize());
+        float innerWidth = width - (insets.left + insets.right) + (shadowSize.left + shadowSize.right);
+        float innerHeight = height - (insets.top + insets.bottom) + (shadowSize.top + shadowSize.bottom);
+        if (innerWidth > 0 && innerHeight > 0) {
+            area.subtract(new Area(new Rectangle2D.Float(
+                    insets.left - shadowSize.left,
+                    insets.top - shadowSize.top,
+                    innerWidth,
+                    innerHeight)));
+        }
+        return area;
     }
 
     public Insets getShadowSize() {
