@@ -3,6 +3,7 @@ package raven.modal.toast;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.ColorFunctions;
+import com.formdev.flatlaf.util.UIScale;
 import raven.modal.toast.option.ToastStyle;
 
 import javax.swing.*;
@@ -33,13 +34,15 @@ class ToastContent extends JComponent {
             if (toastData.getOption().getStyle().getBackgroundType() == ToastStyle.BackgroundType.GRADIENT) {
                 ToastPanel.ThemesData themesData = toastData.getThemes();
                 boolean ltr = getComponentOrientation().isLeftToRight();
+                float arc = UIScale.scale(toastData.getOption().getStyle().getBorderStyle().getRound() * 0.6f) / 2f;
+
                 // gradient paint base on the parent component
                 Rectangle rec = FlatUIUtils.addInsets(new Rectangle(0, 0, getWidth(), getHeight()), parent.getInsets());
                 Color color = ColorFunctions.mix(Color.decode(FlatLaf.isLafDark() ? themesData.getColors()[1] : themesData.getColors()[0]), parent.getBackground(), 0.3f);
                 float start = ltr ? rec.x : (rec.x + rec.width) * 0.8f;
                 float end = ltr ? (rec.x + rec.width) * 0.8f : rec.x;
                 g2.setPaint(new GradientPaint(start, 0, color, end, 0, parent.getBackground()));
-                g2.fill(new Rectangle2D.Float(0, 0, getWidth(), getHeight()));
+                g2.fill(FlatUIUtils.createRoundRectanglePath(0, 0, getWidth(), getHeight(), arc, arc, arc, arc));
             } else {
                 g2.setColor(parent.getBackground());
                 g2.fill(new Rectangle2D.Float(0, 0, getWidth(), getHeight()));

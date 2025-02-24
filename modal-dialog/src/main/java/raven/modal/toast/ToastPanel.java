@@ -63,7 +63,9 @@ public class ToastPanel extends JPanel {
 
     private void init() {
         setLayout(new BorderLayout());
-        setOpaque(false);
+        if (!toastData.getOption().isHeavyWeight()) {
+            setOpaque(false);
+        }
         if (isAnimationSupport()) {
             animate = 0f;
         }
@@ -143,7 +145,7 @@ public class ToastPanel extends JPanel {
             toastCustom.initToastAction(getCustomAction());
         }
         content.add(component);
-        setBorder(toastData.getOption().getStyle().getBorderStyle().createBorder(toastData));
+        initBorder();
         installStyle(toastData.themes);
         add(content);
         return this;

@@ -77,7 +77,8 @@ public class ToastBorder extends FlatEmptyBorder {
             int ly = 0;
             int bw = width;
             int bh = height;
-            float arc = Math.min(UIScale.scale(0), height) / 2f;
+            float innerRound = style.getBorderStyle().getRound() * 0.6f;
+            float arc = Math.min(UIScale.scale(innerRound), height) / 2f;
 
             // create background style
             ToastPanel.ThemesData themesData = toastData.getThemes();
