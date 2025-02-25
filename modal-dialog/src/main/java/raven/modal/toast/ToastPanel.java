@@ -1,7 +1,9 @@
 package raven.modal.toast;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.Animator;
 import com.formdev.flatlaf.util.CubicBezierEasing;
 import net.miginfocom.swing.MigLayout;
@@ -83,12 +85,23 @@ public class ToastPanel extends JPanel {
         if (toastData == null || content == null) {
             return;
         }
-        Border border = toastData.getOption().getStyle().getBorderStyle().createBorder(toastData);
+        Border border = new ToastBorder(toastData);
         if (getOption().isHeavyWeight()) {
-            setBorder(border);
+            setBorder(new ToastBorder(toastData));
         } else {
             ToastBorderStyle borderStyle = toastData.getOption().getStyle().getBorderStyle();
-            setBorder(new CompoundBorder(new DropShadowBorder(borderStyle.getShadowSize(), borderStyle.getRound()), border));
+            int borderWidth = borderStyle.getBorderType() == ToastBorderStyle.BorderType.OUTLINE ? borderStyle.getBorderWidth() : 0;
+            if (FlatUIUtils.isInsetsEmpty(borderStyle.getShadowSize()) && borderStyle.getRound() == 0 && borderWidth == 0) {
+                setBorder(border);
+            } else {
+                Border shadow = new DropShadowBorder(borderStyle.getShadowSize(),
+                        borderStyle.getShadowOpacity(),
+                        borderStyle.getShadowColor(),
+                        borderWidth,
+                        toastData.getThemes().getColor(),
+                        borderStyle.getRound());
+                setBorder(new CompoundBorder(shadow, border));
+            }
         }
     }
 
@@ -565,5 +578,9 @@ public class ToastPanel extends JPanel {
 
         private String icon;
         private String[] colors;
+
+        public Color getColor() {
+            return Color.decode(FlatLaf.isLafDark() ? colors[1] : colors[0]);
+        }
     }
 }

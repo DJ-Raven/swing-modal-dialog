@@ -5,8 +5,11 @@ import raven.modal.Toast;
 import raven.modal.component.HeavyWeightRelativeLayout;
 import raven.modal.layout.OptionLayoutUtils;
 import raven.modal.option.LayoutOption;
+import raven.modal.toast.option.ToastBorderStyle;
 import raven.modal.toast.option.ToastOption;
+import raven.modal.toast.option.ToastStyle;
 import raven.modal.utils.ModalWindow;
+import raven.modal.utils.ModalWindowBorder;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -21,6 +24,24 @@ public class ToastHeavyWeightLayout extends HeavyWeightRelativeLayout {
 
     public ToastHeavyWeightLayout(Component owner) {
         super(owner);
+    }
+
+    @Override
+    protected ModalWindowBorder getModalWindowBorder(Component contents) {
+        if (contents instanceof ToastPanel) {
+            ToastPanel.ToastData toastData = ((ToastPanel) contents).getToastData();
+            ToastOption toastOption = toastData.getOption();
+            ToastStyle style = toastOption.getStyle();
+            int borderWidth = style.getBorderStyle().getBorderType() == ToastBorderStyle.BorderType.OUTLINE ?
+                    style.getBorderStyle().getBorderWidth() : 0;
+            return new ModalWindowBorder(style.getBorderStyle().getShadowSize(),
+                    style.getBorderStyle().getShadowOpacity(),
+                    style.getBorderStyle().getShadowColor(),
+                    borderWidth,
+                    toastData.getThemes().getColor(),
+                    style.getBorderStyle().getRound());
+        }
+        return null;
     }
 
     @Override

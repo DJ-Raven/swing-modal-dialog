@@ -1,6 +1,5 @@
 package raven.modal.toast;
 
-import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.ui.FlatEmptyBorder;
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.ColorFunctions;
@@ -26,30 +25,26 @@ public class ToastBorder extends FlatEmptyBorder {
 
     private Insets getStyleBorderInsets(Component c) {
         ToastBorderStyle style = toastData.getOption().getStyle().getBorderStyle();
-        if (style.getBorderType() != ToastBorderStyle.BorderType.NONE) {
-            if (style.getBorderType() == ToastBorderStyle.BorderType.OUTLINE) {
-                int line = UIScale.scale(style.getBorderWidth());
-                return new Insets(line, line, line, line);
-            } else {
-                int line = UIScale.scale(style.getLineSize());
-                boolean ltr = c.getComponentOrientation().isLeftToRight();
-                int top = 0;
-                int left = 0;
-                int bottom = 0;
-                int right = 0;
-                if ((style.getBorderType() == ToastBorderStyle.BorderType.LEADING_LINE && ltr) || (style.getBorderType() == ToastBorderStyle.BorderType.TRAILING_LINE && !ltr)) {
-                    left = line;
-                } else if ((style.getBorderType() == ToastBorderStyle.BorderType.TRAILING_LINE && ltr) || (style.getBorderType() == ToastBorderStyle.BorderType.LEADING_LINE && !ltr)) {
-                    right = line;
-                } else if (style.getBorderType() == ToastBorderStyle.BorderType.TOP_LINE) {
-                    top = line;
-                } else {
-                    bottom = line;
-                }
-                return new Insets(top, left, bottom, right);
-            }
+        ToastBorderStyle.BorderType borderType = style.getBorderType();
+        if (borderType == ToastBorderStyle.BorderType.NONE || borderType == ToastBorderStyle.BorderType.OUTLINE) {
+            return null;
         }
-        return null;
+        int line = UIScale.scale(style.getLineSize());
+        boolean ltr = c.getComponentOrientation().isLeftToRight();
+        int top = 0;
+        int left = 0;
+        int bottom = 0;
+        int right = 0;
+        if ((borderType == ToastBorderStyle.BorderType.LEADING_LINE && ltr) || (borderType == ToastBorderStyle.BorderType.TRAILING_LINE && !ltr)) {
+            left = line;
+        } else if ((borderType == ToastBorderStyle.BorderType.TRAILING_LINE && ltr) || (borderType == ToastBorderStyle.BorderType.LEADING_LINE && !ltr)) {
+            right = line;
+        } else if (borderType == ToastBorderStyle.BorderType.TOP_LINE) {
+            top = line;
+        } else {
+            bottom = line;
+        }
+        return new Insets(top, left, bottom, right);
     }
 
     @Override
@@ -82,7 +77,7 @@ public class ToastBorder extends FlatEmptyBorder {
 
             // create background style
             ToastPanel.ThemesData themesData = toastData.getThemes();
-            Color defaultColor = Color.decode(FlatLaf.isLafDark() ? themesData.getColors()[1] : themesData.getColors()[0]);
+            Color defaultColor = themesData.getColor();
             if (style.getBackgroundType() == ToastStyle.BackgroundType.GRADIENT) {
                 Color color = ColorFunctions.mix(defaultColor, c.getBackground(), 0.3f);
                 float start = ltr ? 0 : (width) * 0.8f;
@@ -95,26 +90,22 @@ public class ToastBorder extends FlatEmptyBorder {
             g2.fill(shapeBackground);
 
             // create border style
-            if (borderStyle.getBorderType() != ToastBorderStyle.BorderType.NONE) {
+            ToastBorderStyle.BorderType borderType = borderStyle.getBorderType();
+            if (borderType != ToastBorderStyle.BorderType.NONE && borderType != ToastBorderStyle.BorderType.OUTLINE) {
+                float lineWidth = UIScale.scale(borderStyle.getLineSize());
+                Area area = new Area(shapeBackground);
+                if ((borderType == ToastBorderStyle.BorderType.LEADING_LINE && ltr) || borderType == ToastBorderStyle.BorderType.TRAILING_LINE && !ltr) {
+                    area.intersect(new Area(new Rectangle2D.Float(lx, ly, lineWidth, bh)));
+                } else if ((borderType == ToastBorderStyle.BorderType.TRAILING_LINE && ltr) || (borderType == ToastBorderStyle.BorderType.LEADING_LINE && !ltr)) {
+                    area.intersect(new Area(new Rectangle2D.Float(lx + bw - lineWidth, ly, lineWidth, bh)));
+                } else if (borderType == ToastBorderStyle.BorderType.TOP_LINE) {
+                    area.intersect(new Area(new Rectangle2D.Float(lx, ly, bw, lineWidth)));
+                } else {
+                    area.intersect(new Area(new Rectangle2D.Float(lx, ly + bh - lineWidth, bw, lineWidth)));
+                }
                 Color color = ColorFunctions.mix(defaultColor, c.getBackground(), 0.6f);
                 g2.setColor(color);
-                if (borderStyle.getBorderType() == ToastBorderStyle.BorderType.OUTLINE) {
-                    float lineWidth = UIScale.scale(borderStyle.getBorderWidth());
-                    g2.fill(FlatUIUtils.createRoundRectangle(lx, ly, bw, bh, lineWidth, arc, arc, arc, arc));
-                } else {
-                    float lineWidth = UIScale.scale(borderStyle.getLineSize());
-                    Area area = new Area(shapeBackground);
-                    if ((borderStyle.getBorderType() == ToastBorderStyle.BorderType.LEADING_LINE && ltr) || borderStyle.getBorderType() == ToastBorderStyle.BorderType.TRAILING_LINE && !ltr) {
-                        area.intersect(new Area(new Rectangle2D.Float(lx, ly, lineWidth, bh)));
-                    } else if ((borderStyle.getBorderType() == ToastBorderStyle.BorderType.TRAILING_LINE && ltr) || (borderStyle.getBorderType() == ToastBorderStyle.BorderType.LEADING_LINE && !ltr)) {
-                        area.intersect(new Area(new Rectangle2D.Float(lx + bw - lineWidth, ly, lineWidth, bh)));
-                    } else if (borderStyle.getBorderType() == ToastBorderStyle.BorderType.TOP_LINE) {
-                        area.intersect(new Area(new Rectangle2D.Float(lx, ly, bw, lineWidth)));
-                    } else {
-                        area.intersect(new Area(new Rectangle2D.Float(lx, ly + bh - lineWidth, bw, lineWidth)));
-                    }
-                    g2.fill(area);
-                }
+                g2.fill(area);
             }
             g.drawImage(image, x, y, null);
         } finally {

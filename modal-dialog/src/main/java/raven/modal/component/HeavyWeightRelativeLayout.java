@@ -1,6 +1,7 @@
 package raven.modal.component;
 
 import raven.modal.utils.ModalWindow;
+import raven.modal.utils.ModalWindowBorder;
 import raven.modal.utils.ModalWindowFactory;
 
 import java.awt.*;
@@ -27,7 +28,7 @@ public abstract class HeavyWeightRelativeLayout {
     }
 
     public void add(Component contents) {
-        ModalWindow modal = ModalWindowFactory.getInstance().getWindow(owner, contents, 0, 0);
+        ModalWindow modal = ModalWindowFactory.getInstance().getWindow(owner, contents, getModalWindowBorder(contents), 0, 0);
         modalWindows.add(modal);
         checkAndUpdateLayout();
         if (owner.isShowing()) {
@@ -72,6 +73,8 @@ public abstract class HeavyWeightRelativeLayout {
         checkAndUpdateLayout();
     }
 
+    protected abstract ModalWindowBorder getModalWindowBorder(Component contents);
+
     protected abstract void updateLayout();
 
     public void installOwner() {
@@ -80,7 +83,6 @@ public abstract class HeavyWeightRelativeLayout {
                 componentListener = new ComponentAdapter() {
                     @Override
                     public void componentResized(ComponentEvent e) {
-                        System.out.println("componentResized");
                         checkAndUpdateLayout();
                     }
 
@@ -112,7 +114,6 @@ public abstract class HeavyWeightRelativeLayout {
 
                     @Override
                     public void ancestorResized(HierarchyEvent e) {
-                        System.out.println("ancestorResized");
                         checkAndUpdateLayout();
                     }
                 };

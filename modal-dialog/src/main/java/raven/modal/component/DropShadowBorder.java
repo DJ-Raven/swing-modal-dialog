@@ -8,8 +8,6 @@ import raven.modal.utils.ModalUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Area;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 /**
@@ -86,10 +84,7 @@ public class DropShadowBorder extends FlatEmptyBorder {
 
             // paint shadow
             if (shadowBorder != null) {
-                g2.fill(getPaintShape(width, height));
-                g2.setComposite(AlphaComposite.SrcIn);
                 shadowBorder.paintBorder(c, g2, 0, 0, width, height);
-                g2.setComposite(AlphaComposite.SrcOver);
             }
 
             int top = shadowSize.top;
@@ -111,11 +106,8 @@ public class DropShadowBorder extends FlatEmptyBorder {
             g2.translate(lx, ly);
 
             // paint background
-            Shape shape = getBorderShape(0, 0, w, h, arc);
-            if (shape != null) {
-                g2.setColor(c.getBackground());
-                g2.fill(shape);
-            }
+            g2.setColor(c.getBackground());
+            g2.fill(FlatUIUtils.createComponentRectangle(0, 0, w, h, arc));
 
             // paint outline
             if (borderWidth > 0) {
@@ -137,36 +129,6 @@ public class DropShadowBorder extends FlatEmptyBorder {
         }
         Color color = UIManager.getColor("Component.borderColor");
         return color;
-    }
-
-    private Shape getPaintShape(float width, float height) {
-        Area area = new Area(new Rectangle2D.Float(0, 0, width, height));
-        Insets insets = getBorderInsets();
-        float innerWidth = width - (insets.left + insets.right);
-        float innerHeight = height - (insets.top + insets.bottom);
-        if (innerWidth > 0 && innerHeight > 0) {
-            area.subtract(new Area(new Rectangle2D.Float(insets.left, insets.top, innerWidth, innerHeight)));
-        }
-        return area;
-    }
-
-    private Shape getBorderShape(float x, float y, float width, float height, float arc) {
-        if (round == 0) {
-            return null;
-        }
-        Area area = new Area(FlatUIUtils.createComponentRectangle(x, y, width, height, arc));
-        Insets insets = getBorderInsets();
-        Insets shadowSize = UIScale.scale(getShadowSize());
-        float innerWidth = width - (insets.left + insets.right) + (shadowSize.left + shadowSize.right);
-        float innerHeight = height - (insets.top + insets.bottom) + (shadowSize.top + shadowSize.bottom);
-        if (innerWidth > 0 && innerHeight > 0) {
-            area.subtract(new Area(new Rectangle2D.Float(
-                    insets.left - shadowSize.left,
-                    insets.top - shadowSize.top,
-                    innerWidth,
-                    innerHeight)));
-        }
-        return area;
     }
 
     public Insets getShadowSize() {

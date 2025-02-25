@@ -1,7 +1,6 @@
 package raven.modal.utils;
 
-import com.formdev.flatlaf.ui.FlatDropShadowBorder;
-import com.formdev.flatlaf.ui.FlatUIUtils;
+import raven.modal.component.DropShadowBorder;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -24,10 +23,19 @@ public class ModalWindowFactory {
     private ModalWindowFactory() {
     }
 
-
     public ModalWindow getWindow(Component owner, Component contents, int x, int y) {
+        return getWindow(owner, contents, null, x, y);
+    }
 
-        return new DropShadowModalWindow(owner, contents, x, y);
+    public ModalWindow getWindow(Component owner, Component contents, ModalWindowBorder border, int x, int y) {
+
+        if (border == null) {
+            border = ModalWindowBorder.getDefault();
+        }
+        if (!border.isCreatedAble()) {
+            return new ModalWindow(owner, contents, x, y);
+        }
+        return new DropShadowModalWindow(owner, contents, border, x, y);
     }
 
     private class DropShadowModalWindow extends ModalWindow {
@@ -35,12 +43,13 @@ public class ModalWindowFactory {
         private Window dropShadowWindow;
         private JPanel dropShadowPanel;
 
-        public DropShadowModalWindow(Component owner, Component contents, int x, int y) {
+        public DropShadowModalWindow(Component owner, Component contents, ModalWindowBorder border, int x, int y) {
             super(owner, contents, x, y);
 
             // create drop shadow component
             dropShadowPanel = new JPanel();
-            dropShadowPanel.setBorder(createDropShadowBorder());
+            dropShadowPanel.setBackground(contents.getBackground());
+            dropShadowPanel.setBorder(createDropShadowBorder(border));
             dropShadowPanel.setOpaque(false);
 
             // init preferred size
@@ -87,13 +96,14 @@ public class ModalWindowFactory {
             dropShadowWindow.setVisible(true);
         }
 
-        private Border createDropShadowBorder() {
-            // todo
-            return new FlatDropShadowBorder(
-                    UIManager.getColor("Popup.dropShadowColor"),
-                    // UIManager.getInsets("Popup.dropShadowInsets"),
-                    new Insets(3, 3, 10, 10),
-                    FlatUIUtils.getUIFloat("Popup.dropShadowOpacity", 0.5f));
+        private Border createDropShadowBorder(ModalWindowBorder border) {
+            return new DropShadowBorder(
+                    border.getShadowSize(),
+                    border.getShadowOpacity(),
+                    border.getShadowColor(),
+                    border.getBorderWidth(),
+                    border.getBorderColor(),
+                    border.getRound());
         }
 
         private Rectangle getDropShadowWindowBounds() {
