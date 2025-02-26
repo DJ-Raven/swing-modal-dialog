@@ -3,9 +3,11 @@ package raven.modal.toast;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.Animator;
 import com.formdev.flatlaf.util.CubicBezierEasing;
+import com.formdev.flatlaf.util.SystemInfo;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.Toast;
 import raven.modal.component.DropShadowBorder;
@@ -86,11 +88,15 @@ public class ToastPanel extends JPanel {
             return;
         }
         Border border = new ToastBorder(toastData);
+        ToastBorderStyle borderStyle = toastData.getOption().getStyle().getBorderStyle();
+        int borderWidth = borderStyle.getBorderType() == ToastBorderStyle.BorderType.OUTLINE ? borderStyle.getBorderWidth() : 0;
         if (getOption().isHeavyWeight()) {
-            setBorder(new ToastBorder(toastData));
+            if (borderWidth > 0 && SystemInfo.isWindows_11_orLater) {
+                setBorder(new CompoundBorder(new FlatLineBorder(new Insets(borderWidth, borderWidth, borderWidth, borderWidth), toastData.getThemes().getColor(), borderWidth, 0), border));
+            } else {
+                setBorder(new ToastBorder(toastData));
+            }
         } else {
-            ToastBorderStyle borderStyle = toastData.getOption().getStyle().getBorderStyle();
-            int borderWidth = borderStyle.getBorderType() == ToastBorderStyle.BorderType.OUTLINE ? borderStyle.getBorderWidth() : 0;
             if (FlatUIUtils.isInsetsEmpty(borderStyle.getShadowSize()) && borderStyle.getRound() == 0 && borderWidth == 0) {
                 setBorder(border);
             } else {

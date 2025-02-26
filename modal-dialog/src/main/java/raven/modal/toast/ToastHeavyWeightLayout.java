@@ -1,5 +1,6 @@
 package raven.modal.toast;
 
+import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.UIScale;
 import raven.modal.Toast;
 import raven.modal.component.HeavyWeightRelativeLayout;
@@ -59,6 +60,17 @@ public class ToastHeavyWeightLayout extends HeavyWeightRelativeLayout {
         }
     }
 
+    private Dimension getShadowSize(ToastBorderStyle borderStyle) {
+        int borderWidth = borderStyle.getBorderType() == ToastBorderStyle.BorderType.OUTLINE ? borderStyle.getBorderWidth() : 0;
+        if (FlatUIUtils.isInsetsEmpty(borderStyle.getShadowSize()) && borderWidth == 0) {
+            return null;
+        }
+        Insets shadowSize = borderStyle.getShadowSize();
+        int width = shadowSize.left + shadowSize.right + borderWidth * 2;
+        int height = shadowSize.top + shadowSize.bottom + borderWidth * 2;
+        return UIScale.scale(new Dimension(width, height));
+    }
+
     private void updateLayout(List<ModalWindow> list) {
         if (list.isEmpty()) return;
 
@@ -71,7 +83,9 @@ public class ToastHeavyWeightLayout extends HeavyWeightRelativeLayout {
             ToastOption option = toastPanel.getOption();
             LayoutOption layoutOption = option.getLayoutOption().createLayoutOption(owner, toastPanel.getOwner());
             boolean isToBottomDirection = option.getLayoutOption().getDirection().isToBottomDirection();
-            Rectangle rec = OptionLayoutUtils.getLayoutLocation((Container) owner, null, toastPanel, toastPanel.getAnimate(), layoutOption);
+            Dimension extraSize = getShadowSize(option.getStyle().getBorderStyle());
+
+            Rectangle rec = OptionLayoutUtils.getLayoutLocation((Container) owner, null, toastPanel, toastPanel.getAnimate(), layoutOption, extraSize);
             if (i == 0) {
                 ly += rec.y;
             }

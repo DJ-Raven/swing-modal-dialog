@@ -15,6 +15,10 @@ import java.awt.*;
 public class OptionLayoutUtils {
 
     public static Rectangle getLayoutLocation(Container parent, Component owner, Component component, float animate, LayoutOption layoutOption) {
+        return getLayoutLocation(parent, owner, component, animate, layoutOption, null);
+    }
+
+    public static Rectangle getLayoutLocation(Container parent, Component owner, Component component, float animate, LayoutOption layoutOption, Dimension extraSize) {
         Insets parentInsert = parent.getInsets();
         Insets insets = layoutOption.getMargin();
         Dimension defaultComSize = getComponentSize(parent, insets);
@@ -26,7 +30,7 @@ public class OptionLayoutUtils {
         int y = insets.top;
         int width = parent.getWidth() - (insets.left + insets.right);
         int height = parent.getHeight() - (insets.top + insets.bottom);
-        Dimension comSize = getComponentSize(component, defaultComSize.width, defaultComSize.height, animate, layoutOption);
+        Dimension comSize = getComponentSize(component, defaultComSize.width, defaultComSize.height, animate, layoutOption, extraSize);
         boolean rightToLeft = !parent.getComponentOrientation().isLeftToRight();
         Location lh = layoutOption.getHorizontalLocation();
         Number lx = layoutOption.getLocation().getX();
@@ -109,9 +113,13 @@ public class OptionLayoutUtils {
         return value;
     }
 
-    protected static Dimension getComponentSize(Component component, int width, int height, float animate, LayoutOption layoutOption) {
+    protected static Dimension getComponentSize(Component component, int width, int height, float animate, LayoutOption layoutOption, Dimension extraSize) {
         Dimension componentSize = component.getPreferredSize();
         Dimension minimumSize = component.getMinimumSize();
+        if (extraSize != null) {
+            componentSize.width += extraSize.width;
+            componentSize.height += extraSize.height;
+        }
         Dimension targetSize = layoutOption.getSize().getSize(componentSize, new Dimension(width, height));
         int cw = Math.max(Math.min(targetSize.width, width), minimumSize.width);
         int ch = Math.max(Math.min(targetSize.height, height), minimumSize.height);

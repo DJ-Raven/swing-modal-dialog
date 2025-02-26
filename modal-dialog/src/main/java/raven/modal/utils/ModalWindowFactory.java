@@ -1,5 +1,6 @@
 package raven.modal.utils;
 
+import com.formdev.flatlaf.util.SystemInfo;
 import raven.modal.component.DropShadowBorder;
 
 import javax.swing.*;
@@ -35,7 +36,18 @@ public class ModalWindowFactory {
         if (!border.isCreatedAble()) {
             return new ModalWindow(owner, contents, x, y);
         }
+
+        if (!isShadowAndRoundBorderSupport()) {
+            ModalWindow modalWindow = new ModalWindow(owner, contents, x, y);
+            return modalWindow;
+        }
         return new DropShadowModalWindow(owner, contents, border, x, y);
+    }
+
+    private boolean isShadowAndRoundBorderSupport() {
+        // for windows-11, mac-os and linux not yet test
+        // we can use native border provide by flatlaf (next update)
+        return SystemInfo.isWindows && SystemInfo.isWindows_11_orLater == false;
     }
 
     private class DropShadowModalWindow extends ModalWindow {
