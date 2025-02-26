@@ -16,7 +16,7 @@ public class BorderOption {
         return new BorderOption();
     }
 
-    public float getRound() {
+    public int getRound() {
         return round;
     }
 
@@ -32,7 +32,7 @@ public class BorderOption {
         return shadowOpacity;
     }
 
-    public float getBorderWidth() {
+    public int getBorderWidth() {
         return borderWidth;
     }
 
@@ -40,7 +40,7 @@ public class BorderOption {
         return borderColor;
     }
 
-    private BorderOption(float round, Insets shadowSize, Color shadowColor, float shadowOpacity, float borderWidth, Color borderColor) {
+    private BorderOption(int round, Insets shadowSize, Color shadowColor, float shadowOpacity, int borderWidth, Color borderColor) {
         this.round = round;
         this.shadowSize = shadowSize;
         this.shadowColor = shadowColor;
@@ -52,14 +52,14 @@ public class BorderOption {
     public BorderOption() {
     }
 
-    private float round = 20;
+    private int round = 20;
     private Insets shadowSize = new Insets(0, 0, 0, 0);
     private Color shadowColor;
     private float shadowOpacity = -1;
-    private float borderWidth = 0;
+    private int borderWidth = 0;
     private Color borderColor;
 
-    public BorderOption setRound(float round) {
+    public BorderOption setRound(int round) {
         this.round = round;
         return this;
     }
@@ -90,7 +90,7 @@ public class BorderOption {
         return this;
     }
 
-    public BorderOption setBorderWidth(float borderWidth) {
+    public BorderOption setBorderWidth(int borderWidth) {
         this.borderWidth = borderWidth;
         return this;
     }

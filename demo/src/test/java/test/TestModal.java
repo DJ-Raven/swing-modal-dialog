@@ -6,6 +6,7 @@ import raven.modal.ModalDialog;
 import raven.modal.Toast;
 import raven.modal.component.SimpleModalBorder;
 import raven.modal.demo.simple.SimpleMessageModal;
+import raven.modal.option.BorderOption;
 import raven.modal.option.Option;
 import raven.modal.toast.option.ToastBorderStyle;
 import raven.modal.toast.option.ToastOption;
@@ -38,7 +39,9 @@ public class TestModal extends BaseFrame {
         JButton cmdShowModal = new JButton("Show modal");
         panelModal.add(cmdShowModal);
         cmdShowModal.addActionListener(e -> {
-            showCustomModal(panelModal, SimpleMessageModal.Type.SUCCESS);
+            if (!ModalDialog.isIdExist("modal_id")) {
+                showCustomModal(panelModal, SimpleMessageModal.Type.SUCCESS);
+            }
         });
 
         // toast
@@ -78,6 +81,12 @@ public class TestModal extends BaseFrame {
         add(lightDarkButton);
 
         // applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        JButton cmdCloseAll = new JButton("close all modal");
+
+        cmdCloseAll.addActionListener(e -> {
+            ModalDialog.closeAllModal();
+        });
+        add(cmdCloseAll);
     }
 
     private void showCustomModal(Component com, SimpleMessageModal.Type type) {
@@ -88,7 +97,9 @@ public class TestModal extends BaseFrame {
                 "\nencountered any interesting challenges," +
                 "\nor simply had a good time relaxing, I'd love to hear about it." +
                 "\nIt's always great to catch up and share our experiences.";
-        ModalDialog.showModal(com, new SimpleMessageModal(type, message, "This is a modal custom message", SimpleModalBorder.YES_NO_OPTION, null), option);
+        ModalDialog.showModal(com, new SimpleMessageModal(type, message, "This is a modal custom message", SimpleModalBorder.YES_NO_OPTION, (controller, action) -> {
+            System.out.println("Action: " + action);
+        }), option, "modal_id");
     }
 
     private void installDefaultOption() {
@@ -97,11 +108,14 @@ public class TestModal extends BaseFrame {
 
         modalOption
                 .setHeavyWeight(true)
-                .setHeavyWeightEmbedWindow(true)
+                .getBorderOption()
+                .setShadow(BorderOption.Shadow.MEDIUM)
         ;
         modalOption.getLayoutOption()
                 .setRelativeToOwner(true)
         ;
+        modalOption.getBorderOption()
+                .setBorderWidth(1);
 
         // toast option
 
@@ -112,14 +126,14 @@ public class TestModal extends BaseFrame {
 
                 .getLayoutOption()
                 .setRelativeToOwner(true)
-                .setGap(10)
         ;
 
         toastOption.getStyle()
                 .setBackgroundType(ToastStyle.BackgroundType.GRADIENT)
 
                 .getBorderStyle()
-                .setBorderType(ToastBorderStyle.BorderType.OUTLINE);
+                .setBorderType(ToastBorderStyle.BorderType.LEADING_LINE)
+        ;
     }
 
     public static void main(String[] args) {

@@ -5,6 +5,7 @@ import com.formdev.flatlaf.util.ColorFunctions;
 import com.formdev.flatlaf.util.UIScale;
 import raven.modal.toast.option.ToastBorderStyle;
 import raven.modal.toast.option.ToastStyle;
+import raven.modal.utils.ModalUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,7 +40,13 @@ class ToastContent extends JComponent {
                 ToastPanel.ThemesData themesData = toastData.getThemes();
                 ToastBorderStyle.BorderType borderType = toastData.getOption().getStyle().getBorderStyle().getBorderType();
                 boolean ltr = getComponentOrientation().isLeftToRight();
-                float arc = UIScale.scale(toastData.getOption().getStyle().getBorderStyle().getRound() * 0.6f) / 2f;
+                float arc;
+                if (ModalUtils.isShadowAndRoundBorderSupport()) {
+                    arc = UIScale.scale(toastData.getOption().getStyle().getBorderStyle().getRound() * 0.6f) / 2f;
+                } else {
+                    arc = 0;
+                }
+
                 float topLeft = 0;
                 float topRight = 0;
                 float bottomLeft = 0;

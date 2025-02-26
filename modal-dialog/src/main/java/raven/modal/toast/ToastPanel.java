@@ -3,16 +3,16 @@ package raven.modal.toast;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.Animator;
 import com.formdev.flatlaf.util.CubicBezierEasing;
-import com.formdev.flatlaf.util.SystemInfo;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.Toast;
 import raven.modal.component.DropShadowBorder;
+import raven.modal.component.ModalLineBorder;
 import raven.modal.toast.icon.RollingIcon;
 import raven.modal.toast.option.*;
+import raven.modal.utils.ModalUtils;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -91,8 +91,10 @@ public class ToastPanel extends JPanel {
         ToastBorderStyle borderStyle = toastData.getOption().getStyle().getBorderStyle();
         int borderWidth = borderStyle.getBorderType() == ToastBorderStyle.BorderType.OUTLINE ? borderStyle.getBorderWidth() : 0;
         if (getOption().isHeavyWeight()) {
-            if (borderWidth > 0 && SystemInfo.isWindows_11_orLater) {
-                setBorder(new CompoundBorder(new FlatLineBorder(new Insets(borderWidth, borderWidth, borderWidth, borderWidth), toastData.getThemes().getColor(), borderWidth, 0), border));
+            if (borderWidth > 0 && ModalUtils.isShadowAndRoundBorderSupport() == false) {
+                // border width painted with round window border
+                // but if windows round border not support we set the border width here
+                setBorder(new CompoundBorder(new ModalLineBorder(borderWidth, toastData.getThemes().getColor(), 0), border));
             } else {
                 setBorder(new ToastBorder(toastData));
             }

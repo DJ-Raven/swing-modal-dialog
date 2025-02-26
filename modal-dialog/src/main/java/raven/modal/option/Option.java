@@ -41,10 +41,6 @@ public class Option {
         return heavyWeight;
     }
 
-    public boolean isHeavyWeightEmbedWindow() {
-        return heavyWeightEmbedWindow;
-    }
-
     public Color getBackgroundLight() {
         return backgroundLight;
     }
@@ -72,14 +68,13 @@ public class Option {
     private boolean animationOnClose = true;
     private boolean closeOnPressedEscape = true;
     private boolean heavyWeight;
-    private boolean heavyWeightEmbedWindow;
     private Color backgroundLight;
     private Color backgroundDark;
     private float opacity = 0.5f;
     private int duration = 200;
     private int sliderDuration = 400;
 
-    private Option(LayoutOption layoutOption, BorderOption borderOption, BackgroundClickType backgroundClickType, boolean animationEnabled, boolean animationOnClose, boolean closeOnPressedEscape, boolean heavyWeight, boolean heavyWeightEmbedWindow, Color backgroundLight, Color backgroundDark, float opacity, int duration, int sliderDuration) {
+    private Option(LayoutOption layoutOption, BorderOption borderOption, BackgroundClickType backgroundClickType, boolean animationEnabled, boolean animationOnClose, boolean closeOnPressedEscape, boolean heavyWeight, Color backgroundLight, Color backgroundDark, float opacity, int duration, int sliderDuration) {
         this.layoutOption = layoutOption;
         this.borderOption = borderOption;
         this.backgroundClickType = backgroundClickType;
@@ -87,7 +82,6 @@ public class Option {
         this.animationOnClose = animationOnClose;
         this.closeOnPressedEscape = closeOnPressedEscape;
         this.heavyWeight = heavyWeight;
-        this.heavyWeightEmbedWindow = heavyWeightEmbedWindow;
         this.backgroundLight = backgroundLight;
         this.backgroundDark = backgroundDark;
         this.opacity = opacity;
@@ -128,11 +122,6 @@ public class Option {
         return this;
     }
 
-    public Option setHeavyWeightEmbedWindow(boolean heavyWeightEmbedWindow) {
-        this.heavyWeightEmbedWindow = heavyWeightEmbedWindow;
-        return this;
-    }
-
     public Option setBackground(Color color) {
         this.backgroundLight = color;
         this.backgroundDark = color;
@@ -165,6 +154,6 @@ public class Option {
     }
 
     public Option copy() {
-        return new Option(layoutOption.copy(), borderOption.copy(), backgroundClickType, animationEnabled, animationOnClose, closeOnPressedEscape, heavyWeight, heavyWeightEmbedWindow, backgroundLight == null ? null : new Color(backgroundLight.getRGB()), backgroundDark == null ? null : new Color(backgroundDark.getRGB()), opacity, duration, sliderDuration);
+        return new Option(layoutOption.copy(), borderOption.copy(), backgroundClickType, animationEnabled, animationOnClose, closeOnPressedEscape, heavyWeight, backgroundLight == null ? null : new Color(backgroundLight.getRGB()), backgroundDark == null ? null : new Color(backgroundDark.getRGB()), opacity, duration, sliderDuration);
     }
 }

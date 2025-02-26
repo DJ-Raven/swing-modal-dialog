@@ -6,6 +6,7 @@ import com.formdev.flatlaf.util.ColorFunctions;
 import com.formdev.flatlaf.util.UIScale;
 import raven.modal.toast.option.ToastBorderStyle;
 import raven.modal.toast.option.ToastStyle;
+import raven.modal.utils.ModalUtils;
 
 import java.awt.*;
 import java.awt.geom.Area;
@@ -73,7 +74,12 @@ public class ToastBorder extends FlatEmptyBorder {
             int bw = width;
             int bh = height;
             float innerRound = style.getBorderStyle().getRound() * 0.6f;
-            float arc = Math.min(UIScale.scale(innerRound), height) / 2f;
+            float arc;
+            if (ModalUtils.isShadowAndRoundBorderSupport()) {
+                arc = Math.min(UIScale.scale(innerRound), height) / 2f;
+            } else {
+                arc = 0;
+            }
 
             // create background style
             ToastPanel.ThemesData themesData = toastData.getThemes();

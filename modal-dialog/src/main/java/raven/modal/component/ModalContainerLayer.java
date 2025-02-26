@@ -156,8 +156,8 @@ public class ModalContainerLayer extends AbstractModalContainerLayer {
     }
 
     @Override
-    public void removeContainer(ModalContainer container) {
-        super.removeContainer(container);
+    public void remove(AbstractModalController controller) {
+        super.remove(controller);
         if (containers.isEmpty()) {
             layeredPane.setVisible(false);
         }

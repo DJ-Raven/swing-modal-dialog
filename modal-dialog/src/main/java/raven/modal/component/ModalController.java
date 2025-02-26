@@ -30,7 +30,6 @@ public class ModalController extends AbstractModalController {
 
     protected boolean isUseAnimator(boolean show) {
         return option.isAnimationEnabled()
-                && (!isUseEmbedWindow())
                 && (show == true || option.isAnimationOnClose()
         );
     }
@@ -108,19 +107,7 @@ public class ModalController extends AbstractModalController {
 
     @Override
     protected PanelSlider.PaneSliderLayoutSize createSliderLayoutSize() {
-        return new PanelSlider.PaneSliderLayoutSize() {
-            @Override
-            public Dimension getComponentSize(Container container, Component component) {
-                return modalContainer.getModalComponentSize(component, container);
-            }
-
-            @Override
-            public void layoutUpdate() {
-                if (isUseEmbedWindow()) {
-                    modalContainer.updateLayout();
-                }
-            }
-        };
+        return (container, component) -> modalContainer.getModalComponentSize(component, container);
     }
 
     @Override
@@ -141,24 +128,7 @@ public class ModalController extends AbstractModalController {
     @Override
     public void closeModal() {
         if (showing) {
-            showWindow(false);
             startAnimator(false);
-        }
-    }
-
-    @Override
-    protected void modalOpened() {
-        super.modalOpened();
-        showWindow(true);
-    }
-
-    protected void showWindow(boolean show) {
-        if (isUseEmbedWindow()) {
-            if (show) {
-                modalContainer.showWindow();
-            } else {
-                modalContainer.closeWindow();
-            }
         }
     }
 
@@ -177,7 +147,7 @@ public class ModalController extends AbstractModalController {
 
     protected void remove() {
         modalContainer.uninstallOption();
-        modalContainerLayer.removeContainer(modalContainer);
+        modalContainerLayer.remove(this);
     }
 
     @Override

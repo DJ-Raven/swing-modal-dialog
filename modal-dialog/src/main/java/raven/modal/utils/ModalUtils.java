@@ -1,6 +1,7 @@
 package raven.modal.utils;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import com.formdev.flatlaf.util.SystemInfo;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,5 +29,9 @@ public class ModalUtils {
 
     public static Insets copyInsets(Insets insets) {
         return new Insets(insets.top, insets.left, insets.bottom, insets.right);
+    }
+
+    public static boolean isShadowAndRoundBorderSupport() {
+        return SystemInfo.isWindows && SystemInfo.isWindows_11_orLater == false;
     }
 }

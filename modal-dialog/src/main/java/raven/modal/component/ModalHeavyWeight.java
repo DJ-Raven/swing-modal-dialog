@@ -75,8 +75,4 @@ public class ModalHeavyWeight {
             return modalHeavyWeightContainerLayer;
         }
     }
-
-    public void setEnableHierarchy(boolean enable) {
-        map.values().forEach(container -> container.setEnableHierarchy(enable));
-    }
 }

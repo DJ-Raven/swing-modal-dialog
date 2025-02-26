@@ -88,7 +88,7 @@ public class ModalMouseMovableListener extends MouseAdapter {
                 layoutOption.setLocation(numX, numY);
                 ModalContainer parent = modalController.getModalContainer();
                 if (parent != null) {
-                    parent.updateLayout();
+                    parent.revalidate();
                 }
             }
         }
@@ -104,7 +104,7 @@ public class ModalMouseMovableListener extends MouseAdapter {
                 int x = UIScale.unscale(location.x + (dragged.x - initialPressed.x));
                 int y = UIScale.unscale(location.y + (dragged.y - initialPressed.y));
                 layoutOption.setLocation(x, y);
-                parent.updateLayout();
+                parent.revalidate();
             }
         }
     }
