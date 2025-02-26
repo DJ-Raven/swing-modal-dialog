@@ -7,7 +7,7 @@ import java.awt.*;
 /**
  * @author Raven
  */
-public interface ToastController {
+public interface BaseToastContainer {
 
     void add(ToastPanel toastPanel);
 

@@ -14,12 +14,12 @@ import java.util.Map;
  */
 public class ToastContainerLayer extends AbstractToastContainerLayer {
 
-    private final Map<RootPaneContainer, ToastController> map;
+    private final Map<RootPaneContainer, ToastContainerLayer> map;
     private final RootPaneContainer rootPaneContainer;
     private PropertyChangeListener propertyListener;
     private WindowStateListener stateListener;
 
-    public ToastContainerLayer(Map<RootPaneContainer, ToastController> map, RootPaneContainer rootPaneContainer) {
+    public ToastContainerLayer(Map<RootPaneContainer, ToastContainerLayer> map, RootPaneContainer rootPaneContainer) {
         this.map = map;
         this.rootPaneContainer = rootPaneContainer;
     }

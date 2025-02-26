@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * @author Raven
  */
-public class ToastHeavyWeightContainerLayer implements ToastController {
+public class ToastHeavyWeightContainerLayer implements BaseToastContainer {
 
     private final Map<Window, ToastHeavyWeightContainerLayer> map;
     private List<ToastHeavyWeightLayout> listToastHeavyWeight;

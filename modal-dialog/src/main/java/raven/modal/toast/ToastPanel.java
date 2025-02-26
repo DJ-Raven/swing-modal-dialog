@@ -39,7 +39,7 @@ public class ToastPanel extends JPanel {
         return toastData.getOption();
     }
 
-    private final ToastController toastController;
+    private final BaseToastContainer baseToastContainer;
     private final Component owner;
     private ToastData toastData;
     private ToastContent content;
@@ -58,8 +58,8 @@ public class ToastPanel extends JPanel {
     private ToastPromise.PromiseCallback promiseCallback;
     private boolean available = true;
 
-    public ToastPanel(ToastController toastController, Component owner, ToastData toastData) {
-        this.toastController = toastController;
+    public ToastPanel(BaseToastContainer baseToastContainer, Component owner, ToastData toastData) {
+        this.baseToastContainer = baseToastContainer;
         this.owner = owner;
         this.toastData = toastData;
         init();
@@ -390,7 +390,7 @@ public class ToastPanel extends JPanel {
                     @Override
                     public void timingEvent(float v) {
                         animate = showing ? v : 1f - v;
-                        toastController.updateLayout(owner);
+                        baseToastContainer.updateLayout(owner);
                     }
 
                     @Override
@@ -492,7 +492,7 @@ public class ToastPanel extends JPanel {
             toastPromise.setDone(true);
             toastPromise.reject();
         }
-        toastController.remove(this);
+        baseToastContainer.remove(this);
         toastData = null;
         content = null;
         textMessage = null;

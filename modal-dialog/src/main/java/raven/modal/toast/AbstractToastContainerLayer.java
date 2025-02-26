@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * @author Raven
  */
-public abstract class AbstractToastContainerLayer extends AbstractRelativeContainer implements ToastController {
+public abstract class AbstractToastContainerLayer extends AbstractRelativeContainer implements BaseToastContainer {
 
     protected final List<ToastPanel> toastPanels;
 
