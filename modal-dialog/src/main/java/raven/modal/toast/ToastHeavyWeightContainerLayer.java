@@ -78,10 +78,26 @@ public class ToastHeavyWeightContainerLayer implements BaseToastContainer {
 
     @Override
     public void closeAll(ToastLocation location) {
+        for (int i = listToastHeavyWeight.size() - 1; i >= 0; i--) {
+            ToastHeavyWeightLayout toastLayout = listToastHeavyWeight.get(i);
+            if (toastLayout != null) {
+                closeAll(toastLayout, location);
+            }
+        }
     }
 
     @Override
     public boolean checkPromiseId(String id) {
+        for (int i = 0; i < listToastHeavyWeight.size(); i++) {
+            ToastHeavyWeightLayout toastLayout = listToastHeavyWeight.get(i);
+            List<ModalWindow> list = toastLayout.getModalWindows();
+            for (int j = 0; j < list.size(); j++) {
+                ToastPanel toastPanel = (ToastPanel) list.get(j).getContents();
+                if (toastPanel.checkPromiseId(id)) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -109,6 +125,16 @@ public class ToastHeavyWeightContainerLayer implements BaseToastContainer {
         List<ModalWindow> modalWindows = heavyWeight.getModalWindows();
         for (int i = modalWindows.size() - 1; i >= 0; i--) {
             ((ToastPanel) modalWindows.get(i).getContents()).close();
+        }
+    }
+
+    private void closeAll(HeavyWeightRelativeLayout heavyWeight, ToastLocation location) {
+        List<ModalWindow> modalWindows = heavyWeight.getModalWindows();
+        for (int i = modalWindows.size() - 1; i >= 0; i--) {
+            ToastPanel toastPanel = (ToastPanel) modalWindows.get(i).getContents();
+            if (toastPanel.checkSameLayout(location)) {
+                toastPanel.stop();
+            }
         }
     }
 

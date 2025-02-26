@@ -119,6 +119,8 @@ public class OptionLayoutUtils {
         if (extraSize != null) {
             componentSize.width += extraSize.width;
             componentSize.height += extraSize.height;
+            minimumSize.width += extraSize.width;
+            minimumSize.height += extraSize.height;
         }
         Dimension targetSize = layoutOption.getSize().getSize(componentSize, new Dimension(width, height));
         int cw = Math.max(Math.min(targetSize.width, width), minimumSize.width);

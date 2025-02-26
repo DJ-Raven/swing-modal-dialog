@@ -83,6 +83,14 @@ public class ModalWindowFactory {
         protected void setLocationImpl(int x, int y) {
             super.setLocationImpl(x, y);
             dropShadowWindow.setBounds(getDropShadowWindowBounds());
+            dropShadowWindow.validate();
+        }
+
+        @Override
+        protected void setBoundsImpl(int x, int y, int width, int height) {
+            super.setBoundsImpl(x, y, width, height);
+            dropShadowWindow.setBounds(getDropShadowWindowBounds());
+            dropShadowWindow.validate();
         }
 
         @Override
@@ -119,7 +127,7 @@ public class ModalWindowFactory {
         }
 
         private Rectangle getDropShadowWindowBounds() {
-            Rectangle windowBounds = new Rectangle(window.getLocation(), window.getPreferredSize());
+            Rectangle windowBounds = new Rectangle(window.getLocation(), window.getSize());
             Insets insets = dropShadowPanel.getInsets();
             return new Rectangle(
                     windowBounds.x -= insets.left,

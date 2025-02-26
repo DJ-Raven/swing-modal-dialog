@@ -69,9 +69,4 @@ public class ToastHeavyWeight {
             return toastHeavyWeightContainerLayer;
         }
     }
-
-    public void setEnableHierarchy(boolean enable) {
-        // todo
-        //map.values().forEach(container -> container.setEnableHierarchy(enable));
-    }
 }

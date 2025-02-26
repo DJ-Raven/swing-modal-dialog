@@ -43,6 +43,12 @@ public class ModalWindow {
         }
     }
 
+    public void setBounds(int x, int y, int width, int height) {
+        if (window != null) {
+            setBoundsImpl(x, y, width, height);
+        }
+    }
+
     public void setVisible(boolean visible) {
         if (visible) {
             show();
@@ -73,9 +79,14 @@ public class ModalWindow {
         window.setLocation(getLocation(owner, x, y));
     }
 
+    protected void setBoundsImpl(int x, int y, int width, int height) {
+        Point location = getLocation(owner, x, y);
+        window.setBounds(location.x, location.y, width, height);
+        window.validate();
+    }
+
     protected void showImpl() {
         window.setVisible(true);
-        window.pack();
     }
 
     protected void hideImpl() {

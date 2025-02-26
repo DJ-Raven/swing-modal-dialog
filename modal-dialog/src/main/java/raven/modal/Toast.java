@@ -231,7 +231,6 @@ public class Toast {
         if (instance != null) {
             instance.map.values().forEach(container -> container.setEnableHierarchy(enable));
         }
-        ToastHeavyWeight.getInstance().setEnableHierarchy(enable);
     }
 
     public enum Type {
