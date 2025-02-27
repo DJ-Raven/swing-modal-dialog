@@ -76,13 +76,6 @@ public class SimpleMessageModal extends SimpleModalBorder {
             MigLayout layout = (MigLayout) panel.getLayout();
             layout.setColumnConstraints("[]12[]");
         }
-
-        // revers order
-        Component[] components = panel.getComponents();
-        panel.removeAll();
-        for (int i = components.length - 1; i >= 0; i--) {
-            panel.add(components[i]);
-        }
         return panel;
     }
 
