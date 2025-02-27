@@ -73,6 +73,13 @@ public abstract class HeavyWeightRelativeLayout {
         checkAndUpdateLayout();
     }
 
+    protected Rectangle getModalBorderSize(ModalWindow modal) {
+        if (modal instanceof ModalWindowFactory.AbstractModalBorder) {
+            return ((ModalWindowFactory.AbstractModalBorder) modal).getBorderSize();
+        }
+        return null;
+    }
+
     protected abstract ModalWindowBorder getModalWindowBorder(Component contents);
 
     protected abstract void updateLayout();

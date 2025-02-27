@@ -108,7 +108,7 @@ public class ToastHeavyWeightContainerLayer implements BaseToastContainer {
 
     @Override
     public void updateLayout(Component owner) {
-        ToastHeavyWeightLayout toastLayout = getToastLayout(owner);
+        ToastHeavyWeightLayout toastLayout = getToastLayout(getOwner(owner));
         if (toastLayout != null) {
             toastLayout.updateLayout();
         }

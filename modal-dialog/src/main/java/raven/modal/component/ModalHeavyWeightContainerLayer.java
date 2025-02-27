@@ -44,6 +44,7 @@ public class ModalHeavyWeightContainerLayer implements BaseModalContainer {
         modal.setId(id);
         modalController.showModal();
         modalLayout.add(modalController);
+        modalController.applyComponentOrientation(owner.getComponentOrientation());
     }
 
     @Override

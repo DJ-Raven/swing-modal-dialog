@@ -185,6 +185,7 @@ public class ToastPanel extends JPanel {
                 public void update(String message) {
                     if (available && !toastPromise.isDone()) {
                         textMessage.setText(message);
+                        updateModalLayout();
                     }
                 }
 
@@ -320,7 +321,7 @@ public class ToastPanel extends JPanel {
         }
         installStyle(data);
         repaint();
-        content.revalidate();
+        updateModalLayout();
     }
 
     private PromiseIcon createIconPromise(ToastPromise promise) {
@@ -504,6 +505,12 @@ public class ToastPanel extends JPanel {
         mouseListener = null;
         animator = null;
         threadDelay = null;
+    }
+
+    private void updateModalLayout() {
+        if (toastData != null && toastData.getOption().isHeavyWeight()) {
+            baseToastContainer.updateLayout(owner);
+        }
     }
 
     protected boolean isCurrenPromise() {

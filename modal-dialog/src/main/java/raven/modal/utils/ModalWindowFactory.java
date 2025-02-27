@@ -49,7 +49,16 @@ public class ModalWindowFactory {
         return ModalUtils.isShadowAndRoundBorderSupport();
     }
 
-    public class DropShadowModalWindow extends ModalWindow {
+    public abstract class AbstractModalBorder extends ModalWindow {
+
+        public AbstractModalBorder(Component owner, Component contents, int x, int y) {
+            super(owner, contents, x, y);
+        }
+
+        public abstract Rectangle getBorderSize();
+    }
+
+    protected class DropShadowModalWindow extends AbstractModalBorder {
 
         private Window dropShadowWindow;
         private ShadowPanel dropShadowPanel;
@@ -122,6 +131,16 @@ public class ModalWindowFactory {
                     windowBounds.width += insets.left + insets.right,
                     windowBounds.height += insets.top + insets.bottom
             );
+        }
+
+        @Override
+        public Rectangle getBorderSize() {
+            Border border = dropShadowPanel.getBorder();
+            if (border == null) return null;
+
+            Insets insets = border.getBorderInsets(dropShadowPanel);
+
+            return new Rectangle(insets.left, insets.top, insets.left + insets.right, insets.top + insets.bottom);
         }
     }
 
