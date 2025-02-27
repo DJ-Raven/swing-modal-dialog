@@ -71,6 +71,8 @@ public class SimpleMessageModal extends SimpleModalBorder {
     @Override
     protected JComponent createOptionButton(Option[] optionsType) {
         JPanel panel = (JPanel) super.createOptionButton(optionsType);
+        if (panel == null) return null;
+
         // modify layout option
         if (panel.getLayout() instanceof MigLayout) {
             MigLayout layout = (MigLayout) panel.getLayout();
