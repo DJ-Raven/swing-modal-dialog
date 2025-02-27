@@ -27,8 +27,12 @@ public abstract class HeavyWeightRelativeLayout {
         installOwner();
     }
 
+    protected ModalWindow createModalWindow(Component contents) {
+        return ModalWindowFactory.getInstance().getWindow(owner, contents, getModalWindowBorder(contents), 0, 0);
+    }
+
     public void add(Component contents) {
-        ModalWindow modal = ModalWindowFactory.getInstance().getWindow(owner, contents, getModalWindowBorder(contents), 0, 0);
+        ModalWindow modal = createModalWindow(contents);
         modalWindows.add(modal);
         checkAndUpdateLayout();
         if (owner.isShowing()) {

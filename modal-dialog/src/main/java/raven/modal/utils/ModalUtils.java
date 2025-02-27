@@ -1,6 +1,8 @@
 package raven.modal.utils;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.util.ColorFunctions;
 import com.formdev.flatlaf.util.SystemInfo;
 
 import javax.swing.*;
@@ -29,6 +31,22 @@ public class ModalUtils {
 
     public static Insets copyInsets(Insets insets) {
         return new Insets(insets.top, insets.left, insets.bottom, insets.right);
+    }
+
+    public static Color getBackgroundColor(Color dark, Color light, Color background) {
+        if (FlatLaf.isLafDark()) {
+            if (dark != null) {
+                return dark;
+            } else {
+                return ColorFunctions.tint(background, 0.2f);
+            }
+        } else {
+            if (light != null) {
+                return light;
+            } else {
+                return ColorFunctions.shade(background, 0.2f);
+            }
+        }
     }
 
     public static boolean isShadowAndRoundBorderSupport() {

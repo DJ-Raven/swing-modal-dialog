@@ -117,7 +117,7 @@ public class ModalWindow {
         return window;
     }
 
-    private Point getLocation(Component owner, int x, int y) {
+    protected Point getLocation(Component owner, int x, int y) {
         if (owner == null || !owner.isShowing()) {
             return new Point(x, y);
         }

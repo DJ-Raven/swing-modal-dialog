@@ -1,6 +1,9 @@
 package raven.modal.utils;
 
+import com.formdev.flatlaf.util.UIScale;
 import raven.modal.component.DropShadowBorder;
+import raven.modal.component.HeavyWeightModalController;
+import raven.modal.component.ModalBackground;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -43,6 +46,13 @@ public class ModalWindowFactory {
         return new DropShadowModalWindow(owner, contents, border, x, y);
     }
 
+    public ModalWindow createWindowBackground(ModalWindow modal) {
+        if (!(modal.getContents() instanceof HeavyWeightModalController)) {
+            throw new IllegalArgumentException("Can't create modal window");
+        }
+        return new ModalWindowBackground(modal, (HeavyWeightModalController) modal.getContents());
+    }
+
     private boolean isShadowAndRoundBorderSupport() {
         // for windows-11, mac-os and linux not yet test
         // we can use native border provide by flatlaf (next update)
@@ -56,6 +66,92 @@ public class ModalWindowFactory {
         }
 
         public abstract Rectangle getBorderSize();
+    }
+
+    protected class ModalWindowBackground extends AbstractModalBorder {
+
+        private final ModalWindow delegate;
+        private final HeavyWeightModalController controller;
+
+        public ModalWindowBackground(ModalWindow delegate, HeavyWeightModalController controller) {
+            super(delegate.getOwner(), new ModalBackground(controller), 0, 0);
+            this.delegate = delegate;
+            this.controller = controller;
+            this.window.setBackground(new Color(0, true));
+        }
+
+        @Override
+        public Component getContents() {
+            return delegate.getContents();
+        }
+
+        @Override
+        public Rectangle getBorderSize() {
+            if (delegate instanceof DropShadowModalWindow) {
+                return ((DropShadowModalWindow) delegate).getBorderSize();
+            }
+            return null;
+        }
+
+        @Override
+        protected void setLocationImpl(int x, int y) {
+            Rectangle ownerBounds = getOwnerBounds();
+            window.setBounds(ownerBounds.x, ownerBounds.y, ownerBounds.width, ownerBounds.height);
+            window.validate();
+            delegate.setLocationImpl(x, y);
+        }
+
+        @Override
+        protected void setBoundsImpl(int x, int y, int width, int height) {
+            Rectangle ownerBounds = getOwnerBounds();
+            window.setBounds(ownerBounds.x, ownerBounds.y, ownerBounds.width, ownerBounds.height);
+            window.validate();
+            delegate.setBoundsImpl(x, y, width, height);
+        }
+
+        @Override
+        protected void showImpl() {
+            super.showImpl();
+            delegate.showImpl();
+        }
+
+        @Override
+        protected void hideImpl() {
+            super.hideImpl();
+            delegate.hideImpl();
+        }
+
+        @Override
+        protected void disposeImpl() {
+            super.disposeImpl();
+            delegate.disposeImpl();
+        }
+
+        private Rectangle getOwnerBounds() {
+            Point point = getLocation(owner, 0, 0);
+            Insets padding = UIScale.scale(controller.getOption().getLayoutOption().getBackgroundPadding());
+            int width = owner.getWidth();
+            int height = owner.getHeight();
+            Insets insets;
+            if (owner instanceof Frame) {
+                insets = ((Frame) owner).getInsets();
+            } else if (owner instanceof Window) {
+                insets = ((Window) owner).getInsets();
+            } else {
+                JComponent component = (JComponent) owner;
+                Rectangle visibleRec = component.getVisibleRect();
+                point.x += visibleRec.x;
+                point.y += visibleRec.y;
+                width = visibleRec.width;
+                height = visibleRec.height;
+                insets = component.getInsets();
+            }
+            point.x += insets.left + padding.left;
+            point.y += insets.top + padding.top;
+            width -= (insets.left + insets.right + padding.left + padding.right);
+            height -= (insets.top + insets.bottom + padding.top + padding.bottom);
+            return new Rectangle(point.x, point.y, width, height);
+        }
     }
 
     protected class DropShadowModalWindow extends AbstractModalBorder {
