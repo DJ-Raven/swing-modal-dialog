@@ -49,19 +49,17 @@ public class ModalWindowFactory {
         return ModalUtils.isShadowAndRoundBorderSupport();
     }
 
-    private class DropShadowModalWindow extends ModalWindow {
+    public class DropShadowModalWindow extends ModalWindow {
 
         private Window dropShadowWindow;
-        private JPanel dropShadowPanel;
+        private ShadowPanel dropShadowPanel;
 
         public DropShadowModalWindow(Component owner, Component contents, ModalWindowBorder border, int x, int y) {
             super(owner, contents, x, y);
 
             // create drop shadow component
-            dropShadowPanel = new JPanel();
+            dropShadowPanel = new ShadowPanel(border);
             dropShadowPanel.setBackground(contents.getBackground());
-            dropShadowPanel.setBorder(createDropShadowBorder(border));
-            dropShadowPanel.setOpaque(false);
 
             // init preferred size
             Dimension prefSize = window.getPreferredSize();
@@ -115,6 +113,38 @@ public class ModalWindowFactory {
             dropShadowWindow.setVisible(true);
         }
 
+        private Rectangle getDropShadowWindowBounds() {
+            Rectangle windowBounds = new Rectangle(window.getLocation(), window.getSize());
+            Insets insets = dropShadowPanel.getInsets();
+            return new Rectangle(
+                    windowBounds.x -= insets.left,
+                    windowBounds.y -= insets.top,
+                    windowBounds.width += insets.left + insets.right,
+                    windowBounds.height += insets.top + insets.bottom
+            );
+        }
+    }
+
+    /**
+     * Fixes border reset after changed flatlaf themes
+     * By create new border when ui updated
+     */
+    private class ShadowPanel extends JPanel {
+
+        private final ModalWindowBorder border;
+
+        private ShadowPanel(ModalWindowBorder border) {
+            this.border = border;
+            setOpaque(false);
+            initBorder();
+        }
+
+        private void initBorder() {
+            if (border != null) {
+                setBorder(createDropShadowBorder(border));
+            }
+        }
+
         private Border createDropShadowBorder(ModalWindowBorder border) {
             return new DropShadowBorder(
                     border.getShadowSize(),
@@ -125,15 +155,10 @@ public class ModalWindowFactory {
                     border.getRound());
         }
 
-        private Rectangle getDropShadowWindowBounds() {
-            Rectangle windowBounds = new Rectangle(window.getLocation(), window.getSize());
-            Insets insets = dropShadowPanel.getInsets();
-            return new Rectangle(
-                    windowBounds.x -= insets.left,
-                    windowBounds.y -= insets.top,
-                    windowBounds.width += insets.left + insets.right,
-                    windowBounds.height += insets.top + insets.bottom
-            );
+        @Override
+        public void updateUI() {
+            super.updateUI();
+            initBorder();
         }
     }
 }
