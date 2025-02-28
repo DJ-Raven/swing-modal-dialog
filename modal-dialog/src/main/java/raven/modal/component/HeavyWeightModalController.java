@@ -48,6 +48,12 @@ public class HeavyWeightModalController extends AbstractModalController {
     }
 
     @Override
+    public void popModal() {
+        super.popModal();
+        baseModalContainer.updateLayout();
+    }
+
+    @Override
     public void closeModal() {
         baseModalContainer.remove(this);
         uninstallOption();

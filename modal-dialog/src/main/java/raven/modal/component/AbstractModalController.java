@@ -121,10 +121,11 @@ public abstract class AbstractModalController extends JPanel implements Controll
             SimpleModalBorder simpleModalBorder = (SimpleModalBorder) modal;
             simpleModalBorder.applyBackButton(getOnBackAction());
         }
+        modal.setId(this.modal.getId());
         pushStack(this.modal);
         this.modal = modal;
         modal.setController(this);
-        int sliderDuration = option.getSliderDuration();
+        int sliderDuration = option.isHeavyWeight() ? 0 : option.getSliderDuration();
         ComponentOrientation orientation = getComponentOrientation();
         SliderTransition sliderTransition = sliderDuration > 0 ? SimpleTransition.get(SimpleTransition.SliderType.FORWARD) : null;
         if (modal.getComponentOrientation().isLeftToRight() != orientation.isLeftToRight()) {
@@ -138,7 +139,7 @@ public abstract class AbstractModalController extends JPanel implements Controll
         if (modalStack != null && !modalStack.isEmpty()) {
             Modal component = modalStack.pop();
             this.modal = component;
-            int sliderDuration = option.getSliderDuration();
+            int sliderDuration = option.isHeavyWeight() ? 0 : option.getSliderDuration();
             SliderTransition sliderTransition = sliderDuration > 0 ? SimpleTransition.get(SimpleTransition.SliderType.BACK) : null;
             panelSlider.addSlide(component, sliderTransition, sliderDuration);
         }

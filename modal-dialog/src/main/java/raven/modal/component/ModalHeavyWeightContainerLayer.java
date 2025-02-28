@@ -68,10 +68,14 @@ public class ModalHeavyWeightContainerLayer implements BaseModalContainer {
 
     @Override
     public void pushModal(Modal modal, String id) {
+        getModalControllerById(id).pushModal(modal);
+        updateLayout();
     }
 
     @Override
     public void popModal(String id) {
+        getModalControllerById(id).popModal();
+        updateLayout();
     }
 
     @Override
