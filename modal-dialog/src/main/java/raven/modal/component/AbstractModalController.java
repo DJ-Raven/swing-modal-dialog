@@ -6,7 +6,6 @@ import raven.modal.option.Option;
 import raven.modal.slider.PanelSlider;
 import raven.modal.slider.SimpleTransition;
 import raven.modal.slider.SliderTransition;
-import raven.modal.utils.ModalMouseMovableListener;
 import raven.modal.utils.ModalUtils;
 
 import javax.swing.*;
@@ -76,10 +75,6 @@ public abstract class AbstractModalController extends JPanel implements Controll
                 setBorder(new ModalLineBorder(borderWidth, borderOption.getBorderColor(), 0));
             }
         }
-    }
-
-    protected MouseAdapter createMouseMovableListener() {
-        return new ModalMouseMovableListener(this);
     }
 
     protected void installModalComponent(Modal modal) {
@@ -194,6 +189,8 @@ public abstract class AbstractModalController extends JPanel implements Controll
     public abstract ModalContainer getModalContainer();
 
     protected abstract PanelSlider.PaneSliderLayoutSize createSliderLayoutSize();
+
+    protected abstract MouseAdapter createMouseMovableListener();
 
     protected abstract void onModalComponentInstalled();
 

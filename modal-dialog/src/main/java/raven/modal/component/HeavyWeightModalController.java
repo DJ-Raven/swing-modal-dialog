@@ -2,11 +2,14 @@ package raven.modal.component;
 
 import raven.modal.option.Option;
 import raven.modal.slider.PanelSlider;
+import raven.modal.utils.ModalMouseMovableListener;
+import raven.modal.utils.ModalWindow;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 
 /**
  * @author Raven
@@ -17,8 +20,13 @@ public class HeavyWeightModalController extends AbstractModalController {
         return owner;
     }
 
+    public ModalWindow getModalWindow() {
+        return modalWindow;
+    }
+
     private final BaseModalContainer baseModalContainer;
     private final Component owner;
+    private ModalWindow modalWindow;
     private ActionListener escapeAction;
 
     public HeavyWeightModalController(BaseModalContainer baseModalContainer, Component owner, Option option) {
@@ -35,6 +43,26 @@ public class HeavyWeightModalController extends AbstractModalController {
     @Override
     protected PanelSlider.PaneSliderLayoutSize createSliderLayoutSize() {
         return (container, component) -> container.getSize();
+    }
+
+    @Override
+    protected MouseAdapter createMouseMovableListener() {
+        return new ModalMouseMovableListener(this) {
+            @Override
+            protected Container getParent() {
+                return (Container) owner;
+            }
+
+            @Override
+            protected Component getOwner() {
+                return owner;
+            }
+
+            @Override
+            protected void updateLayout() {
+                baseModalContainer.updateLayout();
+            }
+        };
     }
 
     @Override
@@ -57,6 +85,10 @@ public class HeavyWeightModalController extends AbstractModalController {
     public void closeModal() {
         baseModalContainer.remove(this);
         uninstallOption();
+    }
+
+    public void setModalWindow(ModalWindow modalWindow) {
+        this.modalWindow = modalWindow;
     }
 
     private void installOption() {

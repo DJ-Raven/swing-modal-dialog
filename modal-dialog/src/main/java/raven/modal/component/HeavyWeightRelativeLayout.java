@@ -31,13 +31,14 @@ public abstract class HeavyWeightRelativeLayout {
         return ModalWindowFactory.getInstance().getWindow(owner, contents, getModalWindowBorder(contents), 0, 0);
     }
 
-    public void add(Component contents) {
+    public ModalWindow add(Component contents) {
         ModalWindow modal = createModalWindow(contents);
         modalWindows.add(modal);
         checkAndUpdateLayout();
         if (owner.isShowing()) {
             modal.show();
         }
+        return modal;
     }
 
     public void remove(Component contents) {
@@ -77,16 +78,16 @@ public abstract class HeavyWeightRelativeLayout {
         checkAndUpdateLayout();
     }
 
-    protected Rectangle getModalBorderSize(ModalWindow modal) {
+    protected abstract ModalWindowBorder getModalWindowBorder(Component contents);
+
+    protected abstract void updateLayout();
+
+    public static Rectangle getModalBorderSize(ModalWindow modal) {
         if (modal instanceof ModalWindowFactory.AbstractModalBorder) {
             return ((ModalWindowFactory.AbstractModalBorder) modal).getBorderSize();
         }
         return null;
     }
-
-    protected abstract ModalWindowBorder getModalWindowBorder(Component contents);
-
-    protected abstract void updateLayout();
 
     public void installOwner() {
         if (owner != null) {

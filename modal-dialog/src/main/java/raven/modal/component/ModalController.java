@@ -5,9 +5,11 @@ import com.formdev.flatlaf.util.CubicBezierEasing;
 import raven.modal.option.Option;
 import raven.modal.slider.PanelSlider;
 import raven.modal.utils.ImageSnapshots;
+import raven.modal.utils.ModalMouseMovableListener;
 
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 
 /**
  * @author Raven
@@ -108,6 +110,26 @@ public class ModalController extends AbstractModalController {
     @Override
     protected PanelSlider.PaneSliderLayoutSize createSliderLayoutSize() {
         return (container, component) -> modalContainer.getModalComponentSize(component, container);
+    }
+
+    @Override
+    protected MouseAdapter createMouseMovableListener() {
+        return new ModalMouseMovableListener(this) {
+            @Override
+            protected Container getParent() {
+                return modalContainer;
+            }
+
+            @Override
+            protected Component getOwner() {
+                return modalContainer.getOwner();
+            }
+
+            @Override
+            protected void updateLayout() {
+                modalContainer.revalidate();
+            }
+        };
     }
 
     @Override

@@ -2,7 +2,9 @@ package raven.modal.utils;
 
 import com.formdev.flatlaf.util.UIScale;
 import raven.modal.component.AbstractModalController;
-import raven.modal.component.ModalContainer;
+import raven.modal.component.HeavyWeightModalController;
+import raven.modal.component.HeavyWeightRelativeLayout;
+import raven.modal.layout.OptionLayoutUtils;
 import raven.modal.option.LayoutOption;
 
 import javax.swing.*;
@@ -15,13 +17,13 @@ import java.awt.event.MouseEvent;
  *
  * @author Raven
  */
-public class ModalMouseMovableListener extends MouseAdapter {
+public abstract class ModalMouseMovableListener extends MouseAdapter {
 
     private final AbstractModalController modalController;
     private final LayoutOption layoutOption;
 
     private DynamicSize initialLocation;
-
+    private Point initialPoint;
     private Point initialPressed;
 
     public ModalMouseMovableListener(AbstractModalController modalController) {
@@ -38,28 +40,24 @@ public class ModalMouseMovableListener extends MouseAdapter {
         return value;
     }
 
-    private boolean isUseOwner() {
-        return layoutOption.isRelativeToOwner() && !(modalController.getModalContainer().getOwner() instanceof RootPaneContainer);
-    }
-
-    private Point getCurrentPoint(Point point) {
-        Insets margin = UIScale.scale(layoutOption.getMargin());
-        point.x += margin.left;
-        point.y += margin.top;
-        if (isUseOwner()) {
-            ModalContainer container = modalController.getModalContainer();
-            Point convertPoint = SwingUtilities.convertPoint(container.getOwner().getParent(), container.getOwner().getLocation(), container);
-            point.x += convertPoint.x;
-            point.y += convertPoint.y;
+    private Dimension getModalSize() {
+        Dimension size = modalController.getSize();
+        if (modalController instanceof HeavyWeightModalController) {
+            Rectangle rec = HeavyWeightRelativeLayout.getModalBorderSize(((HeavyWeightModalController) modalController).getModalWindow());
+            if (rec != null) {
+                size.width += rec.width;
+                size.height += rec.height;
+            }
         }
-        return point;
+        return size;
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
             initialLocation = new DynamicSize(layoutOption.getLocation());
-            initialPressed = getCurrentPoint(e.getPoint());
+            initialPoint = OptionLayoutUtils.convertToLocation(getParent(), getOwner(), layoutOption, getModalSize(), null);
+            initialPressed = e.getLocationOnScreen();
         }
     }
 
@@ -70,26 +68,26 @@ public class ModalMouseMovableListener extends MouseAdapter {
             boolean doX = currentLocation.getX() != initialLocation.getX() && initialLocation.getX() instanceof Float;
             boolean doY = currentLocation.getY() != initialLocation.getY() && initialLocation.getY() instanceof Float;
             if (doX || doY) {
+                Component parent = getParent();
+                Component owner = getOwner();
                 Insets margin = UIScale.scale(layoutOption.getMargin());
-                Dimension size = isUseOwner() ? modalController.getModalContainer().getOwner().getSize() : modalController.getModalContainer().getSize();
+                Dimension size = isUseOwner() ? owner.getSize() : parent.getSize();
                 float width = size.width - (margin.left + margin.right);
                 float height = size.height - (margin.top + margin.bottom);
 
                 Number numX = currentLocation.getX();
                 Number numY = currentLocation.getY();
+                Dimension modalSize = getModalSize();
                 if (doX) {
-                    float comWidth = modalController.getWidth() / width / 2f;
+                    float comWidth = modalSize.width / width / 2f;
                     numX = between(UIScale.scale(numX.floatValue()) / width + comWidth, 0, 1f);
                 }
                 if (doY) {
-                    float comHeight = modalController.getHeight() / height / 2f;
+                    float comHeight = modalSize.height / height / 2f;
                     numY = between(UIScale.scale(numY.floatValue()) / height + comHeight, 0, 1f);
                 }
                 layoutOption.setLocation(numX, numY);
-                ModalContainer parent = modalController.getModalContainer();
-                if (parent != null) {
-                    parent.revalidate();
-                }
+                updateLayout();
             }
         }
     }
@@ -97,15 +95,34 @@ public class ModalMouseMovableListener extends MouseAdapter {
     @Override
     public void mouseDragged(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
-            ModalContainer parent = modalController.getModalContainer();
-            if (parent != null) {
-                Point dragged = e.getPoint();
-                Point location = parent.getControllerLocation();
-                int x = UIScale.unscale(location.x + (dragged.x - initialPressed.x));
-                int y = UIScale.unscale(location.y + (dragged.y - initialPressed.y));
-                layoutOption.setLocation(x, y);
-                parent.revalidate();
+            Component owner = isUseOwner() ? getOwner() : getParent();
+            Point draggedLocation = e.getLocationOnScreen();
+            int maxWidth = owner.getWidth() - modalController.getWidth();
+            int maxHeight = owner.getHeight() - modalController.getHeight();
+            int x = initialPoint.x + (draggedLocation.x - initialPressed.x);
+            int y = initialPoint.y + (draggedLocation.y - initialPressed.y);
+            if (x <= 0) {
+                x = 0;
+            } else if (x >= maxWidth) {
+                x = maxWidth;
             }
+            if (y <= 0) {
+                y = 0;
+            } else if (y > maxHeight) {
+                y = maxHeight;
+            }
+            layoutOption.setLocation(UIScale.unscale(x), UIScale.unscale(y));
+            updateLayout();
         }
+    }
+
+    protected abstract Container getParent();
+
+    protected abstract Component getOwner();
+
+    protected abstract void updateLayout();
+
+    private boolean isUseOwner() {
+        return layoutOption.isRelativeToOwner() && !(getOwner() instanceof RootPaneContainer);
     }
 }

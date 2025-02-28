@@ -112,6 +112,7 @@ public class TestModal extends BaseFrame {
                 .setShadow(BorderOption.Shadow.MEDIUM)
         ;
         modalOption.getLayoutOption()
+                .setMovable(true)
                 .setRelativeToOwner(true)
         ;
         modalOption.getBorderOption()

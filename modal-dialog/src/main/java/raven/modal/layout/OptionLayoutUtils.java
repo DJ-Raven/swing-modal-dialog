@@ -19,37 +19,14 @@ public class OptionLayoutUtils {
     }
 
     public static Rectangle getLayoutLocation(Container parent, Component owner, Component component, float animate, LayoutOption layoutOption, Dimension extraSize) {
-        Insets parentInsert = parent.getInsets();
         Insets insets = layoutOption.getMargin();
         Dimension defaultComSize = getComponentSize(parent, insets);
-        if (layoutOption.isRelativeToOwner() && layoutOption.getRelativeToOwnerType() != LayoutOption.RelativeToOwnerType.RELATIVE_CONTAINED) {
-            insets = getOwnerInsert(parent, owner, insets);
-        }
-        insets = FlatUIUtils.addInsets(parentInsert, UIScale.scale(insets));
+        Dimension comSize = getComponentSize(component, defaultComSize.width, defaultComSize.height, animate, layoutOption, extraSize);
         int x = insets.left;
         int y = insets.top;
-        int width = parent.getWidth() - (insets.left + insets.right);
-        int height = parent.getHeight() - (insets.top + insets.bottom);
-        Dimension comSize = getComponentSize(component, defaultComSize.width, defaultComSize.height, animate, layoutOption, extraSize);
-        boolean rightToLeft = !parent.getComponentOrientation().isLeftToRight();
-        Location lh = layoutOption.getHorizontalLocation();
-        Number lx = layoutOption.getLocation().getX();
-        Number ly = layoutOption.getLocation().getY();
-        if (lh != null) {
-            if (rightToLeft) {
-                if (lh == Location.LEADING) {
-                    lh = Location.RIGHT;
-                } else if (lh == Location.TRAILING) {
-                    lh = Location.LEFT;
-                } else {
-                    rightToLeft = false;
-                }
-            }
-            lx = lh.getValue();
-        }
-        DynamicSize size = new DynamicSize(lx, ly);
-        Point point = location(width, height, comSize, size, layoutOption.isOverflowAlignmentAuto());
-        Point animatePoint = getAnimatePoint(comSize, animate, rightToLeft, layoutOption);
+        ReferenceBoolean rightToLeft = ReferenceBoolean.of(false);
+        Point point = convertToLocation(parent, owner, layoutOption, comSize, rightToLeft);
+        Point animatePoint = getAnimatePoint(comSize, animate, rightToLeft.rightToLeft, layoutOption);
         int cx = x + point.x + animatePoint.x;
         int cy = y + point.y + animatePoint.y;
         return new Rectangle(cx, cy, comSize.width, comSize.height);
@@ -70,6 +47,43 @@ public class OptionLayoutUtils {
         int bottom = insets.bottom + height;
         int right = insets.right + width;
         return new Insets(top, left, bottom, right);
+    }
+
+    public static Point convertToLocation(Container parent, Component owner, LayoutOption layoutOption, Dimension comSize, ReferenceBoolean reference) {
+        Insets parentInsert = parent.getInsets();
+        Insets insets = layoutOption.getMargin();
+        if (layoutOption.isRelativeToOwner() && layoutOption.getRelativeToOwnerType() != LayoutOption.RelativeToOwnerType.RELATIVE_CONTAINED) {
+            insets = getOwnerInsert(parent, owner, insets);
+        }
+        insets = FlatUIUtils.addInsets(parentInsert, UIScale.scale(insets));
+        int width = parent.getWidth() - (insets.left + insets.right);
+        int height = parent.getHeight() - (insets.top + insets.bottom);
+        ReferenceBoolean rightToLeft = ReferenceBoolean.of(!parent.getComponentOrientation().isLeftToRight());
+        DynamicSize size = convertLocation(layoutOption, rightToLeft);
+
+        if (reference != null) {
+            reference.rightToLeft = rightToLeft.rightToLeft;
+        }
+        return location(width, height, comSize, size, layoutOption.isOverflowAlignmentAuto());
+    }
+
+    private static DynamicSize convertLocation(LayoutOption layoutOption, ReferenceBoolean reference) {
+        Location lh = layoutOption.getHorizontalLocation();
+        Number lx = layoutOption.getLocation().getX();
+        Number ly = layoutOption.getLocation().getY();
+        if (lh != null) {
+            if (reference.rightToLeft) {
+                if (lh == Location.LEADING) {
+                    lh = Location.RIGHT;
+                } else if (lh == Location.TRAILING) {
+                    lh = Location.LEFT;
+                } else {
+                    reference.rightToLeft = false;
+                }
+            }
+            lx = lh.getValue();
+        }
+        return new DynamicSize(lx, ly);
     }
 
     protected static Point location(int width, int height, Dimension componentSize, DynamicSize size, boolean overflowAlignmentAuto) {
@@ -143,5 +157,16 @@ public class OptionLayoutUtils {
         int width = parent.getWidth() - (insets.left + insets.right);
         int height = parent.getHeight() - (insets.top + insets.bottom);
         return new Dimension(width, height);
+    }
+
+    private static class ReferenceBoolean {
+
+        public static ReferenceBoolean of(boolean rightToLeft) {
+            ReferenceBoolean obj = new ReferenceBoolean();
+            obj.rightToLeft = rightToLeft;
+            return obj;
+        }
+
+        private boolean rightToLeft;
     }
 }
