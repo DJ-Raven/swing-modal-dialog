@@ -1,5 +1,6 @@
 package raven.modal.utils;
 
+import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.UIScale;
 import raven.modal.component.AbstractModalController;
 import raven.modal.component.HeavyWeightModalController;
@@ -68,10 +69,13 @@ public abstract class ModalMouseMovableListener extends MouseAdapter {
             boolean doX = currentLocation.getX() != initialLocation.getX() && initialLocation.getX() instanceof Float;
             boolean doY = currentLocation.getY() != initialLocation.getY() && initialLocation.getY() instanceof Float;
             if (doX || doY) {
-                Component parent = getParent();
+                Container parent = getParent();
                 Component owner = getOwner();
+                boolean useOwner = isUseOwner();
                 Insets margin = UIScale.scale(layoutOption.getMargin());
-                Dimension size = isUseOwner() ? owner.getSize() : parent.getSize();
+                Insets parentMargin = parent.getInsets();
+                margin = FlatUIUtils.addInsets(margin, parentMargin);
+                Dimension size = useOwner ? owner.getSize() : parent.getSize();
                 float width = size.width - (margin.left + margin.right);
                 float height = size.height - (margin.top + margin.bottom);
 
