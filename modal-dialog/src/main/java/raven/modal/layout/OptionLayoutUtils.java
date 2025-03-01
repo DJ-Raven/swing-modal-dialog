@@ -22,13 +22,11 @@ public class OptionLayoutUtils {
         Insets insets = layoutOption.getMargin();
         Dimension defaultComSize = getComponentSize(parent, insets);
         Dimension comSize = getComponentSize(component, defaultComSize.width, defaultComSize.height, animate, layoutOption, extraSize);
-        int x = insets.left;
-        int y = insets.top;
         ReferenceBoolean rightToLeft = ReferenceBoolean.of(false);
         Point point = convertToLocation(parent, owner, layoutOption, comSize, rightToLeft);
         Point animatePoint = getAnimatePoint(comSize, animate, rightToLeft.rightToLeft, layoutOption);
-        int cx = x + point.x + animatePoint.x;
-        int cy = y + point.y + animatePoint.y;
+        int cx = point.x + animatePoint.x;
+        int cy = point.y + animatePoint.y;
         return new Rectangle(cx, cy, comSize.width, comSize.height);
     }
 
@@ -60,11 +58,13 @@ public class OptionLayoutUtils {
         int height = parent.getHeight() - (insets.top + insets.bottom);
         ReferenceBoolean rightToLeft = ReferenceBoolean.of(!parent.getComponentOrientation().isLeftToRight());
         DynamicSize size = convertLocation(layoutOption, rightToLeft);
-
+        Point point = location(width, height, comSize, size, layoutOption.isOverflowAlignmentAuto());
         if (reference != null) {
             reference.rightToLeft = rightToLeft.rightToLeft;
+            point.x += insets.left;
+            point.y += insets.top;
         }
-        return location(width, height, comSize, size, layoutOption.isOverflowAlignmentAuto());
+        return point;
     }
 
     private static DynamicSize convertLocation(LayoutOption layoutOption, ReferenceBoolean reference) {
