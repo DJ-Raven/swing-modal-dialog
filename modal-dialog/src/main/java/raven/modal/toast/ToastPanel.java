@@ -12,6 +12,7 @@ import raven.modal.component.DropShadowBorder;
 import raven.modal.component.ModalLineBorder;
 import raven.modal.toast.icon.RollingIcon;
 import raven.modal.toast.option.*;
+import raven.modal.utils.ImageSnapshots;
 import raven.modal.utils.ModalUtils;
 
 import javax.swing.*;
@@ -57,6 +58,7 @@ public class ToastPanel extends JPanel {
     private ToastPromise toastPromise;
     private ToastPromise.PromiseCallback promiseCallback;
     private boolean available = true;
+    private Image snapshotContent;
 
     public ToastPanel(BaseToastContainer baseToastContainer, Component owner, ToastData toastData) {
         this.baseToastContainer = baseToastContainer;
@@ -66,7 +68,7 @@ public class ToastPanel extends JPanel {
     }
 
     private void init() {
-        setLayout(new BorderLayout());
+        setLayout(new MigLayout("insets 0,fill", "fill", "fill"));
         if (!toastData.getOption().isHeavyWeight()) {
             setOpaque(false);
         }
@@ -120,6 +122,11 @@ public class ToastPanel extends JPanel {
             g2.setComposite(AlphaComposite.SrcOver.derive(animate));
         }
         super.paint(g);
+        if (snapshotContent != null) {
+            int x = content.getX();
+            int y = content.getY();
+            g.drawImage(snapshotContent, x, y, null);
+        }
     }
 
     @Override
@@ -129,6 +136,7 @@ public class ToastPanel extends JPanel {
             promiseIcon.stop();
             promiseIcon = null;
         }
+        removeSnapshot();
     }
 
     public ToastPanel createToast() {
@@ -397,8 +405,14 @@ public class ToastPanel extends JPanel {
                     }
 
                     @Override
+                    public void begin() {
+                        createSnapshot();
+                    }
+
+                    @Override
                     public void end() {
                         repaint();
+                        removeSnapshot();
                         if (showing) {
                             defaultStop();
                         } else {
@@ -505,6 +519,19 @@ public class ToastPanel extends JPanel {
         mouseListener = null;
         animator = null;
         threadDelay = null;
+    }
+
+    private void createSnapshot() {
+        snapshotContent = ImageSnapshots.createSnapshotsImage(content, 0);
+        content.setVisible(false);
+    }
+
+    private void removeSnapshot() {
+        if (snapshotContent != null) {
+            snapshotContent.flush();
+            snapshotContent = null;
+        }
+        content.setVisible(true);
     }
 
     private void updateModalLayout() {
