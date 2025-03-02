@@ -16,6 +16,7 @@ public abstract class HeavyWeightRelativeLayout {
 
     protected Component owner;
     protected List<ModalWindow> modalWindows;
+    private boolean enableHierarchy = true;
 
     private HierarchyListener hierarchyListener;
     private HierarchyBoundsListener hierarchyBoundsListener;
@@ -106,6 +107,7 @@ public abstract class HeavyWeightRelativeLayout {
                 owner.addComponentListener(componentListener);
             } else {
                 hierarchyListener = e -> {
+                    if (!enableHierarchy) return;
                     if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0 || (e.getChangeFlags() & HierarchyEvent.DISPLAYABILITY_CHANGED) != 0) {
                         if (e.getChanged().isShowing()) {
                             if (owner.isShowing()) {
@@ -150,5 +152,9 @@ public abstract class HeavyWeightRelativeLayout {
                 hierarchyBoundsListener = null;
             }
         }
+    }
+
+    public void setEnableHierarchy(boolean enableHierarchy) {
+        this.enableHierarchy = enableHierarchy;
     }
 }

@@ -227,6 +227,9 @@ public class ModalDialog {
             // modal
             map.values().forEach(container -> container.setEnableHierarchy(show));
 
+            // heavyweight modal
+            ModalHeavyWeight.getInstance().setEnableHierarchy(show);
+
             // toast
             Toast.setEnableHierarchy(show);
         };

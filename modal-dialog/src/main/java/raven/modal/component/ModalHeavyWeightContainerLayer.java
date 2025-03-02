@@ -123,6 +123,10 @@ public class ModalHeavyWeightContainerLayer implements BaseModalContainer {
         listModalHeavyWeight.forEach(modal -> modal.updateLayout());
     }
 
+    protected void setEnableHierarchy(boolean enable) {
+        listModalHeavyWeight.forEach(modal -> modal.setEnableHierarchy(enable));
+    }
+
     private void closeAll(HeavyWeightRelativeLayout heavyWeight) {
         List<ModalWindow> modalWindows = heavyWeight.getModalWindows();
         for (int i = modalWindows.size() - 1; i >= 0; i--) {
@@ -160,7 +164,7 @@ public class ModalHeavyWeightContainerLayer implements BaseModalContainer {
         return parentWindow;
     }
 
-    public void windowRemoved() {
+    private void windowRemoved() {
         closeAllModalImmediately();
         map.remove(parentWindow);
     }

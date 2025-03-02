@@ -114,6 +114,10 @@ public class ToastHeavyWeightContainerLayer implements BaseToastContainer {
         }
     }
 
+    protected void setEnableHierarchy(boolean enable) {
+        listToastHeavyWeight.forEach(modal -> modal.setEnableHierarchy(enable));
+    }
+
     private void closeAll(HeavyWeightRelativeLayout heavyWeight) {
         List<ModalWindow> modalWindows = heavyWeight.getModalWindows();
         for (int i = modalWindows.size() - 1; i >= 0; i--) {
@@ -155,7 +159,7 @@ public class ToastHeavyWeightContainerLayer implements BaseToastContainer {
         return parentWindow;
     }
 
-    public void windowRemoved() {
+    private void windowRemoved() {
         closeAllImmediately();
         map.remove(parentWindow);
     }
