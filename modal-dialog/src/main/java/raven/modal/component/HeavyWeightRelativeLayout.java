@@ -4,6 +4,7 @@ import raven.modal.utils.ModalWindow;
 import raven.modal.utils.ModalWindowBorder;
 import raven.modal.utils.ModalWindowFactory;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -123,12 +124,12 @@ public abstract class HeavyWeightRelativeLayout {
                 hierarchyBoundsListener = new HierarchyBoundsAdapter() {
                     @Override
                     public void ancestorMoved(HierarchyEvent e) {
-                        checkAndUpdateLayout();
+                        SwingUtilities.invokeLater(() -> checkAndUpdateLayout());
                     }
 
                     @Override
                     public void ancestorResized(HierarchyEvent e) {
-                        checkAndUpdateLayout();
+                        SwingUtilities.invokeLater(() -> checkAndUpdateLayout());
                     }
                 };
                 owner.addHierarchyListener(hierarchyListener);
