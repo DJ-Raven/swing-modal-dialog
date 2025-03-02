@@ -4,6 +4,7 @@ import com.formdev.flatlaf.util.UIScale;
 import raven.modal.component.DropShadowBorder;
 import raven.modal.component.HeavyWeightModalController;
 import raven.modal.component.ModalBackground;
+import raven.modal.option.LayoutOption;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -128,17 +129,20 @@ public class ModalWindowFactory {
         }
 
         private Rectangle getOwnerBounds() {
-            Point point = getLocation(owner, 0, 0);
-            Insets padding = UIScale.scale(controller.getOption().getLayoutOption().getBackgroundPadding());
-            int width = owner.getWidth();
-            int height = owner.getHeight();
+            LayoutOption option = controller.getOption().getLayoutOption();
+            Component parent = option.isRelativeToOwner() && option.getRelativeToOwnerType() == LayoutOption.RelativeToOwnerType.RELATIVE_GLOBAL
+                    ? window.getParent() : this.owner;
+            Point point = getLocation(parent, 0, 0);
+            Insets padding = UIScale.scale(option.getBackgroundPadding());
+            int width = parent.getWidth();
+            int height = parent.getHeight();
             Insets insets;
-            if (owner instanceof Frame) {
-                insets = ((Frame) owner).getInsets();
-            } else if (owner instanceof Window) {
-                insets = ((Window) owner).getInsets();
+            if (parent instanceof Frame) {
+                insets = ((Frame) parent).getInsets();
+            } else if (parent instanceof Window) {
+                insets = ((Window) parent).getInsets();
             } else {
-                JComponent component = (JComponent) owner;
+                JComponent component = (JComponent) parent;
                 Rectangle visibleRec = component.getVisibleRect();
                 point.x += visibleRec.x;
                 point.y += visibleRec.y;

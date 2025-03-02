@@ -75,6 +75,6 @@ public class ModalLayout implements LayoutManager {
         Insets insets = FlatUIUtils.addInsets(parent.getInsets(), UIScale.scale(layoutOption.getMargin()));
         int width = parent.getWidth() - (insets.left + insets.right + margin.left + margin.right);
         int height = parent.getHeight() - (insets.top + insets.bottom + margin.top + margin.bottom);
-        return OptionLayoutUtils.getComponentSize(component, width, height, 1f, layoutOption, null);
+        return OptionLayoutUtils.getComponentSize(component, width, height, 1f, layoutOption, null, false);
     }
 }

@@ -73,7 +73,7 @@ public class ToastHeavyWeightLayout extends HeavyWeightRelativeLayout {
             boolean isToBottomDirection = option.getLayoutOption().getDirection().isToBottomDirection();
             Rectangle modalBorderSize = getModalBorderSize(modal);
             Dimension extraSize = modalBorderSize == null ? null : modalBorderSize.getSize();
-            Rectangle rec = OptionLayoutUtils.getLayoutLocation((Container) owner, null, toastPanel, toastPanel.getAnimate(), layoutOption, extraSize);
+            Rectangle rec = OptionLayoutUtils.getLayoutLocation((Container) owner, null, toastPanel, toastPanel.getAnimate(), layoutOption, extraSize, true);
             if (i == 0) {
                 ly += rec.y;
             }

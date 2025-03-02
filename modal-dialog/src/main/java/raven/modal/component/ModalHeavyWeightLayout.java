@@ -58,7 +58,7 @@ public class ModalHeavyWeightLayout extends HeavyWeightRelativeLayout {
             Rectangle modalBorderSize = getModalBorderSize(modal);
             Dimension extraSize = modalBorderSize == null ? null : modalBorderSize.getSize();
 
-            Rectangle rec = OptionLayoutUtils.getLayoutLocation((Container) owner, null, controller, 1, layoutOption, extraSize);
+            Rectangle rec = OptionLayoutUtils.getLayoutLocation((Container) owner, null, controller, 1, layoutOption, extraSize, true);
             int width = rec.width;
             int height = rec.height;
             if (modalBorderSize != null) {

@@ -15,13 +15,13 @@ import java.awt.*;
 public class OptionLayoutUtils {
 
     public static Rectangle getLayoutLocation(Container parent, Component owner, Component component, float animate, LayoutOption layoutOption) {
-        return getLayoutLocation(parent, owner, component, animate, layoutOption, null);
+        return getLayoutLocation(parent, owner, component, animate, layoutOption, null, false);
     }
 
-    public static Rectangle getLayoutLocation(Container parent, Component owner, Component component, float animate, LayoutOption layoutOption, Dimension extraSize) {
+    public static Rectangle getLayoutLocation(Container parent, Component owner, Component component, float animate, LayoutOption layoutOption, Dimension extraSize, boolean heavyWeight) {
         Insets insets = layoutOption.getMargin();
         Dimension defaultComSize = getComponentSize(parent, insets);
-        Dimension comSize = getComponentSize(component, defaultComSize.width, defaultComSize.height, animate, layoutOption, extraSize);
+        Dimension comSize = getComponentSize(component, defaultComSize.width, defaultComSize.height, animate, layoutOption, extraSize, heavyWeight);
         ReferenceBoolean rightToLeft = ReferenceBoolean.of(false);
         Point point = convertToLocation(parent, owner, layoutOption, comSize, rightToLeft);
         Point animatePoint = getAnimatePoint(comSize, animate, rightToLeft.rightToLeft, layoutOption);
@@ -127,7 +127,7 @@ public class OptionLayoutUtils {
         return value;
     }
 
-    protected static Dimension getComponentSize(Component component, int width, int height, float animate, LayoutOption layoutOption, Dimension extraSize) {
+    protected static Dimension getComponentSize(Component component, int width, int height, float animate, LayoutOption layoutOption, Dimension extraSize, boolean heavyWeight) {
         Dimension componentSize = component.getPreferredSize();
         Dimension minimumSize = component.getMinimumSize();
         if (extraSize != null) {
@@ -137,8 +137,16 @@ public class OptionLayoutUtils {
             minimumSize.height += extraSize.height;
         }
         Dimension targetSize = layoutOption.getSize().getSize(componentSize, new Dimension(width, height));
-        int cw = Math.max(Math.min(targetSize.width, width), minimumSize.width);
-        int ch = Math.max(Math.min(targetSize.height, height), minimumSize.height);
+        int cw = targetSize.width;
+        int ch = targetSize.height;
+
+        if ((heavyWeight == false) ||
+                (layoutOption.isRelativeToOwner() && layoutOption.getRelativeToOwnerType() == LayoutOption.RelativeToOwnerType.RELATIVE_CONTAINED)) {
+            cw = Math.min(cw, width);
+            ch = Math.min(ch, height);
+        }
+        cw = Math.max(cw, minimumSize.width);
+        ch = Math.max(ch, minimumSize.height);
         return new Dimension(cw, ch);
     }
 
