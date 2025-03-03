@@ -43,9 +43,10 @@
 ### Fixed bugs
 
 - Modal
-    - Fixed heavyWeight brakes renderer font
+    - Fixed heavyWeight broken rendering font
 - Toast
-    - Fixed brakes renderer font during animation
+    - Fixed heavyWeight broken rendering font
+    - Fixed broken rendering font during animation
 - Drawer
     - Fixed animation menu items
 
