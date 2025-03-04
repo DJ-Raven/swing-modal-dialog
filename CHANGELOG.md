@@ -24,15 +24,29 @@
 
 ### Changed
 
+- Modal
+    - SimpleModalBorder: add `CLOSE_OPTION`
 - Toast
     - option `borderType` move from `ToastStyle` to `ToastBorderStyle`
     - option `lineSize` move from `ToastStyle` to `ToastBorderStyle`
+- Drawer
+    - Changed package `raven.modal.drawer.data` to `raven.modal.drawer.item`
 - Other
     - Changed `raven.modal.drawer.menu.MenuAnimation.java`
       to `raven.modal.utils.CustomAnimation.java` for reusable class
+    - Changed option`borderWidth` and `round` from type `float` to `integer`
+    - Modal and Toast: removed `ModalWindow` as the transparent background
+    - Modal and Toast heavyWeight:
+        - Not support animation
+        - Round border and drop shadow support only `windows 10`
 
 ### Fixed bugs
 
+- Modal
+    - Fixed heavyWeight broken rendering font
+- Toast
+    - Fixed heavyWeight broken rendering font
+    - Fixed broken rendering font during animation
 - Drawer
     - Fixed animation menu items
 

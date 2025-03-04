@@ -59,7 +59,7 @@ public class ToastHeavyWeight {
         });
     }
 
-    public AbstractToastContainerLayer getToastHeavyWeightContainer(Component owner) {
+    public ToastHeavyWeightContainerLayer getToastHeavyWeightContainer(Component owner) {
         Window window = owner instanceof Window ? ((Window) owner) : SwingUtilities.getWindowAncestor(owner);
         if (map.containsKey(window)) {
             return map.get(window);

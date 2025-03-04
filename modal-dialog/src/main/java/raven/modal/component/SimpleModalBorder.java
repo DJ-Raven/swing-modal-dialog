@@ -27,7 +27,7 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
     private final ModalCallback callback;
 
     // options
-    public static final int DEFAULT_OPTION = -1;
+    public static final int DEFAULT_OPTION = -2;
     public static final int YES_NO_OPTION = 0;
     public static final int YES_NO_CANCEL_OPTION = 1;
     public static final int OK_CANCEL_OPTION = 2;
@@ -53,7 +53,7 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
     }
 
     public SimpleModalBorder(Component component, String title, Option[] optionsType, ModalCallback callback) {
-        this(component, title, new ModalBorderOption(), -1, optionsType, callback);
+        this(component, title, new ModalBorderOption(), DEFAULT_OPTION, optionsType, callback);
     }
 
     public SimpleModalBorder(Component component, String title, ModalBorderOption option, int optionType, ModalCallback callback) {
@@ -61,7 +61,7 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
     }
 
     public SimpleModalBorder(Component component, String title, ModalBorderOption option, Option[] optionsType, ModalCallback callback) {
-        this(component, title, option, -1, optionsType, callback);
+        this(component, title, option, DEFAULT_OPTION, optionsType, callback);
     }
 
     private SimpleModalBorder(Component component, String title, ModalBorderOption option, int optionType, Option[] optionsType, ModalCallback callback) {
@@ -69,7 +69,7 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
         this.option = option;
         this.title = title;
         this.callback = callback;
-        if (optionType == -1) {
+        if (optionType == DEFAULT_OPTION) {
             this.optionsType = optionsType;
         } else {
             this.optionsType = createOptions(optionType);
@@ -167,6 +167,8 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
             options = new Option[]{new Option("Yes", YES_OPTION), new Option("No", NO_OPTION), new Option("Cancel", CANCEL_OPTION)};
         } else if (optionType == OK_CANCEL_OPTION) {
             options = new Option[]{new Option("Ok", OK_OPTION), new Option("Cancel", CANCEL_OPTION)};
+        } else if (optionType == CLOSE_OPTION) {
+            options = new Option[]{new Option("Close", CLOSE_OPTION)};
         }
         return options;
     }
@@ -209,12 +211,13 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
     }
 
     private void checkOptionType(int type) {
-        if (type != DEFAULT_OPTION && type != YES_NO_OPTION && type != YES_NO_CANCEL_OPTION && type != OK_CANCEL_OPTION) {
+        if (type != DEFAULT_OPTION && type != YES_NO_OPTION && type != YES_NO_CANCEL_OPTION && type != OK_CANCEL_OPTION && type != CLOSE_OPTION) {
             throw new RuntimeException("SimpleModalBorder: option type must be one of" +
                     " SimpleModalBorder.DEFAULT_OPTION," +
                     " SimpleModalBorder.YES_NO_OPTION," +
-                    " SimpleModalBorder.YES_NO_CANCEL_OPTION" +
-                    " or SimpleModalBorder.OK_CANCEL_OPTION");
+                    " SimpleModalBorder.YES_NO_CANCEL_OPTION," +
+                    " SimpleModalBorder.OK_CANCEL_OPTION" +
+                    " or SimpleModalBorder.CLOSE_OPTION");
         }
     }
 

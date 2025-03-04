@@ -8,12 +8,12 @@ import raven.modal.utils.ModalUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.RoundRectangle2D;
+import java.awt.image.BufferedImage;
 
 /**
  * @author Raven
  */
-public class OutlineBorder extends FlatEmptyBorder {
+public class DropShadowBorder extends FlatEmptyBorder {
 
     private static final float inner = 0.2f;
     private final float borderWidth;
@@ -23,23 +23,23 @@ public class OutlineBorder extends FlatEmptyBorder {
     private final Color borderColor;
     private FlatDropShadowBorder shadowBorder;
 
-    public OutlineBorder(int shadowSize, float round) {
+    public DropShadowBorder(int shadowSize, float round) {
         this(new Insets(shadowSize, shadowSize, shadowSize, shadowSize), 0, round);
     }
 
-    public OutlineBorder(Insets shadowSize, float round) {
+    public DropShadowBorder(Insets shadowSize, float round) {
         this(shadowSize, 0, null, round);
     }
 
-    public OutlineBorder(Insets shadowSize, float borderWidth, float round) {
+    public DropShadowBorder(Insets shadowSize, float borderWidth, float round) {
         this(shadowSize, borderWidth, null, round);
     }
 
-    public OutlineBorder(Insets shadowSize, float borderWidth, Color borderColor, float round) {
+    public DropShadowBorder(Insets shadowSize, float borderWidth, Color borderColor, float round) {
         this(shadowSize, -1, null, borderWidth, borderColor, round);
     }
 
-    public OutlineBorder(Insets shadowSize, float shadowOpacity, Color shadowColor, float borderWidth, Color borderColor, float round) {
+    public DropShadowBorder(Insets shadowSize, float shadowOpacity, Color shadowColor, float borderWidth, Color borderColor, float round) {
         super(getShadowInsets(shadowSize, borderWidth, round));
         this.shadowSize = shadowSize;
         this.borderWidth = borderWidth;
@@ -76,17 +76,15 @@ public class OutlineBorder extends FlatEmptyBorder {
 
     @Override
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-        Graphics2D g2 = (Graphics2D) g.create();
-
+        Graphics2D g2 = null;
         try {
+            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            g2 = image.createGraphics();
             FlatUIUtils.setRenderingHints(g2);
-            if (c.isOpaque()) {
-                g2.setColor(getBackgroundColor());
-                g2.fill(new Rectangle(0, 0, c.getWidth(), c.getHeight()));
-            }
+
             // paint shadow
             if (shadowBorder != null) {
-                shadowBorder.paintBorder(c, g2, x, y, width, height);
+                shadowBorder.paintBorder(c, g2, 0, 0, width, height);
             }
 
             int top = shadowSize.top;
@@ -109,16 +107,19 @@ public class OutlineBorder extends FlatEmptyBorder {
 
             // paint background
             g2.setColor(c.getBackground());
-            g2.fill(new RoundRectangle2D.Float(0, 0, w, h, arc, arc));
+            g2.fill(FlatUIUtils.createComponentRectangle(0, 0, w, h, arc));
 
             // paint outline
             if (borderWidth > 0) {
                 Color color = getBorderColor();
                 g2.setColor(color);
-                FlatUIUtils.paintOutline(g2, x, y, w, h, lineWidth, arc);
+                FlatUIUtils.paintOutline(g2, 0, 0, w, h, lineWidth, arc);
             }
+            g.drawImage(image, x, y, null);
         } finally {
-            g2.dispose();
+            if (g2 != null) {
+                g2.dispose();
+            }
         }
     }
 
@@ -128,10 +129,6 @@ public class OutlineBorder extends FlatEmptyBorder {
         }
         Color color = UIManager.getColor("Component.borderColor");
         return color;
-    }
-
-    private Color getBackgroundColor() {
-        return UIManager.getColor("Panel.background");
     }
 
     public Insets getShadowSize() {

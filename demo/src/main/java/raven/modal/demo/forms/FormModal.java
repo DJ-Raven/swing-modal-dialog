@@ -249,7 +249,7 @@ public class FormModal extends Form {
                 .setOpacity(chOpacity.isSelected() ? 0.5f : 0)
                 .setHeavyWeight(chHeavyWeight.isSelected());
         option.getBorderOption()
-                .setBorderWidth(chBorder.isSelected() ? 1f : 0)
+                .setBorderWidth(chBorder.isSelected() ? 1 : 0)
                 .setShadow(chShadow.isSelected() ? BorderOption.Shadow.MEDIUM : BorderOption.Shadow.NONE);
         option.getLayoutOption().setLocation(h, v)
                 .setRelativeToOwner(chRelativeToOwner.isSelected())

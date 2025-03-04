@@ -1,10 +1,7 @@
 package raven.modal.toast.option;
 
-import raven.modal.toast.ToastBorder;
-import raven.modal.toast.ToastPanel;
 import raven.modal.utils.ModalUtils;
 
-import javax.swing.border.Border;
 import java.awt.*;
 
 /**
@@ -20,7 +17,7 @@ public class ToastBorderStyle {
         return borderType;
     }
 
-    public float getRound() {
+    public int getRound() {
         return round;
     }
 
@@ -48,7 +45,7 @@ public class ToastBorderStyle {
         return padding;
     }
 
-    private ToastBorderStyle(BorderType borderType, float round, Insets shadowSize, Color shadowColor, float shadowOpacity, int lineSize, int borderWidth, Insets padding) {
+    private ToastBorderStyle(BorderType borderType, int round, Insets shadowSize, Color shadowColor, float shadowOpacity, int lineSize, int borderWidth, Insets padding) {
         this.borderType = borderType;
         this.round = round;
         this.shadowSize = shadowSize;
@@ -63,7 +60,7 @@ public class ToastBorderStyle {
     }
 
     private BorderType borderType = BorderType.NONE;
-    private float round = 10;
+    private int round = 10;
     private Insets shadowSize = new Insets(0, 0, 10, 10);
     private Color shadowColor;
     private float shadowOpacity = -1;
@@ -76,7 +73,7 @@ public class ToastBorderStyle {
         return this;
     }
 
-    public ToastBorderStyle setRound(float round) {
+    public ToastBorderStyle setRound(int round) {
         this.round = round;
         return this;
     }
@@ -130,10 +127,6 @@ public class ToastBorderStyle {
     public ToastBorderStyle setShadow(ToastBorderStyle.Shadow shadow) {
         shadow.apply(this);
         return this;
-    }
-
-    public Border createBorder(Component component, ToastPanel.ToastData toastData) {
-        return new ToastBorder(component, toastData, shadowSize, shadowOpacity, shadowColor, round);
     }
 
     public ToastBorderStyle copy() {

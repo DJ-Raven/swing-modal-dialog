@@ -6,7 +6,6 @@ import raven.modal.option.Option;
 import raven.modal.slider.PanelSlider;
 import raven.modal.slider.SimpleTransition;
 import raven.modal.slider.SliderTransition;
-import raven.modal.utils.ModalMouseMovableListener;
 import raven.modal.utils.ModalUtils;
 
 import javax.swing.*;
@@ -63,14 +62,19 @@ public abstract class AbstractModalController extends JPanel implements Controll
             return;
         }
         BorderOption borderOption = option.getBorderOption();
-        Border border = borderOption.createBorder();
-        if (border != null) {
-            setBorder(border);
+        if (!option.isHeavyWeight()) {
+            Border border = borderOption.createBorder();
+            if (border != null) {
+                setBorder(border);
+            }
+        } else {
+            int borderWidth = borderOption.getBorderWidth();
+            if (borderWidth > 0 && ModalUtils.isShadowAndRoundBorderSupport() == false) {
+                // border width painted with round window border
+                // but if windows round border not support we set the border width here
+                setBorder(new ModalLineBorder(borderWidth, borderOption.getBorderColor(), 0));
+            }
         }
-    }
-
-    protected MouseAdapter createMouseMovableListener() {
-        return new ModalMouseMovableListener(this);
     }
 
     protected void installModalComponent(Modal modal) {
@@ -112,10 +116,11 @@ public abstract class AbstractModalController extends JPanel implements Controll
             SimpleModalBorder simpleModalBorder = (SimpleModalBorder) modal;
             simpleModalBorder.applyBackButton(getOnBackAction());
         }
+        modal.setId(this.modal.getId());
         pushStack(this.modal);
         this.modal = modal;
         modal.setController(this);
-        int sliderDuration = option.getSliderDuration();
+        int sliderDuration = option.isHeavyWeight() ? 0 : option.getSliderDuration();
         ComponentOrientation orientation = getComponentOrientation();
         SliderTransition sliderTransition = sliderDuration > 0 ? SimpleTransition.get(SimpleTransition.SliderType.FORWARD) : null;
         if (modal.getComponentOrientation().isLeftToRight() != orientation.isLeftToRight()) {
@@ -129,7 +134,7 @@ public abstract class AbstractModalController extends JPanel implements Controll
         if (modalStack != null && !modalStack.isEmpty()) {
             Modal component = modalStack.pop();
             this.modal = component;
-            int sliderDuration = option.getSliderDuration();
+            int sliderDuration = option.isHeavyWeight() ? 0 : option.getSliderDuration();
             SliderTransition sliderTransition = sliderDuration > 0 ? SimpleTransition.get(SimpleTransition.SliderType.BACK) : null;
             panelSlider.addSlide(component, sliderTransition, sliderDuration);
         }
@@ -184,6 +189,8 @@ public abstract class AbstractModalController extends JPanel implements Controll
     public abstract ModalContainer getModalContainer();
 
     protected abstract PanelSlider.PaneSliderLayoutSize createSliderLayoutSize();
+
+    protected abstract MouseAdapter createMouseMovableListener();
 
     protected abstract void onModalComponentInstalled();
 

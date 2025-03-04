@@ -5,9 +5,11 @@ import com.formdev.flatlaf.util.CubicBezierEasing;
 import raven.modal.option.Option;
 import raven.modal.slider.PanelSlider;
 import raven.modal.utils.ImageSnapshots;
+import raven.modal.utils.ModalMouseMovableListener;
 
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 
 /**
  * @author Raven
@@ -28,8 +30,14 @@ public class ModalController extends AbstractModalController {
         this.modalContainer = modalContainer;
     }
 
+    protected boolean isUseAnimator(boolean show) {
+        return option.isAnimationEnabled()
+                && (show == true || option.isAnimationOnClose()
+        );
+    }
+
     public void startAnimator(boolean show) {
-        if (option.isAnimationEnabled() && (show == true || option.isAnimationOnClose())) {
+        if (isUseAnimator(show)) {
             if (animator == null) {
                 animator = new Animator(option.getDuration(), new Animator.TimingTarget() {
                     @Override
@@ -105,6 +113,26 @@ public class ModalController extends AbstractModalController {
     }
 
     @Override
+    protected MouseAdapter createMouseMovableListener() {
+        return new ModalMouseMovableListener(this) {
+            @Override
+            protected Container getParent() {
+                return modalContainer;
+            }
+
+            @Override
+            protected Component getOwner() {
+                return modalContainer.getOwner();
+            }
+
+            @Override
+            protected void updateLayout() {
+                modalContainer.revalidate();
+            }
+        };
+    }
+
+    @Override
     protected void onModalComponentInstalled() {
         ComponentOrientation orientation = modalContainer.getComponentOrientation();
         setComponentOrientation(orientation);
@@ -141,7 +169,7 @@ public class ModalController extends AbstractModalController {
 
     protected void remove() {
         modalContainer.uninstallOption();
-        modalContainerLayer.removeContainer(modalContainer);
+        modalContainerLayer.remove(this);
     }
 
     @Override

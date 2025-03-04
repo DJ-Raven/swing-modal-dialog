@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * @author Raven
  */
-public abstract class AbstractToastContainerLayer extends AbstractRelativeContainer {
+public abstract class AbstractToastContainerLayer extends AbstractRelativeContainer implements BaseToastContainer {
 
     protected final List<ToastPanel> toastPanels;
 
@@ -25,13 +25,23 @@ public abstract class AbstractToastContainerLayer extends AbstractRelativeContai
         toastPanels = new ArrayList<>();
     }
 
+    public void addToastPanel(ToastPanel toastPanel) {
+        toastPanels.add(toastPanel);
+        toastPanel.revalidate();
+        toastPanel.repaint();
+        showContainer(true);
+    }
+
+    @Override
     public void add(ToastPanel toastPanel) {
         ToastOption option = toastPanel.getOption();
         boolean visibility = isVisibility(option);
         boolean fixedLayout = isFixedLayout(option, toastPanel.getOwner());
         getLayerAndCreate(toastPanel.getOwner(), visibility, fixedLayout).add(toastPanel, JLayeredPane.PALETTE_LAYER, 0);
+        addToastPanel(toastPanel);
     }
 
+    @Override
     public void remove(ToastPanel toastPanel) {
         ToastOption option = toastPanel.getOption();
         boolean visibility = isVisibility(option);
@@ -43,24 +53,38 @@ public abstract class AbstractToastContainerLayer extends AbstractRelativeContai
         }
     }
 
-    public void addToastPanel(ToastPanel toastPanel) {
-        toastPanels.add(toastPanel);
-        toastPanel.revalidate();
-        toastPanel.repaint();
-        showContainer(true);
-    }
-
+    @Override
     public void closeAll() {
         synchronized (toastPanels) {
             for (int i = toastPanels.size() - 1; i >= 0; i--) {
+                toastPanels.get(i).stop();
+            }
+        }
+    }
+
+    @Override
+    public void closeAllImmediately() {
+        synchronized (toastPanels) {
+            for (int i = toastPanels.size() - 1; i >= 0; i--) {
                 ToastPanel p = toastPanels.get(i);
-                if (!p.isCurrenPromise()) {
-                    toastPanels.get(i).stop();
+                p.close();
+            }
+        }
+    }
+
+    @Override
+    public void closeAll(ToastLocation location) {
+        synchronized (toastPanels) {
+            for (int i = toastPanels.size() - 1; i >= 0; i--) {
+                ToastPanel p = toastPanels.get(i);
+                if (p.checkSameLayout(location)) {
+                    p.stop();
                 }
             }
         }
     }
 
+    @Override
     public boolean checkPromiseId(String id) {
         synchronized (toastPanels) {
             for (int i = toastPanels.size() - 1; i >= 0; i--) {
@@ -70,28 +94,6 @@ public abstract class AbstractToastContainerLayer extends AbstractRelativeContai
                 }
             }
             return false;
-        }
-    }
-
-    public void closeAll(ToastLocation location) {
-        synchronized (toastPanels) {
-            for (int i = toastPanels.size() - 1; i >= 0; i--) {
-                ToastPanel p = toastPanels.get(i);
-                if (p.checkSameLayout(location)) {
-                    if (!p.isCurrenPromise()) {
-                        p.stop();
-                    }
-                }
-            }
-        }
-    }
-
-    public void closeAllImmediately() {
-        synchronized (toastPanels) {
-            for (int i = toastPanels.size() - 1; i >= 0; i--) {
-                ToastPanel p = toastPanels.get(i);
-                p.close();
-            }
         }
     }
 

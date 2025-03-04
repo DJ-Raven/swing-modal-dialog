@@ -36,7 +36,7 @@ public class TestNotification extends BaseFrame {
                     .setRelativeToOwnerType(LayoutOption.RelativeToOwnerType.RELATIVE_GLOBAL);
             option.setOpacity(0f)
                     .getBorderOption()
-                    .setBorderWidth(0.5f)
+                    .setBorderWidth(1)
                     .setShadow(BorderOption.Shadow.MEDIUM);
             ModalBorderOption borderOption = new ModalBorderOption().setPadding(ModalBorderOption.PaddingType.MEDIUM);
             ModalDialog.showModal(cmd, new SimpleModalBorder(new NotificationPanel(), "Notifications", borderOption), option);

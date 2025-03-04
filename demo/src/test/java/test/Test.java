@@ -22,7 +22,7 @@ public class Test extends BaseFrame {
                 .setOpacity(0f)
                 .setAnimationOnClose(false)
                 .getBorderOption()
-                .setBorderWidth(0.5f)
+                .setBorderWidth(1)
                 .setShadow(BorderOption.Shadow.MEDIUM);
 
         button.addActionListener(e -> {

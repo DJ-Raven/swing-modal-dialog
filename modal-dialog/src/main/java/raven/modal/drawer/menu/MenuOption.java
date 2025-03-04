@@ -1,7 +1,7 @@
 package raven.modal.drawer.menu;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import raven.modal.drawer.data.MenuItem;
+import raven.modal.drawer.item.MenuItem;
 
 import javax.swing.*;
 import java.util.ArrayList;

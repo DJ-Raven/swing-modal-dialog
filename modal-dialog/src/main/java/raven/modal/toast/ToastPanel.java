@@ -1,18 +1,23 @@
 package raven.modal.toast;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.Animator;
 import com.formdev.flatlaf.util.CubicBezierEasing;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.Toast;
+import raven.modal.component.DropShadowBorder;
+import raven.modal.component.ModalLineBorder;
 import raven.modal.toast.icon.RollingIcon;
-import raven.modal.toast.option.ToastLayoutOption;
-import raven.modal.toast.option.ToastLocation;
-import raven.modal.toast.option.ToastOption;
-import raven.modal.toast.option.ToastStyle;
+import raven.modal.toast.option.*;
+import raven.modal.utils.ImageSnapshots;
+import raven.modal.utils.ModalUtils;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -35,7 +40,7 @@ public class ToastPanel extends JPanel {
         return toastData.getOption();
     }
 
-    private final AbstractToastContainerLayer toastContainerLayer;
+    private final BaseToastContainer baseToastContainer;
     private final Component owner;
     private ToastData toastData;
     private ToastContent content;
@@ -53,18 +58,21 @@ public class ToastPanel extends JPanel {
     private ToastPromise toastPromise;
     private ToastPromise.PromiseCallback promiseCallback;
     private boolean available = true;
+    private Image snapshotContent;
 
-    public ToastPanel(AbstractToastContainerLayer toastContainerLayer, Component owner, ToastData toastData) {
-        this.toastContainerLayer = toastContainerLayer;
+    public ToastPanel(BaseToastContainer baseToastContainer, Component owner, ToastData toastData) {
+        this.baseToastContainer = baseToastContainer;
         this.owner = owner;
         this.toastData = toastData;
         init();
     }
 
     private void init() {
-        setLayout(new BorderLayout());
-        setOpaque(false);
-        if (toastData.getOption().isAnimationEnabled()) {
+        setLayout(new MigLayout("insets 0,fill", "fill", "fill"));
+        if (!toastData.getOption().isHeavyWeight()) {
+            setOpaque(false);
+        }
+        if (isAnimationSupport()) {
             animate = 0f;
         }
         putClientProperty(FlatClientProperties.STYLE, "" +
@@ -74,8 +82,36 @@ public class ToastPanel extends JPanel {
     @Override
     public void updateUI() {
         super.updateUI();
-        if (toastData != null && content != null) {
-            setBorder(toastData.getOption().getStyle().getBorderStyle().createBorder(content, toastData));
+        initBorder();
+    }
+
+    protected void initBorder() {
+        if (toastData == null || content == null) {
+            return;
+        }
+        Border border = new ToastBorder(toastData);
+        ToastBorderStyle borderStyle = toastData.getOption().getStyle().getBorderStyle();
+        int borderWidth = borderStyle.getBorderType() == ToastBorderStyle.BorderType.OUTLINE ? borderStyle.getBorderWidth() : 0;
+        if (getOption().isHeavyWeight()) {
+            if (borderWidth > 0 && ModalUtils.isShadowAndRoundBorderSupport() == false) {
+                // border width painted with round window border
+                // but if windows round border not support we set the border width here
+                setBorder(new CompoundBorder(new ModalLineBorder(borderWidth, toastData.getThemes().getColor(), 0), border));
+            } else {
+                setBorder(new ToastBorder(toastData));
+            }
+        } else {
+            if (FlatUIUtils.isInsetsEmpty(borderStyle.getShadowSize()) && borderStyle.getRound() == 0 && borderWidth == 0) {
+                setBorder(border);
+            } else {
+                Border shadow = new DropShadowBorder(borderStyle.getShadowSize(),
+                        borderStyle.getShadowOpacity(),
+                        borderStyle.getShadowColor(),
+                        borderWidth,
+                        toastData.getThemes().getColor(),
+                        borderStyle.getRound());
+                setBorder(new CompoundBorder(shadow, border));
+            }
         }
     }
 
@@ -86,6 +122,11 @@ public class ToastPanel extends JPanel {
             g2.setComposite(AlphaComposite.SrcOver.derive(animate));
         }
         super.paint(g);
+        if (snapshotContent != null) {
+            int x = content.getX();
+            int y = content.getY();
+            g.drawImage(snapshotContent, x, y, null);
+        }
     }
 
     @Override
@@ -95,6 +136,7 @@ public class ToastPanel extends JPanel {
             promiseIcon.stop();
             promiseIcon = null;
         }
+        removeSnapshot();
     }
 
     public ToastPanel createToast() {
@@ -132,7 +174,7 @@ public class ToastPanel extends JPanel {
             toastCustom.initToastAction(getCustomAction());
         }
         content.add(component);
-        setBorder(toastData.getOption().getStyle().getBorderStyle().createBorder(content, toastData));
+        initBorder();
         installStyle(toastData.themes);
         add(content);
         return this;
@@ -151,6 +193,7 @@ public class ToastPanel extends JPanel {
                 public void update(String message) {
                     if (available && !toastPromise.isDone()) {
                         textMessage.setText(message);
+                        updateModalLayout();
                     }
                 }
 
@@ -200,7 +243,7 @@ public class ToastPanel extends JPanel {
         if (toastData.getOption().getStyle().isShowCloseButton()) {
             content.add(createCloseButton());
         }
-        setBorder(toastData.getOption().getStyle().getBorderStyle().createBorder(content, toastData));
+        initBorder();
         installStyle(themesData);
         add(content);
     }
@@ -286,7 +329,7 @@ public class ToastPanel extends JPanel {
         }
         installStyle(data);
         repaint();
-        content.revalidate();
+        updateModalLayout();
     }
 
     private PromiseIcon createIconPromise(ToastPromise promise) {
@@ -343,23 +386,33 @@ public class ToastPanel extends JPanel {
         return buttonClose;
     }
 
+    private boolean isAnimationSupport() {
+        return getOption().isAnimationEnabled() && getOption().isHeavyWeight() == false;
+    }
+
     public void start() {
         if (showing) {
             return;
         }
         installMouseHover();
-        if (toastData.getOption().isAnimationEnabled()) {
+        if (isAnimationSupport()) {
             if (animator == null) {
                 animator = new Animator(toastData.getOption().getDuration(), new Animator.TimingTarget() {
                     @Override
                     public void timingEvent(float v) {
                         animate = showing ? v : 1f - v;
-                        toastContainerLayer.updateLayout(owner);
+                        baseToastContainer.updateLayout(owner);
+                    }
+
+                    @Override
+                    public void begin() {
+                        createSnapshot();
                     }
 
                     @Override
                     public void end() {
                         repaint();
+                        removeSnapshot();
                         if (showing) {
                             defaultStop();
                         } else {
@@ -414,7 +467,7 @@ public class ToastPanel extends JPanel {
         if (isCurrenPromise() && toastPromise.rejectAble() == false) {
             return;
         }
-        if (toastData.getOption().isAnimationEnabled()) {
+        if (isAnimationSupport()) {
             if (animator.isRunning()) {
                 animator.stop();
             }
@@ -432,7 +485,7 @@ public class ToastPanel extends JPanel {
         if (threadDelay != null && threadDelay.isAlive()) {
             threadDelay.interrupt();
         }
-        if (toastData.getOption().isAnimationEnabled()) {
+        if (isAnimationSupport()) {
             if (animator != null && animator.isRunning()) {
                 animator.stop();
             } else {
@@ -456,7 +509,7 @@ public class ToastPanel extends JPanel {
             toastPromise.setDone(true);
             toastPromise.reject();
         }
-        toastContainerLayer.remove(this);
+        baseToastContainer.remove(this);
         toastData = null;
         content = null;
         textMessage = null;
@@ -466,6 +519,25 @@ public class ToastPanel extends JPanel {
         mouseListener = null;
         animator = null;
         threadDelay = null;
+    }
+
+    private void createSnapshot() {
+        snapshotContent = ImageSnapshots.createSnapshotsImage(content, 0);
+        content.setVisible(false);
+    }
+
+    private void removeSnapshot() {
+        if (snapshotContent != null) {
+            snapshotContent.flush();
+            snapshotContent = null;
+        }
+        content.setVisible(true);
+    }
+
+    private void updateModalLayout() {
+        if (toastData != null && toastData.getOption().isHeavyWeight()) {
+            baseToastContainer.updateLayout(owner);
+        }
     }
 
     protected boolean isCurrenPromise() {
@@ -478,6 +550,10 @@ public class ToastPanel extends JPanel {
 
     public ToastData getToastData() {
         return toastData;
+    }
+
+    public boolean isClose() {
+        return content == null;
     }
 
     public boolean checkSameLayout(ToastLayoutOption layoutOption) {
@@ -544,5 +620,9 @@ public class ToastPanel extends JPanel {
 
         private String icon;
         private String[] colors;
+
+        public Color getColor() {
+            return Color.decode(FlatLaf.isLafDark() ? colors[1] : colors[0]);
+        }
     }
 }

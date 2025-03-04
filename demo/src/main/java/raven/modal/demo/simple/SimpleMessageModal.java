@@ -71,17 +71,12 @@ public class SimpleMessageModal extends SimpleModalBorder {
     @Override
     protected JComponent createOptionButton(Option[] optionsType) {
         JPanel panel = (JPanel) super.createOptionButton(optionsType);
+        if (panel == null) return null;
+
         // modify layout option
         if (panel.getLayout() instanceof MigLayout) {
             MigLayout layout = (MigLayout) panel.getLayout();
             layout.setColumnConstraints("[]12[]");
-        }
-
-        // revers order
-        Component[] components = panel.getComponents();
-        panel.removeAll();
-        for (int i = components.length - 1; i >= 0; i--) {
-            panel.add(components[i]);
         }
         return panel;
     }

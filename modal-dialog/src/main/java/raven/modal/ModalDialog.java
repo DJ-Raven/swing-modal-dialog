@@ -203,7 +203,7 @@ public class ModalDialog {
         return layeredPane;
     }
 
-    private AbstractModalContainerLayer getModalContainerById(String id) {
+    private BaseModalContainer getModalContainerById(String id) {
         ModalContainerLayer modalContainer = getRootPaneContainerById(id);
         if (modalContainer != null) {
             return modalContainer;
@@ -215,7 +215,7 @@ public class ModalDialog {
         throw new IllegalArgumentException("id '" + id + "' not found");
     }
 
-    private AbstractModalContainerLayer getModalContainer(Component owner, boolean isHeavyWeight) {
+    private BaseModalContainer getModalContainer(Component owner, boolean isHeavyWeight) {
         if (isHeavyWeight) {
             return ModalHeavyWeight.getInstance().getModalHeavyWeightContainer(owner);
         }

@@ -1,12 +1,11 @@
 package raven.modal.component;
 
-import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.ui.FlatUIUtils;
-import com.formdev.flatlaf.util.ColorFunctions;
 import com.formdev.flatlaf.util.UIScale;
 import raven.modal.layout.ModalLayout;
 import raven.modal.option.LayoutOption;
 import raven.modal.option.Option;
+import raven.modal.utils.ModalUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -101,6 +100,10 @@ public class ModalContainer extends JComponent {
         return modalController;
     }
 
+    public Point getControllerLocation() {
+        return modalController.getLocation();
+    }
+
     protected void uninstallOption() {
         if (mouseListener != null) {
             removeMouseListener(mouseListener);
@@ -112,8 +115,8 @@ public class ModalContainer extends JComponent {
 
     @Override
     protected void paintComponent(Graphics g) {
-        float opacity = modalController.getOption().getOpacity();
         Option opt = modalController.getOption();
+        float opacity = opt.getOpacity();
         if (opt.isHeavyWeight()) {
             if (opt.getBackgroundClickType() == Option.BackgroundClickType.NONE) {
                 if (opacity != 0) {
@@ -158,19 +161,9 @@ public class ModalContainer extends JComponent {
     }
 
     protected Color getBackgroundColor() {
-        if (FlatLaf.isLafDark()) {
-            if (modalController.getOption().getBackgroundDark() != null) {
-                return modalController.getOption().getBackgroundDark();
-            } else {
-                return ColorFunctions.tint(getBackground(), 0.2f);
-            }
-        } else {
-            if (modalController.getOption().getBackgroundLight() != null) {
-                return modalController.getOption().getBackgroundLight();
-            } else {
-                return ColorFunctions.shade(getBackground(), 0.2f);
-            }
-        }
+        return ModalUtils.getBackgroundColor(modalController.getOption().getBackgroundDark(),
+                modalController.getOption().getBackgroundLight(),
+                getBackground());
     }
 
     public void checkLayerVisible() {

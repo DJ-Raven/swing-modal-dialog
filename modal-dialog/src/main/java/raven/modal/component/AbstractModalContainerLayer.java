@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * @author Raven
  */
-public abstract class AbstractModalContainerLayer extends AbstractRelativeContainer implements RelativeLayerPane.LayoutCallback {
+public abstract class AbstractModalContainerLayer extends AbstractRelativeContainer implements BaseModalContainer, RelativeLayerPane.LayoutCallback {
 
     protected final Set<ModalContainer> containers;
 
@@ -30,24 +30,18 @@ public abstract class AbstractModalContainerLayer extends AbstractRelativeContai
 
     public abstract void showContainer(boolean show);
 
-    public void removeContainer(ModalContainer container) {
-        Option option = container.getOption();
-        boolean visibility = isVisibility(option);
-        boolean fixedLayout = isFixedLayout(option);
-        removeLayer(container, container.getOwner(), visibility, fixedLayout);
-        containers.remove(container);
-    }
-
+    @Override
     public void addModal(Component owner, Modal modal, Option option, String id) {
         addModalWithoutShowing(owner, modal, option, id)
                 .showModal();
     }
 
+    @Override
     public ModalContainer addModalWithoutShowing(Component owner, Modal modal, Option option, String id) {
         ModalContainer modalContainer = new ModalContainer(this, owner, option, id);
         int layer = JLayeredPane.MODAL_LAYER + (option.getLayoutOption().isOnTop() ? 1 : 0);
         boolean visibility = isVisibility(option);
-        boolean fixedLayout = isFixedLayout(option);
+        boolean fixedLayout = isFixedLayout(option, owner);
         getLayerAndCreate(owner, visibility, fixedLayout).add(modalContainer, layer, 0);
         modalContainer.initModal(modal);
         modalContainer.setComponentOrientation(layeredPane.getComponentOrientation());
@@ -56,32 +50,58 @@ public abstract class AbstractModalContainerLayer extends AbstractRelativeContai
         return modalContainer;
     }
 
+    @Override
+    public void remove(AbstractModalController controller) {
+        ModalContainer container = controller.getModalContainer();
+        Option option = container.getOption();
+        boolean visibility = isVisibility(option);
+        boolean fixedLayout = isFixedLayout(option, container.getOwner());
+        removeLayer(container, container.getOwner(), visibility, fixedLayout);
+        containers.remove(container);
+    }
+
+    @Override
     public void pushModal(Modal modal, String id) {
         getModalControllerById(id).getController().pushModal(modal);
     }
 
+    @Override
     public void popModal(String id) {
         getModalControllerById(id).getController().popModal();
     }
 
+    @Override
     public void closeModal(String id) {
         getModalControllerById(id).getController().closeModal();
     }
 
+    @Override
     public void closeAllModal() {
         for (ModalContainer con : containers.toArray(new ModalContainer[containers.size()])) {
             con.getController().closeModal();
         }
     }
 
+    @Override
     public void closeModalImmediately(String id) {
         getModalControllerById(id).getController().closeImmediately();
     }
 
+    @Override
     public void closeAllModalImmediately() {
         for (ModalContainer con : containers.toArray(new ModalContainer[containers.size()])) {
             con.getController().closeImmediately();
         }
+    }
+
+    @Override
+    public boolean checkId(String id) {
+        for (ModalContainer con : containers) {
+            if (con.getId() != null && con.getId() == id) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -98,15 +118,6 @@ public abstract class AbstractModalContainerLayer extends AbstractRelativeContai
             con.revalidate();
         }
         layeredPane.repaint();
-    }
-
-    public boolean checkId(String id) {
-        for (ModalContainer con : containers) {
-            if (con.getId() != null && con.getId() == id) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private ModalContainer getModalControllerById(String id) {
@@ -126,7 +137,7 @@ public abstract class AbstractModalContainerLayer extends AbstractRelativeContai
         return option.getLayoutOption().isRelativeToOwner() && option.getLayoutOption().getRelativeToOwnerType() != LayoutOption.RelativeToOwnerType.RELATIVE_GLOBAL;
     }
 
-    private boolean isFixedLayout(Option option) {
-        return !option.getLayoutOption().isRelativeToOwner() || option.getLayoutOption().getRelativeToOwnerType() != LayoutOption.RelativeToOwnerType.RELATIVE_CONTAINED;
+    private boolean isFixedLayout(Option option, Component owner) {
+        return !option.getLayoutOption().isRelativeToOwner() || option.getLayoutOption().getRelativeToOwnerType() != LayoutOption.RelativeToOwnerType.RELATIVE_CONTAINED || owner instanceof RootPaneContainer;
     }
 }
