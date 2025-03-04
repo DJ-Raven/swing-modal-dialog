@@ -99,8 +99,6 @@ public class ModalWindow {
 
     protected Window createWindow(Component owner) {
         JWindow window = new JWindow(getParentWindow(owner));
-        window.setAutoRequestFocus(false);
-        window.setType(Window.Type.POPUP);
         return window;
     }
 

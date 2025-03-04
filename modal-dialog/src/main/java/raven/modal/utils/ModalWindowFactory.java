@@ -78,6 +78,7 @@ public class ModalWindowFactory {
             super(delegate.getOwner(), new ModalBackground(controller), 0, 0);
             this.delegate = delegate;
             this.controller = controller;
+            this.window.setAutoRequestFocus(false);
             this.window.setBackground(new Color(0, true));
         }
 
@@ -178,6 +179,7 @@ public class ModalWindowFactory {
                     prefSize.height + insets.top + insets.bottom));
 
             dropShadowWindow = createWindow(owner);
+            dropShadowWindow.setFocusableWindowState(false);
             if (dropShadowWindow instanceof JWindow) {
                 JWindow component = (JWindow) dropShadowWindow;
                 component.getContentPane().add(dropShadowPanel, BorderLayout.CENTER);
