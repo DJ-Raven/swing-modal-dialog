@@ -20,7 +20,7 @@ Add the dependency
 <dependency>
     <groupId>io.github.dj-raven</groupId>
     <artifactId>modal-dialog</artifactId>
-    <version>2.3.0</version>
+    <version>2.4.0</version>
 </dependency>
 ```
 
