@@ -20,6 +20,7 @@ import java.util.List;
 public class FileDropper extends JPanel implements FileDropperModelListener {
 
     private FileDropperModel model;
+    private FileViewer fileViewer;
     private PanelDropper panelDropper;
 
     public FileDropper() {
@@ -34,6 +35,7 @@ public class FileDropper extends JPanel implements FileDropperModelListener {
     private void init() {
         setLayout(new BorderLayout());
         panelDropper = new PanelDropper(this);
+        fileViewer = new FileViewer();
 
         if (model == null) {
             model = createDefaultFileDropperModal();
@@ -61,6 +63,14 @@ public class FileDropper extends JPanel implements FileDropperModelListener {
             this.model.addFileDropperModelListener(this);
         }
         updateFileDropperComponent();
+    }
+
+    public FileViewer getFileViewer() {
+        return fileViewer;
+    }
+
+    public void setFileViewer(FileViewer fileViewer) {
+        this.fileViewer = fileViewer;
     }
 
     public Component getDropPlaceholder() {

@@ -328,19 +328,23 @@ public class PanelDropper extends JPanel implements ActionListener {
             }
         }
 
+        private AvatarIcon createIcon() {
+            Dimension iconSize = fileItem.getIconSize();
+            return new AvatarIcon(fileDropper.getFileViewer().getFileViewer(file), UIScale.unscale(iconSize.width), UIScale.unscale(iconSize.height), 10);
+        }
+
         protected void drop(Point dropLocation) {
             Dimension iconSize = fileItem.getIconSize();
             int x = dropLocation.x - iconSize.width / 2;
             int y = dropLocation.y - iconSize.height / 2;
             this.dropLocation = new Point(x, y);
-            icon = new AvatarIcon(file.getAbsolutePath(), UIScale.unscale(iconSize.width), UIScale.unscale(iconSize.height), 10);
+            icon = createIcon();
             type = Type.DROP;
             dropFiles.add(this);
         }
 
         protected void createAndDrop() {
-            Dimension iconSize = fileItem.getIconSize();
-            icon = new AvatarIcon(file.getAbsolutePath(), UIScale.unscale(iconSize.width), UIScale.unscale(iconSize.height), 10);
+            icon = createIcon();
             dropped();
         }
 
