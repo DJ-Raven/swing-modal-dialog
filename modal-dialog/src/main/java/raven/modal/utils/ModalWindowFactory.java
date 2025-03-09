@@ -1,5 +1,7 @@
 package raven.modal.utils;
 
+import com.formdev.flatlaf.ui.FlatNativeWindowsLibrary;
+import com.formdev.flatlaf.util.SystemInfo;
 import com.formdev.flatlaf.util.UIScale;
 import raven.modal.component.DropShadowBorder;
 import raven.modal.component.HeavyWeightModalController;
@@ -9,6 +11,9 @@ import raven.modal.option.LayoutOption;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Raven
@@ -36,14 +41,19 @@ public class ModalWindowFactory {
         if (border == null) {
             border = ModalWindowBorder.getDefault();
         }
-        if (!border.isCreatedAble()) {
+
+        if (!border.isCreatedAble() || !isShadowAndRoundBorderSupport()) {
             return new ModalWindow(owner, contents, x, y);
         }
 
-        if (!isShadowAndRoundBorderSupport()) {
+        if (isWindows11BorderSupported()) {
             ModalWindow modalWindow = new ModalWindow(owner, contents, x, y);
+            if (border.getRound() > 0) {
+                setupRoundBorder(modalWindow.window, border);
+            }
             return modalWindow;
         }
+
         return new DropShadowModalWindow(owner, contents, border, x, y);
     }
 
@@ -55,12 +65,58 @@ public class ModalWindowFactory {
     }
 
     private boolean isShadowAndRoundBorderSupport() {
-        // for windows-11, mac-os and linux not yet test
+        // for mac-os and linux not yet test
         // we can use native border provide by flatlaf (next update)
         return ModalUtils.isShadowAndRoundBorderSupport();
     }
 
-    public abstract class AbstractModalBorder extends ModalWindow {
+    private boolean isWindows11BorderSupported() {
+        return SystemInfo.isWindows_11_orLater && FlatNativeWindowsLibrary.isLoaded();
+    }
+
+    private void setupRoundBorder(Window window, ModalWindowBorder border) {
+        int borderCornerRadius = UIScale.scale(border.getRound());
+        int borderWidth = UIScale.scale(border.getBorderWidth());
+        Color borderColor;
+
+        if (borderWidth > 0) {
+            borderColor = border.getBorderColor();
+        } else {
+            borderColor = FlatNativeWindowsLibrary.COLOR_NONE;
+        }
+
+        if (window.isDisplayable()) {
+            setupRoundBorderImpl(window, borderCornerRadius, borderWidth, borderColor);
+        } else {
+            AtomicReference<HierarchyListener> l = new AtomicReference<>();
+            l.set(e -> {
+                if (e.getID() == HierarchyEvent.HIERARCHY_CHANGED &&
+                        (e.getChangeFlags() & HierarchyEvent.DISPLAYABILITY_CHANGED) != 0) {
+                    setupRoundBorderImpl(window, borderCornerRadius, borderWidth, borderColor);
+                    window.removeHierarchyListener(l.get());
+                }
+            });
+            window.addHierarchyListener(l.get());
+        }
+    }
+
+    private void setupRoundBorderImpl(Window window, int borderCornerRadius, int borderWidth, Color borderColor) {
+        if (SystemInfo.isWindows) {
+            // get native window handle
+            long hwnd = FlatNativeWindowsLibrary.getHWND(window);
+            int cornerPreference = (borderCornerRadius <= 10)
+                    ? FlatNativeWindowsLibrary.DWMWCP_ROUNDSMALL
+                    : FlatNativeWindowsLibrary.DWMWCP_ROUND;
+
+            // set corner preference
+            FlatNativeWindowsLibrary.setWindowCornerPreference(hwnd, cornerPreference);
+
+            // set border color
+            FlatNativeWindowsLibrary.dwmSetWindowAttributeCOLORREF(hwnd, FlatNativeWindowsLibrary.DWMWA_BORDER_COLOR, borderColor);
+        }
+    }
+
+    public static abstract class AbstractModalBorder extends ModalWindow {
 
         public AbstractModalBorder(Component owner, Component contents, int x, int y) {
             super(owner, contents, x, y);
@@ -250,7 +306,7 @@ public class ModalWindowFactory {
      * Fixes border reset after changed flatlaf themes
      * By create new border when ui updated
      */
-    private class ShadowPanel extends JPanel {
+    private static class ShadowPanel extends JPanel {
 
         private final ModalWindowBorder border;
 

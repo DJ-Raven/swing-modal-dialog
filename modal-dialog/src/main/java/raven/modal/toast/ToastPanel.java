@@ -93,12 +93,12 @@ public class ToastPanel extends JPanel {
         ToastBorderStyle borderStyle = toastData.getOption().getStyle().getBorderStyle();
         int borderWidth = borderStyle.getBorderType() == ToastBorderStyle.BorderType.OUTLINE ? borderStyle.getBorderWidth() : 0;
         if (getOption().isHeavyWeight()) {
-            if (borderWidth > 0 && ModalUtils.isShadowAndRoundBorderSupport() == false) {
+            if ((borderWidth > 0 && !ModalUtils.isShadowAndRoundBorderSupport()) || borderStyle.getRound() == 0) {
                 // border width painted with round window border
                 // but if windows round border not support we set the border width here
                 setBorder(new CompoundBorder(new ModalLineBorder(borderWidth, toastData.getThemes().getColor(), 0), border));
             } else {
-                setBorder(new ToastBorder(toastData));
+                setBorder(border);
             }
         } else {
             if (FlatUIUtils.isInsetsEmpty(borderStyle.getShadowSize()) && borderStyle.getRound() == 0 && borderWidth == 0) {
@@ -216,7 +216,7 @@ public class ToastPanel extends JPanel {
 
     private String getLayoutInsets() {
         Insets padding = toastData.getOption().getStyle().getBorderStyle().getPadding();
-        final int add = 7;
+        final int add = 7 + ModalUtils.getToastExtraBorderPadding(toastData.getOption());
         return String.format("insets %d %d %d %d", padding.top + add, padding.left + add, padding.bottom + add, padding.right + add);
     }
 

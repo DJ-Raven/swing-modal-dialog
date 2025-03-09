@@ -8,6 +8,7 @@ import raven.modal.option.LayoutOption;
 import raven.modal.toast.option.ToastBorderStyle;
 import raven.modal.toast.option.ToastOption;
 import raven.modal.toast.option.ToastStyle;
+import raven.modal.utils.ModalUtils;
 import raven.modal.utils.ModalWindow;
 import raven.modal.utils.ModalWindowBorder;
 
@@ -92,7 +93,8 @@ public class ToastHeavyWeightLayout extends HeavyWeightRelativeLayout {
                 extraY = modalBorderSize.y;
             }
             modal.setBounds(rec.x, ly + y + extraY, width, height);
-            y += rec.height + UIScale.scale(option.getLayoutOption().getGap());
+            int extraGap = ModalUtils.getToastExtraGap(option);
+            y += rec.height + UIScale.scale(option.getLayoutOption().getGap() + extraGap);
             if (isToBottomDirection) {
                 ly += y;
             } else {
