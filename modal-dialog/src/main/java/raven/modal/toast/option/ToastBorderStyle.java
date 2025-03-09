@@ -61,7 +61,7 @@ public class ToastBorderStyle {
 
     private BorderType borderType = BorderType.NONE;
     private int round = 10;
-    private Insets shadowSize = new Insets(0, 0, 10, 10);
+    private Insets shadowSize = new Insets(0, 2, 10, 2);
     private Color shadowColor;
     private float shadowOpacity = -1;
     private int lineSize = 3;
@@ -140,13 +140,13 @@ public class ToastBorderStyle {
             if (this == NONE) {
                 option.setShadowSize(0);
             } else if (this == SMALL) {
-                option.setShadowSize(new Insets(0, 0, 6, 6));
+                option.setShadowSize(new Insets(0, 1, 6, 1));
             } else if (this == MEDIUM) {
-                option.setShadowSize(new Insets(0, 0, 10, 10));
+                option.setShadowSize(new Insets(0, 2, 10, 2));
             } else if (this == LARGE) {
-                option.setShadowSize(new Insets(0, 0, 12, 12));
+                option.setShadowSize(new Insets(0, 3, 14, 3));
             } else {
-                option.setShadowSize(new Insets(0, 0, 15, 15));
+                option.setShadowSize(new Insets(0, 4, 18, 4));
             }
         }
     }

@@ -127,15 +127,15 @@ public class BorderOption {
             if (this == NONE) {
                 option.setShadowSize(0);
             } else if (this == SMALL) {
-                option.setShadowSize(new Insets(4, 4, 6, 6));
+                option.setShadowSize(new Insets(1, 3, 6, 3));
             } else if (this == MEDIUM) {
-                option.setShadowSize(new Insets(8, 8, 12, 12));
+                option.setShadowSize(new Insets(3, 5, 12, 5));
             } else if (this == LARGE) {
-                option.setShadowSize(new Insets(12, 12, 18, 18));
+                option.setShadowSize(new Insets(5, 8, 18, 8));
             } else if (this == EXTRA_LARGE) {
-                option.setShadowSize(new Insets(16, 16, 24, 24));
+                option.setShadowSize(new Insets(7, 12, 24, 12));
             } else {
-                option.setShadowSize(new Insets(20, 20, 30, 30));
+                option.setShadowSize(new Insets(9, 15, 30, 15));
             }
         }
     }
