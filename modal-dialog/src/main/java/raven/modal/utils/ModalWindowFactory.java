@@ -131,7 +131,7 @@ public class ModalWindowFactory {
         private final HeavyWeightModalController controller;
 
         public ModalWindowBackground(ModalWindow delegate, HeavyWeightModalController controller) {
-            super(delegate.getOwner(), new ModalBackground(controller), 0, 0);
+            super(delegate.getOwner(), new ModalBackground(controller, delegate.window.getParent()), 0, 0);
             this.delegate = delegate;
             this.controller = controller;
             this.window.setAutoRequestFocus(false);

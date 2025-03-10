@@ -1,5 +1,7 @@
 package raven.modal.component;
 
+import com.formdev.flatlaf.ui.FlatUIUtils;
+import com.formdev.flatlaf.util.SystemInfo;
 import raven.modal.option.Option;
 import raven.modal.utils.ModalUtils;
 
@@ -8,7 +10,9 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.RoundRectangle2D;
 
 /**
  * @author Raven
@@ -16,10 +20,14 @@ import java.awt.geom.Rectangle2D;
 public class ModalBackground extends JComponent {
 
     private final HeavyWeightModalController modalController;
+    private Window parentWindow;
     private MouseListener mouseListener;
 
-    public ModalBackground(HeavyWeightModalController modalController) {
+    public ModalBackground(HeavyWeightModalController modalController, Container parent) {
         this.modalController = modalController;
+        if (parent instanceof Window) {
+            parentWindow = (Window) parent;
+        }
         install();
     }
 
@@ -56,7 +64,16 @@ public class ModalBackground extends JComponent {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setComposite(AlphaComposite.SrcOver.derive(opacity));
         g2.setColor(getBackgroundColor());
-        g2.fill(new Rectangle2D.Double(0, 0, getWidth(), getHeight()));
+        Shape shape = getBackgroundShape();
+        if (shape == null) {
+            g2.fill(new Rectangle2D.Double(0, 0, getWidth(), getHeight()));
+        } else {
+            // fill background with round border
+            FlatUIUtils.setRenderingHints(g2);
+            Point point = getLocationOnScreen();
+            g2.translate(-point.x, -point.y);
+            g2.fill(shape);
+        }
         g2.dispose();
         super.paintComponent(g);
     }
@@ -65,6 +82,30 @@ public class ModalBackground extends JComponent {
         return ModalUtils.getBackgroundColor(modalController.getOption().getBackgroundDark(),
                 modalController.getOption().getBackgroundLight(),
                 getBackground());
+    }
+
+    protected Shape getBackgroundShape() {
+        int arc = getWindowRoundBorder();
+        if (arc > 0 && parentWindow != null) {
+            Rectangle2D windowsRec = FlatUIUtils.subtractInsets(parentWindow.getBounds(), parentWindow.getInsets());
+            Shape roundRec = new RoundRectangle2D.Double(windowsRec.getX(), windowsRec.getY(), windowsRec.getWidth(), windowsRec.getHeight(), arc, arc);
+            Rectangle2D componentShape = new Rectangle(getLocationOnScreen(), new Dimension(getWidth(), getHeight()));
+            Area area = new Area(roundRec);
+            area.intersects(componentShape);
+            return area;
+        }
+        return null;
+    }
+
+    private int getWindowRoundBorder() {
+        if (SystemInfo.isWindows_11_orLater && !isWindowMaximized()) {
+            return 8;
+        }
+        return 0;
+    }
+
+    protected boolean isWindowMaximized() {
+        return parentWindow instanceof Frame && (((Frame) parentWindow).getExtendedState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH;
     }
 
     @Override
