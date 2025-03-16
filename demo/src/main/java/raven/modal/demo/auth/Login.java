@@ -2,10 +2,13 @@ package raven.modal.demo.auth;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import net.miginfocom.swing.MigLayout;
+import raven.modal.component.DropShadowBorder;
+import raven.modal.demo.component.LabelButton;
 import raven.modal.demo.system.Form;
 import raven.modal.demo.system.FormManager;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class Login extends Form {
 
@@ -14,57 +17,102 @@ public class Login extends Form {
     }
 
     private void init() {
-        setLayout(new MigLayout("fill,insets 20", "[center]", "[center]"));
-        txtUsername = new JTextField();
-        txtPassword = new JPasswordField();
-        chRememberMe = new JCheckBox("Remember me");
-        cmdLogin = new JButton("Login");
-        JPanel panel = new JPanel(new MigLayout("wrap,fillx,insets 35 45 35 45", "fill,250:280"));
-        panel.putClientProperty(FlatClientProperties.STYLE, "" +
-                "arc:20;" +
-                "[light]background:shade($Panel.background,5%);" +
-                "[dark]background:tint($Panel.background,5%);");
+        setLayout(new MigLayout("al center center"));
+        createLogin();
+    }
 
-        txtPassword.putClientProperty(FlatClientProperties.STYLE, "" +
-                "showRevealButton:true");
-        cmdLogin.putClientProperty(FlatClientProperties.STYLE, "" +
-                "[light]background:shade($Panel.background,10%);" +
-                "[dark]background:tint($Panel.background,10%);" +
-                "borderWidth:0;" +
-                "focusWidth:0;" +
-                "innerFocusWidth:0");
+    private void createLogin() {
+        JPanel panelLogin = new JPanel(new BorderLayout()) {
+            @Override
+            public void updateUI() {
+                super.updateUI();
+                applyShadowBorder(this);
+            }
+        };
+        panelLogin.setOpaque(false);
+        applyShadowBorder(panelLogin);
 
+        JPanel loginContent = new JPanel(new MigLayout("fillx,wrap,insets 40 40 30 40", "[fill]"));
+
+        JLabel lbTitle = new JLabel("Welcome back!");
+        JLabel lbDescription = new JLabel("Please sign in to access your account");
+        lbTitle.putClientProperty(FlatClientProperties.STYLE, "" +
+                "font:bold +12;");
+
+        loginContent.add(lbTitle);
+        loginContent.add(lbDescription);
+
+        JTextField txtUsername = new JTextField();
+        JPasswordField txtPassword = new JPasswordField();
+        JCheckBox chRememberMe = new JCheckBox("Remember Me");
+        JButton cmdLogin = new JButton("Login") {
+            @Override
+            public boolean isDefaultButton() {
+                return true;
+            }
+        };
+
+        // style
         txtUsername.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Enter your username or email");
         txtPassword.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Enter your password");
 
-        JLabel lbTitle = new JLabel("Welcome back!");
-        JLabel description = new JLabel("Please sign in to access your account");
-        lbTitle.putClientProperty(FlatClientProperties.STYLE, ""
-                + "font:bold +10");
-        description.putClientProperty(FlatClientProperties.STYLE, ""
-                + "foreground:$Label.disabledForeground;");
+        panelLogin.putClientProperty(FlatClientProperties.STYLE, "" +
+                "[dark]background:tint($Panel.background,1%);");
 
-        panel.add(lbTitle);
-        panel.add(description);
-        panel.add(new JLabel("Username"), "gapy 8");
-        panel.add(txtUsername);
-        panel.add(new JLabel("Password"), "gapy 8");
-        panel.add(txtPassword);
-        panel.add(chRememberMe, "grow 0");
-        panel.add(cmdLogin, "gapy 10");
-        add(panel);
+        loginContent.putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:null;");
+
+        txtUsername.putClientProperty(FlatClientProperties.STYLE, "" +
+                "margin:4,10,4,10;" +
+                "arc:12;");
+        txtPassword.putClientProperty(FlatClientProperties.STYLE, "" +
+                "margin:4,10,4,10;" +
+                "arc:12;" +
+                "showRevealButton:true;");
+
+        cmdLogin.putClientProperty(FlatClientProperties.STYLE, "" +
+                "margin:4,10,4,10;" +
+                "arc:12;");
+
+        loginContent.add(new JLabel("Username"), "gapy 30");
+        loginContent.add(txtUsername);
+
+        loginContent.add(new JLabel("Password"), "gapy 10");
+        loginContent.add(txtPassword);
+        loginContent.add(chRememberMe);
+        loginContent.add(cmdLogin, "gapy 20");
+        loginContent.add(createInfo());
+
+        panelLogin.add(loginContent);
+        add(panelLogin, "width 430");
 
         // event
-        cmdLogin.addActionListener((e) -> {
-            String userName = txtUsername.getText().trim();
-            // this is just for example to check admin user :)
-            boolean isAdmin = userName.equals("admin");
+        cmdLogin.addActionListener(e -> {
             FormManager.login();
         });
     }
 
-    private JTextField txtUsername;
-    private JPasswordField txtPassword;
-    private JCheckBox chRememberMe;
-    private JButton cmdLogin;
+    private JPanel createInfo() {
+        JPanel panelInfo = new JPanel(new MigLayout("wrap,al center", "[center]"));
+        panelInfo.putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:null;");
+
+        panelInfo.add(new JLabel("Don't remember your account details?"));
+        panelInfo.add(new JLabel("Contact us at"), "split 2");
+        LabelButton lbLink = new LabelButton("help@info.com");
+
+        panelInfo.add(lbLink);
+
+        // event
+        lbLink.addOnClick(e -> {
+
+        });
+        return panelInfo;
+    }
+
+    private void applyShadowBorder(JPanel panel) {
+        if (panel != null) {
+            panel.setBorder(new DropShadowBorder(new Insets(10, 10, 30, 20), 30));
+        }
+    }
 }
