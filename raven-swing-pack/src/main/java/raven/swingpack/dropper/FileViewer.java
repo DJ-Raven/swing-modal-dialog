@@ -2,9 +2,9 @@ package raven.swingpack.dropper;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,17 +13,11 @@ import java.util.Set;
  */
 public class FileViewer {
 
-    private final Set<String> IMAGE_SUPPORT_EXTENSION = new HashSet<>();
+    private Set<String> IMAGE_SUPPORT_EXTENSION = new HashSet<>(
+            Arrays.asList("jpg", "png", "jpeg")
+    );
 
     public FileViewer() {
-        init();
-    }
-
-    private void init() {
-        String[] supportedFormats = ImageIO.getReaderFormatNames();
-        for (String format : supportedFormats) {
-            IMAGE_SUPPORT_EXTENSION.add(format.toLowerCase());
-        }
     }
 
     public boolean isSupported(File file) {
