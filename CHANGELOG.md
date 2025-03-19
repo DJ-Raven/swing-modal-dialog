@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.4.1]-SNAPSHOT
+
+### New features and improvements
+
+- Other
+    - Windows 11: heavyWeight windows now support rond border with drop shadow using flatlaf native library (PR #33)
+
+### Demo
+
+- Login form update UI (PR #32)
+
 ## [2.4.0] - 2025-03-05
 
 ### New features and improvements
