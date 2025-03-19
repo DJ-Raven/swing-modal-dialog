@@ -4,6 +4,8 @@ import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.util.ColorFunctions;
 import com.formdev.flatlaf.util.SystemInfo;
+import com.formdev.flatlaf.util.UIScale;
+import raven.modal.toast.option.ToastOption;
 
 import javax.swing.*;
 import java.awt.*;
@@ -50,6 +52,22 @@ public class ModalUtils {
     }
 
     public static boolean isShadowAndRoundBorderSupport() {
-        return SystemInfo.isWindows && SystemInfo.isWindows_11_orLater == false;
+        return SystemInfo.isWindows;
+    }
+
+    public static int getToastExtraBorderPadding(ToastOption option) {
+        // extra padding apply when use native border
+        if (!option.isHeavyWeight() || !SystemInfo.isWindows_11_orLater) return 0;
+        int round = UIScale.scale(option.getStyle().getBorderStyle().getRound());
+        if (round <= 0) return 0;
+        return 2;
+    }
+
+    public static int getToastExtraGap(ToastOption option) {
+        // extra gap apply when use native border
+        if (!option.isHeavyWeight() || !SystemInfo.isWindows_11_orLater) return 0;
+        int round = UIScale.scale(option.getStyle().getBorderStyle().getRound());
+        if (round <= 0) return 0;
+        return 10;
     }
 }

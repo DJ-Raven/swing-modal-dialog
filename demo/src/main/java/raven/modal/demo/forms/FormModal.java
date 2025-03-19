@@ -124,6 +124,10 @@ public class FormModal extends Form {
             chScale.setEnabled(chAnimation.isSelected());
         });
 
+        chHeavyWeight.addActionListener(e -> {
+            chShadow.setEnabled(!chHeavyWeight.isSelected());
+        });
+
         chAnimation.setSelected(true);
         chCloseOnPressedEscape.setSelected(true);
         chOpacity.setSelected(true);
@@ -250,7 +254,7 @@ public class FormModal extends Form {
                 .setHeavyWeight(chHeavyWeight.isSelected());
         option.getBorderOption()
                 .setBorderWidth(chBorder.isSelected() ? 1 : 0)
-                .setShadow(chShadow.isSelected() ? BorderOption.Shadow.MEDIUM : BorderOption.Shadow.NONE);
+                .setShadow(chShadow.isSelected() ? BorderOption.Shadow.EXTRA_LARGE : BorderOption.Shadow.NONE);
         option.getLayoutOption().setLocation(h, v)
                 .setRelativeToOwner(chRelativeToOwner.isSelected())
                 .setMovable(chMovable.isSelected());

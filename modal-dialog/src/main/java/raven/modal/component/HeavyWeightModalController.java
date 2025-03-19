@@ -72,7 +72,6 @@ public class HeavyWeightModalController extends AbstractModalController {
 
     @Override
     protected void onShowing() {
-        installOption();
     }
 
     @Override
@@ -89,6 +88,7 @@ public class HeavyWeightModalController extends AbstractModalController {
 
     public void setModalWindow(ModalWindow modalWindow) {
         this.modalWindow = modalWindow;
+        installOption();
     }
 
     private void installOption() {
