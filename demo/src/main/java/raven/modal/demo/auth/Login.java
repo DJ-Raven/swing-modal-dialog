@@ -32,7 +32,7 @@ public class Login extends Form {
         panelLogin.setOpaque(false);
         applyShadowBorder(panelLogin);
 
-        JPanel loginContent = new JPanel(new MigLayout("fillx,wrap,insets 40 40 30 40", "[fill]"));
+        JPanel loginContent = new JPanel(new MigLayout("fillx,wrap,insets 35 35 25 35", "[fill]"));
 
         JLabel lbTitle = new JLabel("Welcome back!");
         JLabel lbDescription = new JLabel("Please sign in to access your account");
@@ -74,7 +74,7 @@ public class Login extends Form {
                 "margin:4,10,4,10;" +
                 "arc:12;");
 
-        loginContent.add(new JLabel("Username"), "gapy 30");
+        loginContent.add(new JLabel("Username"), "gapy 25");
         loginContent.add(txtUsername);
 
         loginContent.add(new JLabel("Password"), "gapy 10");
@@ -84,7 +84,7 @@ public class Login extends Form {
         loginContent.add(createInfo());
 
         panelLogin.add(loginContent);
-        add(panelLogin, "width 430");
+        add(panelLogin, "width 400");
 
         // event
         cmdLogin.addActionListener(e -> {
@@ -112,7 +112,7 @@ public class Login extends Form {
 
     private void applyShadowBorder(JPanel panel) {
         if (panel != null) {
-            panel.setBorder(new DropShadowBorder(new Insets(10, 10, 30, 20), 30));
+            panel.setBorder(new DropShadowBorder(new Insets(5, 8, 12, 8), 1, 25));
         }
     }
 }
