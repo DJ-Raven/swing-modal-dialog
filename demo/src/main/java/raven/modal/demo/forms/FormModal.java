@@ -1,6 +1,7 @@
 package raven.modal.demo.forms;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import com.formdev.flatlaf.util.SystemInfo;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.ModalDialog;
 import raven.modal.component.SimpleModalBorder;
@@ -124,9 +125,11 @@ public class FormModal extends Form {
             chScale.setEnabled(chAnimation.isSelected());
         });
 
-        chHeavyWeight.addActionListener(e -> {
-            chShadow.setEnabled(!chHeavyWeight.isSelected());
-        });
+        if (SystemInfo.isWindows_11_orLater || !SystemInfo.isWindows) {
+            chHeavyWeight.addActionListener(e -> {
+                chShadow.setEnabled(!chHeavyWeight.isSelected());
+            });
+        }
 
         chAnimation.setSelected(true);
         chCloseOnPressedEscape.setSelected(true);
