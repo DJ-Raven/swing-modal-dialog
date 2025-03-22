@@ -8,6 +8,9 @@ import net.miginfocom.swing.MigLayout;
 import raven.modal.Drawer;
 import raven.modal.ModalDialog;
 import raven.modal.demo.component.AccentColorIcon;
+import raven.modal.demo.component.EmptyModalBorder;
+import raven.modal.demo.component.LabelButton;
+import raven.modal.demo.forms.setting.SettingsModal;
 import raven.modal.demo.system.Form;
 import raven.modal.demo.system.FormManager;
 import raven.modal.demo.themes.PanelThemes;
@@ -17,8 +20,10 @@ import raven.modal.drawer.renderer.AbstractDrawerLineStyleRenderer;
 import raven.modal.drawer.renderer.DrawerCurvedLineStyle;
 import raven.modal.drawer.renderer.DrawerStraightDotLineStyle;
 import raven.modal.drawer.simple.SimpleDrawerBuilder;
+import raven.modal.option.BorderOption;
 import raven.modal.option.LayoutOption;
 import raven.modal.option.Location;
+import raven.modal.option.Option;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -46,6 +51,7 @@ public class FormSetting extends Form {
         panel.add(createWindowsLayout());
         panel.add(createDrawerLayout());
         panel.add(createModalDefaultOption());
+        panel.add(createOtherOption());
         return panel;
     }
 
@@ -162,6 +168,26 @@ public class FormSetting extends Form {
 
         panel.add(chAnimation);
         panel.add(chCloseOnPressedEscape);
+
+        return panel;
+    }
+
+    private Component createOtherOption() {
+        JPanel panel = new JPanel(new MigLayout());
+        panel.setBorder(new TitledBorder("Other option"));
+        LabelButton cmdModalOption = new LabelButton("Show settings as modal");
+
+        cmdModalOption.addOnClick(o -> {
+            Option option = ModalDialog.createOption();
+            option.getLayoutOption()
+                    .setSize(800, 600);
+            option.getBorderOption()
+                    .setBorderWidth(1)
+                    .setShadow(BorderOption.Shadow.EXTRA_LARGE);
+            SettingsModal settingsModal = new SettingsModal();
+            ModalDialog.showModal(this, new EmptyModalBorder(settingsModal), option);
+        });
+        panel.add(cmdModalOption);
 
         return panel;
     }
