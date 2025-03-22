@@ -135,6 +135,12 @@ public class SimpleAlerts extends SimpleModalBorder {
             }
             super.paintChildren(g);
         }
+
+        @Override
+        public Color getBackground() {
+            if (component == null) return super.getBackground();
+            return component.getBackground();
+        }
     }
 
     protected static class Effect {

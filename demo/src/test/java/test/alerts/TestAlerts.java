@@ -1,11 +1,10 @@
-package test;
+package test.alerts;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.ModalDialog;
 import raven.modal.component.SimpleModalBorder;
-import test.alerts.AlertsOption;
-import test.alerts.SimpleAlerts;
+import raven.modal.option.BorderOption;
 import test.base.BaseFrame;
 
 import javax.swing.*;
@@ -24,6 +23,14 @@ public class TestAlerts extends BaseFrame {
                     "border:5,35,2,35");
             label.setHorizontalAlignment(JTextField.CENTER);
             label.setText("Hello! I hope you're having a wonderful day.");
+
+            // apply alerts background
+            label.setBackground(new Color(240, 245, 213));
+
+            ModalDialog.getDefaultOption()
+                    .setOpacity(0f)
+                    .getBorderOption()
+                    .setShadow(BorderOption.Shadow.LARGE);
             ModalDialog.showModal(this, new SimpleAlerts(label, "Alerts", alertsOption, SimpleModalBorder.OK_OPTION, (controller, action) -> {
 
             }));
