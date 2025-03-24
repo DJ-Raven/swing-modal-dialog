@@ -1,11 +1,9 @@
 package raven.flatlaf.themes.styles;
 
 import com.formdev.flatlaf.FlatClientProperties;
-import com.formdev.flatlaf.ui.MigLayoutVisualPadding;
 
 import javax.swing.*;
 import javax.swing.table.JTableHeader;
-import java.awt.*;
 
 /**
  * @author Raven
@@ -147,8 +145,6 @@ public class ThemesStyles {
 
         private void adjustComponent(JComponent component, String[] styles) {
             if (component instanceof JScrollPane) {
-                MigLayoutVisualPadding.uninstall(component);
-                MigLayoutVisualPadding.install(component, new Insets(2, 2, 2, 2));
                 component.putClientProperty(FlatClientProperties.STYLE, "" +
                         "viewportBorder:3,0,3,0;");
             } else if (component instanceof JTable) {
