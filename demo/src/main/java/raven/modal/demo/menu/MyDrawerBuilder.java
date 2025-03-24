@@ -120,6 +120,16 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
         simpleMenuOption.setMenuStyle(new MenuStyle() {
 
             @Override
+            public void styleMenuItem(JButton menu, int[] index, boolean isMainItem) {
+                boolean isTopLevel = index.length == 1;
+                if (isTopLevel) {
+                    // adjust item menu at the top level because it's contain icon
+                    menu.putClientProperty(FlatClientProperties.STYLE, "" +
+                            "margin:-1,0,-1,0;");
+                }
+            }
+
+            @Override
             public void styleMenu(JComponent component) {
                 component.putClientProperty(FlatClientProperties.STYLE, getDrawerBackgroundStyle());
             }

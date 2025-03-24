@@ -1,6 +1,7 @@
 package raven.modal.utils;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import com.formdev.flatlaf.ui.FlatStylingSupport;
 
 import javax.swing.*;
 import java.util.HashMap;
@@ -41,6 +42,17 @@ public class FlatLafStyleUtils {
         Map<String, String> newStyleMap = styleToMap(newStyle);
         newStyleMap.putAll(oldStyleMap);
         return mapToString(newStyleMap);
+    }
+
+    public static <T> T getStyleValue(JComponent com, String key, Class<T> type) {
+        Object style = FlatStylingSupport.getStyle(com);
+        if (style != null) {
+            Object value = FlatStylingSupport.parse(style.toString()).get(key);
+            if (type.isInstance(value)) {
+                return (T) value;
+            }
+        }
+        return null;
     }
 
     public static Map<String, String> styleToMap(String style) {

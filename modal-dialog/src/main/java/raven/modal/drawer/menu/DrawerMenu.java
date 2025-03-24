@@ -241,6 +241,14 @@ public class DrawerMenu extends AbstractMenuElement {
         }
     }
 
+    public String appendMargin(JButton button, Insets margin) {
+        Insets defaultInset = FlatLafStyleUtils.getStyleValue(button, "margin", Insets.class);
+        if (defaultInset != null) {
+            margin = FlatUIUtils.addInsets(margin, defaultInset);
+        }
+        return margin.top + "," + margin.left + "," + margin.bottom + "," + margin.right;
+    }
+
     protected Icon getIcon(String icon, int menuLevel) {
         if (icon != null) {
             String path = getBasePath();
@@ -267,14 +275,16 @@ public class DrawerMenu extends AbstractMenuElement {
         if (menuOption.menuStyle != null) {
             menuOption.menuStyle.styleMenuItem(button, copyArray(index), isMainItem);
         }
+        Insets margin = new Insets(7, menuItemPadding, 7, menuItemPadding);
         FlatLafStyleUtils.appendStyleIfAbsent(button, "" +
                 "arc:15;" +
-                "margin:6," + menuItemPadding + ",6," + menuItemPadding + ";" +
                 "borderWidth:0;" +
                 "focusWidth:0;" +
                 "innerFocusWidth:0;" +
                 "background:null;" +
                 "iconTextGap:" + iconTextGap + ";");
+        FlatLafStyleUtils.appendStyle(button, "" +
+                "margin:" + appendMargin(button, margin));
         applySelectedButtonStyle(button);
         return button;
     }
@@ -533,14 +543,16 @@ public class DrawerMenu extends AbstractMenuElement {
                 menuOption.menuStyle.styleMenuItem(button, copyArray(index), isMainItem);
             }
             boolean isRightToLeft = !DrawerMenu.this.getComponentOrientation().isLeftToRight();
-            String margin = isRightToLeft ? ("7," + menuItemPadding + ",7," + (gap + menuItemPadding)) : ("7," + (gap + menuItemPadding) + ",7," + menuItemPadding);
+            Insets margin = isRightToLeft ? new Insets(7, menuItemPadding, 7, gap + menuItemPadding)
+                    : new Insets(7, gap + menuItemPadding, 7, menuItemPadding);
             FlatLafStyleUtils.appendStyleIfAbsent(button, "" +
                     "arc:15;" +
-                    "margin:" + margin + ";" +
                     "borderWidth:0;" +
                     "focusWidth:0;" +
                     "innerFocusWidth:0;" +
                     "background:null;");
+            FlatLafStyleUtils.appendStyle(button, "" +
+                    "margin:" + appendMargin(button, margin) + ";");
             applySelectedButtonStyle(button);
             return button;
         }
