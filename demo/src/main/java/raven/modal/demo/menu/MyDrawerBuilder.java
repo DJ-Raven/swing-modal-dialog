@@ -1,6 +1,7 @@
 package raven.modal.demo.menu;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import raven.extras.AvatarIcon;
 import raven.modal.demo.Demo;
 import raven.modal.demo.forms.*;
 import raven.modal.demo.system.AllForms;
@@ -9,13 +10,15 @@ import raven.modal.demo.system.FormManager;
 import raven.modal.drawer.DrawerPanel;
 import raven.modal.drawer.item.Item;
 import raven.modal.drawer.item.MenuItem;
-import raven.modal.drawer.menu.*;
+import raven.modal.drawer.menu.MenuAction;
+import raven.modal.drawer.menu.MenuEvent;
+import raven.modal.drawer.menu.MenuOption;
+import raven.modal.drawer.menu.MenuStyle;
 import raven.modal.drawer.renderer.DrawerStraightDotLineStyle;
 import raven.modal.drawer.simple.SimpleDrawerBuilder;
 import raven.modal.drawer.simple.footer.LightDarkButtonFooter;
 import raven.modal.drawer.simple.footer.SimpleFooterData;
 import raven.modal.drawer.simple.header.SimpleHeaderData;
-import raven.extras.AvatarIcon;
 import raven.modal.option.Option;
 
 import javax.swing.*;
@@ -28,7 +31,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
     public MyDrawerBuilder() {
         super(createSimpleMenuOption());
-        LightDarkButtonFooter lightDarkButtonFooter = (LightDarkButtonFooter) footer;
+        LightDarkButtonFooter lightDarkButtonFooter = (LightDarkButtonFooter) getFooter();
         lightDarkButtonFooter.addModeChangeListener(isDarkMode -> {
             // event for light dark mode changed
         });
@@ -65,6 +68,14 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 .setDescription("Version " + Demo.DEMO_VERSION);
     }
 
+    @Override
+    public Option createOption() {
+        Option option = super.createOption();
+        option.setOpacity(0.3f);
+        option.getBorderOption()
+                .setShadowSize(new Insets(0, 0, 0, SHADOW_SIZE));
+        return option;
+    }
 
     public static MenuOption createSimpleMenuOption() {
 
@@ -181,15 +192,6 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
     @Override
     public int getOpenDrawerAt() {
         return 1000;
-    }
-
-    @Override
-    public Option getOption() {
-        Option option = super.getOption();
-        option.setOpacity(0.3f);
-        option.getBorderOption()
-                .setShadowSize(new Insets(0, 0, 0, SHADOW_SIZE));
-        return option;
     }
 
     @Override

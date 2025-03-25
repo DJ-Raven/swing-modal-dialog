@@ -7,6 +7,18 @@
 - Other
     - Windows 11: heavyWeight windows now support rond border with drop shadow using flatlaf native library (PR #33)
 
+### Changed
+
+- Drawer
+    - SimpleDrawerBuilder:
+        - All `protected` fields changed to `private`. then use get method instead.
+          example: `getFooter()`, `getHeader()`
+        - Add method to custom the drawer component. should override these method:
+            - `Option createOption()`
+            - `AbstractMenuElement createHeader()`
+            - `JSeparator createHeaderSeparator()`
+            - `AbstractMenuElement createFooter()`
+
 ### Demo
 
 - Login form update UI (PR #32)

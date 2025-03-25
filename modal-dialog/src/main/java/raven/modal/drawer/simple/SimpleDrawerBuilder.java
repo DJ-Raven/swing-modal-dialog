@@ -23,14 +23,14 @@ import java.awt.*;
  */
 public abstract class SimpleDrawerBuilder implements DrawerBuilder {
 
-    protected final MenuOption menuOption;
-    protected AbstractMenuElement header;
-    protected JSeparator headerSeparator;
-    protected JScrollPane menuScroll;
-    protected DrawerMenu menu;
-    protected AbstractMenuElement footer;
-    protected Option option;
-    protected boolean isOpen;
+    private final MenuOption menuOption;
+    private AbstractMenuElement header;
+    private JSeparator headerSeparator;
+    private JScrollPane menuScroll;
+    private DrawerMenu menu;
+    private AbstractMenuElement footer;
+    private Option option;
+    private boolean isOpen;
 
     public SimpleDrawerBuilder(MenuOption menuOption) {
         this.menuOption = menuOption;
@@ -38,22 +38,13 @@ public abstract class SimpleDrawerBuilder implements DrawerBuilder {
     }
 
     private void init() {
-        header = new SimpleHeader(getSimpleHeaderData());
+        header = createHeader();
+        headerSeparator = createHeaderSeparator();
         MenuOption simpleMenuOption = getSimpleMenuOption();
         menu = new DrawerMenu(simpleMenuOption);
         menuScroll = createScroll(menu);
-        footer = new LightDarkButtonFooter(getSimpleFooterData());
-        option = new Option();
-        option.setDuration(300);
-        option.getBorderOption()
-                .setRound(0);
-        LayoutOption layoutOption = new SimpleDrawerLayoutOption(this)
-                .setCompactSize(getDrawerCompactWidth(), 1f)
-                .setSize(getDrawerWidth(), 1f)
-                .setMargin(0)
-                .setAnimateDistance(-0.7f, 0)
-                .setLocation(Location.LEADING, Location.TOP);
-        option.setLayoutOption(layoutOption);
+        footer = createFooter();
+        option = createOption();
     }
 
     protected JScrollPane createScroll(JComponent component) {
@@ -78,28 +69,55 @@ public abstract class SimpleDrawerBuilder implements DrawerBuilder {
         return scroll;
     }
 
+    public Option createOption() {
+        Option option = new Option();
+        option.setDuration(300);
+        option.getBorderOption()
+                .setRound(0);
+        LayoutOption layoutOption = new SimpleDrawerLayoutOption(this)
+                .setCompactSize(getDrawerCompactWidth(), 1f)
+                .setSize(getDrawerWidth(), 1f)
+                .setMargin(0)
+                .setAnimateDistance(-0.7f, 0)
+                .setLocation(Location.LEADING, Location.TOP);
+        option.setLayoutOption(layoutOption);
+        return option;
+    }
+
+    public AbstractMenuElement createHeader() {
+        return new SimpleHeader(getSimpleHeaderData());
+    }
+
+    public JSeparator createHeaderSeparator() {
+        return null;
+    }
+
+    public AbstractMenuElement createFooter() {
+        return new LightDarkButtonFooter(getSimpleFooterData());
+    }
+
     @Override
-    public Component getHeader() {
+    public final Component getHeader() {
         return header;
     }
 
     @Override
-    public Component getHeaderSeparator() {
+    public final Component getHeaderSeparator() {
         return headerSeparator;
     }
 
     @Override
-    public Component getMenu() {
+    public final Component getMenu() {
         return menuScroll;
     }
 
     @Override
-    public Component getFooter() {
+    public final Component getFooter() {
         return footer;
     }
 
     @Override
-    public Option getOption() {
+    public final Option getOption() {
         return option;
     }
 
