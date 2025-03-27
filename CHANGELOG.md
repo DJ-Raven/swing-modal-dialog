@@ -7,6 +7,7 @@
 - Drawer
     - MenuStyle: add method `styleCompactMenuItem(JMenuItem menu, int[] index, boolean isMainItem)` to custom style
       compact menu item
+    - Add new `DrawerNoneLineStyle`. use this for no-paint drawer line style but paint arrow style
 - Other
     - Windows 11: heavyWeight windows now support rond border with drop shadow using flatlaf native library (PR #33)
 
