@@ -241,14 +241,6 @@ public class DrawerMenu extends AbstractMenuElement {
         }
     }
 
-    public String appendMargin(JButton button, Insets margin) {
-        Insets defaultInset = FlatLafStyleUtils.getStyleValue(button, "margin", Insets.class);
-        if (defaultInset != null) {
-            margin = FlatUIUtils.addInsets(margin, defaultInset);
-        }
-        return margin.top + "," + margin.left + "," + margin.bottom + "," + margin.right;
-    }
-
     protected Icon getIcon(String icon, int menuLevel) {
         if (icon != null) {
             String path = getBasePath();
@@ -284,7 +276,7 @@ public class DrawerMenu extends AbstractMenuElement {
                 "background:null;" +
                 "iconTextGap:" + iconTextGap + ";");
         FlatLafStyleUtils.appendStyle(button, "" +
-                "margin:" + appendMargin(button, margin));
+                "margin:" + FlatLafStyleUtils.appendMargin(button, margin));
         applySelectedButtonStyle(button);
         return button;
     }
@@ -552,7 +544,7 @@ public class DrawerMenu extends AbstractMenuElement {
                     "innerFocusWidth:0;" +
                     "background:null;");
             FlatLafStyleUtils.appendStyle(button, "" +
-                    "margin:" + appendMargin(button, margin) + ";");
+                    "margin:" + FlatLafStyleUtils.appendMargin(button, margin) + ";");
             applySelectedButtonStyle(button);
             return button;
         }

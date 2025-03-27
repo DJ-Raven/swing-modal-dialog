@@ -2,8 +2,10 @@ package raven.modal.utils;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.ui.FlatStylingSupport;
+import com.formdev.flatlaf.ui.FlatUIUtils;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
@@ -75,5 +77,13 @@ public class FlatLafStyleUtils {
             joiner.add(entry.getKey() + ":" + entry.getValue());
         }
         return joiner.toString();
+    }
+
+    public static String appendMargin(JComponent button, Insets margin) {
+        Insets defaultInset = FlatLafStyleUtils.getStyleValue(button, "margin", Insets.class);
+        if (defaultInset != null) {
+            margin = FlatUIUtils.addInsets(margin, defaultInset);
+        }
+        return margin.top + "," + margin.left + "," + margin.bottom + "," + margin.right;
     }
 }

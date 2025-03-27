@@ -4,6 +4,9 @@
 
 ### New features and improvements
 
+- Drawer
+    - MenuStyle: add method `styleCompactMenuItem(JMenuItem menu, int[] index, boolean isMainItem)` to custom style
+      compact menu item
 - Other
     - Windows 11: heavyWeight windows now support rond border with drop shadow using flatlaf native library (PR #33)
 
