@@ -18,7 +18,7 @@ public class ThemesSelection extends JPanel {
     }
 
     private void init(FlatLaf[] themes) {
-        setLayout(new MigLayout("insets n 0 15 0, novisualpadding", "[200,fill]", "[130,fill]"));
+        setLayout(new MigLayout("insets n 0 15 0, novisualpadding", "[fill]", "[fill]"));
         group = new ButtonGroup();
         boolean selected = false;
         for (FlatLaf theme : themes) {
@@ -76,6 +76,7 @@ public class ThemesSelection extends JPanel {
             check.setFocusable(false);
             setModel(check.getModel());
             add(check);
+            add(new JLabel(new FlatLafThemeIcon(200, 100, theme)), "span 2");
         }
 
         @Override
