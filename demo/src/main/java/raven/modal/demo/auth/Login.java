@@ -32,7 +32,7 @@ public class Login extends Form {
         panelLogin.setOpaque(false);
         applyShadowBorder(panelLogin);
 
-        JPanel loginContent = new JPanel(new MigLayout("fillx,wrap,insets 35 35 25 35", "[fill]"));
+        JPanel loginContent = new JPanel(new MigLayout("fillx,wrap,insets 35 35 25 35", "[fill,300]"));
 
         JLabel lbTitle = new JLabel("Welcome back!");
         JLabel lbDescription = new JLabel("Please sign in to access your account");
@@ -84,7 +84,7 @@ public class Login extends Form {
         loginContent.add(createInfo());
 
         panelLogin.add(loginContent);
-        add(panelLogin, "width 400");
+        add(panelLogin);
 
         // event
         cmdLogin.addActionListener(e -> {
