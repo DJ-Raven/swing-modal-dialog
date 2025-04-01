@@ -1,6 +1,7 @@
 package test.validation;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import raven.extras.AvatarIcon;
 import raven.modal.demo.forms.*;
 import raven.modal.drawer.DrawerPanel;
@@ -18,6 +19,7 @@ import java.util.Arrays;
 public class ValidationDrawerBuilder extends SimpleDrawerBuilder {
 
     private static ValidationDrawerBuilder instance;
+    private User user;
 
     public static ValidationDrawerBuilder getInstance() {
         if (instance == null) {
@@ -36,7 +38,17 @@ public class ValidationDrawerBuilder extends SimpleDrawerBuilder {
 
         // change drawer header
         SimpleHeader header = (SimpleHeader) getHeader();
-        header.setSimpleHeaderData(createHeaderData(user));
+        SimpleHeaderData data = header.getSimpleHeaderData();
+
+        if (data.getIcon() instanceof AvatarIcon) {
+            AvatarIcon icon = (AvatarIcon) data.getIcon();
+            icon.setIcon(user.getProfile());
+        }
+
+        data.setTitle(user.getName())
+                .setDescription(user.getDescription());
+
+        header.setSimpleHeaderData(data);
 
         if (updateMenuItem) {
             // rebuild for update the menu item
@@ -44,33 +56,32 @@ public class ValidationDrawerBuilder extends SimpleDrawerBuilder {
         }
     }
 
-    private User user;
-
     private ValidationDrawerBuilder() {
         super(createSimpleMenuOption());
     }
 
-    private SimpleHeaderData createHeaderData(User user) {
-        if (user == null) {
-            return new SimpleHeaderData()
-                    .setTitle("No User")
-                    .setDescription("No description");
-        } else {
-            AvatarIcon icon = new AvatarIcon(user.getProfile(), 50, 50, 3.5f);
-            icon.setType(AvatarIcon.Type.MASK_SQUIRCLE);
-            icon.setBorder(2, 2);
-            icon.setBorderColor(new AvatarIcon.BorderColor(UIManager.getColor("Component.accentColor"), 0.7f));
-
-            return new SimpleHeaderData()
-                    .setIcon(icon)
-                    .setTitle(user.getName())
-                    .setDescription(user.getDescription());
-        }
-    }
-
     @Override
     public SimpleHeaderData getSimpleHeaderData() {
-        return createHeaderData(user);
+        AvatarIcon icon = new AvatarIcon(new FlatSVGIcon("raven/modal/demo/drawer/image/avatar_male.svg", 100, 100), 50, 50, 3.5f);
+        icon.setType(AvatarIcon.Type.MASK_SQUIRCLE);
+        icon.setBorder(2, 2);
+
+        changeAvatarIconBorderColor(icon);
+
+        UIManager.addPropertyChangeListener(evt -> {
+            if (evt.getPropertyName().equals("lookAndFeel")) {
+                changeAvatarIconBorderColor(icon);
+            }
+        });
+
+        return new SimpleHeaderData()
+                .setIcon(icon)
+                .setTitle("Ra Ven")
+                .setDescription("raven@gmail.com");
+    }
+
+    private void changeAvatarIconBorderColor(AvatarIcon icon) {
+        icon.setBorderColor(new AvatarIcon.BorderColor(UIManager.getColor("Component.accentColor"), 0.7f));
     }
 
     @Override

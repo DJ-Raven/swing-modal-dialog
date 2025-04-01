@@ -1,6 +1,7 @@
 package raven.modal.demo.menu;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import raven.extras.AvatarIcon;
 import raven.modal.demo.Demo;
 import raven.modal.demo.forms.*;
@@ -39,7 +40,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
     @Override
     public SimpleHeaderData getSimpleHeaderData() {
-        AvatarIcon icon = new AvatarIcon(getClass().getResource("/raven/modal/demo/drawer/image/profile.png"), 50, 50, 3.5f);
+        AvatarIcon icon = new AvatarIcon(new FlatSVGIcon("raven/modal/demo/drawer/image/avatar_male.svg", 100, 100), 50, 50, 3.5f);
         icon.setType(AvatarIcon.Type.MASK_SQUIRCLE);
         icon.setBorder(2, 2);
 

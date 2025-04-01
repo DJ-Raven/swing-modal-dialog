@@ -216,6 +216,27 @@ public class AvatarIcon implements Icon {
         image = null;
     }
 
+    public void setIcon(String filename) {
+        this.filename = filename;
+        this.location = null;
+        this.icon = null;
+        image = null;
+    }
+
+    public void setIcon(URL location) {
+        this.location = location;
+        this.filename = null;
+        this.icon = null;
+        image = null;
+    }
+
+    public void setIcon(Icon icon) {
+        this.icon = icon;
+        this.location = null;
+        this.filename = null;
+        image = null;
+    }
+
     public Icon getDefaultIcon() {
         Icon icon;
         if (filename != null) {
