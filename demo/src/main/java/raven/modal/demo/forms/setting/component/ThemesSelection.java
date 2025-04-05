@@ -76,7 +76,7 @@ public class ThemesSelection extends JPanel {
             check.setFocusable(false);
             setModel(check.getModel());
             add(check);
-            add(new JLabel(new FlatLafThemeIcon(200, 100, theme)), "span 2");
+            add(new JLabel(new FlatLafThemeIcon(200, 50, theme)), "span 2");
         }
 
         @Override
