@@ -35,6 +35,17 @@ public class MainForm extends JPanel {
         buttonUndo = new JButton(new FlatSVGIcon("raven/modal/demo/icons/undo.svg", 0.5f));
         buttonRedo = new JButton(new FlatSVGIcon("raven/modal/demo/icons/redo.svg", 0.5f));
         buttonRefresh = new JButton(new FlatSVGIcon("raven/modal/demo/icons/refresh.svg", 0.5f));
+
+        // style
+        buttonDrawer.putClientProperty(FlatClientProperties.STYLE, "" +
+                "arc:10;");
+        buttonUndo.putClientProperty(FlatClientProperties.STYLE, "" +
+                "arc:10;");
+        buttonRedo.putClientProperty(FlatClientProperties.STYLE, "" +
+                "arc:10;");
+        buttonRefresh.putClientProperty(FlatClientProperties.STYLE, "" +
+                "arc:10;");
+
         buttonDrawer.addActionListener(e -> {
             if (Drawer.isOpen()) {
                 Drawer.showDrawer();

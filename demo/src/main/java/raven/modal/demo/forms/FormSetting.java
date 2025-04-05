@@ -35,6 +35,9 @@ public class FormSetting extends Form {
     private void init() {
         setLayout(new MigLayout("fill", "[fill][fill,grow 0,250:250]", "[fill]"));
         tabbedPane = new JTabbedPane();
+        tabbedPane.putClientProperty(FlatClientProperties.STYLE, "" +
+                "tabType:card");
+
         tabbedPane.addTab("Layout", createLayoutOption());
         tabbedPane.addTab("Style", createStyleOption());
         add(tabbedPane, "gapy 1 0");
