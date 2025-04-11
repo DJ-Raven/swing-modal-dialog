@@ -121,4 +121,9 @@ public class Drawer {
         SimpleDrawerBuilder drawerBuilder = (SimpleDrawerBuilder) instance.drawerPanel.getDrawerBuilder();
         drawerBuilder.getDrawerMenu().setMenuSelectedClass(itemClass);
     }
+
+    public static int[] getMenuIndexClass(Class<?> itemClass) {
+        SimpleDrawerBuilder drawerBuilder = (SimpleDrawerBuilder) instance.drawerPanel.getDrawerBuilder();
+        return drawerBuilder.getDrawerMenu().getMenuIndexClass(itemClass);
+    }
 }

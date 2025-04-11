@@ -40,10 +40,9 @@ public class DrawerMenu extends AbstractMenuElement {
             if (item.isMenu()) {
                 Item t = getMenuItemOf((Item) item, itemClass);
                 if (t != null) {
-                    setMenuSelectedIndex(t.getIndex());
                     MenuAction action = runEvent(t, t.getIndex());
                     if (action != null) {
-                        if (action.getConsume() == false) {
+                        if (!action.getConsume()) {
                             if (isMenuAutoSelection(t.isMenu())) {
                                 setMenuSelectedIndex(t.getIndex());
                             }
@@ -53,6 +52,21 @@ public class DrawerMenu extends AbstractMenuElement {
                 }
             }
         }
+    }
+
+    public int[] getMenuIndexClass(Class<?> itemClass) {
+        if (itemClass == null) {
+            return null;
+        }
+        for (MenuItem item : menuOption.menus) {
+            if (item.isMenu()) {
+                Item t = getMenuItemOf((Item) item, itemClass);
+                if (t != null) {
+                    return t.getIndex();
+                }
+            }
+        }
+        return null;
     }
 
     private Item getMenuItemOf(Item item, Class<?> itemClass) {
