@@ -148,7 +148,8 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
         });
 
         simpleMenuOption.getMenuStyle().setDrawerLineStyleRenderer(new DrawerStraightDotLineStyle());
-        simpleMenuOption.setMenuItemAutoSelectionMode(MenuOption.MenuItemAutoSelectionMode.SELECT_SUB_MENU_LEVEL);
+        simpleMenuOption.setMenuValidation(new MyMenuValidation());
+
         simpleMenuOption.addMenuEvent(new MenuEvent() {
             @Override
             public void selected(MenuAction action, int[] index) {
