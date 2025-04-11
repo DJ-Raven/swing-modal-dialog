@@ -126,7 +126,7 @@ public abstract class AbstractModalController extends JPanel implements Controll
         if (modal.getComponentOrientation().isLeftToRight() != orientation.isLeftToRight()) {
             modal.applyComponentOrientation(orientation);
         }
-        panelSlider.addSlide(modal, sliderTransition, sliderDuration);
+        panelSlider.addSlide(modal, sliderTransition, sliderDuration, () -> modalOpened());
     }
 
     @Override
@@ -136,7 +136,7 @@ public abstract class AbstractModalController extends JPanel implements Controll
             this.modal = component;
             int sliderDuration = option.isHeavyWeight() ? 0 : option.getSliderDuration();
             SliderTransition sliderTransition = sliderDuration > 0 ? SimpleTransition.get(SimpleTransition.SliderType.BACK) : null;
-            panelSlider.addSlide(component, sliderTransition, sliderDuration);
+            panelSlider.addSlide(component, sliderTransition, sliderDuration, () -> modalOpened());
         }
     }
 

@@ -54,10 +54,18 @@ public class PanelSlider extends JLayeredPane {
     }
 
     public void addSlide(Component component, SliderTransition transition) {
-        addSlide(component, transition, 400);
+        addSlide(component, transition, 400, null);
+    }
+
+    public void addSlide(Component component, SliderTransition transition, SliderCallback callback) {
+        addSlide(component, transition, 400, callback);
     }
 
     public void addSlide(Component component, SliderTransition transition, int duration) {
+        addSlide(component, transition, duration, null);
+    }
+
+    public void addSlide(Component component, SliderTransition transition, int duration, SliderCallback callback) {
         this.slideComponent = component;
         if (getComponentCount() == 1) {
             add(component);
@@ -65,6 +73,9 @@ public class PanelSlider extends JLayeredPane {
             doLayout();
             panelSnapshot.setVisible(false);
             component.setVisible(true);
+            if (callback != null) {
+                callback.complete();
+            }
         } else {
             Component oldComponent = getComponent(1);
             add(component);
@@ -77,13 +88,16 @@ public class PanelSlider extends JLayeredPane {
                     Image oldImage = createImage(oldComponent, fromSize);
                     Image newImage = createImage(component, targetSize);
                     remove(oldComponent);
-                    panelSnapshot.animate(component, transition, oldImage, newImage, duration);
+                    panelSnapshot.animate(component, transition, oldImage, newImage, duration, callback);
                 });
             } else {
                 component.setVisible(true);
                 remove(oldComponent);
                 doLayout();
                 repaint();
+                if (callback != null) {
+                    callback.complete();
+                }
             }
         }
     }
@@ -111,9 +125,14 @@ public class PanelSlider extends JLayeredPane {
         }
     }
 
+    public interface SliderCallback {
+        void complete();
+    }
+
     public class PanelSnapshot extends JComponent {
 
         private Animator animator;
+        private SliderCallback callback;
         private Component component;
         private float animate;
 
@@ -149,15 +168,19 @@ public class PanelSlider extends JLayeredPane {
                     if (oldImage != null) {
                         oldImage.flush();
                     }
+                    if (callback != null) {
+                        callback.complete();
+                    }
                 }
             });
             animator.setInterpolator(CubicBezierEasing.STANDARD_EASING);
         }
 
-        protected void animate(Component component, SliderTransition sliderTransition, Image oldImage, Image newImage, int duration) {
+        protected void animate(Component component, SliderTransition sliderTransition, Image oldImage, Image newImage, int duration, SliderCallback callback) {
             if (animator.isRunning()) {
                 animator.stop();
             }
+            this.callback = callback;
             this.component = component;
             this.oldImage = oldImage;
             this.newImage = newImage;

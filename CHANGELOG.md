@@ -4,6 +4,8 @@
 
 ### New features and improvements
 
+- Modal dialog
+    - SimpleModalBorder: callback `SimpleModalBorder.OPENED` now work when `pushModal` and `popModal`
 - Drawer
     - MenuStyle: add method `styleCompactMenuItem(JMenuItem menu, int[] index, boolean isMainItem)` to custom style
       compact menu item

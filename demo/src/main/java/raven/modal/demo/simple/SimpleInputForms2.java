@@ -13,7 +13,7 @@ public class SimpleInputForms2 extends JPanel {
 
     private void init() {
         setLayout(new MigLayout("fillx,wrap,insets 5 30 5 30,width 400", "[fill]", ""));
-        JTextField txtFirstName = new JTextField();
+        txtFirstName = new JTextField();
         JTextField txtLastName = new JTextField();
         JTextField txtCompany = new JTextField();
         JTextField txtEmail = new JTextField();
@@ -60,4 +60,10 @@ public class SimpleInputForms2 extends JPanel {
         combo.addItem("China");
         combo.addItem("India");
     }
+
+    public void formOpen() {
+        txtFirstName.grabFocus();
+    }
+
+    private JTextField txtFirstName;
 }
