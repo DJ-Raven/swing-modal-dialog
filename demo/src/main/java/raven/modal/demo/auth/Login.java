@@ -4,6 +4,8 @@ import com.formdev.flatlaf.FlatClientProperties;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.component.DropShadowBorder;
 import raven.modal.demo.component.LabelButton;
+import raven.modal.demo.menu.MyDrawerBuilder;
+import raven.modal.demo.model.ModelUser;
 import raven.modal.demo.system.Form;
 import raven.modal.demo.system.FormManager;
 
@@ -88,6 +90,10 @@ public class Login extends Form {
 
         // event
         cmdLogin.addActionListener(e -> {
+            String userName = txtUsername.getText();
+            String password = String.valueOf(txtPassword.getPassword());
+            ModelUser user = getUser(userName, password);
+            MyDrawerBuilder.getInstance().setUser(user);
             FormManager.login();
         });
     }
@@ -114,5 +120,17 @@ public class Login extends Form {
         if (panel != null) {
             panel.setBorder(new DropShadowBorder(new Insets(5, 8, 12, 8), 1, 25));
         }
+    }
+
+    private ModelUser getUser(String user, String password) {
+
+        // just testing.
+        // input any user and password is admin by default
+        // user='staff' password='123' if we want to test validation menu for role staff
+
+        if (user.equals("staff") && password.equals("123")) {
+            return new ModelUser("Justin White", "justinwhite@gmail.com", ModelUser.Role.STAFF);
+        }
+        return new ModelUser("Ra Ven", "raven@gmail.com", ModelUser.Role.ADMIN);
     }
 }

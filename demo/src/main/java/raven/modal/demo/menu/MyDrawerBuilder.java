@@ -5,6 +5,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import raven.extras.AvatarIcon;
 import raven.modal.demo.Demo;
 import raven.modal.demo.forms.*;
+import raven.modal.demo.model.ModelUser;
 import raven.modal.demo.system.AllForms;
 import raven.modal.demo.system.Form;
 import raven.modal.demo.system.FormManager;
@@ -19,6 +20,7 @@ import raven.modal.drawer.renderer.DrawerStraightDotLineStyle;
 import raven.modal.drawer.simple.SimpleDrawerBuilder;
 import raven.modal.drawer.simple.footer.LightDarkButtonFooter;
 import raven.modal.drawer.simple.footer.SimpleFooterData;
+import raven.modal.drawer.simple.header.SimpleHeader;
 import raven.modal.drawer.simple.header.SimpleHeaderData;
 import raven.modal.option.Option;
 
@@ -28,9 +30,47 @@ import java.util.Arrays;
 
 public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
+    private static MyDrawerBuilder instance;
+    private ModelUser user;
+
+    public static MyDrawerBuilder getInstance() {
+        if (instance == null) {
+            instance = new MyDrawerBuilder();
+        }
+        return instance;
+    }
+
+    public ModelUser getUser() {
+        return user;
+    }
+
+    public void setUser(ModelUser user) {
+        boolean updateMenuItem = this.user == null || this.user.getRole() != user.getRole();
+
+        this.user = user;
+
+        // set user to menu validation
+        MyMenuValidation.setUser(user);
+
+        // setup drawer header
+        SimpleHeader header = (SimpleHeader) getHeader();
+        SimpleHeaderData data = header.getSimpleHeaderData();
+        AvatarIcon icon = (AvatarIcon) data.getIcon();
+        String iconName = user.getRole() == ModelUser.Role.ADMIN ? "avatar_male.svg" : "avatar_female.svg";
+
+        icon.setIcon(new FlatSVGIcon("raven/modal/demo/drawer/image/" + iconName, 100, 100));
+        data.setTitle(user.getUserName());
+        data.setDescription(user.getMail());
+        header.setSimpleHeaderData(data);
+
+        if (updateMenuItem) {
+            rebuildMenu();
+        }
+    }
+
     private final int SHADOW_SIZE = 12;
 
-    public MyDrawerBuilder() {
+    private MyDrawerBuilder() {
         super(createSimpleMenuOption());
         LightDarkButtonFooter lightDarkButtonFooter = (LightDarkButtonFooter) getFooter();
         lightDarkButtonFooter.addModeChangeListener(isDarkMode -> {

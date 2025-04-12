@@ -117,8 +117,7 @@ public class FormSearchPanel extends JPanel {
                             if (s.name().toLowerCase().contains(st)
                                     || s.description().toLowerCase().contains(st)
                                     || checkTags(s.tags(), st)) {
-                                int[] index = Drawer.getMenuIndexClass(entry.getValue());
-                                if (index != null && MyMenuValidation.validation(index)) {
+                                if (MyMenuValidation.validation(entry.getValue())) {
                                     Item item = new Item(s, entry.getValue(), false, false);
                                     panelResult.add(item);
                                     listItems.add(item);
@@ -252,8 +251,7 @@ public class FormSearchPanel extends JPanel {
         List<Item> list = new ArrayList<>();
         for (String s : recentSearch) {
             Class<? extends Form> classForm = getClassForm(s);
-            int[] index = Drawer.getMenuIndexClass(classForm);
-            if (index != null && MyMenuValidation.validation(index)) {
+            if (MyMenuValidation.validation(classForm)) {
                 Item item = createRecentItem(s, favorite);
                 if (item != null) {
                     list.add(item);

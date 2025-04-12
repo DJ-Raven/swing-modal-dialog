@@ -1,8 +1,17 @@
 package raven.modal.demo.menu;
 
+import raven.modal.Drawer;
+import raven.modal.demo.model.ModelUser;
+import raven.modal.demo.system.Form;
 import raven.modal.drawer.menu.MenuValidation;
 
 public class MyMenuValidation extends MenuValidation {
+
+    public static void setUser(ModelUser user) {
+        MyMenuValidation.user = user;
+    }
+
+    public static ModelUser user;
 
     @Override
     public boolean menuValidation(int[] index) {
@@ -21,7 +30,22 @@ public class MyMenuValidation extends MenuValidation {
         return true;
     }
 
+    public static boolean validation(Class<? extends Form> itemClass) {
+        int[] index = Drawer.getMenuIndexClass(itemClass);
+        if (index == null) {
+            return false;
+        }
+        return validation(index);
+    }
+
     public static boolean validation(int[] index) {
+        if (user == null) {
+            return false;
+        }
+        if (user.getRole() == ModelUser.Role.ADMIN) {
+            return true;
+        }
+
         boolean status
                 // `Modal`
                 = checkMenu(index, new int[]{2, 0})
