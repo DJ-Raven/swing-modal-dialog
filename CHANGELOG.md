@@ -35,6 +35,9 @@
 ### Demo
 
 - Login form update UI (PR #32)
+- Login validation menu:
+    - user:`staff` and pass: `123` if we want to test validation menu for role staff
+    - any user, any password for full role
 
 ## [2.4.0] - 2025-03-05
 
