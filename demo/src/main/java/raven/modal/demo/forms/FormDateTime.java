@@ -55,7 +55,7 @@ public class FormDateTime extends Form {
     }
 
     private Component createDateOption() {
-        JPanel panel = new JPanel(new MigLayout("wrap", "[200]"));
+        JPanel panel = new JPanel(new MigLayout("wrap 5,flowy", "[200]"));
         panel.setBorder(new TitledBorder("Date option"));
         JCheckBox chDateBetween = new JCheckBox("Date between");
         JCheckBox chUsePanelOption = new JCheckBox("Use panel option");
@@ -63,6 +63,7 @@ public class FormDateTime extends Form {
         JCheckBox chEditorValidation = new JCheckBox("Editor validation", true);
         JCheckBox chValidationOnNull = new JCheckBox("Validation on null");
         JCheckBox chAnimationEnabled = new JCheckBox("Animation Enabled", true);
+        JCheckBox chStartWeekOnMonday = new JCheckBox("Start week on monday", false);
 
         chDateBetween.addActionListener(e -> {
             datePicker.setDateSelectionMode(chDateBetween.isSelected() ? DatePicker.DateSelectionMode.BETWEEN_DATE_SELECTED
@@ -76,6 +77,7 @@ public class FormDateTime extends Form {
         });
         chValidationOnNull.addActionListener(e -> datePicker.setValidationOnNull(chValidationOnNull.isSelected()));
         chAnimationEnabled.addActionListener(e -> datePicker.setAnimationEnabled(chAnimationEnabled.isSelected()));
+        chStartWeekOnMonday.addActionListener(e -> datePicker.setStartWeekOnMonday(chStartWeekOnMonday.isSelected()));
 
         panel.add(chDateBetween);
         panel.add(chUsePanelOption);
@@ -83,6 +85,7 @@ public class FormDateTime extends Form {
         panel.add(chEditorValidation);
         panel.add(chValidationOnNull);
         panel.add(chAnimationEnabled);
+        panel.add(chStartWeekOnMonday);
 
         return panel;
     }
