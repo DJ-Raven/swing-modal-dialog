@@ -30,6 +30,7 @@
             - `AbstractMenuElement createHeader()`
             - `JSeparator createHeaderSeparator()`
             - `AbstractMenuElement createFooter()`
+- FlatLaf: update to `v3.6`
 
 ### Demo
 
