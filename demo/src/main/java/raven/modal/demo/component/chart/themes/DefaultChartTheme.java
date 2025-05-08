@@ -98,7 +98,6 @@ public class DefaultChartTheme extends StandardChartTheme {
     protected void applyToSpiderWebPlot(SpiderWebPlot plot) {
         Color border = UIManager.getColor("Component.borderColor");
         plot.setLabelFont(getRegularFont());
-        plot.setLabelPaint(getAxisLabelPaint());
         plot.setAxisLinePaint(border);
         int index = 0;
         for (Color color : instance.colorThemes.getColors()) {
