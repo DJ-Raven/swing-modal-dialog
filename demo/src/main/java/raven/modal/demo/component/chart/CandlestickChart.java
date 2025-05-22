@@ -86,8 +86,8 @@ public class CandlestickChart extends DefaultChartPanel {
         xCrosshair.setLabelAnchor(RectangleAnchor.BOTTOM);
         yCrosshair.setLabelAnchor(RectangleAnchor.RIGHT);
         DateFormat dateFormat = DateFormat.getDateInstance();
-        xCrosshair.setLabelGenerator(new DateCrosshairLabelGenerator(" {0} ", dateFormat));
-        yCrosshair.setLabelGenerator(new StandardCrosshairLabelGenerator(" {0} ", NumberFormat.getCurrencyInstance()));
+        xCrosshair.setLabelGenerator(new DateCrosshairLabelGenerator("{0}", dateFormat));
+        yCrosshair.setLabelGenerator(new StandardCrosshairLabelGenerator("{0}", NumberFormat.getCurrencyInstance()));
         xCrosshair.setLabelVisible(true);
         yCrosshair.setLabelVisible(true);
         crosshairOverlay.addDomainCrosshair(xCrosshair);

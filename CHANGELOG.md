@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.5.1] - SNAPSHOT
+
+### Demo
+
+- JFreeChart: update to `v1.5.6`
+
 ## [2.5.0] - 2025-05-05
 
 ### New features and improvements

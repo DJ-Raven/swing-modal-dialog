@@ -27,5 +27,6 @@ public class CustomCrosshairToolTip extends Crosshair {
         setLabelFont(font);
         setPaint(ChartDrawingSupplier.alpha(foreground, 0.5f));
         setStroke(ChartDrawingSupplier.getDefaultGridlineStroke());
+        setLabelPadding(ChartDrawingSupplier.scaleRectangleInsets(2, 5, 2, 5));
     }
 }
