@@ -6,8 +6,8 @@ import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
 import com.formdev.flatlaf.intellijthemes.FlatSpacegrayIJTheme;
 import com.formdev.flatlaf.intellijthemes.FlatVuesionIJTheme;
 import com.formdev.flatlaf.intellijthemes.FlatXcodeDarkIJTheme;
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme;
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMTGitHubDarkIJTheme;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMTGitHubIJTheme;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import com.formdev.flatlaf.util.LoggingFacade;
@@ -40,8 +40,8 @@ public class Appearance extends Form {
                 new FlatXcodeDarkIJTheme(),
                 new FlatVuesionIJTheme(),
                 new FlatSpacegrayIJTheme(),
-                new FlatGitHubDarkIJTheme(),
-                new FlatGitHubIJTheme()
+                new FlatMTGitHubDarkIJTheme(),
+                new FlatMTGitHubIJTheme()
         );
 
         coreThemes.setCallback(theme -> {

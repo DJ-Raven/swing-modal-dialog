@@ -3,6 +3,7 @@ package raven.modal.demo.forms.setting;
 import raven.modal.demo.forms.setting.tabb.Appearance;
 import raven.modal.drawer.item.Item;
 import raven.modal.drawer.item.MenuItem;
+import raven.modal.drawer.menu.AbstractMenuElement;
 import raven.modal.drawer.menu.MenuEvent;
 import raven.modal.drawer.menu.MenuOption;
 import raven.modal.drawer.simple.SimpleDrawerBuilder;
@@ -13,7 +14,6 @@ public class SettingDrawerBuilder extends SimpleDrawerBuilder {
 
     public SettingDrawerBuilder(MenuEvent event) {
         super(createSimpleMenuOption(event));
-        footer = null;
     }
 
     @Override
@@ -23,8 +23,13 @@ public class SettingDrawerBuilder extends SimpleDrawerBuilder {
     }
 
     @Override
+    public AbstractMenuElement createFooter() {
+        return null;
+    }
+
+    @Override
     public SimpleFooterData getSimpleFooterData() {
-        return new SimpleFooterData();
+        return null;
     }
 
     public static MenuOption createSimpleMenuOption(MenuEvent event) {
@@ -43,7 +48,6 @@ public class SettingDrawerBuilder extends SimpleDrawerBuilder {
                 new Item("Plugin", "plugin.svg")
         };
 
-        simpleMenuOption.setMenuItemAutoSelectionMode(MenuOption.MenuItemAutoSelectionMode.SELECT_SUB_MENU_LEVEL);
         simpleMenuOption.addMenuEvent(event);
 
         simpleMenuOption.setMenus(items)

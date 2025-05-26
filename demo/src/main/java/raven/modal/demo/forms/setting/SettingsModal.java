@@ -5,6 +5,7 @@ import raven.modal.demo.forms.setting.tabb.Appearance;
 import raven.modal.demo.system.Form;
 import raven.modal.drawer.DrawerBuilder;
 import raven.modal.drawer.DrawerPanel;
+import raven.modal.drawer.menu.MenuAction;
 import raven.modal.drawer.simple.SimpleDrawerBuilder;
 
 import javax.swing.*;
@@ -32,7 +33,7 @@ public class SettingsModal extends JPanel {
 
     private void createDrawerMenu() {
         DrawerBuilder drawerBuilder = new SettingDrawerBuilder((action, index) -> {
-            showForm(action.getItem().getItemClass());
+            showForm(action, action.getItem().getItemClass());
         });
 
         drawerPanel = new DrawerPanel(drawerBuilder, drawerBuilder.getOption());
@@ -47,7 +48,7 @@ public class SettingsModal extends JPanel {
         add(panel);
     }
 
-    private void showForm(Class<?> clazz) {
+    private void showForm(MenuAction action, Class<?> clazz) {
         if (clazz != null) {
             Form form;
             if (classForms.containsKey(clazz)) {
@@ -68,6 +69,8 @@ public class SettingsModal extends JPanel {
                 panel.repaint();
                 panel.revalidate();
             }
+        } else {
+            action.consume();
         }
     }
 
