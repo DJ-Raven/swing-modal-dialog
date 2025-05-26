@@ -20,7 +20,7 @@ Add the dependency
 <dependency>
     <groupId>io.github.dj-raven</groupId>
     <artifactId>modal-dialog</artifactId>
-    <version>2.4.0</version>
+    <version>2.5.0</version>
 </dependency>
 ```
 
@@ -30,8 +30,9 @@ To get the latest updates before the release, you can use the snapshot version f
 ``` xml
 <repositories>
     <repository>
-        <id>sonatype-oss-snapshots</id>
-        <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+        <name>Central Portal Snapshots</name>
+        <id>central-portal-snapshots</id>
+        <url>https://central.sonatype.com/repository/maven-snapshots/</url>
     </repository>
 </repositories>
 ```

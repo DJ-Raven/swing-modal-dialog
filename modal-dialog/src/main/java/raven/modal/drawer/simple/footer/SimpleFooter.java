@@ -35,17 +35,17 @@ public class SimpleFooter extends AbstractMenuElement {
     }
 
     protected void initComponent() {
-        layout = new MigLayout("hidemode 3,wrap,insets 5 20 10 20,fill,gap 3");
-        setLayout(layout);
-
         labelTitle = new JLabel(simpleFooterData.getTitle());
         labelDescription = new JLabel(simpleFooterData.getDescription());
-
+        int gap = 3;
         if (simpleFooterData.getSimpleFooterStyle() != null) {
             simpleFooterData.getSimpleFooterStyle().styleComponent(labelTitle, LABEL_TITLE_STYLE);
             simpleFooterData.getSimpleFooterStyle().styleComponent(labelDescription, LABEL_DESCRIPTION_STYLE);
+            gap = simpleFooterData.getSimpleFooterStyle().getTextGap();
         }
 
+        layout = new MigLayout("hidemode 3,wrap,insets 5 20 10 20,fill,gap " + gap);
+        setLayout(layout);
         FlatLafStyleUtils.appendStyleIfAbsent(labelDescription, "" +
                 "font:-1;" +
                 "foreground:$Label.disabledForeground;");

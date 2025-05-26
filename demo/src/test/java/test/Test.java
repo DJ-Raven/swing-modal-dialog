@@ -25,12 +25,22 @@ public class Test extends BaseFrame {
                 .setBorderWidth(1)
                 .setShadow(BorderOption.Shadow.MEDIUM);
 
+
         button.addActionListener(e -> {
-            ModalDialog.showModal(this, new SimpleModalBorder(new SimpleInputForms(), "Input", SimpleModalBorder.YES_NO_OPTION, (controller, action) -> {
-                System.out.println(action);
-                if (action == SimpleModalBorder.YES_OPTION) {
+            SimpleInputForms simpleInputForms = new SimpleInputForms();
+            ModalDialog.showModal(this, new SimpleModalBorder(simpleInputForms, "Input", SimpleModalBorder.YES_NO_OPTION, (controller, action) -> {
+                System.out.println("Action: " + action);
+                if (action == SimpleModalBorder.OPENED) {
+                    simpleInputForms.formOpen();
+                    System.out.println("Form-1 OPENED");
+                } else if (action == SimpleModalBorder.YES_OPTION) {
                     controller.consume();
-                    ModalDialog.pushModal(new SimpleModalBorder(new SimpleInputForms2(), "New Input", SimpleModalBorder.YES_NO_OPTION, (controller1, action1) -> {
+                    SimpleInputForms2 simpleInputForms2 = new SimpleInputForms2();
+                    ModalDialog.pushModal(new SimpleModalBorder(simpleInputForms2, "New Input", SimpleModalBorder.YES_NO_OPTION, (controller1, action1) -> {
+                        if (action1 == SimpleModalBorder.OPENED) {
+                            simpleInputForms2.formOpen();
+                            System.out.println("Form-2 OPENED");
+                        }
                     }), "input");
                 }
             }), "input");

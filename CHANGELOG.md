@@ -1,15 +1,49 @@
 # Changelog
 
-## [2.4.1]-SNAPSHOT
+## [2.5.1] - SNAPSHOT
+
+### Demo
+
+- JFreeChart: update to `v1.5.6`
+
+## [2.5.0] - 2025-05-05
 
 ### New features and improvements
 
+- Modal dialog
+    - SimpleModalBorder: callback `SimpleModalBorder.OPENED` now work when `pushModal` and `popModal`
+- Drawer
+    - MenuStyle: add method `styleCompactMenuItem(JMenuItem menu, int[] index, boolean isMainItem)` to custom style
+      compact menu item
+    - Add new `DrawerNoneLineStyle`. use this for no-paint drawer line style but paint arrow style
+    - Add method `Drawer.getMenuIndexClass(Class<?> itemClass)` return array index of menu
 - Other
     - Windows 11: heavyWeight windows now support rond border with drop shadow using flatlaf native library (PR #33)
+- Extras
+    - AvatarIcon: add method to change icon:
+        - `void setIcon(String filename);`
+        - `void setIcon(URL location);`
+        - `void setIcon(Icon icon);`
+
+### Changed
+
+- Drawer
+    - SimpleDrawerBuilder:
+        - All `protected` fields changed to `private`. then use get method instead.
+          example: `getFooter()`, `getHeader()`
+        - Add method to custom the drawer component. should override these method:
+            - `Option createOption()`
+            - `AbstractMenuElement createHeader()`
+            - `JSeparator createHeaderSeparator()`
+            - `AbstractMenuElement createFooter()`
+- FlatLaf: update to `v3.6`
 
 ### Demo
 
 - Login form update UI (PR #32)
+- Login validation menu:
+    - user:`staff` and pass: `123` if we want to test validation menu for role staff
+    - any user, any password for full role
 
 ## [2.4.0] - 2025-03-05
 

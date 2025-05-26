@@ -29,6 +29,9 @@ public class MenuStyle {
     public void styleMenuItem(JButton menu, int[] index, boolean isMainItem) {
     }
 
+    public void styleCompactMenuItem(JMenuItem menu, int[] index, boolean isMainItem) {
+    }
+
     public void styleLabel(JLabel label) {
     }
 

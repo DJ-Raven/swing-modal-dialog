@@ -12,4 +12,8 @@ public abstract class SimpleFooterStyle {
 
     public void styleComponent(JComponent component, int styleType) {
     }
+
+    public int getTextGap() {
+        return 3;
+    }
 }

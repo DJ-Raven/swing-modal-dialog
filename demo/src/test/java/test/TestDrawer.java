@@ -4,6 +4,8 @@ import com.formdev.flatlaf.FlatClientProperties;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.Drawer;
 import raven.modal.demo.menu.MyDrawerBuilder;
+import raven.modal.demo.menu.MyMenuValidation;
+import raven.modal.demo.model.ModelUser;
 import test.base.BaseFrame;
 
 import javax.swing.*;
@@ -16,7 +18,8 @@ public class TestDrawer extends BaseFrame {
         getRootPane().putClientProperty(FlatClientProperties.FULL_WINDOW_CONTENT, true);
         setLayout(new MigLayout("al center center"));
         JButton button = new JButton("show");
-        Drawer.installDrawer(this, new MyDrawerBuilder());
+        MyMenuValidation.setUser(new ModelUser("Ra Ven", "raven@gmail.com", ModelUser.Role.ADMIN));
+        Drawer.installDrawer(this, MyDrawerBuilder.getInstance());
 
         button.addActionListener(e -> {
             Drawer.showDrawer();

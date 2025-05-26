@@ -11,6 +11,7 @@ import org.jfree.data.category.CategoryDataset;
 import raven.modal.demo.component.chart.themes.ChartDrawingSupplier;
 import raven.modal.demo.component.chart.themes.DefaultChartTheme;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
@@ -82,6 +83,7 @@ public class SpiderChart extends DefaultChartPanel {
 
     private void initSeriesStyle(SpiderWebPlot plot, int series, Color color, boolean alpha) {
         Paint c = alpha ? ChartDrawingSupplier.alpha(color, 0.3f) : color;
+        plot.setLabelPaint(UIManager.getColor("Label.foreground"));
         plot.setSeriesPaint(series, c);
         plot.setSeriesOutlinePaint(series, c);
         plot.setSeriesOutlineStroke(series, new BasicStroke(UIScale.scale(1f)));

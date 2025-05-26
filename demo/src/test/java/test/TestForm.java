@@ -6,6 +6,8 @@ import raven.modal.ModalDialog;
 import raven.modal.Toast;
 import raven.modal.component.SimpleModalBorder;
 import raven.modal.demo.menu.MyDrawerBuilder;
+import raven.modal.demo.menu.MyMenuValidation;
+import raven.modal.demo.model.ModelUser;
 import raven.modal.toast.ToastPromise;
 import test.base.BaseFrame;
 
@@ -39,7 +41,8 @@ public class TestForm extends BaseFrame {
                 hide.addActionListener(e1 -> setVisible(false));
                 ModalDialog.showModal(this, new SimpleModalBorder(hide, "Test"));
             });
-            Drawer.installDrawer(this, new MyDrawerBuilder());
+            MyMenuValidation.setUser(new ModelUser("Ra Ven", "raven@gmail.com", ModelUser.Role.ADMIN));
+            Drawer.installDrawer(this, MyDrawerBuilder.getInstance());
             setLayout(new MigLayout("al center center"));
             add(show);
             JButton showToast = new JButton("Show toast");

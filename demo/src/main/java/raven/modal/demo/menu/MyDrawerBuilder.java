@@ -1,21 +1,27 @@
 package raven.modal.demo.menu;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
+import raven.extras.AvatarIcon;
 import raven.modal.demo.Demo;
 import raven.modal.demo.forms.*;
+import raven.modal.demo.model.ModelUser;
 import raven.modal.demo.system.AllForms;
 import raven.modal.demo.system.Form;
 import raven.modal.demo.system.FormManager;
 import raven.modal.drawer.DrawerPanel;
 import raven.modal.drawer.item.Item;
 import raven.modal.drawer.item.MenuItem;
-import raven.modal.drawer.menu.*;
+import raven.modal.drawer.menu.MenuAction;
+import raven.modal.drawer.menu.MenuEvent;
+import raven.modal.drawer.menu.MenuOption;
+import raven.modal.drawer.menu.MenuStyle;
 import raven.modal.drawer.renderer.DrawerStraightDotLineStyle;
 import raven.modal.drawer.simple.SimpleDrawerBuilder;
 import raven.modal.drawer.simple.footer.LightDarkButtonFooter;
 import raven.modal.drawer.simple.footer.SimpleFooterData;
+import raven.modal.drawer.simple.header.SimpleHeader;
 import raven.modal.drawer.simple.header.SimpleHeaderData;
-import raven.extras.AvatarIcon;
 import raven.modal.option.Option;
 
 import javax.swing.*;
@@ -24,11 +30,49 @@ import java.util.Arrays;
 
 public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
+    private static MyDrawerBuilder instance;
+    private ModelUser user;
+
+    public static MyDrawerBuilder getInstance() {
+        if (instance == null) {
+            instance = new MyDrawerBuilder();
+        }
+        return instance;
+    }
+
+    public ModelUser getUser() {
+        return user;
+    }
+
+    public void setUser(ModelUser user) {
+        boolean updateMenuItem = this.user == null || this.user.getRole() != user.getRole();
+
+        this.user = user;
+
+        // set user to menu validation
+        MyMenuValidation.setUser(user);
+
+        // setup drawer header
+        SimpleHeader header = (SimpleHeader) getHeader();
+        SimpleHeaderData data = header.getSimpleHeaderData();
+        AvatarIcon icon = (AvatarIcon) data.getIcon();
+        String iconName = user.getRole() == ModelUser.Role.ADMIN ? "avatar_male.svg" : "avatar_female.svg";
+
+        icon.setIcon(new FlatSVGIcon("raven/modal/demo/drawer/image/" + iconName, 100, 100));
+        data.setTitle(user.getUserName());
+        data.setDescription(user.getMail());
+        header.setSimpleHeaderData(data);
+
+        if (updateMenuItem) {
+            rebuildMenu();
+        }
+    }
+
     private final int SHADOW_SIZE = 12;
 
-    public MyDrawerBuilder() {
+    private MyDrawerBuilder() {
         super(createSimpleMenuOption());
-        LightDarkButtonFooter lightDarkButtonFooter = (LightDarkButtonFooter) footer;
+        LightDarkButtonFooter lightDarkButtonFooter = (LightDarkButtonFooter) getFooter();
         lightDarkButtonFooter.addModeChangeListener(isDarkMode -> {
             // event for light dark mode changed
         });
@@ -36,7 +80,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
     @Override
     public SimpleHeaderData getSimpleHeaderData() {
-        AvatarIcon icon = new AvatarIcon(getClass().getResource("/raven/modal/demo/drawer/image/profile.png"), 50, 50, 3.5f);
+        AvatarIcon icon = new AvatarIcon(new FlatSVGIcon("raven/modal/demo/drawer/image/avatar_male.svg", 100, 100), 50, 50, 3.5f);
         icon.setType(AvatarIcon.Type.MASK_SQUIRCLE);
         icon.setBorder(2, 2);
 
@@ -65,6 +109,14 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 .setDescription("Version " + Demo.DEMO_VERSION);
     }
 
+    @Override
+    public Option createOption() {
+        Option option = super.createOption();
+        option.setOpacity(0.3f);
+        option.getBorderOption()
+                .setShadowSize(new Insets(0, 0, 0, SHADOW_SIZE));
+        return option;
+    }
 
     public static MenuOption createSimpleMenuOption() {
 
@@ -120,13 +172,24 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
         simpleMenuOption.setMenuStyle(new MenuStyle() {
 
             @Override
+            public void styleMenuItem(JButton menu, int[] index, boolean isMainItem) {
+                boolean isTopLevel = index.length == 1;
+                if (isTopLevel) {
+                    // adjust item menu at the top level because it's contain icon
+                    menu.putClientProperty(FlatClientProperties.STYLE, "" +
+                            "margin:-1,0,-1,0;");
+                }
+            }
+
+            @Override
             public void styleMenu(JComponent component) {
                 component.putClientProperty(FlatClientProperties.STYLE, getDrawerBackgroundStyle());
             }
         });
 
         simpleMenuOption.getMenuStyle().setDrawerLineStyleRenderer(new DrawerStraightDotLineStyle());
-        simpleMenuOption.setMenuItemAutoSelectionMode(MenuOption.MenuItemAutoSelectionMode.SELECT_SUB_MENU_LEVEL);
+        simpleMenuOption.setMenuValidation(new MyMenuValidation());
+
         simpleMenuOption.addMenuEvent(new MenuEvent() {
             @Override
             public void selected(MenuAction action, int[] index) {
@@ -171,15 +234,6 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
     @Override
     public int getOpenDrawerAt() {
         return 1000;
-    }
-
-    @Override
-    public Option getOption() {
-        Option option = super.getOption();
-        option.setOpacity(0.3f);
-        option.getBorderOption()
-                .setShadowSize(new Insets(0, 0, 0, SHADOW_SIZE));
-        return option;
     }
 
     @Override

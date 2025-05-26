@@ -39,11 +39,13 @@ public class SimpleHeader extends AbstractMenuElement {
         profile = new JLabel(simpleHeaderData.getIcon());
         labelTitle = new JLabel(simpleHeaderData.getTitle());
         labelDescription = new JLabel(simpleHeaderData.getDescription());
+        int textGap = 3;
 
         if (simpleHeaderData.getSimpleHeaderStyle() != null) {
             simpleHeaderData.getSimpleHeaderStyle().styleComponent(profile, PROFILE_STYLE);
             simpleHeaderData.getSimpleHeaderStyle().styleComponent(labelTitle, LABEL_TITLE_STYLE);
             simpleHeaderData.getSimpleHeaderStyle().styleComponent(labelDescription, LABEL_DESCRIPTION_STYLE);
+            textGap = simpleHeaderData.getSimpleHeaderStyle().getTextGap();
         }
 
         FlatLafStyleUtils.appendStyleIfAbsent(profile, "" +
@@ -53,7 +55,7 @@ public class SimpleHeader extends AbstractMenuElement {
         FlatLafStyleUtils.appendStyleIfAbsent(labelDescription, "" +
                 "foreground:$Label.disabledForeground;");
 
-        panel = new JPanel(new MigLayout("insets 0,wrap,al n center,gap 2"));
+        panel = new JPanel(new MigLayout("insets 0,wrap,al n center,gap " + textGap));
         panel.setOpaque(false);
 
         add(profile);
@@ -82,11 +84,9 @@ public class SimpleHeader extends AbstractMenuElement {
         if (labelTitle == null || labelTitle == null) return;
 
         if (menuOpenMode == MenuOption.MenuOpenMode.FULL) {
-
             layout.setColumnConstraints(null);
             panel.setVisible(true);
         } else {
-
             layout.setColumnConstraints("[center]");
             panel.setVisible(false);
         }

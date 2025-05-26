@@ -48,7 +48,7 @@ public class PopupSubmenu {
         boolean isMainItem = true;
         Menu menu = new Menu(item, isMainItem);
         applyMenuEvent(menu, item, isMainItem);
-        defaultStyled(menu, ltr);
+        defaultStyled(menu, item.getIndex(), isMainItem, ltr);
         for (Item i : item.getSubMenu()) {
             if (i.isValidation()) {
                 if (i.isSubmenuAble()) {
@@ -65,17 +65,22 @@ public class PopupSubmenu {
         boolean isMainItem = false;
         MenuItem menuItem = new MenuItem(item, isMainItem);
         applyMenuEvent(menuItem, item, isMainItem);
-        defaultStyled(menuItem, ltr);
+        defaultStyled(menuItem, item.getIndex(), isMainItem, ltr);
         return menuItem;
     }
 
-    private void defaultStyled(JMenuItem menuItem, boolean ltr) {
+    private void defaultStyled(JMenuItem menuItem, int[] index, boolean isMainItem, boolean ltr) {
+        if (drawerMenu.getMenuOption().menuStyle != null) {
+            drawerMenu.getMenuOption().menuStyle.styleCompactMenuItem(menuItem, index, isMainItem);
+        }
         String insets = ltr ? "0,25,0,5" : "0,5,0,25";
+        Insets margin = new Insets(5, 10, 5, 10);
         FlatLafStyleUtils.appendStyleIfAbsent(menuItem, "" +
                 "selectionInsets:" + insets + ";" +
-                "margin:5,10,5,10;" +
                 "selectionArc:10;" +
                 "minimumWidth:170;");
+        FlatLafStyleUtils.appendStyle(menuItem, "" +
+                "margin:" + FlatLafStyleUtils.appendMargin(menuItem, margin));
     }
 
     private void applyBorder(JPopupMenu popupMenu) {

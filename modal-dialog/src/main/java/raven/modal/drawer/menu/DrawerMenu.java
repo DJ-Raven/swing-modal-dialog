@@ -40,10 +40,9 @@ public class DrawerMenu extends AbstractMenuElement {
             if (item.isMenu()) {
                 Item t = getMenuItemOf((Item) item, itemClass);
                 if (t != null) {
-                    setMenuSelectedIndex(t.getIndex());
                     MenuAction action = runEvent(t, t.getIndex());
                     if (action != null) {
-                        if (action.getConsume() == false) {
+                        if (!action.getConsume()) {
                             if (isMenuAutoSelection(t.isMenu())) {
                                 setMenuSelectedIndex(t.getIndex());
                             }
@@ -53,6 +52,21 @@ public class DrawerMenu extends AbstractMenuElement {
                 }
             }
         }
+    }
+
+    public int[] getMenuIndexClass(Class<?> itemClass) {
+        if (itemClass == null) {
+            return null;
+        }
+        for (MenuItem item : menuOption.menus) {
+            if (item.isMenu()) {
+                Item t = getMenuItemOf((Item) item, itemClass);
+                if (t != null) {
+                    return t.getIndex();
+                }
+            }
+        }
+        return null;
     }
 
     private Item getMenuItemOf(Item item, Class<?> itemClass) {
@@ -267,14 +281,16 @@ public class DrawerMenu extends AbstractMenuElement {
         if (menuOption.menuStyle != null) {
             menuOption.menuStyle.styleMenuItem(button, copyArray(index), isMainItem);
         }
+        Insets margin = new Insets(7, menuItemPadding, 7, menuItemPadding);
         FlatLafStyleUtils.appendStyleIfAbsent(button, "" +
                 "arc:15;" +
-                "margin:6," + menuItemPadding + ",6," + menuItemPadding + ";" +
                 "borderWidth:0;" +
                 "focusWidth:0;" +
                 "innerFocusWidth:0;" +
                 "background:null;" +
                 "iconTextGap:" + iconTextGap + ";");
+        FlatLafStyleUtils.appendStyle(button, "" +
+                "margin:" + FlatLafStyleUtils.appendMargin(button, margin));
         applySelectedButtonStyle(button);
         return button;
     }
@@ -533,14 +549,16 @@ public class DrawerMenu extends AbstractMenuElement {
                 menuOption.menuStyle.styleMenuItem(button, copyArray(index), isMainItem);
             }
             boolean isRightToLeft = !DrawerMenu.this.getComponentOrientation().isLeftToRight();
-            String margin = isRightToLeft ? ("7," + menuItemPadding + ",7," + (gap + menuItemPadding)) : ("7," + (gap + menuItemPadding) + ",7," + menuItemPadding);
+            Insets margin = isRightToLeft ? new Insets(7, menuItemPadding, 7, gap + menuItemPadding)
+                    : new Insets(7, gap + menuItemPadding, 7, menuItemPadding);
             FlatLafStyleUtils.appendStyleIfAbsent(button, "" +
                     "arc:15;" +
-                    "margin:" + margin + ";" +
                     "borderWidth:0;" +
                     "focusWidth:0;" +
                     "innerFocusWidth:0;" +
                     "background:null;");
+            FlatLafStyleUtils.appendStyle(button, "" +
+                    "margin:" + FlatLafStyleUtils.appendMargin(button, margin) + ";");
             applySelectedButtonStyle(button);
             return button;
         }

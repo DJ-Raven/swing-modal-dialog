@@ -8,7 +8,9 @@ import raven.modal.Drawer;
 import raven.modal.ModalDialog;
 import raven.modal.component.ModalContainer;
 import raven.modal.demo.icons.SVGIconUIColor;
-import raven.modal.demo.system.*;
+import raven.modal.demo.menu.MyMenuValidation;
+import raven.modal.demo.system.Form;
+import raven.modal.demo.system.FormSearch;
 import raven.modal.demo.utils.DemoPreferences;
 import raven.modal.demo.utils.SystemForm;
 
@@ -115,9 +117,11 @@ public class FormSearchPanel extends JPanel {
                             if (s.name().toLowerCase().contains(st)
                                     || s.description().toLowerCase().contains(st)
                                     || checkTags(s.tags(), st)) {
-                                Item item = new Item(s, entry.getValue(), false, false);
-                                panelResult.add(item);
-                                listItems.add(item);
+                                if (MyMenuValidation.validation(entry.getValue())) {
+                                    Item item = new Item(s, entry.getValue(), false, false);
+                                    panelResult.add(item);
+                                    listItems.add(item);
+                                }
                             }
                         }
                         if (!listItems.isEmpty()) {
@@ -131,10 +135,9 @@ public class FormSearchPanel extends JPanel {
                 }
             }
 
-            private boolean checkTags(String tags[], String st) {
+            private boolean checkTags(String[] tags, String st) {
                 if (tags.length == 0) return false;
-                boolean contains = Arrays.stream(tags).anyMatch(s -> s.contains(st));
-                return contains;
+                return Arrays.stream(tags).anyMatch(s -> s.contains(st));
             }
         });
         textSearch.addKeyListener(new KeyAdapter() {
@@ -205,31 +208,23 @@ public class FormSearchPanel extends JPanel {
     }
 
     private void showRecentResult() {
-        String[] recentSearch = DemoPreferences.getRecentSearch(false);
-        String[] favoriteSearch = DemoPreferences.getRecentSearch(true);
+        List<Item> recentSearch = getRecentSearch(false);
+        List<Item> favoriteSearch = getRecentSearch(true);
         panelResult.removeAll();
         listItems.clear();
-        if (recentSearch != null && recentSearch.length > 0) {
-            for (String r : recentSearch) {
-                Item item = createRecentItem(r, false);
-                if (item != null) {
-                    panelResult.add(item);
-                    listItems.add(item);
-                }
-            }
-            if (!listItems.isEmpty()) {
-                panelResult.add(createLabel("Recent"), 0);
+        if (recentSearch != null && !recentSearch.isEmpty()) {
+            panelResult.add(createLabel("Recent"));
+            for (Item item : recentSearch) {
+                panelResult.add(item);
+                listItems.add(item);
             }
         }
 
-        if (favoriteSearch != null && favoriteSearch.length > 0) {
+        if (favoriteSearch != null && !favoriteSearch.isEmpty()) {
             panelResult.add(createLabel("Favorite"));
-            for (String r : favoriteSearch) {
-                Item item = createRecentItem(r, true);
-                if (item != null) {
-                    panelResult.add(item);
-                    listItems.add(item);
-                }
+            for (Item item : favoriteSearch) {
+                panelResult.add(item);
+                listItems.add(item);
             }
         }
         if (listItems.isEmpty()) {
@@ -246,6 +241,33 @@ public class FormSearchPanel extends JPanel {
                 "font:bold +1;" +
                 "border:5,15,5,15;");
         return label;
+    }
+
+    private List<Item> getRecentSearch(boolean favorite) {
+        String[] recentSearch = DemoPreferences.getRecentSearch(favorite);
+        if (recentSearch == null) {
+            return null;
+        }
+        List<Item> list = new ArrayList<>();
+        for (String s : recentSearch) {
+            Class<? extends Form> classForm = getClassForm(s);
+            if (MyMenuValidation.validation(classForm)) {
+                Item item = createRecentItem(s, favorite);
+                if (item != null) {
+                    list.add(item);
+                }
+            }
+        }
+        return list;
+    }
+
+    private Class<? extends Form> getClassForm(String name) {
+        for (Map.Entry<SystemForm, Class<? extends Form>> entry : formsMap.entrySet()) {
+            if (entry.getKey().name().equals(name)) {
+                return entry.getValue();
+            }
+        }
+        return null;
     }
 
     private Item createRecentItem(String name, boolean favorite) {
@@ -436,7 +458,7 @@ public class FormSearchPanel extends JPanel {
 
         protected void addFavorite() {
             DemoPreferences.addRecentSearch(data.name(), true);
-            int index[] = getFirstFavoriteIndex();
+            int[] index = getFirstFavoriteIndex();
             panelResult.remove(this);
             listItems.remove(this);
             Item item = new Item(data, form, isRecent, true);
