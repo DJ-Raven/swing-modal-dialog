@@ -1,6 +1,10 @@
 package raven.modal.demo.forms.setting;
 
+import com.formdev.flatlaf.FlatClientProperties;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import net.miginfocom.swing.MigLayout;
+import raven.modal.component.ModalBorderAction;
+import raven.modal.component.SimpleModalBorder;
 import raven.modal.demo.forms.setting.tabb.Appearance;
 import raven.modal.demo.system.Form;
 import raven.modal.drawer.DrawerBuilder;
@@ -26,6 +30,7 @@ public class SettingsModal extends JPanel {
 
         createDrawerMenu();
         createContainer();
+        createCloseButton();
 
         SimpleDrawerBuilder drawerBuilder = (SimpleDrawerBuilder) drawerPanel.getDrawerBuilder();
         drawerBuilder.getDrawerMenu().setMenuSelectedClass(Appearance.class);
@@ -46,6 +51,20 @@ public class SettingsModal extends JPanel {
         classForms = new HashMap<>();
         panel = new JPanel(new MigLayout("fill", "[fill]", "[fill]"));
         add(panel);
+    }
+
+    private void createCloseButton() {
+        JButton buttonClose = new JButton(new FlatSVGIcon("raven/modal/icon/close.svg", 0.4f));
+        buttonClose.setFocusable(false);
+        buttonClose.addActionListener(e -> ModalBorderAction.getModalBorderAction(this).doAction(SimpleModalBorder.CLOSE_OPTION));
+        buttonClose.putClientProperty(FlatClientProperties.STYLE, "" +
+                "arc:999;" +
+                "margin:5,5,5,5;" +
+                "borderWidth:0;" +
+                "focusWidth:0;" +
+                "innerFocusWidth:0;" +
+                "background:null;");
+        add(buttonClose, "pos visual.x2-pref-10 5 n n", 0);
     }
 
     private void showForm(MenuAction action, Class<?> clazz) {
