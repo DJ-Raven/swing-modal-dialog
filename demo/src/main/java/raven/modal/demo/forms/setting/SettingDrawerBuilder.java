@@ -6,6 +6,7 @@ import raven.modal.drawer.item.MenuItem;
 import raven.modal.drawer.menu.AbstractMenuElement;
 import raven.modal.drawer.menu.MenuEvent;
 import raven.modal.drawer.menu.MenuOption;
+import raven.modal.drawer.renderer.DrawerNoneLineStyle;
 import raven.modal.drawer.simple.SimpleDrawerBuilder;
 import raven.modal.drawer.simple.footer.SimpleFooterData;
 import raven.modal.drawer.simple.header.SimpleHeaderData;
@@ -38,21 +39,20 @@ public class SettingDrawerBuilder extends SimpleDrawerBuilder {
         MenuOption simpleMenuOption = new MenuOption();
 
         MenuItem items[] = new MenuItem[]{
-                new Item("General", "setting.svg")
+                new Item("General")
                         .subMenu("Appearance", Appearance.class)
                         .subMenu("User profile")
                         .subMenu("Contact"),
-                new Item("Folder", "folder.svg"),
-                new Item("Schedule", "schedule.svg"),
+                new Item("Folder"),
+                new Item("Schedule"),
                 new Item.Label("OTHER"),
-                new Item("Plugin", "plugin.svg")
+                new Item("Plugin")
         };
 
         simpleMenuOption.addMenuEvent(event);
+        simpleMenuOption.getMenuStyle().setDrawerLineStyleRenderer(new DrawerNoneLineStyle());
 
-        simpleMenuOption.setMenus(items)
-                .setBaseIconPath("raven/modal/demo/icons/setting")
-                .setIconScale(0.4f);
+        simpleMenuOption.setMenus(items);
 
         return simpleMenuOption;
     }

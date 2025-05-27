@@ -1,11 +1,20 @@
 package raven.modal.demo.utils;
 
-import com.formdev.flatlaf.*;
+import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.FlatSystemProperties;
+import com.formdev.flatlaf.IntelliJTheme;
+import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
+import com.formdev.flatlaf.util.FontUtils;
 import com.formdev.flatlaf.util.LoggingFacade;
+import com.formdev.flatlaf.util.UIScale;
 import raven.modal.demo.themes.PanelThemes;
 
 import javax.swing.*;
-import java.util.*;
+import javax.swing.plaf.FontUIResource;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.prefs.Preferences;
 
 public class DemoPreferences {
@@ -13,6 +22,7 @@ public class DemoPreferences {
     public static final String PREFERENCES_ROOT_PATH = "/raven-flatlaf-demo";
     public static final String KEY_LAF = "laf";
     public static final String KEY_LAF_THEME = "lafTheme";
+    public static final String KEY_SCALE_FACTOR = "scaleFactor";
     public static final String KEY_RECENT_SEARCH = "recentSearch";
     public static final String KEY_RECENT_SEARCH_FAVORITE = "recentSearchFavorite";
 
@@ -31,6 +41,7 @@ public class DemoPreferences {
     }
 
     public static void setupLaf() {
+        initScaleAndFont();
         // set look and feel
         try {
             String lafClassName = state.get(KEY_LAF, FlatLightLaf.class.getName());
@@ -56,6 +67,17 @@ public class DemoPreferences {
                 state.put(KEY_LAF, UIManager.getLookAndFeel().getClass().getName());
             }
         });
+    }
+
+    private static void initScaleAndFont() {
+        FlatRobotoFont.install();
+        Font font = FontUtils.getCompositeFont(FlatRobotoFont.FAMILY, Font.PLAIN, 12);
+        String scaleFactor = state.get(KEY_SCALE_FACTOR, null);
+        if (scaleFactor != null) {
+            System.setProperty(FlatSystemProperties.UI_SCALE, scaleFactor);
+            font = UIScale.applyCustomScaleFactor(new FontUIResource(font));
+        }
+        UIManager.put("defaultFont", font);
     }
 
     public static String[] getRecentSearch(boolean favorite) {

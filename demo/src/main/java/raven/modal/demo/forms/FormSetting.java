@@ -178,10 +178,11 @@ public class FormSetting extends Form {
     private Component createOtherOption() {
         JPanel panel = new JPanel(new MigLayout());
         panel.setBorder(new TitledBorder("Other option"));
-        LabelButton cmdModalOption = new LabelButton("Show settings as modal");
+        LabelButton cmdModalOption = new LabelButton("Show more option");
 
         cmdModalOption.addOnClick(o -> {
             Option option = ModalDialog.createOption();
+            option.setAnimationEnabled(false);
             option.getLayoutOption()
                     .setSize(800, 600);
             option.getBorderOption()
