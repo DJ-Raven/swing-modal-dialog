@@ -5,6 +5,8 @@
 ### Demo
 
 - JFreeChart: update to `v1.5.6`
+- IntelliJ Themes: removed `Gruvbox Dark Medium` and `Gruvbox Dark Soft` themes, because it unsupported since
+  `flatlaf-intellij-themes v3.6`
 
 ## [2.5.0] - 2025-05-05
 

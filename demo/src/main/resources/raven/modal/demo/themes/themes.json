@@ -123,22 +123,6 @@
     "sourceCodeUrl": "https://github.com/Vincent-P/gruvbox-intellij-theme",
     "sourceCodePath": "blob/master/src/main/resources/gruvbox_dark_hard.theme.json"
   },
-  "gruvbox_dark_medium.theme.json": {
-    "name": "Gruvbox Dark Medium",
-    "dark": true,
-    "license": "MIT",
-    "licenseFile": "gruvbox_theme.LICENSE.txt",
-    "sourceCodeUrl": "https://github.com/Vincent-P/gruvbox-intellij-theme",
-    "sourceCodePath": "blob/master/src/main/resources/gruvbox_dark_medium.theme.json"
-  },
-  "gruvbox_dark_soft.theme.json": {
-    "name": "Gruvbox Dark Soft",
-    "dark": true,
-    "license": "MIT",
-    "licenseFile": "gruvbox_theme.LICENSE.txt",
-    "sourceCodeUrl": "https://github.com/Vincent-P/gruvbox-intellij-theme",
-    "sourceCodePath": "blob/master/src/main/resources/gruvbox_dark_soft.theme.json"
-  },
   "HiberbeeDark.theme.json": {
     "name": "Hiberbee Dark",
     "dark": true,
