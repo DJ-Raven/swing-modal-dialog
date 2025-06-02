@@ -8,6 +8,11 @@
 - IntelliJ Themes: removed `Gruvbox Dark Medium` and `Gruvbox Dark Soft` themes, because it unsupported since
   `flatlaf-intellij-themes v3.6`
 
+### Fixed bugs
+
+- Extras
+    - AvatarIcon: fixed blurry image when high DPI system scaling.
+
 ## [2.5.0] - 2025-05-05
 
 ### New features and improvements
