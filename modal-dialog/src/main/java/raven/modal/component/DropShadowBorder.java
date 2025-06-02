@@ -3,6 +3,7 @@ package raven.modal.component;
 import com.formdev.flatlaf.ui.FlatDropShadowBorder;
 import com.formdev.flatlaf.ui.FlatEmptyBorder;
 import com.formdev.flatlaf.ui.FlatUIUtils;
+import com.formdev.flatlaf.util.HiDPIUtils;
 import com.formdev.flatlaf.util.UIScale;
 import raven.modal.utils.ModalUtils;
 
@@ -78,6 +79,11 @@ public class DropShadowBorder extends FlatEmptyBorder {
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
         Graphics2D g2 = null;
         try {
+            double scale = UIScale.getSystemScaleFactor(c.getGraphicsConfiguration());
+            width = (int) Math.round(width * scale);
+            height = (int) Math.round(height * scale);
+            x = (int) Math.round(x * scale);
+            y = (int) Math.round(y * scale);
             BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
             g2 = image.createGraphics();
             FlatUIUtils.setRenderingHints(g2);
@@ -115,7 +121,14 @@ public class DropShadowBorder extends FlatEmptyBorder {
                 g2.setColor(color);
                 FlatUIUtils.paintOutline(g2, 0, 0, w, h, lineWidth, arc);
             }
-            g.drawImage(image, x, y, null);
+            if (scale > 1) {
+                HiDPIUtils.paintAtScale1x((Graphics2D) g, 0, 0, 100, 100, // width and height are not used
+                        (g2d, x2, y2, width2, height2, scaleFactor2) -> {
+                            g2d.drawImage(image, x2, y2, null);
+                        });
+            } else {
+                g.drawImage(image, x, y, null);
+            }
         } finally {
             if (g2 != null) {
                 g2.dispose();

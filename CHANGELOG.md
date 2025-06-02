@@ -10,8 +10,10 @@
 
 ### Fixed bugs
 
-- Extras
-    - AvatarIcon: fixed blurry image when high DPI system scaling.
+- Fixed blurry image when high DPI system scaling:
+    - AvatarIcon
+    - DropShadowBorder
+    - Modal dialog
 
 ## [2.5.0] - 2025-05-05
 

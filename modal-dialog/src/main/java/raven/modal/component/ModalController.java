@@ -2,6 +2,8 @@ package raven.modal.component;
 
 import com.formdev.flatlaf.util.Animator;
 import com.formdev.flatlaf.util.CubicBezierEasing;
+import com.formdev.flatlaf.util.HiDPIUtils;
+import com.formdev.flatlaf.util.UIScale;
 import raven.modal.option.Option;
 import raven.modal.slider.PanelSlider;
 import raven.modal.utils.ImageSnapshots;
@@ -22,6 +24,7 @@ public class ModalController extends AbstractModalController {
     private boolean showing;
     private Animator animator;
     private float animated;
+    private double systemScaleFactor;
     private Image snapshotsImage;
 
     public ModalController(AbstractModalContainerLayer modalContainerLayer, ModalContainer modalContainer, Option option) {
@@ -51,9 +54,10 @@ public class ModalController extends AbstractModalController {
                     @Override
                     public void begin() {
                         modalContainerLayer.animatedBegin();
+                        systemScaleFactor = UIScale.getSystemScaleFactor(getGraphicsConfiguration());
                         Border border = getBorder();
                         if (border != null) {
-                            snapshotsImage = ImageSnapshots.createSnapshotsImage(panelSlider, ModalController.this, getBorder());
+                            snapshotsImage = ImageSnapshots.createSnapshotsImage(panelSlider, ModalController.this, getBorder(), systemScaleFactor);
                         } else {
                             snapshotsImage = ImageSnapshots.createSnapshotsImage(panelSlider, 0);
                         }
@@ -177,28 +181,38 @@ public class ModalController extends AbstractModalController {
         if (display) {
             if (snapshotsImage != null) {
                 Graphics2D g2 = (Graphics2D) g.create();
-                g2.setComposite(AlphaComposite.SrcOver.derive(animated));
+                try {
+                    g2.setComposite(AlphaComposite.SrcOver.derive(animated));
 
-                float scaleValue = option.getLayoutOption().getAnimateScale();
-                if (scaleValue != 0) {
-                    float minScale = 1f - scaleValue;
+                    float scaleValue = option.getLayoutOption().getAnimateScale();
+                    if (scaleValue != 0) {
+                        float minScale = 1f - scaleValue;
 
-                    float scale = minScale + (scaleValue * animated);
-                    float width = getWidth();
-                    float height = getHeight();
+                        float scale = minScale + (scaleValue * animated);
+                        float width = getWidth();
+                        float height = getHeight();
 
-                    // calculate the center position after scaling
-                    float scaledWidth = (width * scale);
-                    float scaledHeight = (height * scale);
-                    float x = (width - scaledWidth) / 2f;
-                    float y = (height - scaledHeight) / 2f;
-                    g2.translate(x, y);
-                    g2.scale(scale, scale);
+                        // calculate the center position after scaling
+                        float scaledWidth = (width * scale);
+                        float scaledHeight = (height * scale);
+                        float x = (width - scaledWidth) / 2f;
+                        float y = (height - scaledHeight) / 2f;
+                        g2.translate(x, y);
+                        g2.scale(scale, scale);
+                    }
+
+                    // draw snapshots image
+                    if (systemScaleFactor > 1) {
+                        HiDPIUtils.paintAtScale1x(g2, 0, 0, 100, 100, // width and height are not used
+                                (g2d, x2, y2, width2, height2, scaleFactor2) -> {
+                                    g2d.drawImage(snapshotsImage, x2, y2, null);
+                                });
+                    } else {
+                        g2.drawImage(snapshotsImage, 0, 0, null);
+                    }
+                } finally {
+                    g2.dispose();
                 }
-
-                // draw snapshots image
-                g2.drawImage(snapshotsImage, 0, 0, null);
-                g2.dispose();
             } else {
                 super.paint(g);
             }

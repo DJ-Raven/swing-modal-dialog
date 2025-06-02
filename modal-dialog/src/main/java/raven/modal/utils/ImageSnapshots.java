@@ -13,16 +13,33 @@ import java.awt.image.VolatileImage;
  */
 public class ImageSnapshots {
 
-    public static Image createSnapshotsImage(Component component, Component comBorder, Border border) {
+    public static Image createSnapshotsImage(Component component, Component comBorder, Border border, double systemScaleFactor) {
         Image image = createSnapshotsImage(component, 0);
         Insets insets = border.getBorderInsets(comBorder);
         int width = component.getWidth() + insets.left + insets.right;
         int height = component.getHeight() + insets.top + insets.bottom;
-        BufferedImage buffImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2 = buffImage.createGraphics();
-        border.paintBorder(comBorder, g2, 0, 0, comBorder.getWidth(), comBorder.getHeight());
-        g2.drawImage(image, insets.left, insets.top, null);
-        g2.dispose();
+        int x = insets.left;
+        int y = insets.top;
+        BufferedImage buffImage;
+        if (systemScaleFactor > 1) {
+            int imageWidth = (int) Math.round(component.getWidth() * systemScaleFactor);
+            int imageHeight = (int) Math.round(component.getHeight() * systemScaleFactor);
+            width = (int) Math.round(width * systemScaleFactor);
+            height = (int) Math.round(height * systemScaleFactor);
+            x = (int) (x * systemScaleFactor);
+            y = (int) (y * systemScaleFactor);
+            buffImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2 = buffImage.createGraphics();
+            border.paintBorder(comBorder, g2, 0, 0, comBorder.getWidth(), comBorder.getHeight());
+            g2.drawImage(image, x, y, imageWidth, imageHeight, null);
+            g2.dispose();
+        } else {
+            buffImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2 = buffImage.createGraphics();
+            border.paintBorder(comBorder, g2, 0, 0, comBorder.getWidth(), comBorder.getHeight());
+            g2.drawImage(image, x, y, null);
+            g2.dispose();
+        }
         return buffImage;
     }
 
