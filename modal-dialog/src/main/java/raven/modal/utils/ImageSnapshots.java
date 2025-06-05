@@ -30,7 +30,8 @@ public class ImageSnapshots {
             y = (int) (y * systemScaleFactor);
             buffImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2 = buffImage.createGraphics();
-            border.paintBorder(comBorder, g2, 0, 0, comBorder.getWidth(), comBorder.getHeight());
+
+            paintBorder(comBorder, border, g2, 0, 0, comBorder.getWidth(), comBorder.getHeight());
             g2.drawImage(image, x, y, imageWidth, imageHeight, null);
             g2.dispose();
         } else {
@@ -41,6 +42,16 @@ public class ImageSnapshots {
             g2.dispose();
         }
         return buffImage;
+    }
+
+    public static void paintBorder(Component com, Border border, Graphics g, int x, int y, int width, int height) {
+        Graphics2D g2 = (Graphics2D) g.create();
+        try {
+            g2.setTransform(com.getGraphicsConfiguration().getDefaultTransform());
+            border.paintBorder(com, g2, x, y, width, height);
+        } finally {
+            g2.dispose();
+        }
     }
 
     public static Image createSnapshotsImage(Component component, float round) {
