@@ -40,7 +40,7 @@ public class Card extends JPanel {
         JPanel header = new JPanel(new MigLayout("fill,insets 0", "[fill]", "[top]"));
         header.putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:null");
-        JLabel label = new JLabel(new AvatarIcon(employee.getProfile().getIcon(), 130, 130, 20));
+        JLabel label = new JLabel(new AvatarIcon((ImageIcon) employee.getProfile().getIcon(), 130, 130, 20));
         header.add(label);
         return header;
     }

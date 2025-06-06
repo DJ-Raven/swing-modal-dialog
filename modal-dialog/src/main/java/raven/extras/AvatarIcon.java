@@ -1,6 +1,7 @@
 package raven.extras;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
+import com.formdev.flatlaf.util.HiDPIUtils;
 import com.formdev.flatlaf.util.UIScale;
 
 import javax.swing.*;
@@ -17,113 +18,125 @@ import java.net.URL;
  */
 public class AvatarIcon implements Icon {
 
-    private String filename;
-    private URL location;
-    private Icon icon;
-    private Image image;
-    private float round;
+    private final int iconWidth;
+    private final int iconHeight;
+    private final float round;
+
+    private ImageIcon imageIcon;
     private int borderWidth;
     private int innerBorderWidth;
     private BorderColor borderColor;
-    private int width;
-    private int height;
     private Type type = Type.ROUND;
 
-    private int imageWidth;
-    private int imageHeight;
+    private Image lastImage;
+    private double lastSystemScaleFactor;
+    private double lastUserScaleFactor;
 
-    public AvatarIcon(String filename, int width, int height, float round) {
-        this.filename = filename;
-        this.width = width;
-        this.height = height;
-        this.round = round;
+    public AvatarIcon(String filename, int iconWidth, int iconHeight, float round) {
+        this(new ImageIcon(filename), iconWidth, iconHeight, round);
     }
 
-    public AvatarIcon(URL location, int width, int height, float round) {
-        this.location = location;
-        this.width = width;
-        this.height = height;
-        this.round = round;
+    public AvatarIcon(URL location, int iconWidth, int iconHeight, float round) {
+        this(new ImageIcon(location), iconWidth, iconHeight, round);
     }
 
-    public AvatarIcon(Icon icon, int width, int height, float round) {
-        this.icon = icon;
-        this.width = width;
-        this.height = height;
+    public AvatarIcon(ImageIcon imageIcon, int iconWidth, int iconHeight, float round) {
+        this.imageIcon = imageIcon;
+        this.iconWidth = iconWidth;
+        this.iconHeight = iconHeight;
         this.round = round;
     }
 
     @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
-        if (width <= 0 || height <= 0) return;
-        updateImage();
-        Graphics2D g2 = (Graphics2D) g.create();
-        g2.drawImage(image, x, y, null);
-        g2.dispose();
+
+        if (imageIcon == null || iconWidth <= 0 || iconHeight <= 0) return;
+
+        // scale factor
+        double systemScaleFactor = UIScale.getSystemScaleFactor((Graphics2D) g);
+        float userScaleFactor = UIScale.getUserScaleFactor();
+        double scaleFactor = systemScaleFactor * userScaleFactor;
+
+        // paint cached scaled icon
+        if (systemScaleFactor == lastSystemScaleFactor && userScaleFactor == lastUserScaleFactor && lastImage != null) {
+            paintLastImage(g, x, y);
+            return;
+        }
+
+        // destination image size
+        int destImageWidth = (int) (iconWidth * scaleFactor);
+        int destImageHeight = (int) (iconHeight * scaleFactor);
+
+        Image image = imageIcon.getImage();
+
+        image = resizeImage(image, destImageWidth, destImageHeight, scaleFactor);
+
+        // cache image
+        lastSystemScaleFactor = systemScaleFactor;
+        lastUserScaleFactor = userScaleFactor;
+        lastImage = image;
+
+        paintLastImage(g, x, y);
     }
 
-    private void updateImage() {
-        if ((filename != null || location != null || icon != null) && (image == null)) {
-            imageWidth = UIScale.scale(width);
-            imageHeight = UIScale.scale(height);
-            ImageIcon icon;
-            if (filename != null) {
-                icon = new ImageIcon(filename);
-            } else if (location != null) {
-                icon = new ImageIcon(location);
-            } else {
-                icon = (ImageIcon) this.icon;
-            }
-            image = resizeImage(icon.getImage(), imageWidth, imageHeight);
+    private void paintLastImage(Graphics g, int x, int y) {
+        if (lastSystemScaleFactor > 1) {
+            HiDPIUtils.paintAtScale1x((Graphics2D) g, x, y, 100, 100, // width and height are not used
+                    (g2, x2, y2, width2, height2, scaleFactor2) -> {
+                        g2.drawImage(lastImage, x2, y2, null);
+                    });
+        } else {
+            g.drawImage(lastImage, x, y, null);
         }
     }
 
-    private Image resizeImage(Image icon, int width, int height) {
-        int border = getAllBorder();
-        width -= border * 2;
-        height -= border * 2;
-        int sw = width - icon.getWidth(null);
-        int sh = height - icon.getHeight(null);
+    private Image resizeImage(Image image, int targetWidth, int targetHeight, double scaleFactor) {
+        double border = getAllBorder() * scaleFactor;
+        int width = (int) (targetWidth - border * 2);
+        int height = (int) (targetHeight - border * 2);
+        int sw = width - image.getWidth(null);
+        int sh = height - image.getHeight(null);
         Image img = null;
         if (width > 0 && height > 0) {
             if (sw > sh) {
                 // resize width
-                img = new ImageIcon(icon.getScaledInstance(width, -1, Image.SCALE_SMOOTH)).getImage();
+                img = new ImageIcon(image.getScaledInstance(width, -1, Image.SCALE_SMOOTH)).getImage();
             } else {
                 // resize height
-                img = new ImageIcon(icon.getScaledInstance(-1, height, Image.SCALE_SMOOTH)).getImage();
+                img = new ImageIcon(image.getScaledInstance(-1, height, Image.SCALE_SMOOTH)).getImage();
             }
         }
-        return roundImage(img, width, height, border, round);
+        return roundImage(img, width, height, targetWidth, targetHeight, border, round, scaleFactor);
     }
 
-    private Image roundImage(Image image, int width, int height, int border, float round) {
-        BufferedImage buff = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
+    private Image roundImage(Image image, int width, int height, int targetWidth, int targetHeight, double border, float round, double scaleFactor) {
+        BufferedImage buff = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = buff.createGraphics();
         FlatUIUtils.setRenderingHints(g);
         Shape mask = null;
         if (image != null) {
-            mask = createMask(width, height, border, round);
+            mask = createMask(width, height, border, round, scaleFactor);
             g.fill(mask);
             g.setComposite(AlphaComposite.SrcIn);
-            int x = (width - image.getWidth(null)) / 2;
-            int y = (height - image.getHeight(null)) / 2;
-            g.drawImage(image, x + border, y + border, null);
+            int x = (int) ((width - image.getWidth(null)) / 2 + border);
+            int y = (int) ((height - image.getHeight(null)) / 2 + border);
+            g.drawImage(image, x, y, null);
         }
+
         // create border
-        int borderSize = UIScale.scale(borderWidth);
-        int innerSize = UIScale.scale(innerBorderWidth);
+        int borderSize = (int) Math.round(borderWidth * scaleFactor);
+        int innerSize = (int) Math.round(innerBorderWidth * scaleFactor);
         if (borderSize > 0 && (borderColor == null || borderColor.getOpacity() > 0)) {
-            paintBorder(g, mask, 0, 0, imageWidth, imageHeight, borderSize, innerSize, round);
+            paintBorder(g, mask, targetWidth, targetHeight, borderSize, innerSize, round, scaleFactor);
         }
         g.dispose();
         if (image != null) image.flush();
         return buff;
     }
 
-    private void paintBorder(Graphics2D g, Shape mask, int x, int y, int width, int height, int borderSize, int innerSize, float round) {
-        Area areaBorder = new Area(createMask(width, height, 0, round));
-        Shape shape = innerSize > 0 ? createMask(width - borderSize * 2, height - borderSize * 2, borderSize, round) : mask;
+    private void paintBorder(Graphics2D g, Shape mask, int width, int height, double borderSize, double innerSize, float round, double scaleFactor) {
+        Area areaBorder = new Area(createMask(width, height, 0, round, scaleFactor));
+        Shape shape = innerSize > 0 ? createMask(width - borderSize * 2, height - borderSize * 2, borderSize, round, scaleFactor) : mask;
         if (shape != null) {
             areaBorder.subtract(new Area(shape));
         }
@@ -136,14 +149,14 @@ public class AvatarIcon implements Icon {
         g.fill(areaBorder);
     }
 
-    private Shape createMask(int width, int height, int border, float round) {
+    private Shape createMask(double width, double height, double border, float round, double scaleFactor) {
         if (round <= 0) return new Rectangle2D.Double(border, border, width, height);
         Shape mask;
         if (type == Type.ROUND) {
             if (round == 999) {
                 mask = new Ellipse2D.Double(border, border, width, height);
             } else {
-                float r = Math.max(UIScale.scale(round) - border, 0);
+                double r = Math.max(round * scaleFactor - border, 0);
                 mask = new RoundRectangle2D.Double(border, border, width, height, r, r);
             }
         } else {
@@ -154,20 +167,12 @@ public class AvatarIcon implements Icon {
 
     @Override
     public int getIconWidth() {
-        updateImage();
-        if (image == null) {
-            return 0;
-        }
-        return image.getWidth(null);
+        return UIScale.scale(iconWidth);
     }
 
     @Override
     public int getIconHeight() {
-        updateImage();
-        if (image == null) {
-            return 0;
-        }
-        return image.getHeight(null);
+        return UIScale.scale(iconHeight);
     }
 
     public float getRound() {
@@ -180,7 +185,7 @@ public class AvatarIcon implements Icon {
 
     public void setBorderWidth(int borderWidth) {
         this.borderWidth = borderWidth;
-        image = null;
+        lastImage = null;
     }
 
     public int getInnerBorderWidth() {
@@ -189,13 +194,13 @@ public class AvatarIcon implements Icon {
 
     public void setInnerBorderWidth(int innerBorderWidth) {
         this.innerBorderWidth = innerBorderWidth;
-        image = null;
+        lastImage = null;
     }
 
     public void setBorder(int borderWidth, int innerBorderWidth) {
         this.borderWidth = borderWidth;
         this.innerBorderWidth = innerBorderWidth;
-        image = null;
+        lastImage = null;
     }
 
     public BorderColor getBorderColor() {
@@ -204,7 +209,7 @@ public class AvatarIcon implements Icon {
 
     public void setBorderColor(BorderColor borderColor) {
         this.borderColor = borderColor;
-        image = null;
+        lastImage = null;
     }
 
     public Type getType() {
@@ -213,44 +218,28 @@ public class AvatarIcon implements Icon {
 
     public void setType(Type type) {
         this.type = type;
-        image = null;
+        lastImage = null;
     }
 
     public void setIcon(String filename) {
-        this.filename = filename;
-        this.location = null;
-        this.icon = null;
-        image = null;
+        setIcon(new ImageIcon(filename));
     }
 
     public void setIcon(URL location) {
-        this.location = location;
-        this.filename = null;
-        this.icon = null;
-        image = null;
+        setIcon(new ImageIcon(location));
     }
 
-    public void setIcon(Icon icon) {
-        this.icon = icon;
-        this.location = null;
-        this.filename = null;
-        image = null;
+    public void setIcon(ImageIcon imageIcon) {
+        this.imageIcon = imageIcon;
+        lastImage = null;
     }
 
-    public Icon getDefaultIcon() {
-        Icon icon;
-        if (filename != null) {
-            icon = new ImageIcon(filename);
-        } else if (location != null) {
-            icon = new ImageIcon(location);
-        } else {
-            icon = this.icon;
-        }
-        return icon;
+    public ImageIcon getImageIcon() {
+        return imageIcon;
     }
 
     private int getAllBorder() {
-        return UIScale.scale(borderWidth + innerBorderWidth);
+        return borderWidth + innerBorderWidth;
     }
 
     public enum Type {

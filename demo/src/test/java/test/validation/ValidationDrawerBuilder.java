@@ -42,7 +42,7 @@ public class ValidationDrawerBuilder extends SimpleDrawerBuilder {
 
         if (data.getIcon() instanceof AvatarIcon) {
             AvatarIcon icon = (AvatarIcon) data.getIcon();
-            icon.setIcon(user.getProfile());
+            icon.setIcon((ImageIcon) user.getProfile());
         }
 
         data.setTitle(user.getName())
