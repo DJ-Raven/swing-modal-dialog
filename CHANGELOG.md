@@ -10,10 +10,11 @@
 
 ### Fixed bugs
 
-- Fixed blurry image when high DPI system scaling:
+- Fixed blurry image when high DPI system scaling (issues #36) (PR #37):
     - AvatarIcon
     - DropShadowBorder
     - Modal dialog
+    - ToastBorder
 
 ## [2.5.0] - 2025-05-05
 
