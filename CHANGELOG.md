@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.5.1] - SNAPSHOT
+## [2.5.1] - 2025-06-08
 
 ### Fixed bugs
 
