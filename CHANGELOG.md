@@ -10,6 +10,8 @@
 
 ### Fixed bugs
 
+- Modal dialog:
+    - Fixed modal lightWeight `relativeToOwner` child modal was not closing after parent was closed
 - Fixed blurry image when high DPI system scaling (issues #36) (PR #37):
     - AvatarIcon
     - DropShadowBorder

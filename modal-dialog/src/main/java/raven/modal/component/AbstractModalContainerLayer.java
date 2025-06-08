@@ -59,6 +59,7 @@ public abstract class AbstractModalContainerLayer extends AbstractRelativeContai
         boolean fixedLayout = isFixedLayout(option, container.getOwner());
         removeLayer(container, container.getOwner(), visibility, fixedLayout);
         containers.remove(container);
+        checkAndRemoveChildForOwner(container);
     }
 
     @Override
@@ -128,6 +129,18 @@ public abstract class AbstractModalContainerLayer extends AbstractRelativeContai
             }
         }
         throw new IllegalArgumentException("id '" + id + "' not found");
+    }
+
+    private void checkAndRemoveChildForOwner(Component owner) {
+        for (ModalContainer c : containers.toArray(new ModalContainer[0])) {
+            if (c.getOption().getLayoutOption().isRelativeToOwner()) {
+                Component cOwner = c.getOwner();
+                ModalContainer container = (ModalContainer) SwingUtilities.getAncestorOfClass(ModalContainer.class, cOwner);
+                if (container == owner) {
+                    remove(c.getController());
+                }
+            }
+        }
     }
 
     public Set<ModalContainer> getContainers() {
