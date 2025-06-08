@@ -112,7 +112,7 @@ public class PanelSlider extends JLayeredPane {
 
     @Override
     public Color getBackground() {
-        if (useSlideAsBackground == false || slideComponent == null) {
+        if (!useSlideAsBackground || slideComponent == null) {
             return super.getBackground();
         }
         return slideComponent.getBackground();
@@ -131,7 +131,7 @@ public class PanelSlider extends JLayeredPane {
 
     public class PanelSnapshot extends JComponent {
 
-        private Animator animator;
+        private final Animator animator;
         private SliderCallback callback;
         private Component component;
         private float animate;

@@ -20,9 +20,9 @@ public enum ToastLocation {
         this.direction = direction;
     }
 
-    private Location horizontalLocation;
-    private Location verticalLocation;
-    private ToastDirection direction;
+    private final Location horizontalLocation;
+    private final Location verticalLocation;
+    private final ToastDirection direction;
 
     public Location getHorizontalLocation() {
         return horizontalLocation;

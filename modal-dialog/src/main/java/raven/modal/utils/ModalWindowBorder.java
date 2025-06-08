@@ -46,12 +46,12 @@ public class ModalWindowBorder {
         this.round = round;
     }
 
-    private Insets shadowSize;
-    private float shadowOpacity;
-    private Color shadowColor;
-    private int borderWidth;
-    private Color borderColor;
-    private int round;
+    private final Insets shadowSize;
+    private final float shadowOpacity;
+    private final Color shadowColor;
+    private final int borderWidth;
+    private final Color borderColor;
+    private final int round;
 
     public boolean isCreatedAble() {
         return !(FlatUIUtils.isInsetsEmpty(shadowSize) && borderWidth == 0 && round == 0);

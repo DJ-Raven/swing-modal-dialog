@@ -19,7 +19,7 @@ import java.awt.image.BufferedImage;
  */
 public class ToastBorder extends FlatEmptyBorder {
 
-    private ToastPanel.ToastData toastData;
+    private final ToastPanel.ToastData toastData;
 
     public ToastBorder(ToastPanel.ToastData toastData) {
         this.toastData = toastData;

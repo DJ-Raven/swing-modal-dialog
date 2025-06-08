@@ -25,7 +25,7 @@ public abstract class AbstractModalController extends JPanel implements Controll
     protected Modal modal;
     protected PanelSlider panelSlider;
     protected Stack<Modal> modalStack;
-    protected Consumer onBackAction;
+    protected Consumer<?> onBackAction;
 
     public AbstractModalController(Option option) {
         this.option = option;
@@ -69,7 +69,7 @@ public abstract class AbstractModalController extends JPanel implements Controll
             }
         } else {
             int borderWidth = borderOption.getBorderWidth();
-            if (borderWidth > 0 && ModalUtils.isShadowAndRoundBorderSupport() == false) {
+            if (borderWidth > 0 && !ModalUtils.isShadowAndRoundBorderSupport()) {
                 // border width painted with round window border
                 // but if windows round border not support we set the border width here
                 setBorder(new ModalLineBorder(borderWidth, borderOption.getBorderColor(), 0));
@@ -169,7 +169,7 @@ public abstract class AbstractModalController extends JPanel implements Controll
         return panelSlider.getBackground();
     }
 
-    private Consumer getOnBackAction() {
+    private Consumer<?> getOnBackAction() {
         if (onBackAction == null) {
             onBackAction = o -> {
                 popModal();

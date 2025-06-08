@@ -34,7 +34,7 @@ public abstract class AbstractDrawerLineStyleRenderer {
             int y = (height - arrowHeight) / 2;
             Path2D p = new Path2D.Double();
             p.moveTo(0, animate * arrowHeight);
-            p.lineTo(arrowWidth / 2, (1f - animate) * arrowHeight);
+            p.lineTo(arrowWidth / 2f, (1f - animate) * arrowHeight);
             p.lineTo(arrowWidth, animate * arrowHeight);
             g2.translate(x, y);
             g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
@@ -62,8 +62,7 @@ public abstract class AbstractDrawerLineStyleRenderer {
             return UIManager.getColor("Component.accentColor");
         }
         Component com = component.getComponentCount() > 0 ? component.getComponent(0) : component;
-        Color color = ColorFunctions.mix(component.getBackground(), com.getForeground(), 0.7f);
-        return color;
+        return ColorFunctions.mix(component.getBackground(), com.getForeground(), 0.7f);
     }
 
     public Color getLineColor() {

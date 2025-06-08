@@ -9,6 +9,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Raven
@@ -110,7 +111,7 @@ public class ModalHeavyWeightContainerLayer implements BaseModalContainer {
             List<ModalWindow> list = listModalHeavyWeight.get(i).getModalWindows();
             for (int j = 0; j < list.size(); j++) {
                 HeavyWeightModalController modal = (HeavyWeightModalController) list.get(j).getContents();
-                if (modal.getId() != null && modal.getId() == id) {
+                if (modal.getId() != null && Objects.equals(modal.getId(), id)) {
                     return true;
                 }
             }
@@ -139,7 +140,7 @@ public class ModalHeavyWeightContainerLayer implements BaseModalContainer {
             List<ModalWindow> list = listModalHeavyWeight.get(i).getModalWindows();
             for (int j = 0; j < list.size(); j++) {
                 HeavyWeightModalController modal = (HeavyWeightModalController) list.get(j).getContents();
-                if (modal.getId() != null && modal.getId() == id) {
+                if (modal.getId() != null && Objects.equals(modal.getId(), id)) {
                     return modal;
                 }
             }

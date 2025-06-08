@@ -50,7 +50,7 @@ public class ToastHeavyWeightLayout extends HeavyWeightRelativeLayout {
         if (modalWindows.isEmpty()) return;
 
         boolean reverseOrder = Toast.isReverseOrder();
-        ModalWindow[] windowsToastsArray = modalWindows.toArray(new ModalWindow[modalWindows.size()]);
+        ModalWindow[] windowsToastsArray = modalWindows.toArray(new ModalWindow[0]);
         if (reverseOrder) {
             Collections.reverse(Arrays.asList(windowsToastsArray));
         }

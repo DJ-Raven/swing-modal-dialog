@@ -35,7 +35,7 @@ public class ModalController extends AbstractModalController {
 
     protected boolean isUseAnimator(boolean show) {
         return option.isAnimationEnabled()
-                && (show == true || option.isAnimationOnClose()
+                && (show || option.isAnimationOnClose()
         );
     }
 

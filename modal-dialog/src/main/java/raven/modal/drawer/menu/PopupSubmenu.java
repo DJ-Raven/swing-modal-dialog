@@ -18,7 +18,7 @@ import java.awt.*;
 public class PopupSubmenu {
 
     private JPopupMenu popupMenu;
-    private DrawerMenu.SubMenuItem subMenuItem;
+    private final DrawerMenu.SubMenuItem subMenuItem;
     private final DrawerMenu drawerMenu;
     private final Item item;
 
@@ -114,7 +114,7 @@ public class PopupSubmenu {
         menuItem.addActionListener(e -> {
             MenuAction action = drawerMenu.runEvent(item, item.getIndex());
             if (action != null) {
-                if (action.getConsume() == false) {
+                if (!action.getConsume()) {
                     if (drawerMenu.isMenuAutoSelection(isMainItem)) {
                         drawerMenu.setMenuSelectedIndex(item.getIndex());
                     }
@@ -144,7 +144,7 @@ public class PopupSubmenu {
                     int gap = UIScale.scale(12);
                     int x = ltr ? gap : width - gap;
                     int count = popupMenu.getComponentCount();
-                    int subMenuLocation[] = new int[count];
+                    int[] subMenuLocation = new int[count];
                     int selectedIndex = -1;
                     for (int i = 0; i < count; i++) {
                         Component com = popupMenu.getComponent(i);

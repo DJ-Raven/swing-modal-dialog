@@ -46,7 +46,7 @@ public class DrawerLayoutResponsive {
     }
 
     private ModalContainer modalContainer;
-    private DrawerPanel drawerPanel;
+    private final DrawerPanel drawerPanel;
     private boolean opened = true;
     private boolean showing = true;
 
@@ -91,7 +91,7 @@ public class DrawerLayoutResponsive {
     private boolean isUnsupportedCompactMenu(DrawerBuilder drawerBuilder) {
         if (drawerBuilder instanceof SimpleDrawerBuilder) {
             if (((SimpleDrawerBuilder) drawerBuilder).getSimpleMenuOption().getMenuOpenMode() == MenuOption.MenuOpenMode.COMPACT) {
-                if (isHorizontalDrawer() == false) {
+                if (!isHorizontalDrawer()) {
                     return true;
                 }
             }
@@ -117,8 +117,7 @@ public class DrawerLayoutResponsive {
 
     public boolean isHorizontalDrawer() {
         SimpleDrawerLayoutOption layoutOption = (SimpleDrawerLayoutOption) drawerPanel.getDrawerOption().getLayoutOption();
-        boolean isHorizontal = layoutOption.getFullSize().getY().floatValue() == 1f;
-        return isHorizontal;
+        return layoutOption.getFullSize().getY().floatValue() == 1f;
     }
 
     public void revalidateDrawer() {

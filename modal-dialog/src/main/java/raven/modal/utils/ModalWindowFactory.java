@@ -125,7 +125,7 @@ public class ModalWindowFactory {
         public abstract Rectangle getBorderSize();
     }
 
-    protected class ModalWindowBackground extends AbstractModalBorder {
+    protected static class ModalWindowBackground extends AbstractModalBorder {
 
         private final ModalWindow delegate;
         private final HeavyWeightModalController controller;
@@ -215,10 +215,10 @@ public class ModalWindowFactory {
         }
     }
 
-    protected class DropShadowModalWindow extends AbstractModalBorder {
+    protected static class DropShadowModalWindow extends AbstractModalBorder {
 
-        private Window dropShadowWindow;
-        private ShadowPanel dropShadowPanel;
+        private final Window dropShadowWindow;
+        private final ShadowPanel dropShadowPanel;
 
         public DropShadowModalWindow(Component owner, Component contents, ModalWindowBorder border, int x, int y) {
             super(owner, contents, x, y);

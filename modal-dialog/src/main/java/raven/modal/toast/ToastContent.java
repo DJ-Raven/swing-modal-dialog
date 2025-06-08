@@ -16,7 +16,7 @@ import java.awt.geom.Rectangle2D;
  */
 class ToastContent extends JComponent {
 
-    private ToastPanel.ToastData toastData;
+    private final ToastPanel.ToastData toastData;
 
     protected ToastContent(LayoutManager layout, ToastPanel.ToastData toastData) {
         this.toastData = toastData;

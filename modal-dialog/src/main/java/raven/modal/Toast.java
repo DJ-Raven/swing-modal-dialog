@@ -18,9 +18,9 @@ public class Toast {
 
     private static Toast instance;
     private final Integer LAYER = JLayeredPane.POPUP_LAYER;
-    private Map<RootPaneContainer, ToastContainerLayer> map;
-    private Map<Type, ToastPanel.ThemesData> themesDataMap;
-    private ToastOption defaultOption;
+    private final Map<RootPaneContainer, ToastContainerLayer> map;
+    private final Map<Type, ToastPanel.ThemesData> themesDataMap;
+    private final ToastOption defaultOption;
     private boolean reverseOrder;
 
     private static Toast getInstance() {
@@ -32,12 +32,12 @@ public class Toast {
 
     private Toast() {
         map = new HashMap<>();
+        themesDataMap = new HashMap<>();
         initThemesData();
         defaultOption = ToastOption.getDefault();
     }
 
     private void initThemesData() {
-        themesDataMap = new HashMap<>();
         themesDataMap.put(Type.SUCCESS, new ToastPanel.ThemesData("raven/modal/icon/toast_success.svg", new String[]{"#1EA97C", "#1EA97C"}));
         themesDataMap.put(Type.INFO, new ToastPanel.ThemesData("raven/modal/icon/toast_info.svg", new String[]{"#3B82F6", "#3B82F6"}));
         themesDataMap.put(Type.WARNING, new ToastPanel.ThemesData("raven/modal/icon/toast_warning.svg", new String[]{"#CC8925", "#CC8925"}));

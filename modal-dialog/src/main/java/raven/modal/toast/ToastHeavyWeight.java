@@ -13,7 +13,7 @@ import java.util.Map;
 public class ToastHeavyWeight {
 
     private static ToastHeavyWeight instance;
-    private Map<Window, ToastHeavyWeightContainerLayer> map;
+    private final Map<Window, ToastHeavyWeightContainerLayer> map;
 
     private ToastHeavyWeight() {
         map = new HashMap<>();

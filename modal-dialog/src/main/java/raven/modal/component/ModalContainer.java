@@ -33,9 +33,9 @@ public class ModalContainer extends JComponent {
     }
 
     private final String id;
-    private AbstractModalContainerLayer modalContainerLayer;
+    private final AbstractModalContainerLayer modalContainerLayer;
+    private final Component owner;
     private ModalController modalController;
-    private Component owner;
     private MouseListener mouseListener;
     private ActionListener escapeAction;
     private ModalLayout modalLayout;

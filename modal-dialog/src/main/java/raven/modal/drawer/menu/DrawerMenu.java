@@ -264,8 +264,7 @@ public class DrawerMenu extends AbstractMenuElement {
             } else {
                 iconScale = menuOption.iconScale[menuOption.iconScale.length - 1];
             }
-            Icon iconObject = menuOption.buildMenuIcon(path + icon, iconScale);
-            return iconObject;
+            return menuOption.buildMenuIcon(path + icon, iconScale);
         } else {
             return null;
         }
@@ -299,7 +298,7 @@ public class DrawerMenu extends AbstractMenuElement {
         button.addActionListener(e -> {
             MenuAction action = runEvent(button.getItem(), index);
             if (action != null) {
-                if (action.getConsume() == false) {
+                if (!action.getConsume()) {
                     if (isMenuAutoSelection(button.isMainItem())) {
                         menuSelectedIndex = index;
                         repaint();
@@ -338,8 +337,7 @@ public class DrawerMenu extends AbstractMenuElement {
     }
 
     protected Component createSubmenuItem(Item menu, int[] index, int[] validationIndex, int menuLevel, int iconTextGap) {
-        JPanel panelItem = new SubMenuItem(menu, index, validationIndex, menuLevel, iconTextGap);
-        return panelItem;
+        return new SubMenuItem(menu, index, validationIndex, menuLevel, iconTextGap);
     }
 
     protected boolean checkLabelValidation(int labelIndex, int menuIndex) {
@@ -414,7 +412,7 @@ public class DrawerMenu extends AbstractMenuElement {
             return isMainItem;
         }
 
-        private Item item;
+        private final Item item;
         private final int[] itemIndex;
         private final boolean isMainItem;
 
@@ -431,9 +429,9 @@ public class DrawerMenu extends AbstractMenuElement {
         }
     }
 
-    protected class SubMenuItem extends JPanel {
+    public class SubMenuItem extends JPanel {
 
-        private int menuLevel;
+        private final int menuLevel;
         private int iconTextGap;
         private int levelSpace = 13;
         private int submenuSpace = 5;
@@ -581,7 +579,7 @@ public class DrawerMenu extends AbstractMenuElement {
                         int gap = UIScale.scale((menuItemPadding + (iconWidth / 2)) + ((levelSpace + submenuSpace - 5) * menuLevel));
                         int x = ltr ? gap : width - gap;
                         int count = getComponentCount();
-                        int subMenuLocation[] = new int[count - 1];
+                        int[] subMenuLocation = new int[count - 1];
                         int selectedIndex = -1;
                         for (int i = 1; i < count; i++) {
                             Component com = getComponent(i);

@@ -60,9 +60,9 @@ public class FlatLafStyleUtils {
     public static Map<String, String> styleToMap(String style) {
         Map<String, String> mapStyle = new HashMap<>();
         if (style != null) {
-            String styles[] = style.split(";");
+            String[] styles = style.split(";");
             for (String s : styles) {
-                String parts[] = s.split(":");
+                String[] parts = s.split(":");
                 if (parts.length == 2) {
                     mapStyle.put(parts[0], parts[1]);
                 }

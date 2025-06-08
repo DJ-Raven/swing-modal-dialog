@@ -81,7 +81,7 @@ public class SimpleHeader extends AbstractMenuElement {
 
     @Override
     protected void layoutOptionChanged(MenuOption.MenuOpenMode menuOpenMode) {
-        if (labelTitle == null || labelTitle == null) return;
+        if (labelTitle == null || labelDescription == null) return;
 
         if (menuOpenMode == MenuOption.MenuOpenMode.FULL) {
             layout.setColumnConstraints(null);

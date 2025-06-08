@@ -23,7 +23,7 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
 
     protected final ModalBorderOption option;
     protected final String title;
-    private Option[] optionsType;
+    private final Option[] optionsType;
     private final ModalCallback callback;
 
     // options
@@ -189,14 +189,14 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
         return button;
     }
 
-    protected void applyBackButton(Consumer onBack) {
+    protected void applyBackButton(Consumer<?> onBack) {
         Component backButton = createBackButton(onBack);
         if (header != null) {
             header.add(backButton, 0);
         }
     }
 
-    protected JComponent createBackButton(Consumer onBack) {
+    protected JComponent createBackButton(Consumer<?> onBack) {
         JButton buttonClose = new JButton(new FlatSVGIcon("raven/modal/icon/back.svg", 0.4f));
         buttonClose.setFocusable(false);
         buttonClose.addActionListener(e -> onBack.accept(null));
