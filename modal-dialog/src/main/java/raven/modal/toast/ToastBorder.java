@@ -3,6 +3,7 @@ package raven.modal.toast;
 import com.formdev.flatlaf.ui.FlatEmptyBorder;
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.ColorFunctions;
+import com.formdev.flatlaf.util.HiDPIUtils;
 import com.formdev.flatlaf.util.UIScale;
 import raven.modal.toast.option.ToastBorderStyle;
 import raven.modal.toast.option.ToastStyle;
@@ -60,11 +61,16 @@ public class ToastBorder extends FlatEmptyBorder {
 
     @Override
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-        Graphics2D g2 = null;
+        HiDPIUtils.paintAtScale1x((Graphics2D) g, x, y, width, height, (g2d, x1, y1, w1, h1, scaleFactor) ->
+                paintImpl(c, g2d, x1, y1, w1, h1, scaleFactor));
+    }
+
+    private void paintImpl(Component c, Graphics2D g2d, int x, int y, int width, int height, double scaleFactor) {
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = image.createGraphics();
         try {
-            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-            g2 = image.createGraphics();
-            FlatUIUtils.setRenderingHints(g2);
+            FlatUIUtils.setRenderingHints(g);
+
             ToastStyle style = toastData.getOption().getStyle();
             ToastBorderStyle borderStyle = style.getBorderStyle();
             boolean ltr = c.getComponentOrientation().isLeftToRight();
@@ -76,7 +82,7 @@ public class ToastBorder extends FlatEmptyBorder {
             float innerRound = style.getBorderStyle().getRound() * 0.6f;
             float arc;
             if (ModalUtils.isShadowAndRoundBorderSupport()) {
-                arc = Math.min(UIScale.scale(innerRound), height) / 2f;
+                arc = Math.min(scale(innerRound, scaleFactor), height) / 2f;
             } else {
                 arc = 0;
             }
@@ -88,17 +94,17 @@ public class ToastBorder extends FlatEmptyBorder {
                 Color color = ColorFunctions.mix(defaultColor, c.getBackground(), 0.3f);
                 float start = ltr ? 0 : (width) * 0.8f;
                 float end = ltr ? (width) * 0.8f : 0;
-                g2.setPaint(new GradientPaint(start, 0, color, end, 0, c.getBackground()));
+                g.setPaint(new GradientPaint(start, 0, color, end, 0, c.getBackground()));
             } else {
-                g2.setColor(c.getBackground());
+                g.setColor(c.getBackground());
             }
             Shape shapeBackground = FlatUIUtils.createRoundRectanglePath(lx, ly, bw, bh, arc, arc, arc, arc);
-            g2.fill(shapeBackground);
+            g.fill(shapeBackground);
 
             // create border style
             ToastBorderStyle.BorderType borderType = borderStyle.getBorderType();
             if (borderType != ToastBorderStyle.BorderType.NONE && borderType != ToastBorderStyle.BorderType.OUTLINE) {
-                float lineWidth = UIScale.scale(borderStyle.getLineSize());
+                float lineWidth = scale(borderStyle.getLineSize(), scaleFactor);
                 Area area = new Area(shapeBackground);
                 if ((borderType == ToastBorderStyle.BorderType.LEADING_LINE && ltr) || borderType == ToastBorderStyle.BorderType.TRAILING_LINE && !ltr) {
                     area.intersect(new Area(new Rectangle2D.Float(lx, ly, lineWidth, bh)));
@@ -110,14 +116,20 @@ public class ToastBorder extends FlatEmptyBorder {
                     area.intersect(new Area(new Rectangle2D.Float(lx, ly + bh - lineWidth, bw, lineWidth)));
                 }
                 Color color = ColorFunctions.mix(defaultColor, c.getBackground(), 0.6f);
-                g2.setColor(color);
-                g2.fill(area);
+                g.setColor(color);
+                g.fill(area);
             }
-            g.drawImage(image, x, y, null);
         } finally {
-            if (g2 != null) {
-                g2.dispose();
-            }
+            g.dispose();
         }
+        g2d.drawImage(image, x, y, null);
+    }
+
+    private int scale(int value, double scaleFactor) {
+        return (int) Math.ceil(UIScale.scale(value) * scaleFactor);
+    }
+
+    private float scale(float value, double scaleFactor) {
+        return (float) (UIScale.scale(value) * scaleFactor);
     }
 }

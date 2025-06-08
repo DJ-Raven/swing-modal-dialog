@@ -41,7 +41,7 @@ Add the snapshot version
 <dependency>
     <groupId>io.github.dj-raven</groupId>
     <artifactId>modal-dialog</artifactId>
-    <version>2.4.1-SNAPSHOT</version>
+    <version>2.5.1-SNAPSHOT</version>
 </dependency>
 ```
 
