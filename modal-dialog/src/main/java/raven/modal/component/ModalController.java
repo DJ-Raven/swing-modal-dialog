@@ -181,33 +181,23 @@ public class ModalController extends AbstractModalController {
         if (display) {
             if (snapshotsImage != null) {
                 Graphics2D g2 = (Graphics2D) g.create();
+                g2.setComposite(AlphaComposite.SrcOver.derive(animated));
                 try {
-                    g2.setComposite(AlphaComposite.SrcOver.derive(animated));
-
-                    float scaleValue = option.getLayoutOption().getAnimateScale();
-                    if (scaleValue != 0) {
-                        float minScale = 1f - scaleValue;
-
-                        float scale = minScale + (scaleValue * animated);
-                        float width = getWidth();
-                        float height = getHeight();
-
-                        // calculate the center position after scaling
-                        float scaledWidth = (width * scale);
-                        float scaledHeight = (height * scale);
-                        float x = (width - scaledWidth) / 2f;
-                        float y = (height - scaledHeight) / 2f;
-                        g2.translate(x, y);
-                        g2.scale(scale, scale);
-                    }
-
                     // draw snapshots image
                     if (systemScaleFactor > 1) {
                         HiDPIUtils.paintAtScale1x(g2, 0, 0, 100, 100, // width and height are not used
                                 (g2d, x2, y2, width2, height2, scaleFactor2) -> {
+                                    float scaleValue = option.getLayoutOption().getAnimateScale();
+                                    if (scaleValue != 0) {
+                                        scaleGraphics(g2d, scaleValue);
+                                    }
                                     g2d.drawImage(snapshotsImage, x2, y2, null);
                                 });
                     } else {
+                        float scaleValue = option.getLayoutOption().getAnimateScale();
+                        if (scaleValue != 0) {
+                            scaleGraphics(g2, scaleValue);
+                        }
                         g2.drawImage(snapshotsImage, 0, 0, null);
                     }
                 } finally {
@@ -217,6 +207,22 @@ public class ModalController extends AbstractModalController {
                 super.paint(g);
             }
         }
+    }
+
+    private void scaleGraphics(Graphics2D g2, float scaleValue) {
+        float minScale = 1f - scaleValue;
+
+        float scale = minScale + (scaleValue * animated);
+        float width = getWidth();
+        float height = getHeight();
+
+        // calculate the center position after scaling
+        float scaledWidth = (width * scale);
+        float scaledHeight = (height * scale);
+        float x = (width - scaledWidth) / 2f;
+        float y = (height - scaledHeight) / 2f;
+        g2.translate(x, y);
+        g2.scale(scale, scale);
     }
 
     public float getAnimated() {
