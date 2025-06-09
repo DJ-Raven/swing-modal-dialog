@@ -103,8 +103,7 @@ public class AnimatedLayout extends CardLayout {
         if (com instanceof PanelSlider.PanelSnapshot) {
             return new Dimension(width, height);
         }
-        Dimension size = paneSliderLayoutSize.getComponentSize(parent, com);
-        return size;
+        return paneSliderLayoutSize.getComponentSize(parent, com);
     }
 
     public boolean isUpdateAble() {

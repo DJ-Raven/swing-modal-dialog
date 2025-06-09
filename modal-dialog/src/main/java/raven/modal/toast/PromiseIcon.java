@@ -55,7 +55,7 @@ public abstract class PromiseIcon implements Icon {
 
                 @Override
                 public void end() {
-                    if (!promise.isDone() && stopped == false) {
+                    if (!promise.isDone() && !stopped) {
                         SwingUtilities.invokeLater(() -> {
                             if (animator != null && !animator.isRunning()) {
                                 animator.start();

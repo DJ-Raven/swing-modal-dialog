@@ -346,7 +346,7 @@ public class LightDarkButton extends JPanel {
         void onModeChanged(boolean isDarkMode);
     }
 
-    public class LookAndFeelLightDark {
+    public static class LookAndFeelLightDark {
 
         public Class<? extends FlatLaf> getLight() {
             return light;

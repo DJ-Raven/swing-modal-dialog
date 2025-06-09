@@ -13,19 +13,19 @@ and support animation
 
 ## Installation
 
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.dj-raven/modal-dialog?label=Maven%20Central)](https://search.maven.org/artifact/io.github.dj-raven/modal-dialog)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.dj-raven/modal-dialog?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.dj-raven/modal-dialog/versions)
 
 Add the dependency
 ``` xml
 <dependency>
     <groupId>io.github.dj-raven</groupId>
     <artifactId>modal-dialog</artifactId>
-    <version>2.5.0</version>
+    <version>2.5.1</version>
 </dependency>
 ```
 
 ### Snapshots
-To get the latest updates before the release, you can use the snapshot version from [Sonatype OSS Snapshots](https://s01.oss.sonatype.org/content/repositories/snapshots/io/github/dj-raven/modal-dialog/)
+To get the latest updates before the release, you can use the snapshot version from [Sonatype Central](https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/io/github/dj-raven/modal-dialog/)
 
 ``` xml
 <repositories>
@@ -41,7 +41,7 @@ Add the snapshot version
 <dependency>
     <groupId>io.github.dj-raven</groupId>
     <artifactId>modal-dialog</artifactId>
-    <version>2.4.1-SNAPSHOT</version>
+    <version>2.5.1-SNAPSHOT</version>
 </dependency>
 ```
 

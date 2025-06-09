@@ -20,7 +20,7 @@ public class ModalDialog {
 
     private static ModalDialog instance;
     private final Integer LAYER = JLayeredPane.MODAL_LAYER + 1;
-    private Map<RootPaneContainer, ModalContainerLayer> map;
+    private final Map<RootPaneContainer, ModalContainerLayer> map;
     private Option defaultOption;
 
     private ModalDialog() {

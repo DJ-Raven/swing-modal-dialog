@@ -22,7 +22,7 @@ public class ModalLayout implements LayoutManager {
     }
 
     private JWindow window;
-    private ModalController component;
+    private final ModalController component;
     private final LayoutOption layoutOption;
     private float animate;
 

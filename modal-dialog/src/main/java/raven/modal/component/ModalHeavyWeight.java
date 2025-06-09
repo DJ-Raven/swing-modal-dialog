@@ -13,7 +13,7 @@ import java.util.Map;
 public class ModalHeavyWeight {
 
     private static ModalHeavyWeight instance;
-    private Map<Window, ModalHeavyWeightContainerLayer> map;
+    private final Map<Window, ModalHeavyWeightContainerLayer> map;
 
     private ModalHeavyWeight() {
         map = new HashMap<>();

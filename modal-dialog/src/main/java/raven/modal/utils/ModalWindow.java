@@ -98,8 +98,7 @@ public class ModalWindow {
     }
 
     protected Window createWindow(Component owner) {
-        JWindow window = new JWindow(getParentWindow(owner));
-        return window;
+        return new JWindow(getParentWindow(owner));
     }
 
     protected Window getParentWindow(Component owner) {

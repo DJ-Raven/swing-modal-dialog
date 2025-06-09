@@ -1,10 +1,23 @@
 # Changelog
 
-## [2.5.1] - SNAPSHOT
+## [2.5.1] - 2025-06-08
+
+### Fixed bugs
+
+- Modal dialog:
+    - Fixed modal lightWeight `relativeToOwner` child modal was not closing after parent was closed
+- Fixed blurry image when high DPI system scaling (issues #36) (PR #37):
+    - AvatarIcon
+    - DropShadowBorder
+    - Modal dialog
+    - ToastBorder
 
 ### Demo
 
 - JFreeChart: update to `v1.5.6`
+- DateTimePicker: library update to `v2.1.2`
+- IntelliJ Themes: removed `Gruvbox Dark Medium` and `Gruvbox Dark Soft` themes, because it unsupported since
+  `flatlaf-intellij-themes v3.6`
 
 ## [2.5.0] - 2025-05-05
 

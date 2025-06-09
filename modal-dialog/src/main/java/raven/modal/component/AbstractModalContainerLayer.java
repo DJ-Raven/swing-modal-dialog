@@ -7,6 +7,7 @@ import raven.modal.option.Option;
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -58,6 +59,7 @@ public abstract class AbstractModalContainerLayer extends AbstractRelativeContai
         boolean fixedLayout = isFixedLayout(option, container.getOwner());
         removeLayer(container, container.getOwner(), visibility, fixedLayout);
         containers.remove(container);
+        checkAndRemoveChildForOwner(container);
     }
 
     @Override
@@ -77,7 +79,7 @@ public abstract class AbstractModalContainerLayer extends AbstractRelativeContai
 
     @Override
     public void closeAllModal() {
-        for (ModalContainer con : containers.toArray(new ModalContainer[containers.size()])) {
+        for (ModalContainer con : containers.toArray(new ModalContainer[0])) {
             con.getController().closeModal();
         }
     }
@@ -89,7 +91,7 @@ public abstract class AbstractModalContainerLayer extends AbstractRelativeContai
 
     @Override
     public void closeAllModalImmediately() {
-        for (ModalContainer con : containers.toArray(new ModalContainer[containers.size()])) {
+        for (ModalContainer con : containers.toArray(new ModalContainer[0])) {
             con.getController().closeImmediately();
         }
     }
@@ -97,7 +99,7 @@ public abstract class AbstractModalContainerLayer extends AbstractRelativeContai
     @Override
     public boolean checkId(String id) {
         for (ModalContainer con : containers) {
-            if (con.getId() != null && con.getId() == id) {
+            if (con.getId() != null && Objects.equals(con.getId(), id)) {
                 return true;
             }
         }
@@ -127,6 +129,18 @@ public abstract class AbstractModalContainerLayer extends AbstractRelativeContai
             }
         }
         throw new IllegalArgumentException("id '" + id + "' not found");
+    }
+
+    private void checkAndRemoveChildForOwner(Component owner) {
+        for (ModalContainer c : containers.toArray(new ModalContainer[0])) {
+            if (c.getOption().getLayoutOption().isRelativeToOwner()) {
+                Component cOwner = c.getOwner();
+                ModalContainer container = (ModalContainer) SwingUtilities.getAncestorOfClass(ModalContainer.class, cOwner);
+                if (container == owner) {
+                    remove(c.getController());
+                }
+            }
+        }
     }
 
     public Set<ModalContainer> getContainers() {

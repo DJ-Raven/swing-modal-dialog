@@ -5,7 +5,10 @@ import raven.modal.drawer.menu.AbstractMenuElement;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.*;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
 
 /**
  * This class for draw straight dot line style
@@ -68,7 +71,7 @@ public class DrawerStraightDotLineStyle extends AbstractDrawerLineStyleRenderer 
         if (selectedIndex >= 0) {
             Color selectedColor = getLineColor(component, true);
             g2.setColor(selectedColor);
-            if (lineSelectedPaint && selectedLine != null) {
+            if (lineSelectedPaint) {
                 g2.draw(selectedLine);
             }
             g2.fill(createDot(startX + stroke / 2f, subMenuLocation[selectedIndex], dotSize));

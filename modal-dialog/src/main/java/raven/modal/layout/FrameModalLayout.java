@@ -73,7 +73,7 @@ public class FrameModalLayout implements LayoutManager {
             if (drawerLayoutResponsive != null) {
                 boolean isHorizontalDrawer = drawerLayoutResponsive.isHorizontalDrawer();
                 boolean isOpen = drawerLayoutResponsive.check(parent, isHorizontalDrawer ? width : height);
-                if (isOpen || drawerLayoutResponsive.isShowing() == false) {
+                if (isOpen || !drawerLayoutResponsive.isShowing()) {
                     contentPane.setBounds(0, contentPane.getY(), width, height);
                     drawerLayoutResponsive.revalidateDrawer();
                 } else {

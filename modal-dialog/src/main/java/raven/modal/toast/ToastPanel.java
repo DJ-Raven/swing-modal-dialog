@@ -282,7 +282,7 @@ public class ToastPanel extends JPanel {
             @Override
             public void mouseExited(MouseEvent e) {
                 hover = false;
-                if (toastData.getOption().isPauseDelayOnHover() && toastData.getOption().isAutoClose() && isCurrenPromise() == false) {
+                if (toastData.getOption().isPauseDelayOnHover() && toastData.getOption().isAutoClose() && !isCurrenPromise()) {
                     if (animator == null || !animator.isRunning()) {
                         delayStop();
                     }
@@ -292,7 +292,7 @@ public class ToastPanel extends JPanel {
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (SwingUtilities.isLeftMouseButton(e)) {
-                    if (hover && toastData.getOption().isCloseOnClick() && isCurrenPromise() == false) {
+                    if (hover && toastData.getOption().isCloseOnClick() && !isCurrenPromise()) {
                         stop();
                     }
                 }
@@ -387,7 +387,7 @@ public class ToastPanel extends JPanel {
     }
 
     private boolean isAnimationSupport() {
-        return getOption().isAnimationEnabled() && getOption().isHeavyWeight() == false;
+        return getOption().isAnimationEnabled() && !getOption().isHeavyWeight();
     }
 
     public void start() {
@@ -453,7 +453,7 @@ public class ToastPanel extends JPanel {
                 try {
                     Thread.sleep(toastData.getOption().getDelay());
                     stop();
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignored) {
                 }
             }
         });
@@ -464,7 +464,7 @@ public class ToastPanel extends JPanel {
         if (!showing) {
             return;
         }
-        if (isCurrenPromise() && toastPromise.rejectAble() == false) {
+        if (isCurrenPromise() && !toastPromise.rejectAble()) {
             return;
         }
         if (isAnimationSupport()) {

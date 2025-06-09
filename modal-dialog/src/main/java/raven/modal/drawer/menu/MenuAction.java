@@ -8,7 +8,7 @@ import raven.modal.drawer.item.Item;
 public class MenuAction {
 
     private boolean consume;
-    private Item item;
+    private final Item item;
 
     public MenuAction(Item item) {
         this.item = item;

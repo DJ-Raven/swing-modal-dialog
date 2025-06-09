@@ -140,7 +140,7 @@ public class OptionLayoutUtils {
         int cw = targetSize.width;
         int ch = targetSize.height;
 
-        if ((heavyWeight == false) ||
+        if (!heavyWeight ||
                 (layoutOption.isRelativeToOwner() && layoutOption.getRelativeToOwnerType() == LayoutOption.RelativeToOwnerType.RELATIVE_CONTAINED)) {
             cw = Math.min(cw, width);
             ch = Math.min(ch, height);

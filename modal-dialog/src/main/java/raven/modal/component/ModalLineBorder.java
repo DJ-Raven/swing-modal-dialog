@@ -20,7 +20,6 @@ public class ModalLineBorder extends FlatLineBorder {
         if (lineColor != null) {
             return lineColor;
         }
-        Color color = UIManager.getColor("Component.borderColor");
-        return color;
+        return UIManager.getColor("Component.borderColor");
     }
 }
