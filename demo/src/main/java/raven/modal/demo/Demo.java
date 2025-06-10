@@ -2,6 +2,7 @@ package raven.modal.demo;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 import raven.modal.Drawer;
 import raven.modal.demo.menu.MyDrawerBuilder;
 import raven.modal.demo.system.FormManager;
@@ -29,6 +30,7 @@ public class Demo extends JFrame {
 
     public static void main(String[] args) {
         DemoPreferences.init();
+        FlatRobotoFont.install();
         FlatLaf.registerCustomDefaultsSource("raven.modal.demo.themes");
         DemoPreferences.setupLaf();
         EventQueue.invokeLater(() -> new Demo().setVisible(true));

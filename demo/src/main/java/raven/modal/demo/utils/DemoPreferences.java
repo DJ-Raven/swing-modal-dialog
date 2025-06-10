@@ -70,7 +70,6 @@ public class DemoPreferences {
     }
 
     private static void initScaleAndFont() {
-        FlatRobotoFont.install();
         Font font = FontUtils.getCompositeFont(FlatRobotoFont.FAMILY, Font.PLAIN, 12);
         String scaleFactor = state.get(KEY_SCALE_FACTOR, null);
         if (scaleFactor != null) {
