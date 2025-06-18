@@ -54,12 +54,12 @@ public class ToastLayout implements LayoutManager {
                     ToastPanel toastPanel = (ToastPanel) component;
                     ToastOption option = toastPanel.getToastData().getOption();
                     LayoutOption layoutOption = option.getLayoutOption().createLayoutOption(parent, toastPanel.getOwner());
-                    Rectangle rec = OptionLayoutUtils.getLayoutLocation(parent, null, toastPanel, toastPanel.getAnimate(), layoutOption);
-                    int index = i;
+                    float animate = toastPanel.getEasingAnimate();
+                    Rectangle rec = OptionLayoutUtils.getLayoutLocation(parent, null, toastPanel, animate, layoutOption);
                     int y = rec.y;
-                    if (index > 0) {
+                    if (i > 0) {
                         float ly = getLayoutY(parent, rec.getSize(), layoutOption);
-                        y = getY(components, toastPanel, option.getLayoutOption(), index, rec, baseMargin, ly, toastPanel.getAnimate());
+                        y = getY(components, toastPanel, option.getLayoutOption(), i, rec, baseMargin, ly, animate);
                     } else {
                         baseMargin = UIScale.scale(layoutOption.getMargin());
                     }
@@ -81,19 +81,20 @@ public class ToastLayout implements LayoutManager {
         if (previousToast == null) {
             return rec.y;
         }
+        float previousAnimate = previousToast.getEasingAnimate();
         boolean isVerticalDirection = layoutOption.getDirection().isVerticalDirection();
         double y;
-        float gap = UIScale.scale((float) layoutOption.getGap()) * previousToast.getAnimate();
+        float gap = UIScale.scale((float) layoutOption.getGap()) * previousAnimate;
         if (layoutOption.getDirection().isToBottomDirection()) {
             float h = previousToast.getHeight();
             if (!isVerticalDirection) {
-                h *= previousToast.getAnimate();
+                h *= previousAnimate;
             }
             y = rec.y + previousToast.getY() + h - (baseMargin.top + ly) + gap;
         } else {
             float h;
             if (!isVerticalDirection) {
-                h = rec.height - (previousToast.getHeight() * (1f - previousToast.getAnimate()));
+                h = rec.height - (previousToast.getHeight() * (1f - previousAnimate));
             } else {
                 h = rec.height * (animate);
             }

@@ -19,6 +19,10 @@ public class ToastOption {
         return style;
     }
 
+    public ToastInterpolator getInterpolator() {
+        return interpolator;
+    }
+
     public boolean isAnimationEnabled() {
         return animationEnabled;
     }
@@ -47,9 +51,10 @@ public class ToastOption {
         return delay;
     }
 
-    public ToastOption(ToastLayoutOption layoutOption, ToastStyle style, boolean animationEnabled, boolean heavyWeight, boolean pauseDelayOnHover, boolean autoClose, boolean closeOnClick, int duration, int delay) {
+    public ToastOption(ToastLayoutOption layoutOption, ToastStyle style, ToastInterpolator interpolator, boolean animationEnabled, boolean heavyWeight, boolean pauseDelayOnHover, boolean autoClose, boolean closeOnClick, int duration, int delay) {
         this.layoutOption = layoutOption;
         this.style = style;
+        this.interpolator = interpolator;
         this.animationEnabled = animationEnabled;
         this.heavyWeight = heavyWeight;
         this.pauseDelayOnHover = pauseDelayOnHover;
@@ -64,6 +69,7 @@ public class ToastOption {
 
     private ToastLayoutOption layoutOption = ToastLayoutOption.getDefault();
     private ToastStyle style = ToastStyle.getDefault();
+    private ToastInterpolator interpolator;
     private boolean animationEnabled = true;
     private boolean heavyWeight;
     private boolean pauseDelayOnHover = true;
@@ -79,6 +85,11 @@ public class ToastOption {
 
     public ToastOption setStyle(ToastStyle style) {
         this.style = style;
+        return this;
+    }
+
+    public ToastOption setInterpolator(ToastInterpolator interpolator) {
+        this.interpolator = interpolator;
         return this;
     }
 
@@ -118,6 +129,6 @@ public class ToastOption {
     }
 
     public ToastOption copy() {
-        return new ToastOption(layoutOption.copy(), style.copy(), animationEnabled, heavyWeight, pauseDelayOnHover, autoClose, closeOnClick, duration, delay);
+        return new ToastOption(layoutOption.copy(), style.copy(), interpolator, animationEnabled, heavyWeight, pauseDelayOnHover, autoClose, closeOnClick, duration, delay);
     }
 }

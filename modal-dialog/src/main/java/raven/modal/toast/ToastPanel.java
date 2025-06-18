@@ -28,6 +28,14 @@ import java.awt.event.MouseListener;
  */
 public class ToastPanel extends JPanel {
 
+    public float getEasingAnimate() {
+        ToastInterpolator interpolator = getOption().getInterpolator();
+        if (interpolator == null) {
+            return CubicBezierEasing.STANDARD_EASING.interpolate(animate);
+        }
+        return interpolator.interpolate(animate);
+    }
+
     public float getAnimate() {
         return animate;
     }
@@ -117,9 +125,13 @@ public class ToastPanel extends JPanel {
 
     @Override
     public void paint(Graphics g) {
-        if (animate >= 0 && animate < 1f) {
+        float easingAnimate = getEasingAnimate();
+        if (easingAnimate < 1) {
             Graphics2D g2 = (Graphics2D) g;
-            g2.setComposite(AlphaComposite.SrcOver.derive(animate));
+            if (easingAnimate < 0) {
+                easingAnimate = 0;
+            }
+            g2.setComposite(AlphaComposite.SrcOver.derive(easingAnimate));
         }
         super.paint(g);
         if (snapshotContent != null) {
@@ -420,7 +432,6 @@ public class ToastPanel extends JPanel {
                         }
                     }
                 });
-                animator.setInterpolator(CubicBezierEasing.STANDARD_EASING);
             }
             showing = true;
             animate = 0f;
