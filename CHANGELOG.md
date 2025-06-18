@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.2] - SNAPSHOT
+
+### New features and improvements
+
+- Toast
+    - Add new option `interpolator` for animator
+
 ## [2.5.1] - 2025-06-08
 
 ### Fixed bugs
