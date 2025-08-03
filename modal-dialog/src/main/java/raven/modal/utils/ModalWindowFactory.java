@@ -1,5 +1,6 @@
 package raven.modal.utils;
 
+import com.formdev.flatlaf.ui.FlatNativeMacLibrary;
 import com.formdev.flatlaf.ui.FlatNativeWindowsLibrary;
 import com.formdev.flatlaf.util.SystemInfo;
 import com.formdev.flatlaf.util.UIScale;
@@ -46,6 +47,14 @@ public class ModalWindowFactory {
             return new ModalWindow(owner, contents, x, y);
         }
 
+        if (SystemInfo.isMacOS && isMacOSBorderSupported()) {
+            ModalWindow modalWindow = new ModalWindow(owner, contents, x, y);
+            if (border.getRound() > 0) {
+                setupRoundBorder(modalWindow.window, border);
+            }
+            return modalWindow;
+        }
+
         if (isWindows11BorderSupported()) {
             ModalWindow modalWindow = new ModalWindow(owner, contents, x, y);
             if (border.getRound() > 0) {
@@ -65,8 +74,6 @@ public class ModalWindowFactory {
     }
 
     private boolean isShadowAndRoundBorderSupport() {
-        // for mac-os and linux not yet test
-        // we can use native border provide by flatlaf (next update)
         return ModalUtils.isShadowAndRoundBorderSupport();
     }
 
@@ -74,9 +81,13 @@ public class ModalWindowFactory {
         return SystemInfo.isWindows_11_orLater && FlatNativeWindowsLibrary.isLoaded();
     }
 
+    private boolean isMacOSBorderSupported() {
+        return SystemInfo.isMacOS && FlatNativeMacLibrary.isLoaded();
+    }
+
     private void setupRoundBorder(Window window, ModalWindowBorder border) {
-        int borderCornerRadius = UIScale.scale(border.getRound());
-        int borderWidth = UIScale.scale(border.getBorderWidth());
+        int borderCornerRadius = border.getRound();
+        int borderWidth = border.getBorderWidth();
         Color borderColor;
 
         if (borderWidth > 0) {
@@ -113,6 +124,8 @@ public class ModalWindowFactory {
 
             // set border color
             FlatNativeWindowsLibrary.dwmSetWindowAttributeCOLORREF(hwnd, FlatNativeWindowsLibrary.DWMWA_BORDER_COLOR, borderColor);
+        } else if (SystemInfo.isMacOS) {
+            FlatNativeMacLibrary.setWindowRoundedBorder(window, borderCornerRadius, borderWidth, borderColor != null ? borderColor.getRGB() : 0);
         }
     }
 

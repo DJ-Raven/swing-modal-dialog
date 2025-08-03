@@ -98,7 +98,7 @@ public class ModalBackground extends JComponent {
     }
 
     private int getWindowRoundBorder() {
-        if (SystemInfo.isWindows_11_orLater && !isWindowMaximized()) {
+        if ((SystemInfo.isWindows_11_orLater || SystemInfo.isMacOS) && !isWindowMaximized()) {
             return 8;
         }
         return 0;
