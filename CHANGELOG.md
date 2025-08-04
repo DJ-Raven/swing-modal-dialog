@@ -9,6 +9,11 @@
 - Other
     - MacOS: heavyWeight windows now support rond border using flatlaf native library (PR #40)
 
+### Fixed bugs
+
+- Toast
+    - Fixed wrong reverse order when use heavyWeight
+
 ## [2.5.1] - 2025-06-08
 
 ### Fixed bugs
