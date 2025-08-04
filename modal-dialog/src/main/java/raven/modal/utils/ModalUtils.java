@@ -52,12 +52,12 @@ public class ModalUtils {
     }
 
     public static boolean isShadowAndRoundBorderSupport() {
-        return SystemInfo.isWindows;
+        return SystemInfo.isWindows || SystemInfo.isMacOS;
     }
 
     public static int getToastExtraBorderPadding(ToastOption option) {
         // extra padding apply when use native border
-        if (!option.isHeavyWeight() || !SystemInfo.isWindows_11_orLater) return 0;
+        if (!option.isHeavyWeight() || !(SystemInfo.isWindows_11_orLater || SystemInfo.isMacOS)) return 0;
         int round = UIScale.scale(option.getStyle().getBorderStyle().getRound());
         if (round <= 0) return 0;
         return 2;
@@ -65,7 +65,7 @@ public class ModalUtils {
 
     public static int getToastExtraGap(ToastOption option) {
         // extra gap apply when use native border
-        if (!option.isHeavyWeight() || !SystemInfo.isWindows_11_orLater) return 0;
+        if (!option.isHeavyWeight() || !(SystemInfo.isWindows_11_orLater || SystemInfo.isMacOS)) return 0;
         int round = UIScale.scale(option.getStyle().getBorderStyle().getRound());
         if (round <= 0) return 0;
         return 10;
