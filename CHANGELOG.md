@@ -5,7 +5,9 @@
 ### New features and improvements
 
 - Toast
-    - Add new option `interpolator` for animator
+    - Add new option `interpolator` for animator (PR #38)
+- Other
+    - MacOS: heavyWeight windows now support rond border using flatlaf native library (PR #40)
 
 ## [2.5.1] - 2025-06-08
 
