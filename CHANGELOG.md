@@ -13,6 +13,7 @@
 
 - Toast
     - Fixed wrong reverse order when use heavyWeight
+    - Fixed layout heavyWeight toast when location was set to bottom (PR #41)
 
 ## [2.5.1] - 2025-06-08
 
