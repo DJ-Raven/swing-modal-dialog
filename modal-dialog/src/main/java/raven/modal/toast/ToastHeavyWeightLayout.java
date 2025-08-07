@@ -92,13 +92,14 @@ public class ToastHeavyWeightLayout extends HeavyWeightRelativeLayout {
                 rec.x += modalBorderSize.x;
                 extraY = modalBorderSize.y;
             }
-            modal.setBounds(rec.x, ly + y + extraY, width, height);
             int extraGap = ModalUtils.getToastExtraGap(option);
-            y += rec.height + UIScale.scale(option.getLayoutOption().getGap() + extraGap);
+            int addHeight = rec.height + UIScale.scale(option.getLayoutOption().getGap() + extraGap);
+            if (!isToBottomDirection && i > 0) {
+                ly -= addHeight;
+            }
+            modal.setBounds(rec.x, ly + y + extraY, width, height);
             if (isToBottomDirection) {
-                ly += y;
-            } else {
-                ly -= y;
+                ly += addHeight;
             }
         }
     }
