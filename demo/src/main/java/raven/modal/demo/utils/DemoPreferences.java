@@ -1,11 +1,16 @@
 package raven.modal.demo.utils;
 
-import com.formdev.flatlaf.*;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.IntelliJTheme;
 import com.formdev.flatlaf.util.LoggingFacade;
 import raven.modal.demo.themes.PanelThemes;
 
 import javax.swing.*;
-import java.util.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.prefs.Preferences;
 
 public class DemoPreferences {
@@ -13,12 +18,15 @@ public class DemoPreferences {
     public static final String PREFERENCES_ROOT_PATH = "/raven-flatlaf-demo";
     public static final String KEY_LAF = "laf";
     public static final String KEY_LAF_THEME = "lafTheme";
+    public static final String KEY_ACCENT_COLOR = "accent";
     public static final String KEY_RECENT_SEARCH = "recentSearch";
     public static final String KEY_RECENT_SEARCH_FAVORITE = "recentSearchFavorite";
 
     public static final String RESOURCE_PREFIX = "res:";
 
     public static final String THEME_UI_KEY = "__RaVen.flatlaf.demo.theme";
+
+    public static Color accentColor;
 
     private static Preferences state;
 
@@ -34,6 +42,12 @@ public class DemoPreferences {
         // set look and feel
         try {
             String lafClassName = state.get(KEY_LAF, FlatLightLaf.class.getName());
+            String rgbAccentColor = state.get(KEY_ACCENT_COLOR, null);
+            if (rgbAccentColor != null) {
+                accentColor = new Color(Integer.parseInt(rgbAccentColor), true);
+                FlatLaf.setSystemColorGetter(name -> name.equals("accent") ? accentColor : null);
+            }
+
             if (IntelliJTheme.ThemeLaf.class.getName().equals(lafClassName)) {
                 String theme = state.get(KEY_LAF_THEME, "");
                 if (theme.startsWith(RESOURCE_PREFIX)) {
@@ -106,6 +120,16 @@ public class DemoPreferences {
             List<String> list = new ArrayList<>(Arrays.asList(oldRecent));
             list.remove(value);
             state.put(favorite ? KEY_RECENT_SEARCH_FAVORITE : KEY_RECENT_SEARCH, String.join(",", list));
+        }
+    }
+
+    public static void updateAccentColor(Color color) {
+        if (color != null) {
+            System.out.println(color.getRGB());
+            String rgb = color.getRGB() + "";
+            state.put(KEY_ACCENT_COLOR, rgb);
+        } else {
+            state.remove(KEY_ACCENT_COLOR);
         }
     }
 }
