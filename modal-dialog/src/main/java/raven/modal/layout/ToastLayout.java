@@ -100,7 +100,7 @@ public class ToastLayout implements LayoutManager {
             }
             y = previousToast.getY() - h - gap;
         }
-        return (int) y;
+        return (int) Math.round(y);
     }
 
     private ToastPanel getToastPanel(Component[] components, ToastPanel parentPanel, int index) {
