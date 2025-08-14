@@ -21,6 +21,10 @@ public class ToastStyle {
         return backgroundType;
     }
 
+    public boolean isShowIcon() {
+        return showIcon;
+    }
+
     public boolean isShowLabel() {
         return showLabel;
     }
@@ -54,9 +58,10 @@ public class ToastStyle {
         }
     }
 
-    private ToastStyle(ToastBorderStyle borderStyle, BackgroundType backgroundType, boolean showLabel, boolean iconSeparateLine, boolean showCloseButton, boolean paintTextColor, String promiseLabel, Icon icon) {
+    private ToastStyle(ToastBorderStyle borderStyle, BackgroundType backgroundType, boolean showIcon, boolean showLabel, boolean iconSeparateLine, boolean showCloseButton, boolean paintTextColor, String promiseLabel, Icon icon) {
         this.borderStyle = borderStyle;
         this.backgroundType = backgroundType;
+        this.showIcon = showIcon;
         this.showLabel = showLabel;
         this.iconSeparateLine = iconSeparateLine;
         this.showCloseButton = showCloseButton;
@@ -70,6 +75,7 @@ public class ToastStyle {
 
     private ToastBorderStyle borderStyle = ToastBorderStyle.getDefault();
     private BackgroundType backgroundType = BackgroundType.DEFAULT;
+    private boolean showIcon = true;
     private boolean showLabel;
     private boolean iconSeparateLine;
     private boolean showCloseButton = true;
@@ -84,6 +90,11 @@ public class ToastStyle {
 
     public ToastStyle setBackgroundType(BackgroundType backgroundType) {
         this.backgroundType = backgroundType;
+        return this;
+    }
+
+    public ToastStyle setShowIcon(boolean showIcon) {
+        this.showIcon = showIcon;
         return this;
     }
 
@@ -118,7 +129,7 @@ public class ToastStyle {
     }
 
     public ToastStyle copy() {
-        return new ToastStyle(borderStyle.copy(), backgroundType, showLabel, iconSeparateLine, showCloseButton, paintTextColor, promiseLabel, customIcon);
+        return new ToastStyle(borderStyle.copy(), backgroundType, showIcon, showLabel, iconSeparateLine, showCloseButton, paintTextColor, promiseLabel, customIcon);
     }
 
     public enum BackgroundType {

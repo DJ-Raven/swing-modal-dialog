@@ -237,7 +237,7 @@ public class ToastPanel extends JPanel {
         String columnLayout;
         boolean isShowCloseButton = toastData.getOption().getStyle().isShowCloseButton();
         String closeButtonLayout = isShowCloseButton ? "[]" : "8";
-        if (themesData.icon == null && toastPromise == null && toastData.getOption().getStyle().getCustomIcon() == null) {
+        if (toastPromise == null && (toastData.getOption().getStyle().getCustomIcon() == null && themesData.icon == null || !toastData.getOption().getStyle().isShowIcon())) {
             columnLayout = "10[grow]";
         } else {
             if (toastData.getOption().getStyle().isIconSeparateLine()) {
@@ -365,6 +365,9 @@ public class ToastPanel extends JPanel {
     }
 
     private Icon createIcon(ThemesData themesData) {
+        if (!toastData.getOption().getStyle().isShowIcon()) {
+            return null;
+        }
         if (toastData.getOption().getStyle().getCustomIcon() != null) {
             return toastData.getOption().getStyle().getCustomIcon();
         }
