@@ -185,13 +185,16 @@ public class FormToast extends Form {
         JPanel panel = new JPanel(new MigLayout("wrap"));
         panel.setBorder(new TitledBorder("Other style"));
 
+        chShowIcon = new JCheckBox("Show icon");
         chShowLabel = new JCheckBox("Show label");
         chIconSeparateLine = new JCheckBox("Icon separate line");
         chShowCloseButton = new JCheckBox("Show close button");
         chPaintTextColor = new JCheckBox("Paint text color");
 
+        chShowIcon.setSelected(true);
         chShowCloseButton.setSelected(true);
 
+        panel.add(chShowIcon);
         panel.add(chShowLabel);
         panel.add(chIconSeparateLine);
         panel.add(chShowCloseButton);
@@ -305,6 +308,7 @@ public class FormToast extends Form {
                 .setLocation(ToastLocation.from(h, v))
                 .setRelativeToOwner(chRelativeToOwner.isSelected());
         option.getStyle().setBackgroundType(backgroundType)
+                .setShowIcon(chShowIcon.isSelected())
                 .setShowLabel(chShowLabel.isSelected())
                 .setIconSeparateLine(chIconSeparateLine.isSelected())
                 .setShowCloseButton(chShowCloseButton.isSelected())
@@ -347,6 +351,7 @@ public class FormToast extends Form {
     private JRadioButton jrBorderNone;
 
     // other style
+    private JCheckBox chShowIcon;
     private JCheckBox chShowLabel;
     private JCheckBox chIconSeparateLine;
     private JCheckBox chShowCloseButton;
