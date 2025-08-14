@@ -10,6 +10,7 @@ import net.miginfocom.swing.MigLayout;
 import raven.modal.Toast;
 import raven.modal.component.DropShadowBorder;
 import raven.modal.component.ModalLineBorder;
+import raven.modal.event.ToastCallback;
 import raven.modal.toast.icon.RollingIcon;
 import raven.modal.toast.option.*;
 import raven.modal.utils.ImageSnapshots;
@@ -302,10 +303,25 @@ public class ToastPanel extends JPanel {
             }
 
             @Override
+            public void mousePressed(MouseEvent e) {
+                if (toastData != null) {
+                    toastData.getOption().getEvent().fireMousePressed(e, createToastCallback());
+                }
+            }
+
+            @Override
             public void mouseReleased(MouseEvent e) {
-                if (SwingUtilities.isLeftMouseButton(e)) {
-                    if (hover && toastData.getOption().isCloseOnClick() && !isCurrenPromise()) {
-                        stop();
+                if (hover) {
+                    if (toastData != null) {
+                        toastData.getOption().getEvent().fireMouseReleased(e, createToastCallback());
+                    }
+                    // toastData can be null if callback event invoke close method
+                    if (toastData != null) {
+                        if (SwingUtilities.isLeftMouseButton(e)) {
+                            if (toastData.getOption().isCloseOnClick() && !isCurrenPromise()) {
+                                stop();
+                            }
+                        }
                     }
                 }
             }
@@ -505,6 +521,25 @@ public class ToastPanel extends JPanel {
         } else {
             removeToast();
         }
+    }
+
+    private ToastCallback createToastCallback() {
+        return new ToastCallback() {
+            @Override
+            public void close() {
+                ToastPanel.this.stop();
+            }
+
+            @Override
+            public void closeAllImmediately() {
+                ToastPanel.this.close();
+            }
+
+            @Override
+            public boolean isCurrenPromise() {
+                return ToastPanel.this.isCurrenPromise();
+            }
+        };
     }
 
     private void removeToast() {

@@ -6,6 +6,7 @@
 
 - Toast
     - Add new option `interpolator` for animator (PR #38)
+    - Add new option `event` for toast event listener (issues #42)
 - Other
     - MacOS: heavyWeight windows now support rond border using flatlaf native library (PR #40)
 

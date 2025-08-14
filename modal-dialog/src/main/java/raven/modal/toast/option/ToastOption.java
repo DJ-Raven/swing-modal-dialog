@@ -11,6 +11,10 @@ public class ToastOption {
         return new ToastOption();
     }
 
+    public ToastEvent getEvent() {
+        return event;
+    }
+
     public ToastLayoutOption getLayoutOption() {
         return layoutOption;
     }
@@ -51,7 +55,8 @@ public class ToastOption {
         return delay;
     }
 
-    public ToastOption(ToastLayoutOption layoutOption, ToastStyle style, ToastInterpolator interpolator, boolean animationEnabled, boolean heavyWeight, boolean pauseDelayOnHover, boolean autoClose, boolean closeOnClick, int duration, int delay) {
+    private ToastOption(ToastEvent event, ToastLayoutOption layoutOption, ToastStyle style, ToastInterpolator interpolator, boolean animationEnabled, boolean heavyWeight, boolean pauseDelayOnHover, boolean autoClose, boolean closeOnClick, int duration, int delay) {
+        this.event = event;
         this.layoutOption = layoutOption;
         this.style = style;
         this.interpolator = interpolator;
@@ -67,6 +72,7 @@ public class ToastOption {
     public ToastOption() {
     }
 
+    private ToastEvent event = ToastEvent.getDefault();
     private ToastLayoutOption layoutOption = ToastLayoutOption.getDefault();
     private ToastStyle style = ToastStyle.getDefault();
     private ToastInterpolator interpolator;
@@ -77,6 +83,11 @@ public class ToastOption {
     private boolean closeOnClick;
     private int duration = 350;
     private int delay = 3000;
+
+    public ToastOption setEvent(ToastEvent event) {
+        this.event = event;
+        return this;
+    }
 
     public ToastOption setLayoutOption(ToastLayoutOption layoutOption) {
         this.layoutOption = layoutOption;
@@ -129,6 +140,6 @@ public class ToastOption {
     }
 
     public ToastOption copy() {
-        return new ToastOption(layoutOption.copy(), style.copy(), interpolator, animationEnabled, heavyWeight, pauseDelayOnHover, autoClose, closeOnClick, duration, delay);
+        return new ToastOption(event.copy(), layoutOption.copy(), style.copy(), interpolator, animationEnabled, heavyWeight, pauseDelayOnHover, autoClose, closeOnClick, duration, delay);
     }
 }
