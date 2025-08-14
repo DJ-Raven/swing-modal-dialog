@@ -7,7 +7,9 @@
 - Toast
     - Add new option `interpolator` for animator (PR #38)
     - Add new option `event` for toast event listener (issues #42)
-    - ToastStyle Option: add new option `showIcon` for showing toast icon. by default `true`
+    - ToastStyle Option:
+        - add new option `showIcon` for showing toast icon. by default `true`
+        - add new option `closeIcon` for change default close icon
 - Other
     - MacOS: heavyWeight windows now support rond border using flatlaf native library (PR #40)
 

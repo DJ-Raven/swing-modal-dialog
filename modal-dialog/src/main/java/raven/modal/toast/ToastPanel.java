@@ -403,7 +403,11 @@ public class ToastPanel extends JPanel {
     }
 
     private JButton createCloseButton() {
-        JButton buttonClose = new JButton(new FlatSVGIcon("raven/modal/icon/close.svg", 0.3f));
+        Icon icon = toastData.getOption().getStyle().getCloseIcon();
+        if (icon == null) {
+            icon = new FlatSVGIcon("raven/modal/icon/close.svg", 0.3f);
+        }
+        JButton buttonClose = new JButton(icon);
         buttonClose.setFocusable(false);
         buttonClose.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         buttonClose.putClientProperty(FlatClientProperties.STYLE, "" +
