@@ -13,6 +13,11 @@
 - Other
     - MacOS: heavyWeight windows now support rond border using flatlaf native library (PR #40)
 
+### Changed
+
+- Toast
+    - Reduce close button margin size from `5,5,5,5` to `3,3,3,3`
+
 ### Fixed bugs
 
 - Toast

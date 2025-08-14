@@ -412,7 +412,7 @@ public class ToastPanel extends JPanel {
         buttonClose.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         buttonClose.putClientProperty(FlatClientProperties.STYLE, "" +
                 "arc:999;" +
-                "margin:5,5,5,5;" +
+                "margin:3,3,3,3;" +
                 "borderWidth:0;" +
                 "focusWidth:0;" +
                 "innerFocusWidth:0;" +
