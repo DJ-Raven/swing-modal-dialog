@@ -125,7 +125,6 @@ public class DemoPreferences {
 
     public static void updateAccentColor(Color color) {
         if (color != null) {
-            System.out.println(color.getRGB());
             String rgb = color.getRGB() + "";
             state.put(KEY_ACCENT_COLOR, rgb);
         } else {
