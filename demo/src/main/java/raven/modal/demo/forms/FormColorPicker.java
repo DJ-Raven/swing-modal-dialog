@@ -12,7 +12,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-@SystemForm(name = "ColorPicker", description = "color picker user interface component")
+@SystemForm(name = "Color Picker", description = "color picker user interface component")
 public class FormColorPicker extends Form {
 
     public FormColorPicker() {
