@@ -17,6 +17,7 @@
 
 - Toast
     - Reduce close button margin size from `5,5,5,5` to `3,3,3,3`
+- FlatLaf: update to `v3.6.1`
 
 ### Fixed bugs
 
