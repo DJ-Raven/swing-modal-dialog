@@ -12,7 +12,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.time.LocalTime;
 
-@SystemForm(name = "DateTime", description = "date time picker user interface component")
+@SystemForm(name = "Date Time", description = "date time picker user interface component")
 public class FormDateTime extends Form {
 
     public FormDateTime() {
