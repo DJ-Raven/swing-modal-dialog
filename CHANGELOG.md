@@ -24,6 +24,10 @@
     - Fixed wrong reverse order when use heavyWeight
     - Fixed layout heavyWeight toast when location was set to bottom (PR #41)
 
+### Demo
+
+- Add custom accent color and add new color picker form (PR #43)
+
 ## [2.5.1] - 2025-06-08
 
 ### Fixed bugs
