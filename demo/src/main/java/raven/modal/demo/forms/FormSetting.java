@@ -1,16 +1,20 @@
 package raven.modal.demo.forms;
 
 import com.formdev.flatlaf.*;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import com.formdev.flatlaf.util.LoggingFacade;
 import net.miginfocom.swing.MigLayout;
+import raven.color.ColorPicker;
+import raven.color.component.ColorPaletteType;
 import raven.modal.Drawer;
 import raven.modal.ModalDialog;
 import raven.modal.demo.component.AccentColorIcon;
 import raven.modal.demo.system.Form;
 import raven.modal.demo.system.FormManager;
 import raven.modal.demo.themes.PanelThemes;
+import raven.modal.demo.utils.DemoPreferences;
 import raven.modal.demo.utils.SystemForm;
 import raven.modal.drawer.DrawerBuilder;
 import raven.modal.drawer.renderer.AbstractDrawerLineStyleRenderer;
@@ -184,7 +188,8 @@ public class FormSetting extends Form {
             "Default", "Blue", "Purple", "Red", "Orange", "Yellow", "Green",
     };
     private final JToggleButton[] accentColorButtons = new JToggleButton[accentColorKeys.length];
-    private Color accentColor;
+    private JToggleButton accentColorCustomButton;
+    private JToggleButton oldSelected;
 
     private Component createAccentColor() {
         JPanel panel = new JPanel(new MigLayout());
@@ -193,16 +198,39 @@ public class FormSetting extends Form {
         JToolBar toolBar = new JToolBar();
         toolBar.putClientProperty(FlatClientProperties.STYLE, "" +
                 "hoverButtonGroupBackground:null;");
+
+        boolean selected = false;
         for (int i = 0; i < accentColorButtons.length; i++) {
             accentColorButtons[i] = new JToggleButton(new AccentColorIcon(accentColorKeys[i]));
             accentColorButtons[i].setToolTipText(accentColorNames[i]);
             accentColorButtons[i].addActionListener(this::accentColorChanged);
             toolBar.add(accentColorButtons[i]);
             group.add(accentColorButtons[i]);
+            if (!selected) {
+                if (DemoPreferences.accentColor == null) {
+                    if (i == 0) {
+                        accentColorButtons[i].setSelected(true);
+                        oldSelected = accentColorButtons[i];
+                        selected = true;
+                    }
+                } else {
+                    Color color = UIManager.getColor(accentColorKeys[i]);
+                    if (DemoPreferences.accentColor.equals(color)) {
+                        accentColorButtons[i].setSelected(true);
+                        oldSelected = accentColorButtons[i];
+                        selected = true;
+                    }
+                }
+            }
         }
-        accentColorButtons[0].setSelected(true);
+        accentColorCustomButton = createCustomAccentColor();
+        group.add(accentColorCustomButton);
+        toolBar.add(accentColorCustomButton);
+        if (!selected) {
+            accentColorCustomButton.setSelected(true);
+        }
 
-        FlatLaf.setSystemColorGetter(name -> name.equals("accent") ? accentColor : null);
+        FlatLaf.setSystemColorGetter(name -> name.equals("accent") ? DemoPreferences.accentColor : null);
         UIManager.addPropertyChangeListener(e -> {
             if ("lookAndFeel".equals(e.getPropertyName())) {
                 updateAccentColorButtons();
@@ -211,6 +239,25 @@ public class FormSetting extends Form {
         updateAccentColorButtons();
         panel.add(toolBar);
         return panel;
+    }
+
+    private JToggleButton createCustomAccentColor() {
+        JToggleButton button = new JToggleButton(new FlatSVGIcon("raven/modal/demo/icons/color.svg", 16, 16));
+        button.addActionListener(e -> {
+            ColorPicker colorPicker = new ColorPicker(DemoPreferences.accentColor);
+            colorPicker.applyColorPaletteType(ColorPaletteType.TAILWIND);
+            Color color = ColorPicker.showDialog(this, "Select Color", colorPicker);
+            if (color != null) {
+                DemoPreferences.accentColor = color;
+                oldSelected = null;
+                applyAccentColor();
+            } else {
+                if (oldSelected != null) {
+                    oldSelected.setSelected(true);
+                }
+            }
+        });
+        return button;
     }
 
     private Component createDrawerStyle() {
@@ -309,14 +356,20 @@ public class FormSetting extends Form {
         for (int i = 0; i < accentColorButtons.length; i++) {
             if (accentColorButtons[i].isSelected()) {
                 accentColorKey = accentColorKeys[i];
+                oldSelected = accentColorButtons[i];
                 break;
             }
         }
-        accentColor = (accentColorKey != null && accentColorKey != accentColorKeys[0])
+        DemoPreferences.accentColor = (accentColorKey != null && accentColorKey != accentColorKeys[0])
                 ? UIManager.getColor(accentColorKey)
                 : null;
+        applyAccentColor();
+    }
+
+    private void applyAccentColor() {
         Class<? extends LookAndFeel> lafClass = UIManager.getLookAndFeel().getClass();
         try {
+            DemoPreferences.updateAccentColor(DemoPreferences.accentColor);
             FlatLaf.setup(lafClass.getDeclaredConstructor().newInstance());
             FlatLaf.updateUI();
         } catch (Exception ex) {
@@ -335,6 +388,9 @@ public class FormSetting extends Form {
                         lafClass == FlatMacDarkLaf.class;
         for (int i = 0; i < accentColorButtons.length; i++) {
             accentColorButtons[i].setEnabled(isAccentColorSupported);
+        }
+        if (accentColorCustomButton != null) {
+            accentColorCustomButton.setEnabled(isAccentColorSupported);
         }
     }
 

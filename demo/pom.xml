@@ -29,6 +29,11 @@
             <artifactId>swing-datetime-picker</artifactId>
             <version>2.1.2</version>
         </dependency>
+        <dependency>
+            <groupId>io.github.dj-raven</groupId>
+            <artifactId>swing-color-picker</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.jfree</groupId>
