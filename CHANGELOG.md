@@ -27,6 +27,7 @@
 ### Demo
 
 - Add custom accent color and add new color picker form (PR #43)
+- DateTimePicker: library update to `v2.1.3`
 
 ## [2.5.1] - 2025-06-08
 
