@@ -1,4 +1,4 @@
-package test.combobox;
+package raven.modal.demo.component;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.ui.FlatComboBoxUI;
@@ -6,12 +6,15 @@ import com.formdev.flatlaf.ui.FlatComboBoxUI;
 import javax.swing.*;
 import java.awt.*;
 
-public class EmbeddedComboBox<T> extends JComboBox {
+public class EmbeddedComboBox<T> extends JComboBox<T> {
 
     private JComponent embeddedComponent;
 
-    public EmbeddedComboBox(T[] item) {
-        super(item);
+    public EmbeddedComboBox(T[] items) {
+        super(items);
+    }
+
+    public EmbeddedComboBox() {
         setUI(new EmbeddedComboBoxUI());
     }
 
@@ -29,7 +32,7 @@ public class EmbeddedComboBox<T> extends JComboBox {
         ((EmbeddedComboBoxUI) getUI()).setEmbeddedComponent(embeddedComponent = component);
     }
 
-    class EmbeddedComboBoxUI extends FlatComboBoxUI {
+    private static class EmbeddedComboBoxUI extends FlatComboBoxUI {
 
         private final JPanel panel;
 

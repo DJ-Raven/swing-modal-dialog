@@ -2,6 +2,7 @@ package test.combobox;
 
 import net.miginfocom.swing.MigLayout;
 import raven.extras.LightDarkButton;
+import raven.modal.demo.component.EmbeddedComboBox;
 import test.base.BaseFrame;
 
 import javax.swing.*;
@@ -16,7 +17,7 @@ public class TestComboBox extends BaseFrame {
         lightDarkButton.installAutoLafChangeListener();
         add(lightDarkButton);
 
-        EmbeddedComboBox comboBox = new EmbeddedComboBox(new Object[]{
+        EmbeddedComboBox<Object> comboBox = new EmbeddedComboBox<>(new Object[]{
                 "The constraints used are all entered as Strings",
                 "or through chained API method calls."
         });

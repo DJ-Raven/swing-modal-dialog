@@ -6,8 +6,9 @@ import net.miginfocom.swing.MigLayout;
 import raven.modal.ModalDialog;
 import raven.modal.component.SimpleModalBorder;
 import raven.modal.demo.component.LabelButton;
+import raven.modal.demo.model.ModelCountry;
 import raven.modal.demo.simple.SimpleInputForms;
-import raven.modal.demo.simple.SimpleInputForms2;
+import raven.modal.demo.simple.SimpleInputFormsCountry;
 import raven.modal.demo.simple.SimpleMessageModal;
 import raven.modal.demo.system.Form;
 import raven.modal.demo.utils.SystemForm;
@@ -230,16 +231,32 @@ public class FormModal extends Form {
 
     private void showModalSlide(Option option) {
         final String id = "input";
+        SimpleInputForms simpleInputForms = new SimpleInputForms();
         ModalDialog.showModal(this, new SimpleModalBorder(
-                new SimpleInputForms(), "Sample Input Forms", SimpleModalBorder.YES_NO_CANCEL_OPTION,
+                simpleInputForms, "Sample Input Forms", SimpleModalBorder.YES_NO_CANCEL_OPTION,
                 (controller, action) -> {
-                    if (action == SimpleModalBorder.YES_OPTION) {
-
+                    if (action == SimpleModalBorder.OPENED) {
+                        simpleInputForms.formOpen();
+                    } else if (action == SimpleInputForms.NEW_COUNTRY) {
                         // consume no close modal
                         controller.consume();
 
                         // push modal
-                        ModalDialog.pushModal(new SimpleModalBorder(new SimpleInputForms2(), "New Input Forms", SimpleModalBorder.YES_NO_OPTION, null), id);
+                        SimpleInputFormsCountry formsCountry = new SimpleInputFormsCountry();
+                        ModalDialog.pushModal(new SimpleModalBorder(formsCountry, "New Country", SimpleModalBorder.YES_NO_OPTION, (c1, a1) -> {
+                            if (a1 == SimpleModalBorder.OPENED) {
+
+                                // call form open to focus the form
+                                formsCountry.formOpen();
+                            } else if (a1 == SimpleModalBorder.YES_OPTION) {
+                                ModelCountry country = formsCountry.getInputData();
+                                c1.consume();
+                                if (country != null) {
+                                    simpleInputForms.newCountryCreated(country);
+                                    ModalDialog.popModel(id);
+                                }
+                            }
+                        }), id);
                     }
                 }), option, id);
     }

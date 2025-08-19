@@ -1,15 +1,21 @@
 package raven.modal.demo.simple;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.component.ModalBorderAction;
 import raven.modal.component.SimpleModalBorder;
+import raven.modal.demo.component.EmbeddedComboBox;
+import raven.modal.demo.model.ModelCountry;
 
 import javax.swing.*;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class SimpleInputForms extends JPanel {
+
+    public static int NEW_COUNTRY = 30;
 
     public SimpleInputForms() {
         init();
@@ -18,10 +24,13 @@ public class SimpleInputForms extends JPanel {
     private void init() {
         setLayout(new MigLayout("fillx,wrap,insets 5 30 5 30,width 400", "[fill]", ""));
         txtFirstName = new JTextField();
+
         JTextField txtLastName = new JTextField();
         JTextField txtCompany = new JTextField();
         JTextField txtEmail = new JTextField();
-        JComboBox comboCountry = new JComboBox();
+        comboCountry = createEmbeddedComboBox(createCountryInitData(), e -> {
+            ModalBorderAction.getModalBorderAction(this).doAction(NEW_COUNTRY);
+        });
 
         JTextArea txtAddress = new JTextArea();
         txtAddress.setWrapStyleWord(true);
@@ -62,7 +71,6 @@ public class SimpleInputForms extends JPanel {
                 }
             }
         });
-        initComboItem(comboCountry);
     }
 
     private void createTitle(String title) {
@@ -73,22 +81,36 @@ public class SimpleInputForms extends JPanel {
         add(new JSeparator(), "height 2!,gapy 0 0");
     }
 
-    private void initComboItem(JComboBox combo) {
-        combo.addItem("United States");
-        combo.addItem("Canada");
-        combo.addItem("Brazil");
-        combo.addItem("United Kingdom");
-        combo.addItem("France");
-        combo.addItem("Germany");
-        combo.addItem("Australia");
-        combo.addItem("Japan");
-        combo.addItem("China");
-        combo.addItem("India");
+    private EmbeddedComboBox<ModelCountry> createEmbeddedComboBox(ModelCountry[] initData, ActionListener event) {
+        EmbeddedComboBox<ModelCountry> embeddedComboBox = new EmbeddedComboBox<>(initData);
+        JToolBar toolbar = new JToolBar();
+        JButton button = new JButton(new FlatSVGIcon("raven/modal/demo/icons/add.svg", 0.4f));
+        button.addActionListener(event);
+        toolbar.add(button);
+        toolbar.addSeparator();
+        embeddedComboBox.setEmbedded(toolbar);
+        return embeddedComboBox;
+    }
+
+    private ModelCountry[] createCountryInitData() {
+        return new ModelCountry[]{
+                new ModelCountry("Cambodia", "KH", "KHM", "Phnom Penh", "Asia"),
+                new ModelCountry("United States", "US", "USA", "Washington, D.C.", "Americas"),
+                new ModelCountry("France", "FR", "FRA", "Paris", "Europe"),
+                new ModelCountry("Japan", "JP", "JPN", "Tokyo", "Asia"),
+                new ModelCountry("Brazil", "BR", "BRA", "Brasília", "Americas")
+        };
     }
 
     public void formOpen() {
         txtFirstName.grabFocus();
     }
 
+    public void newCountryCreated(ModelCountry country) {
+        comboCountry.addItem(country);
+        comboCountry.setSelectedItem(country);
+    }
+
     private JTextField txtFirstName;
+    private EmbeddedComboBox<ModelCountry> comboCountry;
 }
