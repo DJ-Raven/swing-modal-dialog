@@ -64,10 +64,10 @@ public class FormTable extends Form {
     }
 
     private Component createCustomTable() {
-        JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][]0[fill,grow]"));
+        JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][fill,grow]"));
 
         // create table model
-        Object columns[] = new Object[]{"SELECT", "#", "NAME", "DATE", "SALARY", "POSITION", "DESCRIPTION"};
+        Object[] columns = new Object[]{"SELECT", "#", "NAME", "DATE", "SALARY", "POSITION", "DESCRIPTION"};
         DefaultTableModel model = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -124,7 +124,7 @@ public class FormTable extends Form {
 
         // style
         panel.putClientProperty(FlatClientProperties.STYLE, "" +
-                "arc:20;" +
+                "arc:10;" +
                 "background:$Table.background;");
         table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
                 "height:30;" +
@@ -163,10 +163,10 @@ public class FormTable extends Form {
     }
 
     private Component createBasicTable() {
-        JPanel panelTable = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[]0[fill,grow]"));
+        JPanel panelTable = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][fill,grow]"));
 
         // create table model
-        Object columns[] = new Object[]{"#", "NAME", "LOCATION", "DATE", "SALARY", "POSITION", "DESCRIPTION"};
+        Object[] columns = new Object[]{"#", "NAME", "LOCATION", "DATE", "SALARY", "POSITION", "DESCRIPTION"};
         DefaultTableModel model = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -200,7 +200,7 @@ public class FormTable extends Form {
 
         // style
         panelTable.putClientProperty(FlatClientProperties.STYLE, "" +
-                "arc:20;" +
+                "arc:10;" +
                 "background:$Table.background;");
         table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
                 "height:30;" +

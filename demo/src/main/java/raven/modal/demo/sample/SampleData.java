@@ -456,7 +456,7 @@ public class SampleData {
         if (defaultIcon) {
             return new ImageIcon(SampleData.class.getResource("/raven/modal/demo/images/" + name));
         } else {
-            AvatarIcon avatarIcon = new AvatarIcon(SampleData.class.getResource("/raven/modal/demo/images/" + name), 55, 55, 3f);
+            AvatarIcon avatarIcon = new AvatarIcon(SampleData.class.getResource("/raven/modal/demo/images/" + name), 45, 45, 3f);
             avatarIcon.setType(AvatarIcon.Type.MASK_SQUIRCLE);
             return avatarIcon;
         }
