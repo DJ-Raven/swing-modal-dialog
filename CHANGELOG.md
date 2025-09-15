@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.5.3] - SNAPSHOT
+
+### Changed
+
+- Modal dialog: changed round border from `20` to `10`
+
+### Demo
+
+- add custom accent color and add new color picker form (PR #43)
+- add new pagination to form table (PR #44)
+
 ## [2.5.2] - 2025-08-16
 
 ### New features and improvements
