@@ -5,6 +5,9 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.ModalDialog;
 import raven.modal.component.SimpleModalBorder;
+import raven.modal.demo.component.pagination.Pagination;
+import raven.modal.demo.component.pagination.csv.CSVDataReader;
+import raven.modal.demo.component.pagination.csv.ResponseCSV;
 import raven.modal.demo.model.ModelEmployee;
 import raven.modal.demo.model.ModelProfile;
 import raven.modal.demo.sample.SampleData;
@@ -20,6 +23,8 @@ import raven.modal.option.Option;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.io.IOException;
+import java.text.DecimalFormat;
 
 @SystemForm(name = "Table", description = "table is a user interface component", tags = {"list"})
 public class FormTable extends Form {
@@ -32,6 +37,42 @@ public class FormTable extends Form {
         setLayout(new MigLayout("fillx,wrap", "[fill]", "[][fill,grow]"));
         add(createInfo("Custom Table", "A table is a user interface component that displays a collection of records in a structured, tabular format. It allows users to view, sort, and manage data or other resources.", 1));
         add(createTab(), "gapx 7 7");
+    }
+
+    @Override
+    public void formInit() {
+        try {
+            data = CSVDataReader.load(getClass().getResourceAsStream("/raven/modal/demo/data/customers-1000.csv"));
+            DefaultTableModel model = new DefaultTableModel(data.getColumns(), 0);
+            basicTable.setModel(model);
+
+            // table column size
+            basicTable.getColumnModel().getColumn(0).setMaxWidth(50);
+
+            formRefresh();
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void formRefresh() {
+        showData(pagination.getSelectedPage());
+    }
+
+    private void showData(int page) {
+        if (data != null) {
+            ResponseCSV res = data.getData(page, limit);
+            System.out.println("Load page: " + res.getTotal());
+            lbTotalPage.setText(DecimalFormat.getInstance().format(res.getTotal()));
+            pagination.getModel().setPageRange(res.getPage(), res.getPageSize());
+
+            DefaultTableModel model = (DefaultTableModel) basicTable.getModel();
+            model.setRowCount(0);
+            for (String[] row : res.getData()) {
+                model.addRow(row);
+            }
+        }
     }
 
     private JPanel createInfo(String title, String description, int level) {
@@ -64,7 +105,7 @@ public class FormTable extends Form {
     }
 
     private Component createCustomTable() {
-        JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][fill,grow]"));
+        JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 15 0 10 0", "[fill]", "[][][fill,grow]"));
 
         // create table model
         Object[] columns = new Object[]{"SELECT", "#", "NAME", "DATE", "SALARY", "POSITION", "DESCRIPTION"};
@@ -163,7 +204,7 @@ public class FormTable extends Form {
     }
 
     private Component createBasicTable() {
-        JPanel panelTable = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][fill,grow]"));
+        JPanel panelTable = new JPanel(new MigLayout("fillx,wrap,insets 15 0 10 0", "[fill]", "[][fill,grow][]"));
 
         // create table model
         Object[] columns = new Object[]{"#", "NAME", "LOCATION", "DATE", "SALARY", "POSITION", "DESCRIPTION"};
@@ -180,12 +221,6 @@ public class FormTable extends Form {
         // table scroll
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
-
-        // table option
-        table.getColumnModel().getColumn(0).setMaxWidth(50);
-        table.getColumnModel().getColumn(1).setPreferredWidth(100);
-        table.getColumnModel().getColumn(5).setPreferredWidth(100);
-        table.getColumnModel().getColumn(6).setPreferredWidth(250);
 
         // alignment table header
         table.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(table) {
@@ -228,10 +263,24 @@ public class FormTable extends Form {
         panelTable.add(title, "gapx 20");
         panelTable.add(scrollPane);
 
-        // sample data
-        for (ModelEmployee d : SampleData.getSampleBasicEmployeeData()) {
-            model.addRow(d.toTableRowBasic(table.getRowCount() + 1));
-        }
+        // create pagination
+
+        pagination = new Pagination(11, 1, 1);
+        pagination.addActionListener(e -> {
+            showData(pagination.getSelectedPage());
+        });
+
+        JPanel panelPage = new JPanel(new MigLayout("insets 0 15 0 15", "[][]push[]"));
+        lbTotalPage = new JLabel("0");
+        panelPage.putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:null;");
+        panelPage.add(new JLabel("Total:"));
+        panelPage.add(lbTotalPage);
+        panelPage.add(pagination);
+
+        panelTable.add(panelPage);
+
+        basicTable = table;
         return panelTable;
     }
 
@@ -267,4 +316,10 @@ public class FormTable extends Form {
 
                 }), option);
     }
+
+    private CSVDataReader data;
+    private int limit = 50;
+    private Pagination pagination;
+    private JTable basicTable;
+    private JLabel lbTotalPage;
 }
