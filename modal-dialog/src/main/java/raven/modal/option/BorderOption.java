@@ -52,7 +52,7 @@ public class BorderOption {
     public BorderOption() {
     }
 
-    private int round = 20;
+    private int round = 10;
     private Insets shadowSize = new Insets(0, 0, 0, 0);
     private Color shadowColor;
     private float shadowOpacity = -1;
