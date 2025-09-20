@@ -63,7 +63,6 @@ public class FormTable extends Form {
     private void showData(int page) {
         if (data != null) {
             ResponseCSV res = data.getData(page, limit);
-            System.out.println("Load page: " + res.getTotal());
             lbTotalPage.setText(DecimalFormat.getInstance().format(res.getTotal()));
             pagination.getModel().setPageRange(res.getPage(), res.getPageSize());
 
@@ -266,12 +265,13 @@ public class FormTable extends Form {
         // create pagination
 
         pagination = new Pagination(11, 1, 1);
-        pagination.addActionListener(e -> {
+        pagination.addChangeListener(e -> {
             showData(pagination.getSelectedPage());
         });
-
-        JPanel panelPage = new JPanel(new MigLayout("insets 0 15 0 15", "[][]push[]"));
+        JPanel panelPage = new JPanel(new MigLayout("insets 5 15 5 15", "[][]push[]"));
         lbTotalPage = new JLabel("0");
+        pagination.putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:null;");
         panelPage.putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:null;");
         panelPage.add(new JLabel("Total:"));

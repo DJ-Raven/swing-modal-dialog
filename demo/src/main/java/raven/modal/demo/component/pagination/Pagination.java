@@ -1,8 +1,6 @@
 package raven.modal.demo.component.pagination;
 
-import com.formdev.flatlaf.FlatClientProperties;
-import com.formdev.flatlaf.extras.FlatSVGIcon;
-import net.miginfocom.swing.MigLayout;
+import com.formdev.flatlaf.util.UIScale;
 import raven.modal.demo.component.pagination.event.PaginationModelEvent;
 import raven.modal.demo.component.pagination.event.PaginationModelListener;
 
@@ -10,15 +8,23 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.NumberFormat;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-public class Pagination extends JComponent implements PaginationModelListener {
+public class Pagination extends JPanel implements PaginationModelListener {
 
-    private PaginationModel paginationModel;
     protected transient ChangeEvent changeEvent = null;
+    private final CellRendererPane rendererPane;
+    private PaginationModel paginationModel;
+    private PaginationItemRenderer pageRenderer;
     private int maxItem;
+    private boolean showNextAndPreviousButton = true;
+    private boolean hideWhenNoPage = true;
+    private Dimension itemSize = new Dimension(32, 32);
+    private int itemGap = 1;
+
+    private int focusIndex = -1;
+    private int pressedIndex = -1;
 
     public Pagination() {
         this(7);
@@ -40,6 +46,69 @@ public class Pagination extends JComponent implements PaginationModelListener {
     public Pagination(PaginationModel model) {
         setLayout(new BorderLayout());
         setModel(model);
+        rendererPane = new CellRendererPane();
+        pageRenderer = new DefaultPaginationItemRenderer();
+
+        installListener();
+    }
+
+    private void installListener() {
+        MouseAdapter mouseListener = new MouseAdapter() {
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    setPressedIndex(getIndexAt(e.getX(), e.getY()));
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    int index = getIndexAt(e.getX(), e.getY());
+                    boolean action = index != -1 && index == focusIndex;
+                    setPressedIndex(-1);
+                    setFocusIndex(index);
+                    if (action) {
+                        Page page = getPageAt(index);
+                        if (page.getType() == Page.Type.PAGE || page.getType() == Page.Type.ELLIPSIS) {
+                            setSelectedPage(page.getValue());
+                        } else if (page.getType() == Page.Type.PREVIOUS) {
+                            setSelectedPage(getSelectedPage() - 1);
+                        } else if (page.getType() == Page.Type.NEXT) {
+                            setSelectedPage(getSelectedPage() + 1);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                setFocusIndex(getIndexAt(e.getX(), e.getY()));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                setFocusIndex(-1);
+            }
+
+            private void setFocusIndex(int index) {
+                if (focusIndex != index) {
+                    focusIndex = index;
+                    repaint();
+                }
+            }
+
+            private void setPressedIndex(int index) {
+                if (pressedIndex != index) {
+                    pressedIndex = index;
+                    repaint();
+                }
+            }
+        };
+
+        addMouseListener(mouseListener);
+        addMouseMotionListener(mouseListener);
     }
 
     public PaginationModel getModel() {
@@ -57,6 +126,60 @@ public class Pagination extends JComponent implements PaginationModelListener {
         }
         updatePaginationComponent();
         firePropertyChange("model", oldValue, model);
+    }
+
+    public PaginationItemRenderer getPageRenderer() {
+        return pageRenderer;
+    }
+
+    public void setPageRenderer(PaginationItemRenderer pageRenderer) {
+        this.pageRenderer = pageRenderer;
+    }
+
+    public boolean isShowNextAndPreviousButton() {
+        return showNextAndPreviousButton;
+    }
+
+    public void setShowNextAndPreviousButton(boolean showNextAndPreviousButton) {
+        if (this.showNextAndPreviousButton != showNextAndPreviousButton) {
+            this.showNextAndPreviousButton = showNextAndPreviousButton;
+            repaint();
+            revalidate();
+        }
+    }
+
+    public boolean isHideWhenNoPage() {
+        return hideWhenNoPage;
+    }
+
+    public void setHideWhenNoPage(boolean hideWhenNoPage) {
+        if (this.hideWhenNoPage != hideWhenNoPage) {
+            this.hideWhenNoPage = hideWhenNoPage;
+            repaint();
+            revalidate();
+        }
+    }
+
+    public Dimension getItemSize() {
+        return itemSize;
+    }
+
+    public void setItemSize(Dimension itemSize) {
+        this.itemSize = itemSize;
+        repaint();
+        revalidate();
+    }
+
+    public int getItemGap() {
+        return itemGap;
+    }
+
+    public void setItemGap(int itemGap) {
+        if (this.itemGap != itemGap) {
+            this.itemGap = itemGap;
+            repaint();
+            revalidate();
+        }
     }
 
     public int getSelectedPage() {
@@ -79,29 +202,12 @@ public class Pagination extends JComponent implements PaginationModelListener {
         return maxItem;
     }
 
-    public void addActionListener(ActionListener listener) {
-        listenerList.add(ActionListener.class, listener);
-    }
-
-    public void removeActionListener(ActionListener listener) {
-        listenerList.remove(ActionListener.class, listener);
-    }
-
     public void addChangeListener(ChangeListener listener) {
         listenerList.add(ChangeListener.class, listener);
     }
 
     public void removeChangeListener(ChangeListener listener) {
         listenerList.remove(ChangeListener.class, listener);
-    }
-
-    public void fireActionPerformed(ActionEvent event) {
-        Object[] listeners = listenerList.getListenerList();
-        for (int i = listeners.length - 2; i >= 0; i -= 2) {
-            if (listeners[i] == ActionListener.class) {
-                ((ActionListener) listeners[i + 1]).actionPerformed(event);
-            }
-        }
     }
 
     protected void fireStateChanged() {
@@ -116,104 +222,6 @@ public class Pagination extends JComponent implements PaginationModelListener {
         }
     }
 
-    private void updatePaginationComponent() {
-        removeAll();
-        add(createPagination());
-        repaint();
-        revalidate();
-    }
-
-    protected Component createPagination() {
-        JPanel panel = new JPanel(new MigLayout("", "[fill,sg]", "[fill]"));
-        panel.setOpaque(false);
-        // create previous
-        Component previous = createPreviousComponent();
-        if (previous != null) {
-            if (!getModel().hasPrevious()) {
-                previous.setEnabled(false);
-            }
-            panel.add(previous);
-        }
-
-        // create page item
-        Page[] pages = getModel().getPagination();
-        for (Page page : pages) {
-            panel.add(createPageItemComponent(page));
-        }
-
-        // create next
-        Component next = createNextComponent();
-        if (next != null) {
-            if (!getModel().hasNext()) {
-                next.setEnabled(false);
-            }
-            panel.add(next);
-        }
-        return panel;
-    }
-
-    protected Component createPageItemComponent(Page page) {
-        PageItem pageItem = new PageItem(page);
-        pageItem.setFocusable(false);
-        installPageItemListeners(pageItem);
-        installPageItemStyle(pageItem, page);
-        return pageItem;
-    }
-
-    protected Component createPreviousComponent() {
-        JButton button = new JButton();
-        button.setFocusable(false);
-        button.setIcon(new FlatSVGIcon("raven/modal/demo/icons/pagination/back.svg", 0.25f)
-                .setColorFilter(new FlatSVGIcon.ColorFilter(color -> button.getForeground())));
-        installPreviousButtonListeners(button);
-        installPreviousButtonStyle(button);
-        return button;
-    }
-
-    protected Component createNextComponent() {
-        JButton button = new JButton();
-        button.setFocusable(false);
-        button.setIcon(new FlatSVGIcon("raven/modal/demo/icons/pagination/next.svg", 0.25f)
-                .setColorFilter(new FlatSVGIcon.ColorFilter(color -> button.getForeground())));
-        installNextButtonListeners(button);
-        installNextButtonStyle(button);
-        return button;
-    }
-
-    protected void installPageItemListeners(PageItem item) {
-        item.addActionListener(e -> {
-            setSelectedPage(item.getPage().getValue());
-            fireActionPerformed(e);
-        });
-    }
-
-    protected void installPreviousButtonListeners(JButton button) {
-        button.addActionListener(e -> {
-            setSelectedPage(getSelectedPage() - 1);
-            fireActionPerformed(e);
-        });
-    }
-
-    protected void installNextButtonListeners(JButton button) {
-        button.addActionListener(e -> {
-            setSelectedPage(getSelectedPage() + 1);
-            fireActionPerformed(e);
-        });
-    }
-
-    protected void installPageItemStyle(JButton button, Page page) {
-        boolean selected = page.getValue() == getSelectedPage();
-        button.putClientProperty(FlatClientProperties.STYLE_CLASS, selected ? "pageItemSelected" : "pageItem");
-    }
-
-    protected void installPreviousButtonStyle(JButton button) {
-        button.putClientProperty(FlatClientProperties.STYLE_CLASS, "pagePrevious");
-    }
-
-    protected void installNextButtonStyle(JButton button) {
-        button.putClientProperty(FlatClientProperties.STYLE_CLASS, "pageNext");
-    }
-
     @Override
     public void paginationModelChanged(PaginationModelEvent event) {
         updatePaginationComponent();
@@ -222,26 +230,132 @@ public class Pagination extends JComponent implements PaginationModelListener {
         }
     }
 
-    public static class PageItem extends JButton {
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        paintImpl(g);
+    }
 
-        private final NumberFormat format = NumberFormat.getNumberInstance();
-        private Page page;
+    private void paintImpl(Graphics g) {
+        Shape clip = g.getClip();
+        Page[] pages = getModel().getPagination();
+        int size = pages.length;
 
-        public PageItem(Page page) {
-            setPage(page);
-        }
-
-        public Page getPage() {
-            return page;
-        }
-
-        public void setPage(Page page) {
-            this.page = page;
-            if (page.getType() == Page.Type.PAGE) {
-                setText(format.format(page.getValue()));
-            } else {
-                setText("...");
+        boolean isCreateNextAndPrevious = checkCreateNextAndPreviousButton(size);
+        int index = -1;
+        if (isCreateNextAndPrevious) {
+            // create previous button
+            Page previousPage = new Page(-1, Page.Type.PREVIOUS);
+            int pageIndex = ++index;
+            Rectangle rec = rectangleAt(pageIndex);
+            if (clip == null || clip.intersects(rec)) {
+                paintItem(g, previousPage, pageIndex, rec);
             }
         }
+
+        // create item page
+        for (int i = 0; i < size; i++) {
+            Page page = pages[i];
+            int pageIndex = ++index;
+            Rectangle rec = rectangleAt(pageIndex);
+            if (clip == null || clip.intersects(rec)) {
+                paintItem(g, page, pageIndex, rec);
+            }
+        }
+
+        if (isCreateNextAndPrevious) {
+            // create next button
+            Page nextPage = new Page(1, Page.Type.NEXT);
+            int pageIndex = ++index;
+            Rectangle rec = rectangleAt(pageIndex);
+            if (clip == null || clip.intersects(rec)) {
+                paintItem(g, nextPage, pageIndex, rec);
+            }
+        }
+
+        rendererPane.removeAll();
+    }
+
+    private void paintItem(Graphics g, Page page, int index, Rectangle rec) {
+        boolean isSelected = page.getType() == Page.Type.PAGE && getSelectedPage() == page.getValue();
+        Component c = pageRenderer.getPaginationItemRendererComponent(this, page, isSelected, index == pressedIndex, index == focusIndex, index);
+        rendererPane.paintComponent(g, c, this, rec);
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        if (isPreferredSizeSet()) {
+            return super.getPreferredSize();
+        }
+        return paginationPreferredSize();
+    }
+
+    private Dimension paginationPreferredSize() {
+        Insets insets = getInsets();
+        int width = insets.left + insets.right;
+        int height = insets.top + insets.bottom;
+        int size = getModel().getPagination().length;
+        if (size > 0) {
+            int totalGap = (size - 1) * scale(itemGap);
+            width += (scale(itemSize.width) * size) + totalGap;
+            height += (scale(itemSize.height));
+        }
+
+        if (checkCreateNextAndPreviousButton(size)) {
+            int addGap = 2;
+            if (size == 0) {
+                height += scale(itemSize.height);
+                addGap = 1;
+            }
+            width += scale((itemSize.width * 2) + (itemGap * addGap));
+        }
+        return new Dimension(width, height);
+    }
+
+    private Rectangle rectangleAt(int index) {
+        Insets insets = getInsets();
+        int width = scale(itemSize.width);
+        int height = scale(itemSize.height);
+        int gap = scale(itemGap);
+        int x = insets.left + (width * index) + (gap * index);
+        int y = insets.top;
+        return new Rectangle(x, y, width, height);
+    }
+
+    private int getIndexAt(int x, int y) {
+        Insets insets = getInsets();
+        int index = (x - insets.left) / (scale(itemSize.width + itemGap));
+        if (rectangleAt(index).contains(x, y)) {
+            return index;
+        }
+        return -1;
+    }
+
+    private Page getPageAt(int index) {
+        Page[] pages = getModel().getPagination();
+        int size = pages.length;
+        if (checkCreateNextAndPreviousButton(size)) {
+            size += 2;
+            if (index == 0) {
+                return new Page(-1, Page.Type.PREVIOUS);
+            } else if (index == size - 1) {
+                return new Page(1, Page.Type.NEXT);
+            }
+            return pages[index - 1];
+        } else {
+            return pages[index];
+        }
+    }
+
+    private boolean checkCreateNextAndPreviousButton(int size) {
+        return isShowNextAndPreviousButton() && (size > 0 || !isHideWhenNoPage());
+    }
+
+    private void updatePaginationComponent() {
+        repaint();
+    }
+
+    protected int scale(int value) {
+        return UIScale.scale(value);
     }
 }

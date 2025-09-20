@@ -8,6 +8,7 @@ import javax.swing.event.EventListenerList;
 public class DefaultPaginationModel implements PaginationModel {
 
     protected EventListenerList listenerList = new EventListenerList();
+    private Page[] pagination;
     private int maxItem;
     private int selectedPage;
     private int pageSize;
@@ -34,18 +35,20 @@ public class DefaultPaginationModel implements PaginationModel {
             this.maxItem = maxItem;
             this.selectedPage = selectedPage;
             this.pageSize = pageSize;
+            createPages();
         } else {
             throw new IllegalArgumentException("invalid page properties");
         }
     }
 
-    @Override
-    public Page[] getPagination() {
+    private void createPages() {
         if (pageSize <= 0) {
-            return new Page[]{};
+            this.pagination = new Page[]{};
+            return;
         }
         if (pageSize == 1) {
-            return new Page[]{new Page(1)};
+            this.pagination = new Page[]{new Page(1)};
+            return;
         }
 
         int size = maxItem;
@@ -63,14 +66,20 @@ public class DefaultPaginationModel implements PaginationModel {
         if (dotsPrevious) {
             int pagePrevious = Math.min(pageSize, pages[3].getValue() - showPage - 1);
             pages[0] = new Page(1);
-            pages[1] = new Page(pagePrevious, Page.Type.PREVIOUS);
+            pages[1] = new Page(pagePrevious, Page.Type.ELLIPSIS);
         }
         if (dotsNext) {
             int pageNext = Math.min(pageSize, pages[pages.length - 3].getValue() + showPage);
             pages[pages.length - 1] = new Page(pageSize);
-            pages[pages.length - 2] = new Page(pageNext, Page.Type.NEXT);
+            pages[pages.length - 2] = new Page(pageNext, Page.Type.ELLIPSIS);
         }
-        return pages;
+
+        this.pagination = pages;
+    }
+
+    @Override
+    public Page[] getPagination() {
+        return pagination;
     }
 
     public int getMaxItem() {
@@ -88,6 +97,7 @@ public class DefaultPaginationModel implements PaginationModel {
         }
         if (this.maxItem != maxItem) {
             this.maxItem = maxItem;
+            createPages();
             fireStateChanged(new PaginationModelEvent(this, false));
         }
     }
@@ -133,6 +143,7 @@ public class DefaultPaginationModel implements PaginationModel {
 
             this.selectedPage = selectedPage;
             this.pageSize = pageSize;
+            createPages();
             fireStateChanged(new PaginationModelEvent(this, pageChanged));
         }
     }

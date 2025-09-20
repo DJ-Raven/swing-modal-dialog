@@ -23,6 +23,6 @@ public class Page {
     }
 
     public enum Type {
-        PAGE, PREVIOUS, NEXT
+        PAGE, PREVIOUS, NEXT, ELLIPSIS
     }
 }
