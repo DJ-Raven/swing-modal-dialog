@@ -21,7 +21,7 @@ public class TestPagination extends BaseFrame {
         Pagination pagination1 = new Pagination(11, 0, 50);
         Pagination pagination2 = new Pagination(11, 0, 50);
 
-        pagination1.setPageRenderer(new DefaultPaginationItemRenderer() {
+        pagination1.setItemRenderer(new DefaultPaginationItemRenderer() {
             @Override
             public Component getPaginationItemRendererComponent(Pagination pagination, Page page, boolean isSelected, boolean isPressed, boolean hasFocus, int index) {
                 super.getPaginationItemRendererComponent(pagination, page, isSelected, isPressed, hasFocus, index);
@@ -35,8 +35,7 @@ public class TestPagination extends BaseFrame {
         pagination2.putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:$Component.borderColor;" +
                 "border:1,1,1,1,$Component.borderColor,,1;");
-        pagination2.setItemSize(new Dimension(28, 28));
-        pagination2.setPageRenderer(new DefaultPaginationItemRenderer() {
+        pagination2.setItemRenderer(new DefaultPaginationItemRenderer() {
             @Override
             public Component getPaginationItemRendererComponent(Pagination pagination, Page page, boolean isSelected, boolean isPressed, boolean hasFocus, int index) {
                 super.getPaginationItemRendererComponent(pagination, page, isSelected, isPressed, hasFocus, index);

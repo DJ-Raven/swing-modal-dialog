@@ -18,7 +18,7 @@ public class Pagination extends JPanel implements PaginationModelListener {
     protected transient ChangeEvent changeEvent = null;
     private final CellRendererPane rendererPane;
     private PaginationModel paginationModel;
-    private PaginationItemRenderer pageRenderer;
+    private PaginationItemRenderer itemRenderer;
     private int maxItem;
     private boolean showNextAndPreviousButton = true;
     private boolean hideWhenNoPage = true;
@@ -50,7 +50,7 @@ public class Pagination extends JPanel implements PaginationModelListener {
         setLayout(new BorderLayout());
         setModel(model);
         rendererPane = new CellRendererPane();
-        pageRenderer = new DefaultPaginationItemRenderer();
+        itemRenderer = new DefaultPaginationItemRenderer();
 
         installListener();
     }
@@ -131,12 +131,13 @@ public class Pagination extends JPanel implements PaginationModelListener {
         firePropertyChange("model", oldValue, model);
     }
 
-    public PaginationItemRenderer getPageRenderer() {
-        return pageRenderer;
+    public PaginationItemRenderer getItemRenderer() {
+        return itemRenderer;
     }
 
-    public void setPageRenderer(PaginationItemRenderer pageRenderer) {
-        this.pageRenderer = pageRenderer;
+    public void setItemRenderer(PaginationItemRenderer itemRenderer) {
+        this.itemRenderer = itemRenderer;
+        repaint();
     }
 
     public boolean isShowNextAndPreviousButton() {
@@ -250,8 +251,8 @@ public class Pagination extends JPanel implements PaginationModelListener {
         super.updateUI();
 
         // update the page renderer when L&F changed
-        if (pageRenderer != null && pageRenderer instanceof Component) {
-            SwingUtilities.updateComponentTreeUI((Component) pageRenderer);
+        if (itemRenderer != null && itemRenderer instanceof Component) {
+            SwingUtilities.updateComponentTreeUI((Component) itemRenderer);
         }
     }
 
@@ -303,7 +304,7 @@ public class Pagination extends JPanel implements PaginationModelListener {
 
     private void paintItem(Graphics g, Page page, int index, Rectangle rec) {
         boolean isSelected = page.getType() == Page.Type.PAGE && getSelectedPage() == page.getValue();
-        Component c = pageRenderer.getPaginationItemRendererComponent(this, page, isSelected, index == pressedIndex, index == focusIndex, index);
+        Component c = itemRenderer.getPaginationItemRendererComponent(this, page, isSelected, index == pressedIndex, index == focusIndex, index);
         if (!noVisualPadding) {
             applyVisualPadding(c, rec);
         }
