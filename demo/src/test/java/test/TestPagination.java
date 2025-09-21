@@ -31,6 +31,7 @@ public class TestPagination extends BaseFrame {
             }
         });
 
+        pagination2.setItemGap(1);
         pagination2.putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:$Component.borderColor;" +
                 "border:1,1,1,1,$Component.borderColor,,1;");

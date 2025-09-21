@@ -30,7 +30,7 @@ public class DefaultPaginationItemRenderer extends JButton implements Pagination
         }
 
         putClientProperty(FlatClientProperties.STYLE, "" +
-                "margin:5,5,5,5;");
+                "margin:3,3,3,3;");
         getModel().setRollover(hasFocus);
         getModel().setPressed(isPressed);
         return this;

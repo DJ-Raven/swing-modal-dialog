@@ -13,6 +13,8 @@ import java.awt.event.MouseEvent;
 
 public class Pagination extends JPanel implements PaginationModelListener {
 
+    public static String VISUAL_PADDING_PROPERTY = "visualPadding";
+
     protected transient ChangeEvent changeEvent = null;
     private final CellRendererPane rendererPane;
     private PaginationModel paginationModel;
@@ -20,8 +22,9 @@ public class Pagination extends JPanel implements PaginationModelListener {
     private int maxItem;
     private boolean showNextAndPreviousButton = true;
     private boolean hideWhenNoPage = true;
-    private Dimension itemSize = new Dimension(32, 32);
-    private int itemGap = 1;
+    private boolean noVisualPadding;
+    private Dimension itemSize = new Dimension(28, 28);
+    private int itemGap = 7;
 
     private int focusIndex = -1;
     private int pressedIndex = -1;
@@ -160,6 +163,18 @@ public class Pagination extends JPanel implements PaginationModelListener {
         }
     }
 
+    public boolean isNoVisualPadding() {
+        return noVisualPadding;
+    }
+
+    public void setNoVisualPadding(boolean noVisualPadding) {
+        if (this.noVisualPadding != noVisualPadding) {
+            this.noVisualPadding = noVisualPadding;
+            repaint();
+            revalidate();
+        }
+    }
+
     public Dimension getItemSize() {
         return itemSize;
     }
@@ -289,7 +304,23 @@ public class Pagination extends JPanel implements PaginationModelListener {
     private void paintItem(Graphics g, Page page, int index, Rectangle rec) {
         boolean isSelected = page.getType() == Page.Type.PAGE && getSelectedPage() == page.getValue();
         Component c = pageRenderer.getPaginationItemRendererComponent(this, page, isSelected, index == pressedIndex, index == focusIndex, index);
+        if (!noVisualPadding) {
+            applyVisualPadding(c, rec);
+        }
         rendererPane.paintComponent(g, c, this, rec);
+    }
+
+    private void applyVisualPadding(Component c, Rectangle rec) {
+        if (c instanceof JComponent) {
+            Object padding = ((JComponent) c).getClientProperty(VISUAL_PADDING_PROPERTY);
+            if (padding instanceof Insets) {
+                Insets insets = (Insets) padding;
+                rec.x -= insets.left;
+                rec.y -= insets.top;
+                rec.width += (insets.left + insets.right);
+                rec.height += (insets.top + insets.bottom);
+            }
+        }
     }
 
     @Override
