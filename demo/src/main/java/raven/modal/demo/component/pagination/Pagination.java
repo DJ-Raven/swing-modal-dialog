@@ -231,6 +231,16 @@ public class Pagination extends JPanel implements PaginationModelListener {
     }
 
     @Override
+    public void updateUI() {
+        super.updateUI();
+
+        // update the page renderer when L&F changed
+        if (pageRenderer != null && pageRenderer instanceof Component) {
+            SwingUtilities.updateComponentTreeUI((Component) pageRenderer);
+        }
+    }
+
+    @Override
     public void paint(Graphics g) {
         super.paint(g);
         paintImpl(g);
