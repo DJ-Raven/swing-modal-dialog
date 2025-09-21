@@ -8,8 +8,11 @@ import java.awt.*;
 
 public class DefaultPaginationItemRenderer extends JButton implements PaginationItemRenderer {
 
+    protected boolean isSelected;
+
     @Override
     public Component getPaginationItemRendererComponent(Pagination pagination, Page page, boolean isSelected, boolean isPressed, boolean hasFocus, int index) {
+        this.isSelected = isSelected;
         if (page.getType() == Page.Type.PAGE) {
             setIcon(null);
             setText(page.getValue() + "");
@@ -26,24 +29,15 @@ public class DefaultPaginationItemRenderer extends JButton implements Pagination
             setText("");
         }
 
-        String style = "margin:5,5,5,5;";
-        if (isSelected) {
-            style += "foreground:$Button.default.foreground;";
-            if (isPressed) {
-                style += "background:$Button.default.pressedBackground;";
-            } else {
-                style += "background:$Button.default.background;";
-            }
-        } else if (isPressed) {
-            style += "background:$Button.pressedBackground;";
-        }
-        if (hasFocus) {
-            style += "borderColor:$Button.focusedBorderColor;";
-            if (!isPressed && !isSelected) {
-                style += "background:$Button.hoverBackground;";
-            }
-        }
-        putClientProperty(FlatClientProperties.STYLE, style);
+        putClientProperty(FlatClientProperties.STYLE, "" +
+                "margin:5,5,5,5;");
+        getModel().setRollover(hasFocus);
+        getModel().setPressed(isPressed);
         return this;
+    }
+
+    @Override
+    public boolean isDefaultButton() {
+        return isSelected;
     }
 }
