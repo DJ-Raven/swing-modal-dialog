@@ -98,8 +98,22 @@ public class DefaultPaginationModel implements PaginationModel {
         if (this.maxItem != maxItem) {
             this.maxItem = maxItem;
             createPages();
-            fireStateChanged(new PaginationModelEvent(this, false));
+            fireStateChanged(new PaginationModelEvent(this, false, -1, -1, -1, -1));
         }
+    }
+
+    public int getIndexOf(int page) {
+        int index = -1;
+        if (pagination != null) {
+            for (int i = 0; i < pagination.length; i++) {
+                Page p = pagination[i];
+                if (p.getType() == Page.Type.PAGE && p.getValue() == page) {
+                    index = i;
+                    break;
+                }
+            }
+        }
+        return index;
     }
 
     @Override
@@ -140,11 +154,13 @@ public class DefaultPaginationModel implements PaginationModel {
 
         if (changed) {
             boolean pageChanged = this.selectedPage != selectedPage;
-
+            int oldPage = this.selectedPage;
+            int oldIndex = getIndexOf(this.selectedPage);
             this.selectedPage = selectedPage;
             this.pageSize = pageSize;
             createPages();
-            fireStateChanged(new PaginationModelEvent(this, pageChanged));
+            int newIndex = getIndexOf(selectedPage);
+            fireStateChanged(new PaginationModelEvent(this, pageChanged, oldPage, oldIndex, selectedPage, newIndex));
         }
     }
 

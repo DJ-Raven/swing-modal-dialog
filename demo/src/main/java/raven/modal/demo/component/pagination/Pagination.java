@@ -16,7 +16,7 @@ public class Pagination extends JPanel implements PaginationModelListener {
     public static String VISUAL_PADDING_PROPERTY = "visualPadding";
 
     protected transient ChangeEvent changeEvent = null;
-    private final CellRendererPane rendererPane;
+    protected CellRendererPane rendererPane;
     private PaginationModel paginationModel;
     private PaginationItemRenderer itemRenderer;
     private int maxItem;
@@ -127,7 +127,8 @@ public class Pagination extends JPanel implements PaginationModelListener {
         if (model != null) {
             model.addPaginationModelListener(this);
         }
-        updatePaginationComponent();
+        revalidate();
+        repaint();
         firePropertyChange("model", oldValue, model);
     }
 
@@ -240,7 +241,7 @@ public class Pagination extends JPanel implements PaginationModelListener {
 
     @Override
     public void paginationModelChanged(PaginationModelEvent event) {
-        updatePaginationComponent();
+        repaint();
         if (event.isPageChanged()) {
             fireStateChanged();
         }
@@ -354,7 +355,7 @@ public class Pagination extends JPanel implements PaginationModelListener {
         return new Dimension(width, height);
     }
 
-    private Rectangle rectangleAt(int index) {
+    protected Rectangle rectangleAt(int index) {
         Insets insets = getInsets();
         int width = scale(itemSize.width);
         int height = scale(itemSize.height);
@@ -364,7 +365,7 @@ public class Pagination extends JPanel implements PaginationModelListener {
         return new Rectangle(x, y, width, height);
     }
 
-    private int getIndexAt(int x, int y) {
+    protected int getIndexAt(int x, int y) {
         Insets insets = getInsets();
         int index = (x - insets.left) / (scale(itemSize.width + itemGap));
         if (rectangleAt(index).contains(x, y)) {
@@ -373,7 +374,7 @@ public class Pagination extends JPanel implements PaginationModelListener {
         return -1;
     }
 
-    private Page getPageAt(int index) {
+    protected Page getPageAt(int index) {
         Page[] pages = getModel().getPagination();
         int size = pages.length;
         if (checkCreateNextAndPreviousButton(size)) {
@@ -389,12 +390,8 @@ public class Pagination extends JPanel implements PaginationModelListener {
         }
     }
 
-    private boolean checkCreateNextAndPreviousButton(int size) {
+    protected boolean checkCreateNextAndPreviousButton(int size) {
         return isShowNextAndPreviousButton() && (size > 0 || !isHideWhenNoPage());
-    }
-
-    private void updatePaginationComponent() {
-        repaint();
     }
 
     protected int scale(int value) {
