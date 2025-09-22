@@ -114,14 +114,8 @@ public class PaginationAnimation extends Pagination {
         g2.fill(new RoundRectangle2D.Double(0, 0, rec.getWidth(), rec.getHeight(), arc, arc));
         g2.setTransform(oldTran);
 
-        // paint old page text
-        Component oldCom = getItemRenderer().getPaginationItemRendererComponent(this, new Page(oldPage, Page.Type.PAGE), false, false, false, -2);
-        g2.setComposite(AlphaComposite.SrcOver.derive(1f - animate));
-        rendererPane.paintComponent(g2, oldCom, this, rec.getBounds());
-
-        // paint new page text
+        // paint selected page text
         Component newCom = getItemRenderer().getPaginationItemRendererComponent(this, new Page(getSelectedPage(), Page.Type.PAGE), false, false, false, -2);
-        g2.setComposite(AlphaComposite.SrcOver.derive(animate));
         rendererPane.paintComponent(g2, newCom, this, rec.getBounds());
         g2.dispose();
     }
