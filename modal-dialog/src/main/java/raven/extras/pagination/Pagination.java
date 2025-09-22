@@ -1,8 +1,8 @@
-package raven.modal.demo.component.pagination;
+package raven.extras.pagination;
 
 import com.formdev.flatlaf.util.UIScale;
-import raven.modal.demo.component.pagination.event.PaginationModelEvent;
-import raven.modal.demo.component.pagination.event.PaginationModelListener;
+import raven.extras.pagination.event.PaginationModelEvent;
+import raven.extras.pagination.event.PaginationModelListener;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;

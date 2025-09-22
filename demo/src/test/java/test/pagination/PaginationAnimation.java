@@ -3,12 +3,12 @@ package test.pagination;
 import com.formdev.flatlaf.util.Animator;
 import com.formdev.flatlaf.util.CubicBezierEasing;
 import com.formdev.flatlaf.util.UIScale;
-import raven.modal.demo.component.pagination.DefaultPaginationItemRenderer;
-import raven.modal.demo.component.pagination.DefaultPaginationModel;
-import raven.modal.demo.component.pagination.Page;
-import raven.modal.demo.component.pagination.Pagination;
-import raven.modal.demo.component.pagination.event.PaginationModelEvent;
-import raven.modal.demo.component.pagination.event.PaginationModelListener;
+import raven.extras.pagination.DefaultPaginationItemRenderer;
+import raven.extras.pagination.DefaultPaginationModel;
+import raven.extras.pagination.Page;
+import raven.extras.pagination.Pagination;
+import raven.extras.pagination.event.PaginationModelEvent;
+import raven.extras.pagination.event.PaginationModelListener;
 import raven.modal.utils.FlatLafStyleUtils;
 
 import javax.swing.event.ChangeEvent;

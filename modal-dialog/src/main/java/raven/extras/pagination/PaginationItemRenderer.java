@@ -1,4 +1,4 @@
-package raven.modal.demo.component.pagination;
+package raven.extras.pagination;
 
 import java.awt.*;
 

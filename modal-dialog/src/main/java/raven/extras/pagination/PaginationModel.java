@@ -1,6 +1,6 @@
-package raven.modal.demo.component.pagination;
+package raven.extras.pagination;
 
-import raven.modal.demo.component.pagination.event.PaginationModelListener;
+import raven.extras.pagination.event.PaginationModelListener;
 
 public interface PaginationModel {
 
