@@ -11,6 +11,7 @@ import raven.extras.pagination.event.PaginationModelEvent;
 import raven.extras.pagination.event.PaginationModelListener;
 import raven.modal.utils.FlatLafStyleUtils;
 
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
@@ -25,12 +26,25 @@ public class PaginationAnimation extends Pagination {
 
     private Rectangle2D fromRec;
     private Rectangle2D toRec;
+    private Color accentColor1;
+    private Color accentColor2;
 
-    private int oldPage;
+    public PaginationAnimation() {
+        init();
+    }
+
+    public PaginationAnimation(int maxItem) {
+        super(maxItem);
+        init();
+    }
+
+    public PaginationAnimation(int selectedPage, int pageSize) {
+        super(selectedPage, pageSize);
+        init();
+    }
 
     public PaginationAnimation(int maxItem, int selectedPage, int pageSize) {
         super(maxItem, selectedPage, pageSize);
-        oldPage = getSelectedPage();
         init();
     }
 
@@ -83,7 +97,6 @@ public class PaginationAnimation extends Pagination {
                     fromRec = getRectangleOfIndex(event.getOldIndex());
                 }
                 toRec = getRectangleOfIndex(event.getNewIndex());
-                oldPage = event.getOldPage();
                 animate = 0f;
                 animator.start();
             }
@@ -104,13 +117,20 @@ public class PaginationAnimation extends Pagination {
         }
     }
 
+    @Override
+    public void updateUI() {
+        super.updateUI();
+        accentColor1 = UIManager.getColor("Button.default.background");
+        accentColor2 = UIManager.getColor("Component.accentColor");
+    }
+
     private void paintSelected(Graphics g, Rectangle2D rec, float animate) {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         float arc = UIScale.scale(18);
         AffineTransform oldTran = g2.getTransform();
         g2.translate(rec.getX(), rec.getY());
-        g2.setPaint(new GradientPaint(0, 0, Color.decode("#de6161"), (float) rec.getWidth(), (float) rec.getHeight(), Color.decode("#2657eb")));
+        g2.setPaint(new GradientPaint(0, 0, accentColor1, (float) rec.getWidth(), (float) rec.getHeight(), accentColor2));
         g2.fill(new RoundRectangle2D.Double(0, 0, rec.getWidth(), rec.getHeight(), arc, arc));
         g2.setTransform(oldTran);
 
