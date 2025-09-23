@@ -1,4 +1,4 @@
-package raven.modal.demo.component.pagination;
+package raven.extras.pagination;
 
 public class Page {
 
@@ -23,6 +23,6 @@ public class Page {
     }
 
     public enum Type {
-        PAGE, PREVIOUS, NEXT
+        PAGE, PREVIOUS, NEXT, ELLIPSIS
     }
 }

@@ -5,9 +5,9 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.ModalDialog;
 import raven.modal.component.SimpleModalBorder;
-import raven.modal.demo.component.pagination.Pagination;
-import raven.modal.demo.component.pagination.csv.CSVDataReader;
-import raven.modal.demo.component.pagination.csv.ResponseCSV;
+import raven.extras.pagination.Pagination;
+import raven.modal.demo.sample.csv.CSVDataReader;
+import raven.modal.demo.sample.csv.ResponseCSV;
 import raven.modal.demo.model.ModelEmployee;
 import raven.modal.demo.model.ModelProfile;
 import raven.modal.demo.sample.SampleData;
@@ -63,7 +63,6 @@ public class FormTable extends Form {
     private void showData(int page) {
         if (data != null) {
             ResponseCSV res = data.getData(page, limit);
-            System.out.println("Load page: " + res.getTotal());
             lbTotalPage.setText(DecimalFormat.getInstance().format(res.getTotal()));
             pagination.getModel().setPageRange(res.getPage(), res.getPageSize());
 
@@ -266,12 +265,13 @@ public class FormTable extends Form {
         // create pagination
 
         pagination = new Pagination(11, 1, 1);
-        pagination.addActionListener(e -> {
+        pagination.addChangeListener(e -> {
             showData(pagination.getSelectedPage());
         });
-
-        JPanel panelPage = new JPanel(new MigLayout("insets 0 15 0 15", "[][]push[]"));
+        JPanel panelPage = new JPanel(new MigLayout("insets 5 15 5 15", "[][]push[]"));
         lbTotalPage = new JLabel("0");
+        pagination.putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:null;");
         panelPage.putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:null;");
         panelPage.add(new JLabel("Total:"));

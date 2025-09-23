@@ -137,7 +137,8 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                         .subMenu("Date Time", FormDateTime.class)
                         .subMenu("Color Picker", FormColorPicker.class)
                         .subMenu("Avatar Icon", FormAvatarIcon.class)
-                        .subMenu("Slide Pane", FormSlidePane.class),
+                        .subMenu("Slide Pane", FormSlidePane.class)
+                        .subMenu("Pagination", FormPagination.class),
                 new Item("Email", "email.svg")
                         .subMenu("Inbox")
                         .subMenu(
