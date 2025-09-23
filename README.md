@@ -13,7 +13,7 @@ and support animation
 
 ## Installation
 
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.dj-raven/modal-dialog?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.dj-raven/modal-dialog/versions)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.dj-raven/modal-dialog?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.dj-raven/modal-dialog)
 
 Add the dependency
 ``` xml
