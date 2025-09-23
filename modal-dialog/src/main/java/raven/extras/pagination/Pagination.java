@@ -215,6 +215,18 @@ public class Pagination extends JPanel implements PaginationModelListener {
         getModel().setPageSize(pageSize);
     }
 
+    public void setPageRange(int selectedPage, int pageSize) {
+        getModel().setPageRange(selectedPage, pageSize);
+    }
+
+    public boolean hasPrevious() {
+        return getModel().hasPrevious();
+    }
+
+    public boolean hasNext() {
+        return getModel().hasNext();
+    }
+
     public int getMaxItem() {
         return maxItem;
     }
