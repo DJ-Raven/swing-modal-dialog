@@ -134,6 +134,7 @@ public class FormModal extends Form {
 
         chAnimation.setSelected(true);
         chCloseOnPressedEscape.setSelected(true);
+        chShadow.setSelected(true);
         chOpacity.setSelected(true);
 
         panel.add(chAnimation);
