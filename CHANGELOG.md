@@ -1,6 +1,10 @@
 # Changelog
 
-## [2.5.3] - SNAPSHOT
+## [2.6.0] - SNAPSHOT
+
+### New features and improvements
+
+- Extras: add new Pagination component (PR #44, #45)
 
 ### Changed
 
@@ -8,8 +12,7 @@
 
 ### Demo
 
-- add custom accent color and add new color picker form (PR #43)
-- add new pagination to form table (PR #44)
+- Add new form pagination (PR #45)
 
 ## [2.5.2] - 2025-08-16
 
