@@ -8,7 +8,7 @@ import raven.extras.pagination.Page;
 import raven.extras.pagination.Pagination;
 import raven.modal.utils.FlatLafStyleUtils;
 import test.base.BaseFrame;
-import test.pagination.PaginationAnimation;
+import raven.modal.demo.component.pagination.PaginationAnimation;
 
 import java.awt.*;
 

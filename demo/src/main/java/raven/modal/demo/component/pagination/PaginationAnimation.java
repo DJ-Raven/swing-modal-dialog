@@ -1,4 +1,4 @@
-package test.pagination;
+package raven.modal.demo.component.pagination;
 
 import com.formdev.flatlaf.util.Animator;
 import com.formdev.flatlaf.util.CubicBezierEasing;
