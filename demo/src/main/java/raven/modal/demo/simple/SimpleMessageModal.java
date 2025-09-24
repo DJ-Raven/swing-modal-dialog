@@ -83,9 +83,15 @@ public class SimpleMessageModal extends SimpleModalBorder {
 
     @Override
     protected JButton createButtonOption(Option option) {
-        JButton button = super.createButtonOption(option);
-        String colors[] = getColorKey(type);
-        if (button.isDefaultButton()) {
+        JButton button;
+        if (option.getType() != 0) {
+            button = super.createButtonOption(option);
+        } else {
+            button = new JButton(option.getText());
+            button.addActionListener(e -> doAction(option.getType()));
+        }
+        String[] colors = getColorKey(type);
+        if (option.getType() == 0) {
             button.putClientProperty(FlatClientProperties.STYLE, "" +
                     "arc:999;" +
                     "margin:3,33,3,33;" +
@@ -93,6 +99,7 @@ public class SimpleMessageModal extends SimpleModalBorder {
                     "focusWidth:0;" +
                     "innerFocusWidth:0;" +
                     "default.borderWidth:0;" +
+                    "foreground:$Button.default.foreground;" +
                     "[light]background:" + colors[0] + ";" +
                     "[dark]background:" + colors[1] + ";");
         } else {
