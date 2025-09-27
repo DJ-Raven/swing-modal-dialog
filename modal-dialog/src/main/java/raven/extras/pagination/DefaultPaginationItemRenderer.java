@@ -20,11 +20,11 @@ public class DefaultPaginationItemRenderer extends JButton implements Pagination
             setIcon(null);
             setText("...");
         } else if (page.getType() == Page.Type.PREVIOUS) {
-            setIcon(new FlatSVGIcon("raven/modal/demo/icons/pagination/back.svg", 0.25f)
+            setIcon(new FlatSVGIcon("raven/extras/icon/back.svg", 0.25f)
                     .setColorFilter(new FlatSVGIcon.ColorFilter(color -> getForeground())));
             setText("");
         } else if (page.getType() == Page.Type.NEXT) {
-            setIcon(new FlatSVGIcon("raven/modal/demo/icons/pagination/next.svg", 0.25f)
+            setIcon(new FlatSVGIcon("raven/extras/icon/next.svg", 0.25f)
                     .setColorFilter(new FlatSVGIcon.ColorFilter(color -> getForeground())));
             setText("");
         }
