@@ -106,6 +106,9 @@ public class PaginationAnimation extends Pagination {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
+        if (getModel().getPageSize() == 0) {
+            return;
+        }
         Rectangle2D rec;
         if (animator.isRunning()) {
             rec = createRec(fromRec, toRec, animate);
