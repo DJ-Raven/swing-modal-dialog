@@ -2,18 +2,15 @@ package raven.modal.demo.component.pagination;
 
 import com.formdev.flatlaf.util.Animator;
 import com.formdev.flatlaf.util.CubicBezierEasing;
+import com.formdev.flatlaf.util.ScaledEmptyBorder;
 import com.formdev.flatlaf.util.UIScale;
 import raven.extras.pagination.DefaultPaginationItemRenderer;
 import raven.extras.pagination.DefaultPaginationModel;
 import raven.extras.pagination.Page;
 import raven.extras.pagination.Pagination;
-import raven.extras.pagination.event.PaginationModelEvent;
-import raven.extras.pagination.event.PaginationModelListener;
 import raven.modal.utils.FlatLafStyleUtils;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
@@ -26,6 +23,8 @@ public class PaginationAnimation extends Pagination {
 
     private Rectangle2D fromRec;
     private Rectangle2D toRec;
+
+    private boolean colorSet;
     private Color accentColor1;
     private Color accentColor2;
 
@@ -69,7 +68,7 @@ public class PaginationAnimation extends Pagination {
                     setContentAreaFilled(true);
                     FlatLafStyleUtils.appendStyle(this, "" +
                             "background:$Panel.background;" +
-                            "arc:10;" +
+                            "arc:18;" +
                             "borderWidth:0;" +
                             "focusWidth:0;");
                 }
@@ -82,25 +81,40 @@ public class PaginationAnimation extends Pagination {
             }
         });
         setItemGap(0);
-        addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
+        getModel().addPaginationModelListener(event -> {
+            if (animator.isRunning()) {
+                animator.stop();
+                fromRec = createRec(fromRec, toRec, animate);
+            } else {
+                fromRec = getRectangleOfIndex(event.getOldIndex());
             }
+            toRec = getRectangleOfIndex(event.getNewIndex());
+            animate = 0f;
+            animator.start();
         });
-        getModel().addPaginationModelListener(new PaginationModelListener() {
-            @Override
-            public void paginationModelChanged(PaginationModelEvent event) {
-                if (animator.isRunning()) {
-                    animator.stop();
-                    fromRec = createRec(fromRec, toRec, animate);
-                } else {
-                    fromRec = getRectangleOfIndex(event.getOldIndex());
-                }
-                toRec = getRectangleOfIndex(event.getNewIndex());
-                animate = 0f;
-                animator.start();
-            }
-        });
+        setBorder(new ScaledEmptyBorder(5, 5, 5, 5));
+    }
+
+    public void setColor(Color color1, Color color2) {
+        colorSet = (color1 != null || color2 != null);
+
+        if (!colorSet) {
+            // use defaults
+            accentColor1 = UIManager.getColor("Button.default.background");
+            accentColor2 = UIManager.getColor("Component.accentColor");
+            return;
+        }
+
+        if (color1 == null) color1 = color2;
+        if (color2 == null) color2 = color1;
+
+        if (color1.equals(color2)) {
+            accentColor1 = color1;
+            accentColor2 = null;
+        } else {
+            accentColor1 = color1;
+            accentColor2 = color2;
+        }
     }
 
     @Override
@@ -123,8 +137,13 @@ public class PaginationAnimation extends Pagination {
     @Override
     public void updateUI() {
         super.updateUI();
-        accentColor1 = UIManager.getColor("Button.default.background");
-        accentColor2 = UIManager.getColor("Component.accentColor");
+        if (!colorSet) {
+            accentColor1 = UIManager.getColor("Button.default.background");
+            accentColor2 = UIManager.getColor("Component.accentColor");
+            if (accentColor1.equals(accentColor2)) {
+                accentColor2 = null;
+            }
+        }
     }
 
     private void paintSelected(Graphics g, Rectangle2D rec, float animate) {
@@ -132,8 +151,18 @@ public class PaginationAnimation extends Pagination {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         float arc = UIScale.scale(18);
         AffineTransform oldTran = g2.getTransform();
-        g2.translate(rec.getX(), rec.getY());
-        g2.setPaint(new GradientPaint(0, 0, accentColor1, (float) rec.getWidth(), (float) rec.getHeight(), accentColor2));
+        float scale = 1f + customEase(animate) * 0.1f;
+        double cx = rec.getCenterX();
+        double cy = rec.getCenterY();
+
+        g2.translate(cx - rec.getWidth() * scale / 2f, cy - rec.getHeight() * scale / 2f);
+        g2.scale(scale, scale);
+
+        if (accentColor1 != null && accentColor2 != null) {
+            g2.setPaint(new GradientPaint(0, 0, accentColor1, (float) rec.getWidth(), (float) rec.getHeight(), accentColor2));
+        } else {
+            g2.setColor(accentColor1);
+        }
         g2.fill(new RoundRectangle2D.Double(0, 0, rec.getWidth(), rec.getHeight(), arc, arc));
         g2.setTransform(oldTran);
 
@@ -154,5 +183,20 @@ public class PaginationAnimation extends Pagination {
         double diffX = recTo.getX() - recFrom.getX();
         double newX = recFrom.getX() + (diffX * animated);
         return new Rectangle2D.Double(newX, recFrom.getY(), recFrom.getWidth(), recFrom.getHeight());
+    }
+
+    private float customEase(float x) {
+        // clamp between 0–1
+        x = Math.max(0f, Math.min(1f, x));
+
+        if (x <= 0.75f) {
+            // from 0 → 0.75: ease-in-sine from 0 → 1
+            float t = x / 0.75f;
+            return (float) (1 - Math.cos((t * Math.PI) / 2f));
+        } else {
+            // from 0.75 → 1: ease-out-sine from 1 → 0
+            float t = (x - 0.75f) / 0.25f;
+            return (float) (Math.cos((t * Math.PI) / 2f));
+        }
     }
 }
