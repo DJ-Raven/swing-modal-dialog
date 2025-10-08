@@ -23,6 +23,7 @@ public class Pagination extends JPanel implements PaginationModelListener {
     private boolean showNextAndPreviousButton = true;
     private boolean hideWhenNoPage = true;
     private boolean noVisualPadding;
+    private boolean loop;
     private Dimension itemSize = new Dimension(28, 28);
     private int itemGap = 7;
 
@@ -77,8 +78,16 @@ public class Pagination extends JPanel implements PaginationModelListener {
                         if (page.getType() == Page.Type.PAGE || page.getType() == Page.Type.ELLIPSIS) {
                             setSelectedPage(page.getValue());
                         } else if (page.getType() == Page.Type.PREVIOUS) {
+                            if (getSelectedPage() == 1 && isLoop()) {
+                                setSelectedPage(getModel().getPageSize());
+                                return;
+                            }
                             setSelectedPage(getSelectedPage() - 1);
                         } else if (page.getType() == Page.Type.NEXT) {
+                            if (getSelectedPage() == getModel().getPageSize() && isLoop()) {
+                                setSelectedPage(1);
+                                return;
+                            }
                             setSelectedPage(getSelectedPage() + 1);
                         }
                     }
@@ -174,6 +183,17 @@ public class Pagination extends JPanel implements PaginationModelListener {
             this.noVisualPadding = noVisualPadding;
             repaint();
             revalidate();
+        }
+    }
+
+    public boolean isLoop() {
+        return loop;
+    }
+
+    public void setLoop(boolean loop) {
+        if (this.loop != loop) {
+            this.loop = loop;
+            repaint();
         }
     }
 

@@ -5,6 +5,7 @@ import net.miginfocom.swing.MigLayout;
 import raven.extras.pagination.DefaultPaginationItemRenderer;
 import raven.extras.pagination.Page;
 import raven.extras.pagination.Pagination;
+import raven.extras.pagination.PaginationItemRenderer;
 import raven.modal.demo.component.pagination.PaginationAnimation;
 import raven.modal.demo.system.Form;
 import raven.modal.demo.utils.SystemForm;
@@ -87,6 +88,13 @@ public class FormPagination extends Form {
         // custom animation
         Pagination paginationAnimation = new PaginationAnimation(10, 1, 50);
 
+        // loop animation
+        Pagination paginationLoop = new PaginationAnimation(7, 1, 7);
+        paginationLoop.setLoop(true);
+        paginationLoop.setItemSize(new Dimension(15, 15));
+        paginationLoop.setItemGap(5);
+        paginationLoop.setItemRenderer(new AnimatedLoopItemRenderer(paginationLoop));
+
         panel.add(new JLabel("Default:"));
         panel.add(defaultPagination, "gapy n 10");
 
@@ -97,7 +105,38 @@ public class FormPagination extends Form {
         panel.add(paginationNoBorder, "gapy n 10");
 
         panel.add(new JLabel("Custom with Animation:"));
-        panel.add(paginationAnimation);
+        panel.add(paginationAnimation, "gapy n 10");
+
+        panel.add(new JLabel("Custom with Animation loop:"));
+        panel.add(paginationLoop);
         return panel;
+    }
+
+    private static class AnimatedLoopItemRenderer extends DefaultPaginationItemRenderer {
+
+        private final PaginationItemRenderer oldRenderer;
+
+        private AnimatedLoopItemRenderer(Pagination pagination) {
+            oldRenderer = pagination.getItemRenderer();
+        }
+
+        @Override
+        public Component getPaginationItemRendererComponent(Pagination pagination, Page page, boolean isSelected, boolean isPressed, boolean hasFocus, int index) {
+            JButton button = (JButton) oldRenderer.getPaginationItemRendererComponent(pagination, page, isSelected, isPressed, hasFocus, index);
+
+            button.setText("");
+            FlatLafStyleUtils.appendStyle(button, "" +
+                    "background:$ProgressBar.background;" +
+                    "arc:999;");
+            return button;
+        }
+
+        @Override
+        public void updateUI() {
+            super.updateUI();
+            if (oldRenderer instanceof JComponent) {
+                SwingUtilities.updateComponentTreeUI((JComponent) oldRenderer);
+            }
+        }
     }
 }
