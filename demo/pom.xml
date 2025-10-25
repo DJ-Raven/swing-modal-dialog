@@ -17,6 +17,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <repositories>
+        <repository>
+            <name>Central Portal Snapshots</name>
+            <id>central-portal-snapshots</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>${parent.groupId}</groupId>
@@ -34,7 +42,11 @@
             <artifactId>swing-color-picker</artifactId>
             <version>1.0.0</version>
         </dependency>
-
+        <dependency>
+            <groupId>io.github.dj-raven</groupId>
+            <artifactId>swing-pack</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.jfree</groupId>
             <artifactId>jfreechart</artifactId>

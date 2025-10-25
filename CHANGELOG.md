@@ -2,10 +2,6 @@
 
 ## [2.6.0] - SNAPSHOT
 
-### New features and improvements
-
-- Extras: add new Pagination component (PR #44, #45)
-
 ### Changed
 
 - Modal dialog: changed round border from `20` to `10`

@@ -3,12 +3,12 @@ package test;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatSystemProperties;
 import net.miginfocom.swing.MigLayout;
-import raven.extras.pagination.DefaultPaginationItemRenderer;
-import raven.extras.pagination.Page;
-import raven.extras.pagination.Pagination;
-import raven.modal.utils.FlatLafStyleUtils;
-import test.base.BaseFrame;
 import raven.modal.demo.component.pagination.PaginationAnimation;
+import raven.modal.utils.FlatLafStyleUtils;
+import raven.swingpack.JPagination;
+import raven.swingpack.pagination.DefaultPaginationItemRenderer;
+import raven.swingpack.pagination.Page;
+import test.base.BaseFrame;
 
 import java.awt.*;
 
@@ -18,16 +18,16 @@ public class TestPagination extends BaseFrame {
         super("Test Toast");
         setLayout(new MigLayout("al center center,wrap,gap 15", "[center]"));
 
-        Pagination pagination = new Pagination(11, 0, 50);
-        Pagination pagination1 = new Pagination(11, 0, 50);
-        Pagination pagination2 = new Pagination(11, 0, 50);
-        Pagination pagination3 = new Pagination(11, 0, 50);
+        JPagination pagination = new JPagination(11, 0, 50);
+        JPagination pagination1 = new JPagination(11, 0, 50);
+        JPagination pagination2 = new JPagination(11, 0, 50);
+        JPagination pagination3 = new JPagination(11, 0, 50);
 
         PaginationAnimation paginationAnimation = new PaginationAnimation(11, 0, 50);
 
         pagination1.setItemRenderer(new DefaultPaginationItemRenderer() {
             @Override
-            public Component getPaginationItemRendererComponent(Pagination pagination, Page page, boolean isSelected, boolean isPressed, boolean hasFocus, int index) {
+            public Component getPaginationItemRendererComponent(JPagination pagination, Page page, boolean isSelected, boolean isPressed, boolean hasFocus, int index) {
                 super.getPaginationItemRendererComponent(pagination, page, isSelected, isPressed, hasFocus, index);
                 FlatLafStyleUtils.appendStyle(this, "" +
                         "arc:0;");
@@ -37,7 +37,7 @@ public class TestPagination extends BaseFrame {
 
         pagination2.setItemRenderer(new DefaultPaginationItemRenderer() {
             @Override
-            public Component getPaginationItemRendererComponent(Pagination pagination, Page page, boolean isSelected, boolean isPressed, boolean hasFocus, int index) {
+            public Component getPaginationItemRendererComponent(JPagination pagination, Page page, boolean isSelected, boolean isPressed, boolean hasFocus, int index) {
                 super.getPaginationItemRendererComponent(pagination, page, isSelected, isPressed, hasFocus, index);
                 FlatLafStyleUtils.appendStyle(this, "" +
                         "arc:999;");
@@ -51,7 +51,7 @@ public class TestPagination extends BaseFrame {
                 "border:1,1,1,1,$Component.borderColor,,1;");
         pagination3.setItemRenderer(new DefaultPaginationItemRenderer() {
             @Override
-            public Component getPaginationItemRendererComponent(Pagination pagination, Page page, boolean isSelected, boolean isPressed, boolean hasFocus, int index) {
+            public Component getPaginationItemRendererComponent(JPagination pagination, Page page, boolean isSelected, boolean isPressed, boolean hasFocus, int index) {
                 super.getPaginationItemRendererComponent(pagination, page, isSelected, isPressed, hasFocus, index);
                 FlatLafStyleUtils.appendStyle(this, "" +
                         "arc:0;" +

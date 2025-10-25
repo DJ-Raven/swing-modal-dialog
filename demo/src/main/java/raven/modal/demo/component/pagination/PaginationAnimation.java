@@ -4,11 +4,11 @@ import com.formdev.flatlaf.util.Animator;
 import com.formdev.flatlaf.util.CubicBezierEasing;
 import com.formdev.flatlaf.util.ScaledEmptyBorder;
 import com.formdev.flatlaf.util.UIScale;
-import raven.extras.pagination.DefaultPaginationItemRenderer;
-import raven.extras.pagination.DefaultPaginationModel;
-import raven.extras.pagination.Page;
-import raven.extras.pagination.Pagination;
 import raven.modal.utils.FlatLafStyleUtils;
+import raven.swingpack.JPagination;
+import raven.swingpack.pagination.DefaultPaginationItemRenderer;
+import raven.swingpack.pagination.DefaultPaginationModel;
+import raven.swingpack.pagination.Page;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +16,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 
-public class PaginationAnimation extends Pagination {
+public class PaginationAnimation extends JPagination {
 
     private Animator animator;
     private float animate;
@@ -58,7 +58,7 @@ public class PaginationAnimation extends Pagination {
             private int index;
 
             @Override
-            public Component getPaginationItemRendererComponent(Pagination pagination, Page page, boolean isSelected, boolean isPressed, boolean hasFocus, int index) {
+            public Component getPaginationItemRendererComponent(JPagination pagination, Page page, boolean isSelected, boolean isPressed, boolean hasFocus, int index) {
                 this.index = index;
                 super.getPaginationItemRendererComponent(pagination, page, isSelected, isPressed, hasFocus, index);
                 if (index == -2) {
@@ -173,7 +173,7 @@ public class PaginationAnimation extends Pagination {
     }
 
     private Rectangle getRectangleOfIndex(int index) {
-        if (checkCreateNextAndPreviousButton(getModel().getPagination().length)) {
+        if (checkCreateNavigationButton(getModel().getPagination().length)) {
             index++;
         }
         return rectangleAt(index);

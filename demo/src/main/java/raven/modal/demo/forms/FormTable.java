@@ -5,12 +5,11 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.ModalDialog;
 import raven.modal.component.SimpleModalBorder;
-import raven.extras.pagination.Pagination;
-import raven.modal.demo.sample.csv.CSVDataReader;
-import raven.modal.demo.sample.csv.ResponseCSV;
 import raven.modal.demo.model.ModelEmployee;
 import raven.modal.demo.model.ModelProfile;
 import raven.modal.demo.sample.SampleData;
+import raven.modal.demo.sample.csv.CSVDataReader;
+import raven.modal.demo.sample.csv.ResponseCSV;
 import raven.modal.demo.simple.SimpleInputForms;
 import raven.modal.demo.system.Form;
 import raven.modal.demo.utils.SystemForm;
@@ -19,6 +18,7 @@ import raven.modal.demo.utils.table.TableHeaderAlignment;
 import raven.modal.demo.utils.table.TableProfileCellRenderer;
 import raven.modal.option.Location;
 import raven.modal.option.Option;
+import raven.swingpack.JPagination;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -264,7 +264,7 @@ public class FormTable extends Form {
 
         // create pagination
 
-        pagination = new Pagination(11, 1, 1);
+        pagination = new JPagination(11, 1, 1);
         pagination.addChangeListener(e -> {
             showData(pagination.getSelectedPage());
         });
@@ -319,7 +319,7 @@ public class FormTable extends Form {
 
     private CSVDataReader data;
     private int limit = 50;
-    private Pagination pagination;
+    private JPagination pagination;
     private JTable basicTable;
     private JLabel lbTotalPage;
 }

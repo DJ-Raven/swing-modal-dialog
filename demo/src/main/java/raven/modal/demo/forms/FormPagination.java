@@ -2,14 +2,14 @@ package raven.modal.demo.forms;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import net.miginfocom.swing.MigLayout;
-import raven.extras.pagination.DefaultPaginationItemRenderer;
-import raven.extras.pagination.Page;
-import raven.extras.pagination.Pagination;
-import raven.extras.pagination.PaginationItemRenderer;
 import raven.modal.demo.component.pagination.PaginationAnimation;
 import raven.modal.demo.system.Form;
 import raven.modal.demo.utils.SystemForm;
 import raven.modal.utils.FlatLafStyleUtils;
+import raven.swingpack.JPagination;
+import raven.swingpack.pagination.DefaultPaginationItemRenderer;
+import raven.swingpack.pagination.Page;
+import raven.swingpack.pagination.PaginationItemRenderer;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -56,13 +56,13 @@ public class FormPagination extends Form {
         panel.setBorder(new TitledBorder("Example"));
 
         // default
-        Pagination defaultPagination = new Pagination(10, 1, 50);
+        JPagination defaultPagination = new JPagination(10, 1, 50);
 
         // circle pagination
-        Pagination circlePagination = new Pagination(10, 1, 50);
+        JPagination circlePagination = new JPagination(10, 1, 50);
         circlePagination.setItemRenderer(new DefaultPaginationItemRenderer() {
             @Override
-            public Component getPaginationItemRendererComponent(Pagination pagination, Page page, boolean isSelected, boolean isPressed, boolean hasFocus, int index) {
+            public Component getPaginationItemRendererComponent(JPagination pagination, Page page, boolean isSelected, boolean isPressed, boolean hasFocus, int index) {
                 super.getPaginationItemRendererComponent(pagination, page, isSelected, isPressed, hasFocus, index);
                 FlatLafStyleUtils.appendStyle(this, "" +
                         "arc:999;");
@@ -71,11 +71,11 @@ public class FormPagination extends Form {
         });
 
         // custom no border
-        Pagination paginationNoBorder = new Pagination(10, 1, 50);
+        JPagination paginationNoBorder = new JPagination(10, 1, 50);
         paginationNoBorder.setItemGap(0);
         paginationNoBorder.setItemRenderer(new DefaultPaginationItemRenderer() {
             @Override
-            public Component getPaginationItemRendererComponent(Pagination pagination, Page page, boolean isSelected, boolean isPressed, boolean hasFocus, int index) {
+            public Component getPaginationItemRendererComponent(JPagination pagination, Page page, boolean isSelected, boolean isPressed, boolean hasFocus, int index) {
                 super.getPaginationItemRendererComponent(pagination, page, isSelected, isPressed, hasFocus, index);
                 FlatLafStyleUtils.appendStyle(this, "" +
                         "arc:0;" +
@@ -86,10 +86,10 @@ public class FormPagination extends Form {
         });
 
         // custom animation
-        Pagination paginationAnimation = new PaginationAnimation(10, 1, 50);
+        JPagination paginationAnimation = new PaginationAnimation(10, 1, 50);
 
         // loop animation
-        Pagination paginationLoop = new PaginationAnimation(7, 1, 7);
+        JPagination paginationLoop = new PaginationAnimation(7, 1, 7);
         paginationLoop.setLoop(true);
         paginationLoop.setItemSize(new Dimension(15, 15));
         paginationLoop.setItemGap(5);
@@ -116,12 +116,12 @@ public class FormPagination extends Form {
 
         private final PaginationItemRenderer oldRenderer;
 
-        private AnimatedLoopItemRenderer(Pagination pagination) {
+        private AnimatedLoopItemRenderer(JPagination pagination) {
             oldRenderer = pagination.getItemRenderer();
         }
 
         @Override
-        public Component getPaginationItemRendererComponent(Pagination pagination, Page page, boolean isSelected, boolean isPressed, boolean hasFocus, int index) {
+        public Component getPaginationItemRendererComponent(JPagination pagination, Page page, boolean isSelected, boolean isPressed, boolean hasFocus, int index) {
             JButton button = (JButton) oldRenderer.getPaginationItemRendererComponent(pagination, page, isSelected, isPressed, hasFocus, index);
 
             button.setText("");
