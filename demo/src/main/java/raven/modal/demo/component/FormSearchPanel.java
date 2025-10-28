@@ -45,7 +45,7 @@ public class FormSearchPanel extends JPanel {
     private void init() {
         setLayout(new MigLayout("fillx,insets 0,wrap", "[fill,500]"));
         textSearch = new JTextField();
-        panelResult = new JPanel(new MigLayout("insets 3 10 3 10,fillx,wrap", "[fill]"));
+        panelResult = new PanelResult();
         textSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Search...");
         textSearch.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, new FlatSVGIcon("raven/modal/demo/icons/search.svg", 0.4f));
         textSearch.putClientProperty(FlatClientProperties.STYLE, "" +
@@ -56,8 +56,6 @@ public class FormSearchPanel extends JPanel {
         add(new JSeparator(), "height 2!");
         JScrollPane scrollPane = new JScrollPane(panelResult);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        scrollPane.getVerticalScrollBar().setUnitIncrement(10);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" +
                 "trackArc:$ScrollBar.thumbArc;" +
@@ -119,6 +117,7 @@ public class FormSearchPanel extends JPanel {
                                     || checkTags(s.tags(), st)) {
                                 if (MyMenuValidation.validation(entry.getValue())) {
                                     Item item = new Item(s, entry.getValue(), false, false);
+                                    checkComponentOrientation(item);
                                     panelResult.add(item);
                                     listItems.add(item);
                                 }
@@ -215,6 +214,7 @@ public class FormSearchPanel extends JPanel {
         if (recentSearch != null && !recentSearch.isEmpty()) {
             panelResult.add(createLabel("Recent"));
             for (Item item : recentSearch) {
+                checkComponentOrientation(item);
                 panelResult.add(item);
                 listItems.add(item);
             }
@@ -223,6 +223,7 @@ public class FormSearchPanel extends JPanel {
         if (favoriteSearch != null && !favoriteSearch.isEmpty()) {
             panelResult.add(createLabel("Favorite"));
             for (Item item : favoriteSearch) {
+                checkComponentOrientation(item);
                 panelResult.add(item);
                 listItems.add(item);
             }
@@ -240,6 +241,7 @@ public class FormSearchPanel extends JPanel {
         label.putClientProperty(FlatClientProperties.STYLE, "" +
                 "font:bold +1;" +
                 "border:5,15,5,15;");
+        checkComponentOrientation(label);
         return label;
     }
 
@@ -305,6 +307,12 @@ public class FormSearchPanel extends JPanel {
 
     public void searchGrabFocus() {
         textSearch.grabFocus();
+    }
+
+    private void checkComponentOrientation(Component com) {
+        if (getComponentOrientation().isLeftToRight() != com.getComponentOrientation().isLeftToRight()) {
+            com.applyComponentOrientation(getComponentOrientation());
+        }
     }
 
     private JTextField textSearch;
@@ -462,6 +470,7 @@ public class FormSearchPanel extends JPanel {
             panelResult.remove(this);
             listItems.remove(this);
             Item item = new Item(data, form, isRecent, true);
+            checkComponentOrientation(item);
             if (index == null) {
                 panelResult.add(createLabel("Favorite"));
                 panelResult.add(item);
@@ -495,6 +504,38 @@ public class FormSearchPanel extends JPanel {
                 }
             }
             return null;
+        }
+    }
+
+    private static class PanelResult extends JPanel implements Scrollable {
+
+        public PanelResult() {
+            super(new MigLayout("insets 3 10 3 10,fillx,wrap", "[fill]"));
+        }
+
+        @Override
+        public Dimension getPreferredScrollableViewportSize() {
+            return getPreferredSize();
+        }
+
+        @Override
+        public int getScrollableUnitIncrement(Rectangle rectangle, int i, int i1) {
+            return 50;
+        }
+
+        @Override
+        public int getScrollableBlockIncrement(Rectangle rectangle, int i, int i1) {
+            return 50;
+        }
+
+        @Override
+        public boolean getScrollableTracksViewportWidth() {
+            return true;
+        }
+
+        @Override
+        public boolean getScrollableTracksViewportHeight() {
+            return false;
         }
     }
 }

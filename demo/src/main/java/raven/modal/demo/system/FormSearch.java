@@ -11,6 +11,7 @@ import raven.modal.option.Location;
 import raven.modal.option.Option;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -88,6 +89,10 @@ public class FormSearch {
         }
         searchPanel.formCheck();
         searchPanel.clearSearch();
+        ComponentOrientation orientation = FormManager.getFrame().getComponentOrientation();
+        if (orientation.isLeftToRight() != searchPanel.getComponentOrientation().isLeftToRight()) {
+            searchPanel.applyComponentOrientation(orientation);
+        }
         return searchPanel;
     }
 }
