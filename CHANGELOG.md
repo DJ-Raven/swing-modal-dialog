@@ -5,10 +5,14 @@
 ### Changed
 
 - Modal dialog: changed round border from `20` to `10`
+- Drawer: curved line style now, only the selected item's line is highlighted
 
 ### Demo
 
 - Add new form pagination (PR #45)
+- Fixed quick search form when RTL layout:
+    - item component now respects RTL orientation
+    - items now fill the full width
 
 ## [2.5.2] - 2025-08-16
 

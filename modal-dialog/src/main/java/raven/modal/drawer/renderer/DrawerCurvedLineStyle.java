@@ -52,7 +52,7 @@ public class DrawerCurvedLineStyle extends AbstractDrawerLineStyleRenderer {
             int l = subMenuLocation[i];
             Shape curve = createCurve(round, startX, l, isLeftToRight);
             defaultLine.append(curve, false);
-            if (selectedLine != null && i <= selectedIndex) {
+            if (selectedLine != null && i == selectedIndex) {
                 selectedLine.append(curve, false);
             }
         }
