@@ -29,7 +29,10 @@ public class SimpleInputForms extends JPanel {
         JTextField txtCompany = new JTextField();
         JTextField txtEmail = new JTextField();
         comboCountry = createEmbeddedComboBox(createCountryInitData(), e -> {
-            ModalBorderAction.getModalBorderAction(this).doAction(NEW_COUNTRY);
+            ModalBorderAction borderAction = ModalBorderAction.getModalBorderAction(this);
+            if (borderAction != null) {
+                ModalBorderAction.getModalBorderAction(this).doAction(NEW_COUNTRY);
+            }
         });
 
         JTextArea txtAddress = new JTextArea();
