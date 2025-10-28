@@ -3,6 +3,7 @@ package raven.modal.demo;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
+import com.formdev.flatlaf.util.UIScale;
 import raven.modal.Drawer;
 import raven.modal.demo.menu.MyDrawerBuilder;
 import raven.modal.demo.system.FormManager;
@@ -24,7 +25,7 @@ public class Demo extends JFrame {
         getRootPane().putClientProperty(FlatClientProperties.FULL_WINDOW_CONTENT, true);
         Drawer.installDrawer(this, MyDrawerBuilder.getInstance());
         FormManager.install(this);
-        setSize(new Dimension(1366, 768));
+        setSize(UIScale.scale(new Dimension(1366, 768)));
         setLocationRelativeTo(null);
     }
 

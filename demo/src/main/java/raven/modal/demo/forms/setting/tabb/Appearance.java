@@ -1,12 +1,11 @@
 package raven.modal.demo.forms.setting.tabb;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatLaf;
-import com.formdev.flatlaf.FlatSystemProperties;
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
-import com.formdev.flatlaf.intellijthemes.FlatSpacegrayIJTheme;
-import com.formdev.flatlaf.intellijthemes.FlatVuesionIJTheme;
-import com.formdev.flatlaf.intellijthemes.FlatXcodeDarkIJTheme;
+import com.formdev.flatlaf.intellijthemes.*;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMTGitHubDarkIJTheme;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMTGitHubIJTheme;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
@@ -19,7 +18,6 @@ import raven.modal.demo.system.Form;
 import raven.modal.demo.utils.DemoPreferences;
 
 import javax.swing.*;
-import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 
 public class Appearance extends Form {
@@ -37,6 +35,8 @@ public class Appearance extends Form {
 
         add(new JLabel("Select flatlaf core themes"));
         ThemesSelection coreThemes = new ThemesSelection(
+                new FlatIntelliJLaf(),
+                new FlatDarculaLaf(),
                 new FlatMacDarkLaf(),
                 new FlatMacLightLaf()
         );
@@ -45,10 +45,15 @@ public class Appearance extends Form {
                 new FlatVuesionIJTheme(),
                 new FlatSpacegrayIJTheme(),
                 new FlatMTGitHubDarkIJTheme(),
-                new FlatMTGitHubIJTheme()
+                new FlatGruvboxDarkHardIJTheme(),
+                new FlatMTGitHubIJTheme(),
+                new FlatGrayIJTheme()
         );
 
-        JComboBox<Object> comboUIScale = new JComboBox<>(new Object[]{"100%", "110%", "125%", "150%", "175%", "200%"});
+        JComboBox<Object> comboUIScale = new JComboBox<>();
+        for (float zoomFacto : UIScale.getSupportedZoomFactors()) {
+            comboUIScale.addItem((int) (zoomFacto * 100) + "%");
+        }
 
         coreThemes.setCallback(theme -> {
             recommendThemes.clearSelected();
@@ -61,7 +66,13 @@ public class Appearance extends Form {
         String currentScale = ((int) (UIScale.getUserScaleFactor() * 100)) + "%";
         comboUIScale.setSelectedItem(currentScale);
         comboUIScale.addActionListener(e -> {
-            changeUIScale(comboUIScale.getSelectedItem().toString());
+            Object select = comboUIScale.getSelectedItem();
+            if (select != null) {
+                String zoom = select.toString();
+                float zoomFactor = Integer.parseInt(zoom.substring(0, zoom.length() - 1)) / 100f;
+                changeUIScale(zoomFactor);
+            }
+
         });
 
         add(createScroll(coreThemes));
@@ -101,26 +112,10 @@ public class Appearance extends Form {
         });
     }
 
-    private void changeUIScale(String scaleValue) {
-        System.setProperty(FlatSystemProperties.UI_SCALE, scaleValue);
-        DemoPreferences.getState().put(DemoPreferences.KEY_SCALE_FACTOR, scaleValue);
-
-        // change laf
-        EventQueue.invokeLater(() -> {
-            Font oldFont = UIManager.getFont("defaultFont");
-            if (oldFont != null) {
-                oldFont = UIScale.applyCustomScaleFactor(new FontUIResource(oldFont));
-            }
-            FlatAnimatedLafChange.showSnapshot();
-            UIManager.put("defaultFont", oldFont);
-            try {
-                Class<? extends LookAndFeel> lafClass = UIManager.getLookAndFeel().getClass();
-                FlatLaf.setup(lafClass.getDeclaredConstructor().newInstance());
-            } catch (Exception ex) {
-                LoggingFacade.INSTANCE.logSevere(null, ex);
-            }
+    private void changeUIScale(float zoom) {
+        DemoPreferences.getState().put(DemoPreferences.KEY_ZOOM_FACTOR, zoom + "");
+        if (UIScale.setZoomFactor(zoom)) {
             FlatLaf.updateUI();
-            FlatAnimatedLafChange.hideSnapshotWithAnimation();
-        });
+        }
     }
 }
