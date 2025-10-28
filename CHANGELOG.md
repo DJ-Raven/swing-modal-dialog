@@ -13,6 +13,9 @@
 - Fixed quick search form when RTL layout:
     - item component now respects RTL orientation
     - items now fill the full width
+- Swing Pack (new menu):
+    - Update pagination form
+    - Add new multi-select form
 
 ## [2.5.2] - 2025-08-16
 

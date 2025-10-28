@@ -137,8 +137,10 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                         .subMenu("Date Time", FormDateTime.class)
                         .subMenu("Color Picker", FormColorPicker.class)
                         .subMenu("Avatar Icon", FormAvatarIcon.class)
-                        .subMenu("Slide Pane", FormSlidePane.class)
-                        .subMenu("Pagination", FormPagination.class),
+                        .subMenu("Slide Pane", FormSlidePane.class),
+                new Item("Swing Pack", "pack.svg")
+                        .subMenu("Pagination", FormPagination.class)
+                        .subMenu("MultiSelect", FormMultiSelect.class),
                 new Item("Email", "email.svg")
                         .subMenu("Inbox")
                         .subMenu(
@@ -198,11 +200,11 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 System.out.println("Drawer menu selected " + Arrays.toString(index));
                 Class<?> itemClass = action.getItem().getItemClass();
                 int i = index[0];
-                if (i == 8) {
+                if (i == 9) {
                     action.consume();
                     FormManager.showAbout();
                     return;
-                } else if (i == 9) {
+                } else if (i == 10) {
                     action.consume();
                     FormManager.logout();
                     return;

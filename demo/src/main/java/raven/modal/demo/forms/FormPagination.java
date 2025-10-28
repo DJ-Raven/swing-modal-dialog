@@ -15,7 +15,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-@SystemForm(name = "Pagination", description = "pagination user interface component")
+@SystemForm(name = "Pagination", description = "pagination user interface component  (swing pack)", tags = {"swing pack", "page"})
 public class FormPagination extends Form {
 
     public FormPagination() {
@@ -32,7 +32,7 @@ public class FormPagination extends Form {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[fill]"));
         JLabel title = new JLabel("Pagination");
         JTextPane text = new JTextPane();
-        text.setText("A pagination component helps users move between pages of content, making it easier to view large amounts of data step by step.");
+        text.setText("The JPagination component provides a simple and flexible way to navigate through multiple pages of content in Swing applications.");
         text.setEditable(false);
         text.setBorder(BorderFactory.createEmptyBorder());
         title.putClientProperty(FlatClientProperties.STYLE, "" +
