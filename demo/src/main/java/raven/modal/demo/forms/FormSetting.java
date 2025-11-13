@@ -5,11 +5,12 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import com.formdev.flatlaf.util.LoggingFacade;
+import com.formdev.flatlaf.util.ScaledEmptyBorder;
 import net.miginfocom.swing.MigLayout;
 import raven.color.ColorPicker;
-import raven.color.component.ColorPaletteType;
 import raven.modal.Drawer;
 import raven.modal.ModalDialog;
+import raven.modal.component.SimpleModalBorder;
 import raven.modal.demo.component.AccentColorIcon;
 import raven.modal.demo.system.Form;
 import raven.modal.demo.system.FormManager;
@@ -23,6 +24,7 @@ import raven.modal.drawer.renderer.DrawerStraightDotLineStyle;
 import raven.modal.drawer.simple.SimpleDrawerBuilder;
 import raven.modal.option.LayoutOption;
 import raven.modal.option.Location;
+import raven.modal.option.Option;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -245,17 +247,20 @@ public class FormSetting extends Form {
         JToggleButton button = new JToggleButton(new FlatSVGIcon("raven/modal/demo/icons/color.svg", 16, 16));
         button.addActionListener(e -> {
             ColorPicker colorPicker = new ColorPicker(DemoPreferences.accentColor);
-            colorPicker.applyColorPaletteType(ColorPaletteType.TAILWIND);
-            Color color = ColorPicker.showDialog(this, "Select Color", colorPicker);
-            if (color != null) {
-                DemoPreferences.accentColor = color;
-                oldSelected = null;
-                applyAccentColor();
-            } else {
-                if (oldSelected != null) {
-                    oldSelected.setSelected(true);
+            colorPicker.setBorder(new ScaledEmptyBorder(0, 20, 0, 20));
+            Option option = ModalDialog.createOption();
+            option.setAnimationEnabled(false);
+            ModalDialog.showModal(this, new SimpleModalBorder(colorPicker, "Select Color", SimpleModalBorder.YES_NO_OPTION, (controller, action) -> {
+                if (action == SimpleModalBorder.YES_OPTION) {
+                    DemoPreferences.accentColor = colorPicker.getSelectedColor();
+                    oldSelected = null;
+                    applyAccentColor();
+                } else if (action == SimpleModalBorder.CLOSE_OPTION) {
+                    if (oldSelected != null) {
+                        oldSelected.setSelected(true);
+                    }
                 }
-            }
+            }), option);
         });
         return button;
     }
