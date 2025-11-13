@@ -47,10 +47,13 @@ public class MemoryBar extends JProgressBar {
 
     private void updateMemoryUsage() {
         MemoryUsage memoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
-        setMaximum((int) memoryUsage.getCommitted());
-        setValue((int) memoryUsage.getUsed());
-        String max = formatSize(memoryUsage.getCommitted());
-        String used = formatSize(memoryUsage.getUsed());
+        long committedValue = memoryUsage.getCommitted();
+        long usedValue = memoryUsage.getUsed();
+        double p = (double) usedValue / (double) committedValue * 100f;
+        int percent = (int) Math.round(Math.max(0, Math.min(100, p)));
+        setValue(percent);
+        String max = formatSize(committedValue);
+        String used = formatSize(usedValue);
         value = String.format(format, used, max);
     }
 
