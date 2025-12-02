@@ -54,7 +54,8 @@ public class TestForm extends BaseFrame {
                             Thread.sleep(2000);
                             callback.done(Toast.Type.SUCCESS, "HI");
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            // Handle exception gracefully in test environment
+                            // e.printStackTrace(); // Uncomment for debugging
                         }
                     }
 
