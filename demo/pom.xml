@@ -40,12 +40,12 @@
         <dependency>
             <groupId>io.github.dj-raven</groupId>
             <artifactId>swing-color-picker</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>io.github.dj-raven</groupId>
             <artifactId>swing-pack</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jfree</groupId>
@@ -56,7 +56,7 @@
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf-intellij-themes</artifactId>
-            <version>3.6</version>
+            <version>3.7</version>
         </dependency>
         <dependency>
             <groupId>com.formdev</groupId>

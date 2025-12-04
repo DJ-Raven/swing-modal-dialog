@@ -6,6 +6,7 @@
 
 - Modal dialog: changed round border from `20` to `10`
 - Drawer: curved line style now, only the selected item's line is highlighted
+- FlatLaf: update to `v3.7`
 
 ### Demo
 
@@ -16,6 +17,7 @@
 - Swing Pack (new menu):
     - Update pagination form
     - Add new multi-select form
+- Color-Picker: update to `v1.0.1`
 
 ## [2.5.2] - 2025-08-16
 
