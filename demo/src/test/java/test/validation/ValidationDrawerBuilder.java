@@ -200,7 +200,7 @@ public class ValidationDrawerBuilder extends SimpleDrawerBuilder {
         simpleMenuOption.addMenuEvent(new MenuEvent() {
             @Override
             public void selected(MenuAction action, int[] index) {
-                System.out.println("Drawer menu selected " + Arrays.toString(index));
+                // DEBUG: Drawer menu selected " + Arrays.toString(index) + " (removed for cleaner output)
             }
         });
 

@@ -278,7 +278,8 @@ public class FormToast extends Form {
                         callback.done(Toast.Type.DEFAULT, "Promise has done with default");
                     }
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    // Thread was interrupted, handle gracefully
+                    Thread.currentThread().interrupt(); // Restore interrupt status
                 }
             }
         };

@@ -51,7 +51,8 @@ public class FormTable extends Form {
 
             formRefresh();
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            // Handle IOException gracefully - could be used for debugging
+            // e.printStackTrace(); // Uncomment for debugging
         }
     }
 

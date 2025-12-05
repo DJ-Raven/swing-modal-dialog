@@ -98,7 +98,7 @@ public class TestModal extends BaseFrame {
                 "\nor simply had a good time relaxing, I'd love to hear about it." +
                 "\nIt's always great to catch up and share our experiences.";
         ModalDialog.showModal(com, new SimpleMessageModal(type, message, "This is a modal custom message", SimpleModalBorder.YES_NO_OPTION, (controller, action) -> {
-            System.out.println("Action: " + action);
+            // DEBUG: Modal action = " + action + "
         }), option, "modal_id");
     }
 

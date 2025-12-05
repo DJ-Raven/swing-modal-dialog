@@ -197,7 +197,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
         simpleMenuOption.addMenuEvent(new MenuEvent() {
             @Override
             public void selected(MenuAction action, int[] index) {
-                System.out.println("Drawer menu selected " + Arrays.toString(index));
+                // Menu selected: " + Arrays.toString(index) + " (debug info removed)
                 Class<?> itemClass = action.getItem().getItemClass();
                 int i = index[0];
                 if (i == 9) {
