@@ -19,6 +19,7 @@
     - Update pagination form
     - Add new multi-select form
 - Color-Picker: update to `v1.0.1`
+- Add new color harmonies custom from color-picker (PR #48)
 
 ## [2.5.2] - 2025-08-16
 
