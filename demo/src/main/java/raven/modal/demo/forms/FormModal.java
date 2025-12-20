@@ -254,7 +254,7 @@ public class FormModal extends Form {
                                 c1.consume();
                                 if (country != null) {
                                     simpleInputForms.newCountryCreated(country);
-                                    ModalDialog.popModel(id);
+                                    ModalDialog.popModal(id);
                                 }
                             }
                         }), id);

@@ -64,7 +64,7 @@ public class ModalDialog {
         getInstance().getModalContainerById(id).pushModal(modal, id);
     }
 
-    public static void popModel(String id) {
+    public static void popModal(String id) {
         getInstance().getModalContainerById(id).popModal(id);
     }
 
