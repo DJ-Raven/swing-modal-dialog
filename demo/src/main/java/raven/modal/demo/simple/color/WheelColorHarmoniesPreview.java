@@ -2,9 +2,17 @@ package raven.modal.demo.simple.color;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import net.miginfocom.swing.MigLayout;
+import raven.modal.Toast;
+import raven.modal.toast.option.ToastBorderStyle;
+import raven.modal.toast.option.ToastLocation;
+import raven.modal.toast.option.ToastOption;
+import raven.modal.toast.option.ToastStyle;
+import raven.modal.utils.FlatLafStyleUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 
 public class WheelColorHarmoniesPreview extends JPanel {
 
@@ -45,22 +53,49 @@ public class WheelColorHarmoniesPreview extends JPanel {
         }
 
         for (int i = 0; i < colors.length; i++) {
+            String hex = colorToHex(colors[i]);
             JButton button = components[i];
+            FlatLafStyleUtils.appendStyle(button, "foreground:contrast(" + hex + ",$Button.foreground,#fff);");
             button.setBackground(colors[i]);
-            button.setText(colorToHex(colors[i]));
+            button.setText(hex);
         }
     }
 
     private String colorToHex(Color color) {
-        return String.format("%02X%02X%02X%02X", color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        if (color.getAlpha() == 255) {
+            return String.format("#%02X%02X%02X", color.getRed(), color.getGreen(), color.getBlue());
+        }
+        return String.format("#%02X%02X%02X%02X", color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }
 
     private JButton createPreviewComponent() {
-        JButton button = new JButton();
-        button.putClientProperty(FlatClientProperties.STYLE, "" +
-                "borderWidth:0;" +
-                "focusWidth:0;" +
-                "innerFocusWidth:0;");
-        return button;
+        return new PreviewComponent();
+    }
+
+    private static class PreviewComponent extends JButton {
+
+        public PreviewComponent() {
+            putClientProperty(FlatClientProperties.STYLE, "" +
+                    "borderWidth:0;" +
+                    "focusWidth:0;" +
+                    "innerFocusWidth:0;");
+            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            addActionListener(e -> copy());
+        }
+
+        private void copy() {
+            String hex = getText();
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(new StringSelection(hex), null);
+            ToastOption option = Toast.createOption();
+            option.setDuration(300)
+                    .setCloseOnClick(true)
+                    .getLayoutOption().setLocation(ToastLocation.BOTTOM_TRAILING);
+            option.getStyle().setShowIcon(false)
+                    .setShowCloseButton(false)
+                    .setBackgroundType(ToastStyle.BackgroundType.NONE)
+                    .getBorderStyle().setBorderType(ToastBorderStyle.BorderType.BOTTOM_LINE);
+            Toast.show(this, Toast.Type.SUCCESS, "Copied hex code " + hex, option);
+        }
     }
 }
