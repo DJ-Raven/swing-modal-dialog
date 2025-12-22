@@ -3,7 +3,6 @@ package raven.modal.demo.simple.color;
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.UIScale;
 import raven.color.DiskColorPickerModel;
-import raven.color.component.ColorLocation;
 import raven.modal.demo.simple.color.harmony.Analogous;
 
 import javax.swing.*;
@@ -20,19 +19,16 @@ public class ColorWheelHarmoniesModel extends DiskColorPickerModel {
         colorHarmony = new Analogous();
     }
 
-    public ColorHarmony getColorPalette() {
+    public ColorHarmony getColorHarmony() {
         return colorHarmony;
     }
 
-    public void setColorPalette(ColorHarmony colorHarmony) {
+    public void setColorHarmony(ColorHarmony colorHarmony) {
         this.colorHarmony = colorHarmony;
     }
 
     public Color[] getSelectedColors() {
-        if (wheelColorImage == null) {
-            return null;
-        }
-        return colorHarmony.getSelectedColor(this, wheelColorImage.getWidth(), wheelColorImage.getHeight());
+        return colorHarmony.getSelectedColor(this);
     }
 
     @Override
@@ -57,29 +53,23 @@ public class ColorWheelHarmoniesModel extends DiskColorPickerModel {
             g2.drawImage(colorImage, 0, 0, null);
             FlatUIUtils.setRenderingHints(g2);
 
-            Point2D.Float[] points = colorHarmony.toLocation(this, selectedColor, width, height);
+            Point2D.Float[] points = colorHarmony.toLocation(this, selectedColor);
 
-
-            int lineWidth = scale(1, systemScale);
+            int lineWidth = scale(2, systemScale);
+            int border = scale(1, systemScale);
             float size = scale(12, systemScale);
             Color borderColor = UIManager.getColor("Component.borderColor");
             for (Point2D.Float point : points) {
                 g2.setColor(Color.WHITE);
-                FlatUIUtils.paintOutline(g2, point.x - size / 2 + lineWidth, point.y - size / 2 + lineWidth, size - lineWidth * 2, size - lineWidth * 2, lineWidth, width);
+                float x = point.x * width;
+                float y = point.y * height;
+                FlatUIUtils.paintOutline(g2, x - size / 2, y - size / 2, size, size, lineWidth, width);
                 g2.setColor(borderColor);
-                FlatUIUtils.paintOutline(g2, point.x - size / 2, point.y - size / 2, size, size, lineWidth, width);
+                FlatUIUtils.paintOutline(g2, x - size / 2, y - size / 2, size, size, border, width);
             }
             g2.dispose();
             wheelColorImage = image;
         }
-    }
-
-    public ColorLocation getLocation() {
-        return new ColorLocation(location.getX(), location.getY());
-    }
-
-    public void setLocation(ColorLocation location) {
-        this.location.set(location);
     }
 
     protected int scale(int value, double scaleFactor) {

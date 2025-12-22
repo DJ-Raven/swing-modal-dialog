@@ -7,7 +7,7 @@ import raven.color.DinoColorPickerModel;
 import raven.color.DiskColorPickerModel;
 import raven.color.component.ColorPaletteType;
 import raven.modal.demo.component.LabelButton;
-import raven.modal.demo.simple.color.ColorHarmony;
+import raven.modal.demo.simple.color.AbstractColorHarmony;
 import raven.modal.demo.simple.color.ColorWheelHarmoniesModel;
 import raven.modal.demo.simple.color.WheelColorHarmoniesPreview;
 import raven.modal.demo.simple.color.harmony.Rectangle;
@@ -146,7 +146,7 @@ public class FormColorPicker extends Form {
 
         JPanel panelRight = new JPanel(new MigLayout("wrap,fill,gapy 5", "[fill]", "[grow 0][fill]"));
         WheelColorHarmoniesPreview colorPreview = new WheelColorHarmoniesPreview();
-        JComboBox<ColorHarmony> comboHarmony = new JComboBox<>(new ColorHarmony[]{
+        JComboBox<AbstractColorHarmony> comboHarmony = new JComboBox<>(new AbstractColorHarmony[]{
                 new Analogous(),
                 new Complementary(),
                 new DoubleSplitComplementary(),
@@ -162,15 +162,16 @@ public class FormColorPicker extends Form {
         ColorWheelHarmoniesModel colorModel = new ColorWheelHarmoniesModel();
 
         ColorPicker colorPk = new ColorPicker(colorModel);
+        colorPk.setSelectedColor(Color.decode("#5856FF"));
         colorPk.setColorPaletteEnabled(false);
 
         colorModel.addChangeListener((color, evt) -> colorPreview.setColors(colorModel.getSelectedColors()));
         comboHarmony.addActionListener(e -> {
-            colorModel.setColorPalette((ColorHarmony) comboHarmony.getSelectedItem());
+            colorModel.setColorHarmony((AbstractColorHarmony) comboHarmony.getSelectedItem());
             colorPreview.setColors(colorModel.getSelectedColors());
         });
 
-        colorPreview.setColors(new Color[]{Color.WHITE, Color.WHITE, Color.WHITE});
+        colorPreview.setColors(colorModel.getSelectedColors());
 
         panel.add(colorPk, "height 250::");
         panel.add(panelRight, "height 250::");
