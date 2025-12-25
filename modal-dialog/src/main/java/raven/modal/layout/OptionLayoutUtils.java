@@ -19,7 +19,7 @@ public class OptionLayoutUtils {
     }
 
     public static Rectangle getLayoutLocation(Container parent, Component owner, Component component, float animate, LayoutOption layoutOption, Dimension extraSize, boolean heavyWeight) {
-        Insets insets = layoutOption.getMargin();
+        Insets insets = getMargin(parent, layoutOption);
         Dimension defaultComSize = getComponentSize(parent, insets);
         Dimension comSize = getComponentSize(component, defaultComSize.width, defaultComSize.height, animate, layoutOption, extraSize, heavyWeight);
         ReferenceBoolean rightToLeft = ReferenceBoolean.of(false);
@@ -49,7 +49,7 @@ public class OptionLayoutUtils {
 
     public static Point convertToLocation(Container parent, Component owner, LayoutOption layoutOption, Dimension comSize, ReferenceBoolean reference) {
         Insets parentInsert = parent.getInsets();
-        Insets insets = layoutOption.getMargin();
+        Insets insets = getMargin(parent, layoutOption);
         if (layoutOption.isRelativeToOwner() && layoutOption.getRelativeToOwnerType() != LayoutOption.RelativeToOwnerType.RELATIVE_CONTAINED) {
             insets = getOwnerInsert(parent, owner, insets);
         }
@@ -84,6 +84,14 @@ public class OptionLayoutUtils {
             lx = lh.getValue();
         }
         return new DynamicSize(lx, ly);
+    }
+
+    private static Insets getMargin(Container parent, LayoutOption option) {
+        if (parent.getComponentOrientation().isLeftToRight()) {
+            return option.getMargin();
+        }
+        Insets insets = option.getMargin();
+        return new Insets(insets.top, insets.right, insets.bottom, insets.left);
     }
 
     protected static Point location(int width, int height, Dimension componentSize, DynamicSize size, boolean overflowAlignmentAuto) {

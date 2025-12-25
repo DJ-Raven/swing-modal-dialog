@@ -7,7 +7,11 @@
 - Modal dialog: changed round border from `20` to `10`
 - Drawer: curved line style now, only the selected item's line is highlighted
 - FlatLaf: update to `v3.7`
-- Fix: correct method name `popModel()` to `popModal()`
+
+### Fixed bugs
+
+- Fixed toast and modal margin not flipping correctly in RTL layout
+- Fixed correct method name `popModel()` to `popModal()`
 
 ### Demo
 
