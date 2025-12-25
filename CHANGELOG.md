@@ -11,6 +11,7 @@
 ### Fixed bugs
 
 - Fixed toast and modal margin not flipping correctly in RTL layout
+- Fixed incorrect drawer layout when applying margins
 - Fixed correct method name `popModel()` to `popModal()`
 
 ### Demo

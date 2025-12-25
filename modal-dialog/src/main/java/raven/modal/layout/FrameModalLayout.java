@@ -1,5 +1,6 @@
 package raven.modal.layout;
 
+import com.formdev.flatlaf.util.UIScale;
 import raven.modal.drawer.DrawerLayoutResponsive;
 import raven.modal.drawer.DrawerPanel;
 
@@ -78,7 +79,7 @@ public class FrameModalLayout implements LayoutManager {
                     drawerLayoutResponsive.revalidateDrawer();
                 } else {
                     Rectangle drawerRec = drawerLayoutResponsive.getDrawerLayout(parent);
-                    Rectangle contentRec = calculate(new Rectangle(x, y, width, height), drawerRec, isHorizontalDrawer);
+                    Rectangle contentRec = calculate(new Rectangle(x, y, width, height), drawerRec, getMargin(), isHorizontalDrawer);
 
                     // adjust content pane with drawer insets left and right
                     // to make the shadow border paint over the content pane
@@ -106,22 +107,35 @@ public class FrameModalLayout implements LayoutManager {
         }
     }
 
+    private Insets getMargin() {
+        Insets margin = drawerLayoutResponsive.getDrawerPanel().getDrawerOption().getLayoutOption().getMargin();
+        return UIScale.scale(margin);
+    }
+
     private Insets getBorderInsets(DrawerPanel drawerPanel) {
         return drawerPanel.getInsets();
     }
 
-    private Rectangle calculate(Rectangle rec1, Rectangle rec2, boolean horizontal) {
+    private Rectangle calculate(Rectangle rec1, Rectangle rec2, Insets margin, boolean horizontal) {
         if (horizontal) {
-            int x = (rec2.x == 0 ? rec2.width : rec1.x);
+            int x = (rec2.x == margin.left ? rec2.width : rec1.x);
             int y = rec1.y;
             int w = rec1.width - rec2.width;
             int h = rec1.height;
+            if (x > 0) {
+                x += margin.left + margin.right;
+            }
+            w -= (margin.left + margin.right);
             return new Rectangle(x, y, w, h);
         } else {
             int x = rec1.x;
-            int y = (rec2.y == 0 ? rec2.height : rec1.y);
+            int y = (rec2.y == margin.top ? rec2.height : rec1.y);
             int w = rec2.width;
             int h = rec1.height - rec2.height + rec1.y;
+            if (y > 0) {
+                y += margin.top + margin.bottom;
+            }
+            h -= (margin.top + margin.bottom);
             return new Rectangle(x, y, w, h);
         }
     }
