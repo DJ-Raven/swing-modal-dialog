@@ -55,7 +55,7 @@ public class WheelColorHarmoniesPreview extends JPanel {
         for (int i = 0; i < colors.length; i++) {
             String hex = colorToHex(colors[i]);
             JButton button = components[i];
-            FlatLafStyleUtils.appendStyle(button, "foreground:contrast(" + hex + ",$Button.foreground,#fff);");
+            FlatLafStyleUtils.appendStyle(button, "foreground:contrast(" + hex + ",#444,#fff);");
             button.setBackground(colors[i]);
             button.setText(hex);
         }
