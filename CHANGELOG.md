@@ -25,6 +25,7 @@
     - Add new multi-select form
 - Color-Picker: update to `v1.0.1`
 - Add new color harmonies custom from color-picker (PR #48)
+- FlatSVGIcon color mapping so `#969696` adapts to the component foreground (tint/shade based on theme)
 
 ## [2.5.2] - 2025-08-16
 

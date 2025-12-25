@@ -1,5 +1,8 @@
 package raven.modal.demo.system;
 
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.util.ColorFunctions;
 import raven.modal.Drawer;
 import raven.modal.ModalDialog;
 import raven.modal.component.SimpleModalBorder;
@@ -25,6 +28,13 @@ public class FormManager {
 
     private static void install() {
         FormSearch.getInstance().installKeyMap(getMainForm());
+        FlatSVGIcon.ColorFilter.getInstance().setMapperEx((component, color) -> {
+            if (color.getRGB() == -6908266) {
+                return FlatLaf.isLafDark() ? ColorFunctions.shade(component.getForeground(), 0.2f)
+                        : ColorFunctions.tint(component.getForeground(), 0.4f);
+            }
+            return color;
+        });
     }
 
     public static void showForm(Form form) {
