@@ -68,9 +68,7 @@ public class MainForm extends JPanel {
 
     private JPanel createFooter() {
         JPanel panel = new JPanel(new MigLayout("insets 1 n 1 n,al trailing center,gapx 10,height 30!", "[]push[][]", "fill"));
-        panel.putClientProperty(FlatClientProperties.STYLE, "" +
-                "[light]background:tint($Panel.background,20%);" +
-                "[dark]background:tint($Panel.background,5%);");
+        panel.putClientProperty(FlatClientProperties.STYLE, "background:$Menu.background;");
 
         // demo version
         JLabel lbDemoVersion = new JLabel("Demo: v" + Demo.DEMO_VERSION);

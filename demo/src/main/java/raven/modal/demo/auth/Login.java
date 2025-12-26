@@ -2,7 +2,6 @@ package raven.modal.demo.auth;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import net.miginfocom.swing.MigLayout;
-import raven.modal.component.DropShadowBorder;
 import raven.modal.demo.component.LabelButton;
 import raven.modal.demo.menu.MyDrawerBuilder;
 import raven.modal.demo.model.ModelUser;
@@ -10,7 +9,6 @@ import raven.modal.demo.system.Form;
 import raven.modal.demo.system.FormManager;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class Login extends Form {
 
@@ -24,15 +22,7 @@ public class Login extends Form {
     }
 
     private void createLogin() {
-        JPanel panelLogin = new JPanel(new BorderLayout()) {
-            @Override
-            public void updateUI() {
-                super.updateUI();
-                applyShadowBorder(this);
-            }
-        };
-        panelLogin.setOpaque(false);
-        applyShadowBorder(panelLogin);
+        JPanel panelLogin = new JPanel(new MigLayout());
 
         JPanel loginContent = new JPanel(new MigLayout("fillx,wrap,insets 35 35 25 35", "[fill,300]"));
 
@@ -59,7 +49,10 @@ public class Login extends Form {
         txtPassword.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Enter your password");
 
         panelLogin.putClientProperty(FlatClientProperties.STYLE, "" +
-                "[dark]background:tint($Panel.background,1%);");
+                "[light]border:5,5,5,5,shade($Panel.background,10%),,20;" +
+                "[dark]border:5,5,5,5,tint($Panel.background,5%),,20;" +
+                "[light]background:shade($Panel.background,3%);" +
+                "[dark]background:tint($Panel.background,2%);");
 
         loginContent.putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:null;");
@@ -114,12 +107,6 @@ public class Login extends Form {
 
         });
         return panelInfo;
-    }
-
-    private void applyShadowBorder(JPanel panel) {
-        if (panel != null) {
-            panel.setBorder(new DropShadowBorder(new Insets(5, 8, 12, 8), 1, 25));
-        }
     }
 
     private ModelUser getUser(String user, String password) {

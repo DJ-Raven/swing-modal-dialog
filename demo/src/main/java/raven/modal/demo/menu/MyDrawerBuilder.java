@@ -12,8 +12,6 @@ import raven.modal.demo.system.FormManager;
 import raven.modal.drawer.DrawerPanel;
 import raven.modal.drawer.item.Item;
 import raven.modal.drawer.item.MenuItem;
-import raven.modal.drawer.menu.MenuAction;
-import raven.modal.drawer.menu.MenuEvent;
 import raven.modal.drawer.menu.MenuOption;
 import raven.modal.drawer.menu.MenuStyle;
 import raven.modal.drawer.renderer.DrawerStraightDotLineStyle;
@@ -23,9 +21,9 @@ import raven.modal.drawer.simple.footer.SimpleFooterData;
 import raven.modal.drawer.simple.header.SimpleHeader;
 import raven.modal.drawer.simple.header.SimpleHeaderData;
 import raven.modal.option.Option;
+import raven.modal.utils.FlatLafStyleUtils;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.Arrays;
 
 public class MyDrawerBuilder extends SimpleDrawerBuilder {
@@ -67,8 +65,6 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
             rebuildMenu();
         }
     }
-
-    private final int SHADOW_SIZE = 12;
 
     private MyDrawerBuilder() {
         super(createSimpleMenuOption());
@@ -113,17 +109,14 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
     public Option createOption() {
         Option option = super.createOption();
         option.setOpacity(0.3f);
-        option.getBorderOption()
-                .setShadowSize(new Insets(0, 0, 0, SHADOW_SIZE));
         return option;
     }
 
     public static MenuOption createSimpleMenuOption() {
-
         // create simple menu option
         MenuOption simpleMenuOption = new MenuOption();
 
-        MenuItem items[] = new MenuItem[]{
+        MenuItem[] items = new MenuItem[]{
                 new Item.Label("MAIN"),
                 new Item("Dashboard", "dashboard.svg", FormDashboard.class),
                 new Item.Label("SWING UI"),
@@ -194,28 +187,25 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
         simpleMenuOption.getMenuStyle().setDrawerLineStyleRenderer(new DrawerStraightDotLineStyle());
         simpleMenuOption.setMenuValidation(new MyMenuValidation());
 
-        simpleMenuOption.addMenuEvent(new MenuEvent() {
-            @Override
-            public void selected(MenuAction action, int[] index) {
-                System.out.println("Drawer menu selected " + Arrays.toString(index));
-                Class<?> itemClass = action.getItem().getItemClass();
-                int i = index[0];
-                if (i == 9) {
-                    action.consume();
-                    FormManager.showAbout();
-                    return;
-                } else if (i == 10) {
-                    action.consume();
-                    FormManager.logout();
-                    return;
-                }
-                if (itemClass == null || !Form.class.isAssignableFrom(itemClass)) {
-                    action.consume();
-                    return;
-                }
-                Class<? extends Form> formClass = (Class<? extends Form>) itemClass;
-                FormManager.showForm(AllForms.getForm(formClass));
+        simpleMenuOption.addMenuEvent((action, index) -> {
+            System.out.println("Drawer menu selected " + Arrays.toString(index));
+            Class<?> itemClass = action.getItem().getItemClass();
+            int i = index[0];
+            if (i == 9) {
+                action.consume();
+                FormManager.showAbout();
+                return;
+            } else if (i == 10) {
+                action.consume();
+                FormManager.logout();
+                return;
             }
+            if (itemClass == null || !Form.class.isAssignableFrom(itemClass)) {
+                action.consume();
+                return;
+            }
+            Class<? extends Form> formClass = (Class<? extends Form>) itemClass;
+            FormManager.showForm(AllForms.getForm(formClass));
         });
 
         simpleMenuOption.setMenus(items)
@@ -223,16 +213,6 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 .setIconScale(0.45f);
 
         return simpleMenuOption;
-    }
-
-    @Override
-    public int getDrawerWidth() {
-        return 270 + SHADOW_SIZE;
-    }
-
-    @Override
-    public int getDrawerCompactWidth() {
-        return 80 + SHADOW_SIZE;
     }
 
     @Override
@@ -248,11 +228,10 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
     @Override
     public void build(DrawerPanel drawerPanel) {
         drawerPanel.putClientProperty(FlatClientProperties.STYLE, getDrawerBackgroundStyle());
+        FlatLafStyleUtils.appendStyle(drawerPanel, "border:0,0,0,1,$Separator.foreground;");
     }
 
     private static String getDrawerBackgroundStyle() {
-        return "" +
-                "[light]background:tint($Panel.background,20%);" +
-                "[dark]background:tint($Panel.background,5%);";
+        return "background:$Menu.background;";
     }
 }
