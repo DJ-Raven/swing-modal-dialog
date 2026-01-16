@@ -1,6 +1,6 @@
 package raven.modal.demo.simple.color;
 
-import raven.color.component.ColorLocation;
+import raven.color.utils.ColorLocation;
 
 import java.awt.*;
 import java.awt.geom.Point2D;

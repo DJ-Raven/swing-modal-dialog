@@ -1,6 +1,6 @@
 package raven.modal.demo.simple.color.harmony;
 
-import raven.color.component.ColorLocation;
+import raven.color.utils.ColorLocation;
 import raven.modal.demo.simple.color.AbstractColorHarmony;
 import raven.modal.demo.simple.color.ColorWheelHarmoniesModel;
 

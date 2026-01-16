@@ -2,10 +2,8 @@ package raven.modal.demo.forms;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import net.miginfocom.swing.MigLayout;
-import raven.color.ColorPicker;
-import raven.color.DinoColorPickerModel;
-import raven.color.DiskColorPickerModel;
-import raven.color.component.ColorPaletteType;
+import raven.color.*;
+import raven.color.component.palette.ColorPaletteType;
 import raven.modal.demo.component.LabelButton;
 import raven.modal.demo.simple.color.AbstractColorHarmony;
 import raven.modal.demo.simple.color.ColorWheelHarmoniesModel;
@@ -104,12 +102,18 @@ public class FormColorPicker extends Form {
     private Component createColorModelOption() {
         JPanel panel = new JPanel(new MigLayout("wrap 5,flowy", "[200]"));
         panel.setBorder(new TitledBorder("Color model option"));
-        JRadioButton jrDino = new JRadioButton("Dino Model", true);
-        JRadioButton jrDisk = new JRadioButton("Disk Model");
+        JRadioButton jrDino = new JRadioButton("Dino", true);
+        JRadioButton jrDisk = new JRadioButton("Disk");
+        JRadioButton jrCorelTriangle = new JRadioButton("Corel Triangle");
+        JRadioButton jrCorelSquare = new JRadioButton("Corel Square");
+        JRadioButton jrCorelRhombus = new JRadioButton("Corel Rhombus");
 
         ButtonGroup group = new ButtonGroup();
         group.add(jrDino);
         group.add(jrDisk);
+        group.add(jrCorelTriangle);
+        group.add(jrCorelSquare);
+        group.add(jrCorelRhombus);
 
         jrDino.addActionListener(e -> {
             if (jrDino.isSelected()) {
@@ -121,9 +125,27 @@ public class FormColorPicker extends Form {
                 colorPicker.setModel(new DiskColorPickerModel());
             }
         });
+        jrCorelTriangle.addActionListener(e -> {
+            if (jrCorelTriangle.isSelected()) {
+                colorPicker.setModel(new CorelTriangleColorPickerModel());
+            }
+        });
+        jrCorelSquare.addActionListener(e -> {
+            if (jrCorelSquare.isSelected()) {
+                colorPicker.setModel(new CorelSquareColorPickerModel());
+            }
+        });
+        jrCorelRhombus.addActionListener(e -> {
+            if (jrCorelRhombus.isSelected()) {
+                colorPicker.setModel(new CorelRhombusColorPickerModel());
+            }
+        });
 
         panel.add(jrDino);
         panel.add(jrDisk);
+        panel.add(jrCorelTriangle);
+        panel.add(jrCorelSquare);
+        panel.add(jrCorelRhombus);
 
         return panel;
     }
@@ -133,9 +155,16 @@ public class FormColorPicker extends Form {
         panel.setBorder(new TitledBorder("Other option"));
 
         JCheckBox chPipettePicker = new JCheckBox("Pipette Picker Enabled (Windows)", true);
+        JCheckBox chPreview = new JCheckBox("Preview Enabled", true);
+        JCheckBox chAlpha = new JCheckBox("Alpha Enabled", true);
+
         chPipettePicker.addActionListener(e -> colorPicker.setColorPipettePickerEnabled(chPipettePicker.isSelected()));
+        chPreview.addActionListener(e -> colorPicker.setColorPreviewEnabled(chPreview.isSelected()));
+        chAlpha.addActionListener(e -> colorPicker.setColorAlphaEnabled(chAlpha.isSelected()));
 
         panel.add(chPipettePicker);
+        panel.add(chPreview);
+        panel.add(chAlpha);
 
         return panel;
     }
@@ -194,4 +223,13 @@ public class FormColorPicker extends Form {
     }
 
     private ColorPicker colorPicker;
+
+    @Override
+    protected boolean formCheck() {
+        boolean changed = super.formCheck();
+        if (changed) {
+            SwingUtilities.updateComponentTreeUI(colorPicker);
+        }
+        return changed;
+    }
 }

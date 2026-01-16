@@ -22,10 +22,12 @@ public class Form extends JPanel {
     public void formRefresh() {
     }
 
-    protected final void formCheck() {
+    protected boolean formCheck() {
         if (oldTheme != UIManager.getLookAndFeel()) {
             oldTheme = UIManager.getLookAndFeel();
             SwingUtilities.updateComponentTreeUI(this);
+            return true;
         }
+        return false;
     }
 }
