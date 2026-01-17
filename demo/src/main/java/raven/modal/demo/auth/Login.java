@@ -74,7 +74,7 @@ public class Login extends Form {
 
         loginContent.add(new JLabel("Password"), "gapy 10");
         loginContent.add(txtPassword);
-        loginContent.add(chRememberMe);
+        loginContent.add(chRememberMe, "grow 0");
         loginContent.add(cmdLogin, "gapy 20");
         loginContent.add(createInfo());
 

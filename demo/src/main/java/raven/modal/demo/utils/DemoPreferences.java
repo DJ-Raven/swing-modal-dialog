@@ -1,7 +1,7 @@
 package raven.modal.demo.utils;
 
+import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatLaf;
-import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.IntelliJTheme;
 import com.formdev.flatlaf.util.LoggingFacade;
 import raven.modal.demo.themes.PanelThemes;
@@ -41,7 +41,7 @@ public class DemoPreferences {
     public static void setupLaf() {
         // set look and feel
         try {
-            String lafClassName = state.get(KEY_LAF, FlatLightLaf.class.getName());
+            String lafClassName = state.get(KEY_LAF, FlatDarculaLaf.class.getName());
             String rgbAccentColor = state.get(KEY_ACCENT_COLOR, null);
             if (rgbAccentColor != null) {
                 accentColor = new Color(Integer.parseInt(rgbAccentColor), true);
@@ -53,7 +53,7 @@ public class DemoPreferences {
                 if (theme.startsWith(RESOURCE_PREFIX)) {
                     IntelliJTheme.setup(PanelThemes.class.getResourceAsStream(PanelThemes.THEMES_PACKAGE + theme.substring(RESOURCE_PREFIX.length())));
                 } else {
-                    FlatLightLaf.setup();
+                    FlatDarculaLaf.setup();
                 }
                 if (!theme.isEmpty()) {
                     UIManager.getLookAndFeelDefaults().put(THEME_UI_KEY, theme);
@@ -63,7 +63,7 @@ public class DemoPreferences {
             }
         } catch (Exception e) {
             LoggingFacade.INSTANCE.logSevere(null, e);
-            FlatLightLaf.setup();
+            FlatDarculaLaf.setup();
         }
         UIManager.addPropertyChangeListener(e -> {
             if (e.getPropertyName().equals("lookAndFeel")) {
