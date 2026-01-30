@@ -2,10 +2,16 @@
 
 ## [2.6.0] - SNAPSHOT
 
+### New features and improvements
+
+- Toast:
+    - Add new `background` to ThemesData: `ToastPanel.ThemesData(icon,color,background)`
+
 ### Changed
 
 - Modal dialog: changed round border from `20` to `10`
 - Drawer: curved line style now, only the selected item's line is highlighted
+- Toast: if ThemesData color `null` it will use the `Component.borderColor`
 - FlatLaf: update to `v3.7`
 
 ### Fixed bugs

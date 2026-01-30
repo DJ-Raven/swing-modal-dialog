@@ -9,6 +9,7 @@ import raven.modal.toast.option.ToastBorderStyle;
 import raven.modal.toast.option.ToastStyle;
 import raven.modal.utils.ModalUtils;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
@@ -20,6 +21,7 @@ import java.awt.image.BufferedImage;
 public class ToastBorder extends FlatEmptyBorder {
 
     private final ToastPanel.ToastData toastData;
+    private final Color borderColor = UIManager.getColor("Component.borderColor");
 
     public ToastBorder(ToastPanel.ToastData toastData) {
         this.toastData = toastData;
@@ -88,8 +90,7 @@ public class ToastBorder extends FlatEmptyBorder {
             }
 
             // create background style
-            ToastPanel.ThemesData themesData = toastData.getThemes();
-            Color defaultColor = themesData.getColor();
+            Color defaultColor = getDefaultColor();
             if (style.getBackgroundType() == ToastStyle.BackgroundType.GRADIENT) {
                 Color color = ColorFunctions.mix(defaultColor, c.getBackground(), 0.3f);
                 float start = ltr ? 0 : (width) * 0.8f;
@@ -123,6 +124,14 @@ public class ToastBorder extends FlatEmptyBorder {
             g.dispose();
         }
         g2d.drawImage(image, x, y, null);
+    }
+
+    protected Color getDefaultColor() {
+        Color color = toastData.getColor();
+        if (color != null) {
+            return color;
+        }
+        return borderColor;
     }
 
     private int scale(int value, double scaleFactor) {

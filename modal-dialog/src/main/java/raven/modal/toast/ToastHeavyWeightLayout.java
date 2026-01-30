@@ -39,7 +39,7 @@ public class ToastHeavyWeightLayout extends HeavyWeightRelativeLayout {
                     style.getBorderStyle().getShadowOpacity(),
                     style.getBorderStyle().getShadowColor(),
                     borderWidth,
-                    toastData.getThemes().getColor(),
+                    toastData.getColor(),
                     style.getBorderStyle().getRound());
         }
         return null;

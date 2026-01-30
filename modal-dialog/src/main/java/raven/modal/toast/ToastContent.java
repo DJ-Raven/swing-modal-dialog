@@ -37,7 +37,7 @@ class ToastContent extends JComponent {
             g2.fill(new Rectangle2D.Double(0, 0, getWidth(), getHeight()));
 
             if (toastData.getOption().getStyle().getBackgroundType() == ToastStyle.BackgroundType.GRADIENT) {
-                ToastPanel.ThemesData themesData = toastData.getThemes();
+                Color defaultColor = getDefaultColor();
                 ToastBorderStyle.BorderType borderType = toastData.getOption().getStyle().getBorderStyle().getBorderType();
                 boolean ltr = getComponentOrientation().isLeftToRight();
                 float arc;
@@ -66,7 +66,7 @@ class ToastContent extends JComponent {
                 }
                 // gradient paint base on the parent component
                 Rectangle rec = FlatUIUtils.addInsets(new Rectangle(0, 0, getWidth(), getHeight()), parent.getInsets());
-                Color color = ColorFunctions.mix(themesData.getColor(), parent.getBackground(), 0.3f);
+                Color color = ColorFunctions.mix(defaultColor, parent.getBackground(), 0.3f);
                 float start = ltr ? rec.x : (rec.x + rec.width) * 0.8f;
                 float end = ltr ? (rec.x + rec.width) * 0.8f : rec.x;
                 g2.setPaint(new GradientPaint(start, 0, color, end, 0, parent.getBackground()));
@@ -82,5 +82,13 @@ class ToastContent extends JComponent {
             g2.dispose();
         }
         super.paintComponent(g);
+    }
+
+    private Color getDefaultColor() {
+        Color color = toastData.getColor();
+        if (color != null) {
+            return color;
+        }
+        return UIManager.getColor("Component.borderColor");
     }
 }
