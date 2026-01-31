@@ -387,9 +387,17 @@ public class ToastPanel extends JPanel {
         }
         FlatSVGIcon svgIcon = new FlatSVGIcon(themesData.icon, 0.5f);
         FlatSVGIcon.ColorFilter colorFilter = new FlatSVGIcon.ColorFilter();
-        colorFilter.add(Color.decode("#969696"), Color.decode(themesData.colors[0]), Color.decode(themesData.colors[1]));
+        colorFilter.add(Color.decode("#969696"), getIconColor(false), getIconColor(true));
         svgIcon.setColorFilter(colorFilter);
         return svgIcon;
+    }
+
+    private Color getIconColor(boolean dark) {
+        String hex = toastData.getColorHex(dark);
+        if (hex != null) {
+            return Color.decode(hex);
+        }
+        return UIManager.getColor("Component.borderColor");
     }
 
     private JComponent createTextMessage() {
