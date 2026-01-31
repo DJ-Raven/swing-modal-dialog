@@ -112,7 +112,7 @@ public class ToastPanel extends JPanel {
             if ((borderWidth > 0 && !ModalUtils.isShadowAndRoundBorderSupport()) || borderStyle.getRound() == 0) {
                 // border width painted with round window border
                 // but if windows round border not support we set the border width here
-                setBorder(new CompoundBorder(new ModalLineBorder(borderWidth, toastData.getColor(), 0), border));
+                setBorder(new CompoundBorder(new ModalLineBorder(borderWidth, toastData.getBorderColor(), 0), border));
             } else {
                 setBorder(border);
             }
@@ -124,7 +124,7 @@ public class ToastPanel extends JPanel {
                         borderStyle.getShadowOpacity(),
                         borderStyle.getShadowColor(),
                         borderWidth,
-                        toastData.getColor(),
+                        toastData.getBorderColor(),
                         borderStyle.getRound());
                 setBorder(new CompoundBorder(shadow, border));
             }
@@ -690,6 +690,14 @@ public class ToastPanel extends JPanel {
         protected Color getColor() {
             String code = getColorHex(FlatLaf.isLafDark());
             return code == null ? null : Color.decode(code);
+        }
+
+        protected Color getBorderColor() {
+            Color color = option.getStyle().getBorderStyle().getLineColor();
+            if (color != null) {
+                return color;
+            }
+            return getColor();
         }
 
         protected Color getBackground() {

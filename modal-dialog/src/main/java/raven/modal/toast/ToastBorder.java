@@ -127,7 +127,7 @@ public class ToastBorder extends FlatEmptyBorder {
     }
 
     protected Color getDefaultColor() {
-        Color color = toastData.getColor();
+        Color color = toastData.getBorderColor();
         if (color != null) {
             return color;
         }

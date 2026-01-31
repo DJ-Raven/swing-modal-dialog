@@ -6,6 +6,7 @@
 
 - Toast:
     - Add new `background` to ThemesData: `ToastPanel.ThemesData(icon,color,background)`
+    - Add new `lineColor` in ToastBorderStyle. if the value set, it will override color from ThemesData
 
 ### Changed
 
