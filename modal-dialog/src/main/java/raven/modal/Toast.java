@@ -43,7 +43,6 @@ public class Toast {
         themesDataMap.put(Type.WARNING, new ToastPanel.ThemesData("raven/modal/icon/toast_warning.svg", new String[]{"#CC8925", "#CC8925"}));
         themesDataMap.put(Type.ERROR, new ToastPanel.ThemesData("raven/modal/icon/toast_error.svg", new String[]{"#FF5757", "#FF5757"}));
         themesDataMap.put(Type.DEFAULT, new ToastPanel.ThemesData(null, new String[]{"#64748b", "#64748b"}));
-        themesDataMap.put(null, new ToastPanel.ThemesData(null, new String[]{"#64748b", "#64748b"}));
     }
 
     public static void show(Component owner, Type type, String message) {

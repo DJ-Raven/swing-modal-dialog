@@ -84,8 +84,15 @@ public class ToastPanel extends JPanel {
         if (isAnimationSupport()) {
             animate = 0f;
         }
+
+        // apply background
+        String hexDark = toastData.getBackgroundHex(true);
+        String hexLight = toastData.getBackgroundHex(false);
+        String styleDark = hexDark == null ? "tint($Panel.background,3%)" : hexDark;
+        String styleLight = hexLight == null ? "shade($Panel.background,3%)" : hexLight;
         putClientProperty(FlatClientProperties.STYLE, "" +
-                "background:$TextArea.background;");
+                "[light]background:" + styleLight + ";" +
+                "[dark]background:" + styleDark + ";");
     }
 
     @Override
@@ -105,7 +112,7 @@ public class ToastPanel extends JPanel {
             if ((borderWidth > 0 && !ModalUtils.isShadowAndRoundBorderSupport()) || borderStyle.getRound() == 0) {
                 // border width painted with round window border
                 // but if windows round border not support we set the border width here
-                setBorder(new CompoundBorder(new ModalLineBorder(borderWidth, toastData.getThemes().getColor(), 0), border));
+                setBorder(new CompoundBorder(new ModalLineBorder(borderWidth, toastData.getBorderColor(), 0), border));
             } else {
                 setBorder(border);
             }
@@ -117,7 +124,7 @@ public class ToastPanel extends JPanel {
                         borderStyle.getShadowOpacity(),
                         borderStyle.getShadowColor(),
                         borderWidth,
-                        toastData.getThemes().getColor(),
+                        toastData.getBorderColor(),
                         borderStyle.getRound());
                 setBorder(new CompoundBorder(shadow, border));
             }
@@ -262,21 +269,25 @@ public class ToastPanel extends JPanel {
     }
 
     private void installStyle(ThemesData themesData) {
+        String hexDark = toastData.getColorHex(true);
+        String hexLight = toastData.getColorHex(false);
+        String styleDark = hexDark == null ? "$Component.borderColor" : hexDark;
+        String styleLight = hexLight == null ? "$Component.borderColor" : hexLight;
         if (toastData.getOption().getStyle().getBackgroundType() == ToastStyle.BackgroundType.DEFAULT) {
             putClientProperty(FlatClientProperties.STYLE, "" +
-                    "[light]background:mix(" + themesData.colors[0] + ",$TextArea.background,10%);" +
-                    "[dark]background:mix(" + themesData.colors[1] + ",$TextArea.background,10%);");
+                    "[light]background:mix(" + styleLight + ",$TextArea.background,10%);" +
+                    "[dark]background:mix(" + styleDark + ",$TextArea.background,10%);");
         }
         if (textMessage != null && toastData.getOption().getStyle().isPaintTextColor()) {
             textMessage.putClientProperty(FlatClientProperties.STYLE, "" +
-                    "[light]foreground:" + themesData.colors[0] + ";" +
-                    "[dark]foreground:" + themesData.colors[1] + ";");
+                    "[light]foreground:" + styleLight + ";" +
+                    "[dark]foreground:" + styleDark + ";");
         }
         if (labelTitle != null) {
             labelTitle.putClientProperty(FlatClientProperties.STYLE, "" +
                     "font:bold;" +
-                    "[light]foreground:" + themesData.colors[0] + ";" +
-                    "[dark]foreground:" + themesData.colors[1] + ";");
+                    "[light]foreground:" + styleLight + ";" +
+                    "[dark]foreground:" + styleDark + ";");
         }
     }
 
@@ -376,9 +387,17 @@ public class ToastPanel extends JPanel {
         }
         FlatSVGIcon svgIcon = new FlatSVGIcon(themesData.icon, 0.5f);
         FlatSVGIcon.ColorFilter colorFilter = new FlatSVGIcon.ColorFilter();
-        colorFilter.add(Color.decode("#969696"), Color.decode(themesData.colors[0]), Color.decode(themesData.colors[1]));
+        colorFilter.add(Color.decode("#969696"), getIconColor(false), getIconColor(true));
         svgIcon.setColorFilter(colorFilter);
         return svgIcon;
+    }
+
+    private Color getIconColor(boolean dark) {
+        String hex = toastData.getColorHex(dark);
+        if (hex != null) {
+            return Color.decode(hex);
+        }
+        return UIManager.getColor("Component.borderColor");
     }
 
     private JComponent createTextMessage() {
@@ -654,6 +673,45 @@ public class ToastPanel extends JPanel {
         private ToastOption option;
         private ThemesData themes;
         private String message;
+
+        private String getColorHex(String[] colors, boolean dark) {
+            if (colors == null) {
+                return null;
+            }
+            return dark ? colors[1] : colors[0];
+        }
+
+        private String getColorHex(boolean dark) {
+            if (themes == null) {
+                return null;
+            }
+            return getColorHex(themes.getColors(), dark);
+        }
+
+        private String getBackgroundHex(boolean dark) {
+            if (themes == null) {
+                return null;
+            }
+            return getColorHex(themes.getBackgrounds(), dark);
+        }
+
+        protected Color getColor() {
+            String code = getColorHex(FlatLaf.isLafDark());
+            return code == null ? null : Color.decode(code);
+        }
+
+        protected Color getBorderColor() {
+            Color color = option.getStyle().getBorderStyle().getLineColor();
+            if (color != null) {
+                return color;
+            }
+            return getColor();
+        }
+
+        protected Color getBackground() {
+            String code = getBackgroundHex(FlatLaf.isLafDark());
+            return code == null ? null : Color.decode(code);
+        }
     }
 
     public static class ThemesData {
@@ -666,16 +724,24 @@ public class ToastPanel extends JPanel {
             return colors;
         }
 
+        public String[] getBackgrounds() {
+            return backgrounds;
+        }
+
         public ThemesData(String icon, String[] colors) {
             this.icon = icon;
             this.colors = colors;
+            this.backgrounds = null;
         }
 
-        private String icon;
-        private String[] colors;
-
-        public Color getColor() {
-            return Color.decode(FlatLaf.isLafDark() ? colors[1] : colors[0]);
+        public ThemesData(String icon, String[] colors, String[] backgrounds) {
+            this.icon = icon;
+            this.colors = colors;
+            this.backgrounds = backgrounds;
         }
+
+        private final String icon;
+        private final String[] colors;
+        private final String[] backgrounds;
     }
 }

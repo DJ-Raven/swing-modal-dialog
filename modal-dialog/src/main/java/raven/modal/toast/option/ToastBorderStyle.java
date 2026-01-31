@@ -41,11 +41,15 @@ public class ToastBorderStyle {
         return borderWidth;
     }
 
+    public Color getLineColor() {
+        return lineColor;
+    }
+
     public Insets getPadding() {
         return padding;
     }
 
-    private ToastBorderStyle(BorderType borderType, int round, Insets shadowSize, Color shadowColor, float shadowOpacity, int lineSize, int borderWidth, Insets padding) {
+    private ToastBorderStyle(BorderType borderType, int round, Insets shadowSize, Color shadowColor, float shadowOpacity, int lineSize, int borderWidth, Color lineColor, Insets padding) {
         this.borderType = borderType;
         this.round = round;
         this.shadowSize = shadowSize;
@@ -53,6 +57,7 @@ public class ToastBorderStyle {
         this.shadowOpacity = shadowOpacity;
         this.lineSize = lineSize;
         this.borderWidth = borderWidth;
+        this.lineColor = lineColor;
         this.padding = padding;
     }
 
@@ -66,6 +71,7 @@ public class ToastBorderStyle {
     private float shadowOpacity = -1;
     private int lineSize = 3;
     private int borderWidth = 1;
+    private Color lineColor;
     private Insets padding = new Insets(0, 0, 0, 0);
 
     public ToastBorderStyle setBorderType(BorderType borderType) {
@@ -114,6 +120,11 @@ public class ToastBorderStyle {
         return this;
     }
 
+    public ToastBorderStyle setLineColor(Color lineColor) {
+        this.lineColor = lineColor;
+        return this;
+    }
+
     public ToastBorderStyle setPadding(int top, int left, int bottom, int right) {
         this.padding = new Insets(top, left, bottom, right);
         return this;
@@ -130,7 +141,7 @@ public class ToastBorderStyle {
     }
 
     public ToastBorderStyle copy() {
-        return new ToastBorderStyle(borderType, round, ModalUtils.copyInsets(shadowSize), shadowColor, shadowOpacity, lineSize, borderWidth, ModalUtils.copyInsets(padding));
+        return new ToastBorderStyle(borderType, round, ModalUtils.copyInsets(shadowSize), shadowColor, shadowOpacity, lineSize, borderWidth, lineColor, ModalUtils.copyInsets(padding));
     }
 
     public enum Shadow {
