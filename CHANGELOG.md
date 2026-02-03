@@ -12,7 +12,12 @@
 
 - Modal dialog: changed round border from `20` to `10`
 - Drawer: curved line style now, only the selected item's line is highlighted
-- Toast: if ThemesData color `null` it will use the `Component.borderColor`
+- Toast:
+    - If ThemesData color `null` it will use the `Component.borderColor`
+    - If background type set to `ToastStyle.BackgroundType.NONE` and no background set in themes data,
+      it will paint the toast background as:
+        - `[light]background:shade($Panel.background,3%)`
+        - `[dark]background:tint($Panel.background,3%)`
 - FlatLaf: update to `v3.7`
 
 ### Fixed bugs
