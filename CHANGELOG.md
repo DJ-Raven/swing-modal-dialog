@@ -35,7 +35,7 @@
 - Swing Pack (new menu):
     - Update pagination form
     - Add new multi-select form
-- Color-Picker: update to `v1.0.1`
+- Color-Picker: update to `v2.0.0`
 - Add new color harmonies custom from color-picker (PR #48)
 - FlatSVGIcon color mapping so `#969696` adapts to the component foreground (tint/shade based on theme)
 - Update UI:
