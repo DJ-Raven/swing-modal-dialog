@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.6.1-SNAPSHOT]
+
+### New features and improvements
+
+- Toast:
+    - Add new option `htmlEnabled` for HTML message support (issue #51)
+        - `true`: render message with `JLabel`
+        - `false`: render message with `JTextArea` (default)
+
 ## [2.6.0] - 2026-02-19
 
 ### New features and improvements

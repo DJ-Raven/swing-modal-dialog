@@ -53,7 +53,7 @@ public class ToastPanel extends JPanel {
     private final Component owner;
     private ToastData toastData;
     private ToastContent content;
-    private JTextArea textMessage;
+    private TextMessage textMessage;
     private JLabel labelTitle;
     private MouseListener mouseListener;
     private Animator animator;
@@ -400,24 +400,17 @@ public class ToastPanel extends JPanel {
         return UIManager.getColor("Component.borderColor");
     }
 
-    private JComponent createTextMessage() {
-        JTextArea text = new JTextArea();
-        text.setOpaque(false);
-        text.setFocusable(false);
-        text.setWrapStyleWord(true);
-        text.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        text.setBorder(BorderFactory.createEmptyBorder());
-        text.setText(toastData.getMessage());
-        textMessage = text;
+    private Component createTextMessage() {
+        textMessage = new TextMessage(toastData.getMessage(), toastData.getOption().isHtmlEnabled());
         if (toastData.getOption().getStyle().isShowLabel()) {
             JPanel panel = new JPanel(new MigLayout("insets 0,wrap,gap 0"));
             panel.setOpaque(false);
             labelTitle = new JLabel(toastData.getOption().getStyle().getLabelText(toastData.type));
             panel.add(labelTitle);
-            panel.add(text);
+            panel.add(textMessage.getView());
             return panel;
         } else {
-            return text;
+            return textMessage.getView();
         }
     }
 
@@ -743,5 +736,73 @@ public class ToastPanel extends JPanel {
         private final String icon;
         private final String[] colors;
         private final String[] backgrounds;
+    }
+
+    private static class TextMessage {
+
+        private final boolean htmlEnabled;
+        private JTextArea textArea;
+        private JLabel label;
+
+        public TextMessage(String text, boolean htmlEnabled) {
+            this.htmlEnabled = htmlEnabled;
+
+            if (htmlEnabled) {
+                label = new JLabel(text);
+            } else {
+                textArea = new JTextArea(text);
+                textArea.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                textArea.setOpaque(false);
+                textArea.setFocusable(false);
+                textArea.setWrapStyleWord(true);
+                textArea.setBorder(BorderFactory.createEmptyBorder());
+            }
+        }
+
+        public void setText(String message) {
+            if (htmlEnabled) {
+                label.setText(message);
+            } else {
+                textArea.setText(message);
+            }
+        }
+
+        public String getText() {
+            if (htmlEnabled) {
+                return label.getText();
+            }
+            return textArea.getText();
+        }
+
+        public void addMouseListener(MouseListener mouseListener) {
+            if (htmlEnabled) {
+                label.addMouseListener(mouseListener);
+            } else {
+                textArea.addMouseListener(mouseListener);
+            }
+        }
+
+        public void removeMouseListener(MouseListener mouseListener) {
+            if (htmlEnabled) {
+                label.removeMouseListener(mouseListener);
+            } else {
+                textArea.removeMouseListener(mouseListener);
+            }
+        }
+
+        public void putClientProperty(Object key, Object value) {
+            if (htmlEnabled) {
+                label.putClientProperty(key, value);
+            } else {
+                textArea.putClientProperty(key, value);
+            }
+        }
+
+        public Component getView() {
+            if (htmlEnabled) {
+                return label;
+            }
+            return textArea;
+        }
     }
 }

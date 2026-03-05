@@ -35,10 +35,25 @@ public class TestToast extends BaseFrame {
             Toast.show(this, Toast.Type.INFO, "The operation was completed successfully without any issues.", toastOption);
         });
         add(cmdShow);
+        html();
         custom();
         LightDarkButton lightDarkButton = new LightDarkButton();
         lightDarkButton.installAutoLafChangeListener();
         add(lightDarkButton);
+    }
+
+    private void html() {
+        JButton cmdShow = new JButton("Show as HTML");
+        cmdShow.addActionListener(e -> {
+            ToastOption toastOption = Toast.createOption();
+            toastOption.setHtmlEnabled(true);
+            toastOption.getStyle().setBackgroundType(ToastStyle.BackgroundType.NONE)
+                    .setShowLabel(true)
+                    .setIconSeparateLine(true)
+                    .getBorderStyle().setBorderType(ToastBorderStyle.BorderType.LEADING_LINE);
+            Toast.show(this, Toast.Type.INFO, "<html>The operation was <b><font color='#2ECC71'>completed successfully</font></b> without any issues.</html>", toastOption);
+        });
+        add(cmdShow);
     }
 
     private void custom() {
