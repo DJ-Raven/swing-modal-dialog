@@ -49,9 +49,14 @@ public class ToastPanel extends JPanel {
         return toastData.getOption();
     }
 
+    public String getId() {
+        return id;
+    }
+
     private final BaseToastContainer baseToastContainer;
     private final Component owner;
     private ToastData toastData;
+    private String id;
     private ToastContent content;
     private TextMessage textMessage;
     private JLabel labelTitle;
@@ -69,10 +74,11 @@ public class ToastPanel extends JPanel {
     private boolean available = true;
     private Image snapshotContent;
 
-    public ToastPanel(BaseToastContainer baseToastContainer, Component owner, ToastData toastData) {
+    public ToastPanel(BaseToastContainer baseToastContainer, Component owner, ToastData toastData, String id) {
         this.baseToastContainer = baseToastContainer;
         this.owner = owner;
         this.toastData = toastData;
+        this.id = id;
         init();
     }
 
@@ -519,8 +525,10 @@ public class ToastPanel extends JPanel {
             }
             showing = false;
             animator.start();
+            id = null;
         } else {
             showing = false;
+            id = null;
             removeToast();
         }
     }

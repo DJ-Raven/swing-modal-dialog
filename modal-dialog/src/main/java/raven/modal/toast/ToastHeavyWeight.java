@@ -41,6 +41,15 @@ public class ToastHeavyWeight {
         return false;
     }
 
+    public boolean isIdExist(String id) {
+        for (ToastHeavyWeightContainerLayer com : map.values()) {
+            if (com.checkId(id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void closeAll() {
         map.values().forEach(con -> {
             con.closeAll();
@@ -53,10 +62,26 @@ public class ToastHeavyWeight {
         });
     }
 
+    public void close(String id) {
+        for (ToastHeavyWeightContainerLayer com : map.values()) {
+            if (com.close(id)) {
+                return;
+            }
+        }
+    }
+
     public void closeAllImmediately() {
         map.values().forEach(con -> {
             con.closeAllImmediately();
         });
+    }
+
+    public void closeImmediately(String id) {
+        for (ToastHeavyWeightContainerLayer com : map.values()) {
+            if (com.closeImmediately(id)) {
+                return;
+            }
+        }
     }
 
     public ToastHeavyWeightContainerLayer getToastHeavyWeightContainer(Component owner) {
