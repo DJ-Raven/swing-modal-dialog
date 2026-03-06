@@ -67,6 +67,19 @@ public class ToastHeavyWeightContainerLayer implements BaseToastContainer {
     }
 
     @Override
+    public boolean close(String id) {
+        for (int i = 0; i < listToastHeavyWeight.size(); i++) {
+            ToastHeavyWeightLayout toastLayout = listToastHeavyWeight.get(i);
+            if (toastLayout != null) {
+                if (close(toastLayout, id)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
     public void closeAllImmediately() {
         for (int i = listToastHeavyWeight.size() - 1; i >= 0; i--) {
             ToastHeavyWeightLayout toastLayout = listToastHeavyWeight.get(i);
@@ -74,6 +87,19 @@ public class ToastHeavyWeightContainerLayer implements BaseToastContainer {
                 closeAllImmediately(toastLayout);
             }
         }
+    }
+
+    @Override
+    public boolean closeImmediately(String id) {
+        for (int i = 0; i < listToastHeavyWeight.size(); i++) {
+            ToastHeavyWeightLayout toastLayout = listToastHeavyWeight.get(i);
+            if (toastLayout != null) {
+                if (closeImmediately(toastLayout, id)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -94,6 +120,21 @@ public class ToastHeavyWeightContainerLayer implements BaseToastContainer {
             for (int j = 0; j < list.size(); j++) {
                 ToastPanel toastPanel = (ToastPanel) list.get(j).getContents();
                 if (toastPanel.checkPromiseId(id)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean checkId(String id) {
+        for (int i = 0; i < listToastHeavyWeight.size(); i++) {
+            ToastHeavyWeightLayout toastLayout = listToastHeavyWeight.get(i);
+            List<ModalWindow> list = toastLayout.getModalWindows();
+            for (int j = 0; j < list.size(); j++) {
+                ToastPanel toastPanel = (ToastPanel) list.get(j).getContents();
+                if (id.equals(toastPanel.getId())) {
                     return true;
                 }
             }
@@ -125,11 +166,35 @@ public class ToastHeavyWeightContainerLayer implements BaseToastContainer {
         }
     }
 
+    private boolean close(HeavyWeightRelativeLayout heavyWeight, String id) {
+        List<ModalWindow> modalWindows = heavyWeight.getModalWindows();
+        for (int i = modalWindows.size() - 1; i >= 0; i--) {
+            ToastPanel toastPanel = (ToastPanel) modalWindows.get(i).getContents();
+            if (id.equals(toastPanel.getId())) {
+                toastPanel.stop();
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void closeAllImmediately(HeavyWeightRelativeLayout heavyWeight) {
         List<ModalWindow> modalWindows = heavyWeight.getModalWindows();
         for (int i = modalWindows.size() - 1; i >= 0; i--) {
             ((ToastPanel) modalWindows.get(i).getContents()).close();
         }
+    }
+
+    private boolean closeImmediately(HeavyWeightRelativeLayout heavyWeight, String id) {
+        List<ModalWindow> modalWindows = heavyWeight.getModalWindows();
+        for (int i = modalWindows.size() - 1; i >= 0; i--) {
+            ToastPanel toastPanel = (ToastPanel) modalWindows.get(i).getContents();
+            if (id.equals(toastPanel.getId())) {
+                toastPanel.close();
+                return true;
+            }
+        }
+        return false;
     }
 
     private void closeAll(HeavyWeightRelativeLayout heavyWeight, ToastLocation location) {

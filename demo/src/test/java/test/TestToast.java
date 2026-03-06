@@ -31,8 +31,8 @@ public class TestToast extends BaseFrame {
                     .setShowLabel(true)
                     .setIconSeparateLine(true)
                     .getBorderStyle().setBorderType(ToastBorderStyle.BorderType.LEADING_LINE);
-
-            Toast.show(this, Toast.Type.INFO, "The operation was completed successfully without any issues.", toastOption);
+            String id = Toast.show(this, Toast.Type.INFO, "The operation was completed successfully without any issues.", toastOption);
+            System.out.println("id:" + id);
         });
         add(cmdShow);
         html();

@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Raven
@@ -17,6 +18,7 @@ import java.util.Map;
 public class Toast {
 
     private static Toast instance;
+    private static final AtomicInteger toastCounter = new AtomicInteger();
     private final Integer LAYER = JLayeredPane.POPUP_LAYER;
     private final Map<RootPaneContainer, ToastContainerLayer> map;
     private final Map<Type, ToastPanel.ThemesData> themesDataMap;
@@ -45,59 +47,60 @@ public class Toast {
         themesDataMap.put(Type.DEFAULT, new ToastPanel.ThemesData(null, new String[]{"#64748b", "#64748b"}));
     }
 
-    public static void show(Component owner, Type type, String message) {
-        show(owner, type, message, getDefaultOption());
+    public static String show(Component owner, Type type, String message) {
+        return show(owner, type, message, getDefaultOption());
     }
 
-    public static void show(Component owner, Type type, String message, ToastLocation location) {
+    public static String show(Component owner, Type type, String message, ToastLocation location) {
         ToastOption option = createOption();
         option.getLayoutOption()
                 .setLocation(location);
-        show(owner, type, message, option);
+        return show(owner, type, message, option);
     }
 
-    public static void show(Component owner, Type type, String message, ToastLocation location, ToastOption option) {
+    public static String show(Component owner, Type type, String message, ToastLocation location, ToastOption option) {
         option.getLayoutOption()
                 .setLocation(location);
-        show(owner, type, message, option, null);
+        return show(owner, type, message, option, null);
     }
 
-    public static void show(Component owner, Type type, String message, ToastOption option) {
-        show(owner, type, message, option, null);
+    public static String show(Component owner, Type type, String message, ToastOption option) {
+        return show(owner, type, message, option, null);
     }
 
-    public static void showPromise(Component owner, String message, ToastPromise promise) {
-        showPromise(owner, message, getDefaultOption(), promise);
+    public static String showPromise(Component owner, String message, ToastPromise promise) {
+        return showPromise(owner, message, getDefaultOption(), promise);
     }
 
-    public static void showPromise(Component owner, String message, ToastLocation location, ToastPromise promise) {
+    public static String showPromise(Component owner, String message, ToastLocation location, ToastPromise promise) {
         ToastOption option = createOption();
         option.getLayoutOption()
                 .setLocation(location);
-        showPromise(owner, message, option, promise);
+        return showPromise(owner, message, option, promise);
     }
 
-    public static void showPromise(Component owner, String message, ToastLocation location, ToastOption option, ToastPromise promise) {
+    public static String showPromise(Component owner, String message, ToastLocation location, ToastOption option, ToastPromise promise) {
         option.getLayoutOption()
                 .setLocation(location);
-        showPromise(owner, message, option, promise);
+        return showPromise(owner, message, option, promise);
     }
 
-    public static void showPromise(Component owner, String message, ToastOption option, ToastPromise promise) {
-        show(owner, null, message, option, promise);
+    public static String showPromise(Component owner, String message, ToastOption option, ToastPromise promise) {
+        return show(owner, null, message, option, promise);
     }
 
-    public static void showCustom(Component owner, Component component, ToastOption option) {
-        show(owner, null, component, option, null);
+    public static String showCustom(Component owner, Component component, ToastOption option) {
+        return show(owner, null, component, option, null);
     }
 
-    private static void show(Component owner, Type type, Object object, ToastOption option, ToastPromise promise) {
+    private static String show(Component owner, Type type, Object object, ToastOption option, ToastPromise promise) {
         ToastPanel.ThemesData themesData = getInstance().themesDataMap.get(type);
         RootPaneContainer rootPaneContainer = ModalDialog.getRootPaneContainer(owner);
         BaseToastContainer toastContainerLayer = getInstance().getToastContainer(owner, option.isHeavyWeight());
         String message = object instanceof String ? object.toString() : null;
         Component toastOwner = option.getLayoutOption().isRelativeToOwner() ? owner : null;
-        ToastPanel toastPanel = new ToastPanel(toastContainerLayer, toastOwner, new ToastPanel.ToastData(type, option, themesData, message));
+        String toastId = nextToastId();
+        ToastPanel toastPanel = new ToastPanel(toastContainerLayer, toastOwner, new ToastPanel.ToastData(type, option, themesData, message), toastId);
         if (object instanceof Component) {
             toastContainerLayer.add(toastPanel.createToastCustom((Component) object));
         } else if (promise != null) {
@@ -109,6 +112,7 @@ public class Toast {
             toastPanel.applyComponentOrientation(rootPaneContainer.getRootPane().getComponentOrientation());
         }
         toastPanel.start();
+        return toastId;
     }
 
     public static boolean checkPromiseId(String id) {
@@ -121,6 +125,18 @@ public class Toast {
             }
         }
         return ToastHeavyWeight.getInstance().checkPromiseId(id);
+    }
+
+    public static boolean isIdExist(String id) {
+        if (id == null) {
+            throw new IllegalArgumentException("id must not null");
+        }
+        for (BaseToastContainer com : getInstance().map.values()) {
+            if (com.checkId(id)) {
+                return true;
+            }
+        }
+        return ToastHeavyWeight.getInstance().isIdExist(id);
     }
 
     public static void closeAll() {
@@ -137,11 +153,29 @@ public class Toast {
         ToastHeavyWeight.getInstance().closeAll(location);
     }
 
+    public static void close(String id) {
+        for (BaseToastContainer com : getInstance().map.values()) {
+            if (com.close(id)) {
+                return;
+            }
+        }
+        ToastHeavyWeight.getInstance().close(id);
+    }
+
     public static void closeAllImmediately() {
         getInstance().map.values().forEach(com -> {
             com.closeAllImmediately();
         });
         ToastHeavyWeight.getInstance().closeAllImmediately();
+    }
+
+    public static void closeImmediately(String id) {
+        for (BaseToastContainer com : getInstance().map.values()) {
+            if (com.closeImmediately(id)) {
+                return;
+            }
+        }
+        ToastHeavyWeight.getInstance().closeImmediately(id);
     }
 
     public static void setReverseOrder(boolean reverseOrder) {
@@ -224,6 +258,10 @@ public class Toast {
             return ToastHeavyWeight.getInstance().getToastHeavyWeightContainer(owner);
         }
         return getToastContainerLayered(ModalDialog.getRootPaneContainer(owner));
+    }
+
+    private static String nextToastId() {
+        return "toast-" + toastCounter.incrementAndGet();
     }
 
     public static void setEnableHierarchy(boolean enable) {

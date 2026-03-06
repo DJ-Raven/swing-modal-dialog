@@ -17,9 +17,15 @@ public interface BaseToastContainer {
 
     void closeAllImmediately();
 
+    boolean close(String id);
+
+    boolean closeImmediately(String id);
+
     void closeAll(ToastLocation location);
 
     boolean checkPromiseId(String id);
+
+    boolean checkId(String id);
 
     void updateLayout();
 

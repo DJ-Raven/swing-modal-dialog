@@ -63,6 +63,20 @@ public abstract class AbstractToastContainerLayer extends AbstractRelativeContai
     }
 
     @Override
+    public boolean close(String id) {
+        synchronized (toastPanels) {
+            for (int i = 0; i < toastPanels.size(); i++) {
+                ToastPanel toastPanel = toastPanels.get(i);
+                if (id.equals(toastPanel.getId())) {
+                    toastPanel.stop();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
     public void closeAllImmediately() {
         synchronized (toastPanels) {
             for (int i = toastPanels.size() - 1; i >= 0; i--) {
@@ -70,6 +84,20 @@ public abstract class AbstractToastContainerLayer extends AbstractRelativeContai
                 p.close();
             }
         }
+    }
+
+    @Override
+    public boolean closeImmediately(String id) {
+        synchronized (toastPanels) {
+            for (int i = 0; i < toastPanels.size(); i++) {
+                ToastPanel p = toastPanels.get(i);
+                if (id.equals(p.getId())) {
+                    p.close();
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -90,6 +118,19 @@ public abstract class AbstractToastContainerLayer extends AbstractRelativeContai
             for (int i = toastPanels.size() - 1; i >= 0; i--) {
                 ToastPanel p = toastPanels.get(i);
                 if (p.checkPromiseId(id)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    @Override
+    public boolean checkId(String id) {
+        synchronized (toastPanels) {
+            for (int i = toastPanels.size() - 1; i >= 0; i--) {
+                ToastPanel p = toastPanels.get(i);
+                if (id.equals(p.getId())) {
                     return true;
                 }
             }
