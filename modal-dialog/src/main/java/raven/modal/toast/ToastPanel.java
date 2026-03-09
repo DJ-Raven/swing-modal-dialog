@@ -210,7 +210,7 @@ public class ToastPanel extends JPanel {
         }
         content.add(component);
         initBorder();
-        installStyle(toastData.themes);
+        installStyle();
         add(content);
         return this;
     }
@@ -279,15 +279,31 @@ public class ToastPanel extends JPanel {
             content.add(createCloseButton());
         }
         initBorder();
-        installStyle(themesData);
+        installStyle();
         add(content);
     }
 
-    private void installStyle(ThemesData themesData) {
+    private void installStyle() {
         String hexDark = toastData.getColorHex(true);
         String hexLight = toastData.getColorHex(false);
-        String styleDark = hexDark == null ? "$Component.borderColor" : hexDark;
-        String styleLight = hexLight == null ? "$Component.borderColor" : hexLight;
+        String styleDark;
+        String styleLight;
+        String titleDark;
+        String titleLight;
+        if (hexDark == null) {
+            styleDark = "$Component.borderColor";
+            titleDark = "shade($Label.foreground,10%)";
+        } else {
+            styleDark = hexDark;
+            titleDark = hexDark;
+        }
+        if (hexLight == null) {
+            styleLight = "$Component.borderColor";
+            titleLight = "tint($Label.foreground,10%)";
+        } else {
+            styleLight = hexLight;
+            titleLight = hexLight;
+        }
         if (toastData.getOption().getStyle().getBackgroundType() == ToastStyle.BackgroundType.DEFAULT) {
             putClientProperty(FlatClientProperties.STYLE, "" +
                     "[light]background:mix(" + styleLight + ",$TextArea.background,10%);" +
@@ -295,14 +311,14 @@ public class ToastPanel extends JPanel {
         }
         if (textMessage != null && toastData.getOption().getStyle().isPaintTextColor()) {
             textMessage.putClientProperty(FlatClientProperties.STYLE, "" +
-                    "[light]foreground:" + styleLight + ";" +
-                    "[dark]foreground:" + styleDark + ";");
+                    "[light]foreground:" + titleLight + ";" +
+                    "[dark]foreground:" + titleDark + ";");
         }
         if (labelTitle != null) {
             labelTitle.putClientProperty(FlatClientProperties.STYLE, "" +
                     "font:bold;" +
-                    "[light]foreground:" + styleLight + ";" +
-                    "[dark]foreground:" + styleDark + ";");
+                    "[light]foreground:" + titleLight + ";" +
+                    "[dark]foreground:" + titleDark + ";");
         }
     }
 
@@ -381,7 +397,7 @@ public class ToastPanel extends JPanel {
         if (message != null) {
             textMessage.setText(message);
         }
-        installStyle(data);
+        installStyle();
         repaint();
         updateModalLayout();
     }
