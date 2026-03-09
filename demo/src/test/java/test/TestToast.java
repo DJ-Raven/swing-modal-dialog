@@ -3,13 +3,13 @@ package test;
 import net.miginfocom.swing.MigLayout;
 import raven.extras.LightDarkButton;
 import raven.modal.Toast;
+import raven.modal.demo.simple.SimpleCustomNotificationToast;
 import raven.modal.toast.option.ToastBorderStyle;
 import raven.modal.toast.option.ToastLocation;
 import raven.modal.toast.option.ToastOption;
 import raven.modal.toast.option.ToastStyle;
 import raven.modal.utils.EasingInterpolator;
 import test.base.BaseFrame;
-import test.component.NotificationBox;
 
 import javax.swing.*;
 import java.awt.*;
@@ -68,7 +68,7 @@ public class TestToast extends BaseFrame {
             toastOption.getStyle().setBackgroundType(ToastStyle.BackgroundType.NONE);
 
             toastOption.getStyle().getBorderStyle().setBorderType(ToastBorderStyle.BorderType.OUTLINE);
-            Toast.showCustom(this, new NotificationBox(), toastOption);
+            Toast.showCustom(this, new SimpleCustomNotificationToast(), toastOption);
         });
         add(cmdShow);
     }

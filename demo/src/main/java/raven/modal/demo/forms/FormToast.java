@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatClientProperties;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.Toast;
 import raven.modal.demo.component.LabelButton;
+import raven.modal.demo.simple.SimpleCustomNotificationToast;
 import raven.modal.demo.simple.SimpleCustomToast;
 import raven.modal.demo.system.Form;
 import raven.modal.demo.utils.SystemForm;
@@ -56,6 +57,7 @@ public class FormToast extends Form {
         panel.add(createBorderToastStyle(), "width 130::");
         panel.add(createOtherToastStyle());
         panel.add(createSampleToast(), "span 2");
+        panel.add(createCustomToast(), "span 2");
         return panel;
     }
 
@@ -211,7 +213,6 @@ public class FormToast extends Form {
         LabelButton lbInfo = new LabelButton("Show info");
         LabelButton lbWarning = new LabelButton("Show warning");
         LabelButton lbError = new LabelButton("Show error");
-        LabelButton lbCustom = new LabelButton("Show custom");
         LabelButton lbPromise = new LabelButton("Show promise");
 
         LabelButton lbCloseAll = new LabelButton("Close all");
@@ -223,7 +224,6 @@ public class FormToast extends Form {
         lbInfo.addOnClick(o -> showToast(Toast.Type.INFO, getSelectedOption()));
         lbWarning.addOnClick(o -> showToast(Toast.Type.WARNING, getSelectedOption()));
         lbError.addOnClick(o -> showToast(Toast.Type.ERROR, getSelectedOption()));
-        lbCustom.addOnClick(o -> showCustom(getSelectedOption()));
         lbPromise.addOnClick(o -> showPromise(getSelectedOption()));
         lbCloseAll.addOnClick(o -> Toast.closeAll());
 
@@ -232,17 +232,71 @@ public class FormToast extends Form {
         panel.add(lbInfo);
         panel.add(lbWarning);
         panel.add(lbError);
-        panel.add(lbCustom);
         panel.add(lbPromise);
         panel.add(lbCloseAll);
         return panel;
     }
 
-    private int number;
+    private Component createCustomToast() {
+        JPanel panel = new JPanel(new MigLayout());
+        panel.setBorder(new TitledBorder("Custom toast"));
+        LabelButton lbCustomNotificationBox = new LabelButton("Show notification (fixed opt)");
+        LabelButton lbCustomHtml = new LabelButton("Show custom HTML (fixed opt)");
+        LabelButton lbCustom = new LabelButton("Show custom");
+
+        lbCustomNotificationBox.addOnClick(o -> showCustomNotificationBox());
+        lbCustomHtml.addOnClick(o -> showCustomHtml());
+        lbCustom.addOnClick(o -> showCustom(getSelectedOption()));
+
+        panel.add(lbCustomNotificationBox);
+        panel.add(lbCustomHtml);
+        panel.add(lbCustom);
+        return panel;
+    }
 
     private void showToast(Toast.Type type, ToastOption option) {
         String text = "Simple swing toast notification";
         Toast.show(this, type, text, option);
+    }
+
+    private void showCustomNotificationBox() {
+        ToastOption option = Toast.createOption();
+        option.setAnimationEnabled(false)
+                .setAutoClose(false)
+                .getLayoutOption()
+                .setRelativeToOwner(true)
+                .setLocation(ToastLocation.BOTTOM_TRAILING);
+        option.getStyle().setBackgroundType(ToastStyle.BackgroundType.NONE)
+                .getBorderStyle().setBorderType(ToastBorderStyle.BorderType.OUTLINE);
+        Toast.showCustom(this, new SimpleCustomNotificationToast(), option);
+    }
+
+    private void showCustomHtml() {
+        ToastOption option = Toast.createOption();
+        option.setAnimationEnabled(false)
+                .setHtmlEnabled(true)
+                .setAutoClose(false)
+                .getLayoutOption()
+                .setRelativeToOwner(true)
+                .setLocation(ToastLocation.BOTTOM_TRAILING);
+        option.getStyle().setBackgroundType(ToastStyle.BackgroundType.NONE)
+                .setShowIcon(false)
+                .getBorderStyle().setBorderType(ToastBorderStyle.BorderType.BOTTOM_LINE);
+        Toast.show(this, Toast.Type.DEFAULT,
+                "<html>\n" +
+                        "<div style='width:240px'>\n" +
+                        "<b><font color='#2ECC71'>✔ Login Successful</font></b><br><br>\n" +
+                        "\n" +
+                        "Welcome back <b><font color='#8E44AD'>Administrator</font></b>.<br>\n" +
+                        "Last login: <font color='#3498DB'>Today 10:32 AM</font><br>\n" +
+                        "\n" +
+                        "<i><font color='#7F8C8D'>\n" +
+                        "Your account has been verified and the system is ready\n" +
+                        "for you to continue working.\n" +
+                        "</font></i>\n" +
+                        "</div>\n" +
+                        "</html>"
+                , option);
     }
 
     private void showCustom(ToastOption option) {

@@ -1,4 +1,4 @@
-package test.component;
+package raven.modal.demo.simple;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
@@ -7,9 +7,9 @@ import raven.modal.toast.ToastCustomPanel;
 
 import javax.swing.*;
 
-public class NotificationBox extends ToastCustomPanel {
+public class SimpleCustomNotificationToast extends ToastCustomPanel {
 
-    public NotificationBox() {
+    public SimpleCustomNotificationToast() {
         setLayout(new MigLayout("insets 3,wrap,gap 3"));
         setOpaque(false);
 
