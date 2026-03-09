@@ -8,6 +8,7 @@
     - Add new option `htmlEnabled` for HTML message support (issue #51)
         - `true`: render message with `JLabel`
         - `false`: render message with `JTextArea` (default)
+    - Add new style option `labelText` for title label.
     - When showing a toast, it now returns a unique toast ID. (issue #52) (PR #53)
         - Format: `toast-{toast_count}`
         - Example: `toast-1`, `toast-2`
