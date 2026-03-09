@@ -6,6 +6,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.Animator;
 import com.formdev.flatlaf.util.CubicBezierEasing;
+import com.formdev.flatlaf.util.UIScale;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.Toast;
 import raven.modal.component.DropShadowBorder;
@@ -35,6 +36,10 @@ public class ToastPanel extends JPanel {
             return CubicBezierEasing.STANDARD_EASING.interpolate(animate);
         }
         return interpolator.interpolate(animate);
+    }
+
+    public Insets getBorderSpace() {
+        return UIScale.scale(borderSpace);
     }
 
     public float getAnimate() {
@@ -73,6 +78,7 @@ public class ToastPanel extends JPanel {
     private ToastPromise.PromiseCallback promiseCallback;
     private boolean available = true;
     private Image snapshotContent;
+    private Insets borderSpace;
 
     public ToastPanel(BaseToastContainer baseToastContainer, Component owner, ToastData toastData, String id) {
         this.baseToastContainer = baseToastContainer;
@@ -122,16 +128,19 @@ public class ToastPanel extends JPanel {
             } else {
                 setBorder(border);
             }
+            borderSpace = null;
         } else {
             if (FlatUIUtils.isInsetsEmpty(borderStyle.getShadowSize()) && borderStyle.getRound() == 0 && borderWidth == 0) {
                 setBorder(border);
+                borderSpace = null;
             } else {
-                Border shadow = new DropShadowBorder(borderStyle.getShadowSize(),
+                DropShadowBorder shadow = new DropShadowBorder(borderStyle.getShadowSize(),
                         borderStyle.getShadowOpacity(),
                         borderStyle.getShadowColor(),
                         borderWidth,
                         toastData.getBorderColor(),
                         borderStyle.getRound());
+                borderSpace = shadow.getShadowSize();
                 setBorder(new CompoundBorder(shadow, border));
             }
         }

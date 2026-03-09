@@ -21,7 +21,7 @@ public abstract class AbstractToastContainerLayer extends AbstractRelativeContai
     public abstract void showContainer(boolean show);
 
     public AbstractToastContainerLayer() {
-        super(new ToastLayout());
+        super(new ToastLayout(), true);
         toastPanels = new ArrayList<>();
     }
 

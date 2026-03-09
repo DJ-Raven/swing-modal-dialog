@@ -18,7 +18,7 @@ public abstract class AbstractModalContainerLayer extends AbstractRelativeContai
     protected final Set<ModalContainer> containers;
 
     public AbstractModalContainerLayer() {
-        super(new ModalContainerLayout());
+        super(new ModalContainerLayout(), false);
         containers = new HashSet<>();
         setLayoutCallback(this);
     }

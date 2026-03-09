@@ -20,6 +20,7 @@ public class TestToast extends BaseFrame {
         super("Test Toast");
         setLayout(new MigLayout("al center center"));
         JButton cmdShow = new JButton("Show Toast");
+        cmdShow.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         cmdShow.addActionListener(e -> {
             ToastOption toastOption = Toast.createOption();
             toastOption.setDuration(1000);

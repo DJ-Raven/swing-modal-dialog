@@ -12,6 +12,11 @@
         - Format: `toast-{toast_count}`
         - Example: `toast-1`, `toast-2`
 
+### Fixed bugs
+
+- Toast:
+    - No longer blocks cursor hover on underlying components while showing.
+
 ## [2.6.0] - 2026-02-19
 
 ### New features and improvements

@@ -17,9 +17,9 @@ public abstract class AbstractRelativeContainer {
     protected final LayoutManager layerLayout;
     private RelativeLayerPane.LayoutCallback layoutCallback;
 
-    public AbstractRelativeContainer(LayoutManager layerLayout) {
+    public AbstractRelativeContainer(LayoutManager layerLayout, boolean forToast) {
         this.layerLayout = layerLayout;
-        layeredPane = new JLayeredPane();
+        layeredPane = new ToastLayeredPane(forToast);
         listLayer = new ArrayList<>();
         layeredPane.setLayout(new RelativeLayout());
     }
@@ -91,5 +91,27 @@ public abstract class AbstractRelativeContainer {
 
     public JLayeredPane getLayeredPane() {
         return layeredPane;
+    }
+
+    private class ToastLayeredPane extends JLayeredPane {
+
+        private final boolean forToast;
+
+        private ToastLayeredPane(boolean forToast) {
+            this.forToast = forToast;
+        }
+
+        @Override
+        public boolean contains(int x, int y) {
+            if (!forToast) {
+                return super.contains(x, y);
+            }
+            for (RelativeLayerPane pane : listLayer) {
+                if (pane.checkContains(layeredPane, x, y)) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

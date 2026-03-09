@@ -1,5 +1,7 @@
 package raven.modal.component;
 
+import raven.modal.toast.ToastPanel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -99,6 +101,30 @@ public class RelativeLayerPane extends JLayeredPane {
                 hierarchyListener = null;
             }
         }
+    }
+
+    public boolean checkContains(Component parent, int x, int y) {
+        if (!isVisible()) return false;
+
+        Point p = new Point(x, y);
+        for (Component comp : getComponents()) {
+            if (comp instanceof ToastPanel) {
+                ToastPanel toastPanel = (ToastPanel) comp;
+                Insets insets = toastPanel.getBorderSpace();
+                Rectangle comBounds = comp.getBounds();
+                if (insets != null) {
+                    comBounds.x += insets.left;
+                    comBounds.y += insets.top;
+                    comBounds.width -= (insets.left + insets.right);
+                    comBounds.height -= (insets.top + insets.bottom);
+                }
+                Rectangle r = SwingUtilities.convertRectangle(comp.getParent(), comBounds, parent);
+                if (r.contains(p)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
