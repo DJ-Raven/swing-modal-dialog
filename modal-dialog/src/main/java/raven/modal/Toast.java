@@ -127,7 +127,7 @@ public class Toast {
         return ToastHeavyWeight.getInstance().checkPromiseId(id);
     }
 
-    public static boolean isIdExist(String id) {
+    public static boolean isToastAvailable(String id) {
         if (id == null) {
             throw new IllegalArgumentException("id must not null");
         }
