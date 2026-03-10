@@ -128,12 +128,8 @@ public class FormSlidePane extends Form {
         LabelButton lbTest1 = new LabelButton("Show slide-1");
         LabelButton lbTest2 = new LabelButton("Show slide-2");
 
-        lbTest1.addOnClick(o -> {
-            slidePane.addSlide(new SimpleInputForms(), getTransition());
-        });
-        lbTest2.addOnClick(o -> {
-            slidePane.addSlide(new SimpleInputForms2(), getTransition());
-        });
+        lbTest1.addOnClick(() -> slidePane.addSlide(new SimpleInputForms(), getTransition()));
+        lbTest2.addOnClick(() -> slidePane.addSlide(new SimpleInputForms2(), getTransition()));
 
         panel.add(lbTest1);
         panel.add(lbTest2);
@@ -208,5 +204,4 @@ public class FormSlidePane extends Form {
     // other option
     private JRadioButton jrContainerSize;
     private JRadioButton jrComponentPreferredSize;
-
 }

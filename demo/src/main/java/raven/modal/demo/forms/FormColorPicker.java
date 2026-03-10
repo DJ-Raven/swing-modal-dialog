@@ -8,8 +8,8 @@ import raven.modal.demo.component.LabelButton;
 import raven.modal.demo.simple.color.AbstractColorHarmony;
 import raven.modal.demo.simple.color.ColorWheelHarmoniesModel;
 import raven.modal.demo.simple.color.WheelColorHarmoniesPreview;
-import raven.modal.demo.simple.color.harmony.Rectangle;
 import raven.modal.demo.simple.color.harmony.*;
+import raven.modal.demo.simple.color.harmony.Rectangle;
 import raven.modal.demo.system.Form;
 import raven.modal.demo.utils.SystemForm;
 
@@ -214,9 +214,7 @@ public class FormColorPicker extends Form {
         colorPicker = new ColorPicker();
 
         LabelButton lbDefault = new LabelButton("Show dialog");
-        lbDefault.addOnClick(o -> {
-            ColorPicker.showDialog(this, "Pick Color", colorPicker);
-        });
+        lbDefault.addOnClick(() -> ColorPicker.showDialog(this, "Pick Color", colorPicker));
 
         panel.add(lbDefault);
         return panel;

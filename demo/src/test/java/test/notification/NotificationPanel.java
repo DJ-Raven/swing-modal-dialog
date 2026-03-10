@@ -50,7 +50,7 @@ public class NotificationPanel extends JPanel {
         panel.add(new NotificationItem("profile_9", "Dara", "sent you a friend request", "3 days ago"));
 
         LabelButton showAll = new LabelButton("Show all");
-        showAll.addOnClick(object -> {
+        showAll.addOnClick(() -> {
             ModalBorderAction.getModalBorderAction(this).doAction(SimpleModalBorder.CLOSE_OPTION);
             // here call another form to show all notification
         });

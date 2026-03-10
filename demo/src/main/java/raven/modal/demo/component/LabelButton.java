@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.function.Consumer;
 
 public class LabelButton extends JLabel {
 
@@ -19,15 +18,19 @@ public class LabelButton extends JLabel {
         setFocusable(true);
     }
 
-    public void addOnClick(Consumer event) {
+    public void addOnClick(Callback callback) {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (SwingUtilities.isLeftMouseButton(e)) {
                     requestFocus();
-                    event.accept(null);
+                    callback.call();
                 }
             }
         });
+    }
+
+    public interface Callback {
+        void call();
     }
 }

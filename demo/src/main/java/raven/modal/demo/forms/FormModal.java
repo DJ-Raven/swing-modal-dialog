@@ -178,8 +178,8 @@ public class FormModal extends Form {
         LabelButton label = new LabelButton("Show modal");
         LabelButton slide = new LabelButton("Show slide modal");
 
-        label.addOnClick(o -> showModal(getSelectedOption()));
-        slide.addOnClick(o -> showModalSlide(getSelectedOption()));
+        label.addOnClick(() -> showModal(getSelectedOption()));
+        slide.addOnClick(() -> showModalSlide(getSelectedOption()));
 
         panel.add(label);
         panel.add(slide);
@@ -196,11 +196,11 @@ public class FormModal extends Form {
         LabelButton lbWarning = new LabelButton("Show warning");
         LabelButton lbError = new LabelButton("Show error");
 
-        lbDefault.addOnClick(o -> showCustomModal(SimpleMessageModal.Type.DEFAULT, getSelectedOption()));
-        lbSuccess.addOnClick(o -> showCustomModal(SimpleMessageModal.Type.SUCCESS, getSelectedOption()));
-        lbInfo.addOnClick(o -> showCustomModal(SimpleMessageModal.Type.INFO, getSelectedOption()));
-        lbWarning.addOnClick(o -> showCustomModal(SimpleMessageModal.Type.WARNING, getSelectedOption()));
-        lbError.addOnClick(o -> showCustomModal(SimpleMessageModal.Type.ERROR, getSelectedOption()));
+        lbDefault.addOnClick(() -> showCustomModal(SimpleMessageModal.Type.DEFAULT, getSelectedOption()));
+        lbSuccess.addOnClick(() -> showCustomModal(SimpleMessageModal.Type.SUCCESS, getSelectedOption()));
+        lbInfo.addOnClick(() -> showCustomModal(SimpleMessageModal.Type.INFO, getSelectedOption()));
+        lbWarning.addOnClick(() -> showCustomModal(SimpleMessageModal.Type.WARNING, getSelectedOption()));
+        lbError.addOnClick(() -> showCustomModal(SimpleMessageModal.Type.ERROR, getSelectedOption()));
 
         panel.add(lbDefault);
         panel.add(lbSuccess);

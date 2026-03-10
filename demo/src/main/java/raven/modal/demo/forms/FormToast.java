@@ -219,13 +219,13 @@ public class FormToast extends Form {
         lbCloseAll.putClientProperty(FlatClientProperties.STYLE, "" +
                 "foreground:#D23333;");
 
-        lbDefault.addOnClick(o -> showToast(Toast.Type.DEFAULT, getSelectedOption()));
-        lbSuccess.addOnClick(o -> showToast(Toast.Type.SUCCESS, getSelectedOption()));
-        lbInfo.addOnClick(o -> showToast(Toast.Type.INFO, getSelectedOption()));
-        lbWarning.addOnClick(o -> showToast(Toast.Type.WARNING, getSelectedOption()));
-        lbError.addOnClick(o -> showToast(Toast.Type.ERROR, getSelectedOption()));
-        lbPromise.addOnClick(o -> showPromise(getSelectedOption()));
-        lbCloseAll.addOnClick(o -> Toast.closeAll());
+        lbDefault.addOnClick(() -> showToast(Toast.Type.DEFAULT, getSelectedOption()));
+        lbSuccess.addOnClick(() -> showToast(Toast.Type.SUCCESS, getSelectedOption()));
+        lbInfo.addOnClick(() -> showToast(Toast.Type.INFO, getSelectedOption()));
+        lbWarning.addOnClick(() -> showToast(Toast.Type.WARNING, getSelectedOption()));
+        lbError.addOnClick(() -> showToast(Toast.Type.ERROR, getSelectedOption()));
+        lbPromise.addOnClick(() -> showPromise(getSelectedOption()));
+        lbCloseAll.addOnClick(Toast::closeAll);
 
         panel.add(lbDefault);
         panel.add(lbSuccess);
@@ -243,14 +243,26 @@ public class FormToast extends Form {
         LabelButton lbCustomNotificationBox = new LabelButton("Show notification (fixed opt)");
         LabelButton lbCustomHtml = new LabelButton("Show custom HTML (fixed opt)");
         LabelButton lbCustom = new LabelButton("Show custom");
+        LabelButton lbCustomPromise = new LabelButton("Show custom promise (fixed opt)");
 
-        lbCustomNotificationBox.addOnClick(o -> showCustomNotificationBox());
-        lbCustomHtml.addOnClick(o -> showCustomHtml());
-        lbCustom.addOnClick(o -> showCustom(getSelectedOption()));
+        lbCustomNotificationBox.addOnClick(this::showCustomNotificationBox);
+        lbCustomHtml.addOnClick(this::showCustomHtml);
+        lbCustom.addOnClick(() -> showCustom(getSelectedOption()));
+        lbCustomPromise.addOnClick(new LabelButton.Callback() {
 
+            private String id;
+
+            @Override
+            public void call() {
+                if (id == null || !Toast.isToastAvailable(id)) {
+                    id = showPromiseCustom();
+                }
+            }
+        });
         panel.add(lbCustomNotificationBox);
         panel.add(lbCustomHtml);
         panel.add(lbCustom);
+        panel.add(lbCustomPromise);
         return panel;
     }
 
@@ -310,6 +322,28 @@ public class FormToast extends Form {
         Toast.showPromise(this, "Toast with promise please wait", option, getPromiseCallback());
     }
 
+    private String showPromiseCustom() {
+        ToastOption option = Toast.createOption();
+        option.setHtmlEnabled(true)
+                .setCloseOnClick(true)
+                .getLayoutOption()
+                .setLocation(ToastLocation.TOP_TRAILING);
+        option.getStyle().setBackgroundType(ToastStyle.BackgroundType.NONE)
+                .setShowIcon(false)
+                .setShowCloseButton(false)
+                .setIconSeparateLine(true)
+                .getBorderStyle().setBorderType(ToastBorderStyle.BorderType.LEADING_LINE);
+        return Toast.showPromise(this, "" +
+                        "<html>\n" +
+                        "<b><font color='#3498DB'>\uD83C\uDF10 Connecting to Payment Server</font></b><br>\n" +
+                        "<font color='#7F8C8D'>\n" +
+                        "Establishing secure connection... \n" +
+                        "<b><font color='#F39C12'>10%</font></b> completed\n" +
+                        "</font>\n" +
+                        "</html>"
+                , option, getPromiseCallbackCustom());
+    }
+
     private ToastPromise getPromiseCallback() {
         return new ToastPromise("raven") {
             @Override
@@ -332,7 +366,62 @@ public class FormToast extends Form {
                         callback.done(Toast.Type.DEFAULT, "Promise has done with default");
                     }
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    System.out.println(e.getMessage());
+                }
+            }
+        };
+    }
+
+    private ToastPromise getPromiseCallbackCustom() {
+        return new ToastPromise() {
+            @Override
+            public void execute(PromiseCallback callback) {
+                try {
+                    for (int i = 0; i <= 100; i++) {
+                        callback.update(String.format("" +
+                                "<html>\n" +
+                                "<b><font color='#3498DB'>\uD83C\uDF10 Connecting to Payment Server</font></b><br>\n" +
+                                "<font color='#7F8C8D'>\n" +
+                                "Establishing secure connection... \n" +
+                                "<b><font color='#F39C12'>%d%%</font></b> completed\n" +
+                                "</font>\n" +
+                                "</html>", i));
+                        Thread.sleep((new Random().nextInt(7) + 1) * 5);
+                    }
+                    int type = sleepAndRandomCallback(0);
+                    if (type == 1) {
+                        callback.done(Toast.Type.WARNING, "" +
+                                "<html>\n" +
+                                "<b><font color='#F39C12'>⚠ Connection Warning</font></b><br>\n" +
+                                "<font color='#7F8C8D'>\n" +
+                                "The payment server is responding slowly.<br>\n" +
+                                "Transaction verification may take longer than expected.<br>\n" +
+                                "<font color='#E67E22'><b>Please wait while processing continues.</b></font>\n" +
+                                "</font>\n" +
+                                "</html>");
+                    } else if (type == 2) {
+                        callback.done(Toast.Type.ERROR, "" +
+                                "<html>\n" +
+                                "<b><font color='#E74C3C'>✖ Payment Failed</font></b><br>\n" +
+                                "<font color='#7F8C8D'>\n" +
+                                "Unable to verify the transaction with the server.<br>\n" +
+                                "The connection may have timed out.<br>\n" +
+                                "<font color='#E67E22'><b>Please retry the payment.</b></font>\n" +
+                                "</font>\n" +
+                                "</html>");
+                    } else {
+                        callback.done(Toast.Type.SUCCESS, "" +
+                                "<html>\n" +
+                                "<b><font color='#2ECC71'>✔ Payment Successful</font></b><br>\n" +
+                                "<font color='#7F8C8D'>\n" +
+                                "Transaction approved by the payment server.<br>\n" +
+                                "Your payment has been securely processed.<br>\n" +
+                                "<b><font color='#27AE60'>100% completed</font></b>\n" +
+                                "</font>\n" +
+                                "</html>");
+                    }
+                } catch (InterruptedException e) {
+                    System.out.println(e.getMessage());
                 }
             }
         };

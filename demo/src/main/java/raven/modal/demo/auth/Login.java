@@ -103,7 +103,7 @@ public class Login extends Form {
         panelInfo.add(lbLink);
 
         // event
-        lbLink.addOnClick(e -> {
+        lbLink.addOnClick(() -> {
 
         });
         return panelInfo;
