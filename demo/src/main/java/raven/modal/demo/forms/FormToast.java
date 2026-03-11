@@ -335,11 +335,8 @@ public class FormToast extends Form {
                 .getBorderStyle().setBorderType(ToastBorderStyle.BorderType.LEADING_LINE);
         return Toast.showPromise(this, "" +
                         "<html>\n" +
-                        "<b><font color='#3498DB'>\uD83C\uDF10 Connecting to Payment Server</font></b><br>\n" +
-                        "<font color='#7F8C8D'>\n" +
-                        "Establishing secure connection... \n" +
-                        "<b><font color='#F39C12'>10%</font></b> completed\n" +
-                        "</font>\n" +
+                        "<b><font color='#3498DB'>\uD83C\uDF10 Server Connection</font></b><br>\n" +
+                        "<font color='#7F8C8D'>Preparing secure channel for payment verification.</font>\n" +
                         "</html>"
                 , option, getPromiseCallbackCustom());
     }
@@ -377,18 +374,7 @@ public class FormToast extends Form {
             @Override
             public void execute(PromiseCallback callback) {
                 try {
-                    for (int i = 0; i <= 100; i++) {
-                        callback.update(String.format("" +
-                                "<html>\n" +
-                                "<b><font color='#3498DB'>\uD83C\uDF10 Connecting to Payment Server</font></b><br>\n" +
-                                "<font color='#7F8C8D'>\n" +
-                                "Establishing secure connection... \n" +
-                                "<b><font color='#F39C12'>%d%%</font></b> completed\n" +
-                                "</font>\n" +
-                                "</html>", i));
-                        Thread.sleep((new Random().nextInt(7) + 1) * 5);
-                    }
-                    int type = sleepAndRandomCallback(0);
+                    int type = sleepAndRandomCallback(2000);
                     if (type == 1) {
                         callback.done(Toast.Type.WARNING, "" +
                                 "<html>\n" +
