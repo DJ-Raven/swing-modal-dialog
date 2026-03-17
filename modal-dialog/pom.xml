@@ -6,7 +6,7 @@
 
     <groupId>io.github.dj-raven</groupId>
     <artifactId>modal-dialog</artifactId>
-    <version>2.6.1-SNAPSHOT</version>
+    <version>2.6.1</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -22,12 +22,12 @@
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf</artifactId>
-            <version>3.7</version>
+            <version>3.7.1</version>
         </dependency>
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf-extras</artifactId>
-            <version>3.7</version>
+            <version>3.7.1</version>
         </dependency>
         <dependency>
             <groupId>com.miglayout</groupId>

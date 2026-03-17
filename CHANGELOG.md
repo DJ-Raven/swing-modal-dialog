@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.6.1-SNAPSHOT]
+## [2.6.1] - 2026-03-17
 
 ### New features and improvements
 
@@ -13,10 +13,13 @@
         - Format: `toast-{toast_count}`
         - Example: `toast-1`, `toast-2`
 
+### Changed
+
+- FlatLaf: update to `v3.7.1`
+
 ### Fixed bugs
 
-- Toast:
-    - No longer blocks cursor hover on underlying components while showing.
+- Toast: No longer blocks cursor hover on underlying components while showing.
 
 ## [2.6.0] - 2026-02-19
 
