@@ -384,10 +384,35 @@ public class TestPerformance extends BaseFrame {
         long startNs = System.nanoTime();
         frameTimeTracker.start(startNs);
         AtomicBoolean completed = new AtomicBoolean(false);
-        AtomicBoolean openedHandled = new AtomicBoolean(false);
 
         final long[] edtDispatchNs = {-1L};
         EventQueue.invokeLater(() -> edtDispatchNs[0] = System.nanoTime());
+
+        int measurementWindowMs = Math.max(700, option.getDuration() + 320);
+        final Timer[] sampleTimerRef = new Timer[1];
+
+        Timer sampleTimer = new Timer(measurementWindowMs, e -> {
+            if (completed.get()) {
+                return;
+            }
+            RunResult result = buildRunResult(
+                    runIndex,
+                    computeOpenMs(startNs),
+                    startNs,
+                    edtDispatchNs[0],
+                    plan,
+                    frameTimeTracker.stop()
+            );
+
+            if (autoClose) {
+                requestCloseThenContinue(id, option.getDuration(), result, completed, onComplete, sampleTimerRef[0]);
+            } else {
+                completeRunOnce(completed, onComplete, result, sampleTimerRef[0]);
+            }
+        });
+        sampleTimerRef[0] = sampleTimer;
+        sampleTimer.setRepeats(false);
+        sampleTimer.start();
 
         Timer watchdog = new Timer(Math.max(4000, option.getDuration() * 12), e -> {
             if (completed.get()) {
@@ -406,8 +431,8 @@ public class TestPerformance extends BaseFrame {
                     frameTimeTracker.stop()
             );
 
-            appendLog("  [warn] run " + runIndex + " timed out waiting for OPENED callback; continuing.");
-                completeRunOnce(completed, null, onComplete, timeoutResult);
+            appendLog("  [warn] run " + runIndex + " timed out waiting for benchmark completion; continuing.");
+            completeRunOnce(completed, onComplete, timeoutResult, sampleTimerRef[0]);
         });
         watchdog.setRepeats(false);
         watchdog.start();
@@ -420,21 +445,16 @@ public class TestPerformance extends BaseFrame {
 
         SimpleModalBorder modal = new SimpleModalBorder(content, title,
                 SimpleModalBorder.CLOSE_OPTION, (controller, action) -> {
-            if (action == SimpleModalBorder.OPENED && !completed.get() && openedHandled.compareAndSet(false, true)) {
+            if (!autoClose && action == SimpleModalBorder.CLOSE_OPTION && !completed.get()) {
                 RunResult result = buildRunResult(
                         runIndex,
-                        (System.nanoTime() - startNs) / 1_000_000.0,
+                        computeOpenMs(startNs),
                         startNs,
                         edtDispatchNs[0],
                         plan,
                         frameTimeTracker.stop()
                 );
-
-                if (autoClose) {
-                    requestCloseThenContinue(id, option.getDuration(), result, completed, watchdog, onComplete);
-                } else {
-                    completeRunOnce(completed, watchdog, onComplete, result);
-                }
+                completeRunOnce(completed, onComplete, result, watchdog, sampleTimerRef[0]);
             }
         });
 
@@ -442,8 +462,9 @@ public class TestPerformance extends BaseFrame {
     }
 
     private void requestCloseThenContinue(String id, int duration, RunResult result,
-                                          AtomicBoolean completed, Timer watchdog,
-                                          Consumer<RunResult> onComplete) {
+                                          AtomicBoolean completed,
+                                          Consumer<RunResult> onComplete,
+                                          Timer... timers) {
         Timer closeTimer = new Timer(80, ev -> {
             if (ModalDialog.isIdExist(id)) {
                 ModalDialog.closeModal(id);
@@ -461,20 +482,34 @@ public class TestPerformance extends BaseFrame {
             long elapsedMs = (System.nanoTime() - waitStartNs) / 1_000_000L;
             if (!exists || elapsedMs >= timeoutMs) {
                 closePoll.stop();
-                completeRunOnce(completed, watchdog, onComplete, result);
+                completeRunOnce(completed, onComplete, result, timers);
             }
         });
         closePoll.start();
     }
 
-    private void completeRunOnce(AtomicBoolean completed, Timer watchdog,
-                                 Consumer<RunResult> onComplete, RunResult result) {
+    private void completeRunOnce(AtomicBoolean completed,
+                                 Consumer<RunResult> onComplete,
+                                 RunResult result,
+                                 Timer... timers) {
         if (completed.compareAndSet(false, true)) {
-            if (watchdog != null && watchdog.isRunning()) {
-                watchdog.stop();
+            if (timers != null) {
+                for (Timer timer : timers) {
+                    if (timer != null && timer.isRunning()) {
+                        timer.stop();
+                    }
+                }
             }
             onComplete.accept(result);
         }
+    }
+
+    private double computeOpenMs(long startNs) {
+        double firstPaint = frameTimeTracker.getFirstPaintDelayMs();
+        if (firstPaint >= 0) {
+            return firstPaint;
+        }
+        return (System.nanoTime() - startNs) / 1_000_000.0;
     }
 
     private RunResult buildRunResult(int runIndex, double openMs, long startNs, long edtDispatchNs,

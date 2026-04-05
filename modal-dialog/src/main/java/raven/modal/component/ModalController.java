@@ -12,11 +12,14 @@ import raven.modal.utils.ModalMouseMovableListener;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
+import java.util.logging.Logger;
 
 /**
  * @author Raven
  */
 public class ModalController extends AbstractModalController {
+
+    private static final Logger LOGGER = Logger.getLogger(ModalController.class.getName());
 
     private final AbstractModalContainerLayer modalContainerLayer;
     private final ModalContainer modalContainer;
@@ -29,6 +32,8 @@ public class ModalController extends AbstractModalController {
     // Cached during animation to avoid per-frame MigLayout tree traversal
     private Dimension animationPreferredSize;
     private Dimension animationMinimumSize;
+    private Rectangle animationStartRect;
+    private Rectangle animationEndRect;
 
     public ModalController(AbstractModalContainerLayer modalContainerLayer, ModalContainer modalContainer, Option option) {
         super(option);
@@ -51,7 +56,16 @@ public class ModalController extends AbstractModalController {
                         animated = showing ? v : 1f - v;
                         modalContainer.repaint();
                         modalContainer.getModalLayout().setAnimate(animated);
-                        modalContainer.doLayout();
+                        if (animationStartRect != null && animationEndRect != null) {
+                            int x = animationStartRect.x + (int)((animationEndRect.x - animationStartRect.x) * animated);
+                            int y = animationStartRect.y + (int)((animationEndRect.y - animationStartRect.y) * animated);
+                            setBounds(x, y, animationEndRect.width, animationEndRect.height);
+                        } else {
+                            // Fallback: rects were not pre-computed (begin() failed to set them).
+                            // This branch should never fire under normal operation.
+                            LOGGER.warning("ModalController: animationStartRect/EndRect is null in timingEvent — falling back to doLayout()");
+                            modalContainer.doLayout();
+                        }
                     }
 
                     @Override
@@ -60,6 +74,13 @@ public class ModalController extends AbstractModalController {
                         // never calls into MigLayout during the animation loop.
                         animationPreferredSize = superGetPreferredSize();
                         animationMinimumSize = superGetMinimumSize();
+                        
+                        raven.modal.option.LayoutOption layoutOption = option.getLayoutOption();
+                        animationStartRect = raven.modal.layout.OptionLayoutUtils.getLayoutLocation(
+                                modalContainer, modalContainer.getOwner(), ModalController.this, 0f, layoutOption);
+                        animationEndRect = raven.modal.layout.OptionLayoutUtils.getLayoutLocation(
+                                modalContainer, modalContainer.getOwner(), ModalController.this, 1f, layoutOption);
+                        
                         modalContainerLayer.animatedBegin();
                         systemScaleFactor = UIScale.getSystemScaleFactor(getGraphicsConfiguration());
                         if (option.isSnapshotAnimationEnabled()) {
@@ -82,6 +103,8 @@ public class ModalController extends AbstractModalController {
                         // Release size cache so post-animation layouts use real values.
                         animationPreferredSize = null;
                         animationMinimumSize = null;
+                        animationStartRect = null;
+                        animationEndRect = null;
                         modalContainerLayer.animatedEnd();
                         if (!showing) {
                             remove();
