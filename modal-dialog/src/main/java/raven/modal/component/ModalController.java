@@ -26,6 +26,9 @@ public class ModalController extends AbstractModalController {
     private float animated;
     private double systemScaleFactor;
     private Image snapshotsImage;
+    // Cached during animation to avoid per-frame MigLayout tree traversal
+    private Dimension animationPreferredSize;
+    private Dimension animationMinimumSize;
 
     public ModalController(AbstractModalContainerLayer modalContainerLayer, ModalContainer modalContainer, Option option) {
         super(option);
@@ -53,20 +56,32 @@ public class ModalController extends AbstractModalController {
 
                     @Override
                     public void begin() {
+                        // Cache preferred/minimum size once so timingEvent()
+                        // never calls into MigLayout during the animation loop.
+                        animationPreferredSize = superGetPreferredSize();
+                        animationMinimumSize = superGetMinimumSize();
                         modalContainerLayer.animatedBegin();
                         systemScaleFactor = UIScale.getSystemScaleFactor(getGraphicsConfiguration());
-                        Border border = getBorder();
-                        if (border != null) {
-                            snapshotsImage = ImageSnapshots.createSnapshotsImage(panelSlider, ModalController.this, getBorder(), systemScaleFactor);
+                        if (option.isSnapshotAnimationEnabled()) {
+                            Border border = getBorder();
+                            if (border != null) {
+                                snapshotsImage = ImageSnapshots.createSnapshotsImage(panelSlider, ModalController.this, getBorder(), systemScaleFactor);
+                            } else {
+                                snapshotsImage = ImageSnapshots.createSnapshotsImage(panelSlider, 0);
+                            }
+                            panelSlider.setVisible(false);
                         } else {
-                            snapshotsImage = ImageSnapshots.createSnapshotsImage(panelSlider, 0);
+                            snapshotsImage = null;
+                            panelSlider.setVisible(true);
                         }
-                        panelSlider.setVisible(false);
                         display = true;
                     }
 
                     @Override
                     public void end() {
+                        // Release size cache so post-animation layouts use real values.
+                        animationPreferredSize = null;
+                        animationMinimumSize = null;
                         modalContainerLayer.animatedEnd();
                         if (!showing) {
                             remove();
@@ -204,7 +219,17 @@ public class ModalController extends AbstractModalController {
                     g2.dispose();
                 }
             } else {
-                super.paint(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setComposite(AlphaComposite.SrcOver.derive(animated));
+                try {
+                    float scaleValue = option.getLayoutOption().getAnimateScale();
+                    if (scaleValue != 0) {
+                        scaleGraphics(g2, scaleValue);
+                    }
+                    super.paint(g2);
+                } finally {
+                    g2.dispose();
+                }
             }
         }
     }
@@ -227,5 +252,30 @@ public class ModalController extends AbstractModalController {
 
     public float getAnimated() {
         return animated;
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        if (animationPreferredSize != null) {
+            return new Dimension(animationPreferredSize);
+        }
+        return super.getPreferredSize();
+    }
+
+    @Override
+    public Dimension getMinimumSize() {
+        if (animationMinimumSize != null) {
+            return new Dimension(animationMinimumSize);
+        }
+        return super.getMinimumSize();
+    }
+
+    // Call super directly to capture the real layout sizes at animation start.
+    private Dimension superGetPreferredSize() {
+        return super.getPreferredSize();
+    }
+
+    private Dimension superGetMinimumSize() {
+        return super.getMinimumSize();
     }
 }

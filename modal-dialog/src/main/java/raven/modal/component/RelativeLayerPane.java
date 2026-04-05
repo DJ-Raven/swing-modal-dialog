@@ -32,6 +32,7 @@ public class RelativeLayerPane extends JLayeredPane {
     private final boolean fixedLayout;
     private final LayoutCallback layoutCallback;
     private boolean enableHierarchy = true;
+    private boolean pendingLayout;
     private HierarchyListener hierarchyListener;
     private HierarchyBoundsListener hierarchyBoundsListener;
     private ComponentListener componentListener;
@@ -51,7 +52,7 @@ public class RelativeLayerPane extends JLayeredPane {
                     if (layoutCallback != null) {
                         layoutCallback.doLayout();
                     }
-                    revalidate();
+                    scheduleRevalidate();
                 }
             };
             hierarchyBoundsListener = new HierarchyBoundsAdapter() {
@@ -60,7 +61,7 @@ public class RelativeLayerPane extends JLayeredPane {
                     if (layoutCallback != null) {
                         layoutCallback.doLayout();
                     }
-                    revalidate();
+                    scheduleRevalidate();
                 }
             };
             owner.addComponentListener(componentListener);
@@ -87,6 +88,7 @@ public class RelativeLayerPane extends JLayeredPane {
     }
 
     protected void uninstallOwnerListener() {
+        pendingLayout = false;
         if (owner != null) {
             if (componentListener != null) {
                 owner.removeComponentListener(componentListener);
@@ -100,6 +102,21 @@ public class RelativeLayerPane extends JLayeredPane {
                 owner.removeHierarchyListener(hierarchyListener);
                 hierarchyListener = null;
             }
+        }
+    }
+
+    /**
+     * Coalesces revalidate() calls caused by rapid owner resize/move events.
+     * layoutCallback.doLayout() runs immediately so modal position is always
+     * correct; only the Swing layout-pass scheduling is deferred.
+     */
+    private void scheduleRevalidate() {
+        if (!pendingLayout) {
+            pendingLayout = true;
+            SwingUtilities.invokeLater(() -> {
+                pendingLayout = false;
+                revalidate();
+            });
         }
     }
 
