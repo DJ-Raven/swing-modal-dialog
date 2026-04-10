@@ -40,7 +40,7 @@ public class TestModal extends BaseFrame {
         panelModal.add(cmdShowModal);
         cmdShowModal.addActionListener(e -> {
             if (!ModalDialog.isIdExist("modal_id")) {
-                showCustomModal(panelModal, SimpleMessageModal.Type.SUCCESS);
+                showModal(panelModal, SimpleMessageModal.Type.SUCCESS, "modal_id", ModalDialog.createOption());
             }
         });
 
@@ -48,15 +48,15 @@ public class TestModal extends BaseFrame {
         panelModal.add(cmdScaleSnapshotOn);
         cmdScaleSnapshotOn.addActionListener(e -> {
             if (!ModalDialog.isIdExist("modal_scale_on")) {
-                showConfiguredModal(panelModal, SimpleMessageModal.Type.SUCCESS, "modal_scale_on", true, 0.3f);
+                showModal(panelModal, SimpleMessageModal.Type.SUCCESS, "modal_scale_on", true);
             }
         });
 
-        JButton cmdScaleSnapshotOff = new JButton("Scale 0.3 (snapshot OFF)");
+        JButton cmdScaleSnapshotOff = new JButton("Scale 0.3 (no snapshot)");
         panelModal.add(cmdScaleSnapshotOff);
         cmdScaleSnapshotOff.addActionListener(e -> {
             if (!ModalDialog.isIdExist("modal_scale_off")) {
-                showConfiguredModal(panelModal, SimpleMessageModal.Type.SUCCESS, "modal_scale_off", false, 0.3f);
+                showModal(panelModal, SimpleMessageModal.Type.SUCCESS, "modal_scale_off", false);
             }
         });
 
@@ -105,17 +105,10 @@ public class TestModal extends BaseFrame {
         add(cmdCloseAll);
     }
 
-    private void showCustomModal(Component com, SimpleMessageModal.Type type) {
-        Option option = ModalDialog.createOption();
-        showModal(com, type, "modal_id", option);
-    }
-
-    private void showConfiguredModal(Component com, SimpleMessageModal.Type type, String id,
-                                     boolean snapshotAnimationEnabled, float animateScale) {
+    private void showModal(Component com, SimpleMessageModal.Type type, String id, boolean snapshotAnimationEnabled) {
         Option option = ModalDialog.createOption();
         option.setSnapshotAnimationEnabled(snapshotAnimationEnabled);
-        option.getLayoutOption().setAnimateScale(animateScale);
-        System.out.println("Modal config -> id=" + id + ", snapshot=" + snapshotAnimationEnabled + ", scale=" + animateScale);
+        option.getLayoutOption().setAnimateScale(0.3f);
         showModal(com, type, id, option);
     }
 
@@ -136,7 +129,8 @@ public class TestModal extends BaseFrame {
         Option modalOption = ModalDialog.getDefaultOption();
 
         modalOption
-                .setHeavyWeight(true)
+            .setHeavyWeight(false)
+            .setDuration(5000)
                 .getBorderOption()
                 .setShadow(BorderOption.Shadow.MEDIUM)
         ;
@@ -147,7 +141,7 @@ public class TestModal extends BaseFrame {
         ;
         modalOption.getBorderOption()
                 .setBorderWidth(1);
-
+        modalOption.setSnapshotAnimationEnabled(true);
         // toast option
 
         ToastOption toastOption = Toast.getDefaultOption();

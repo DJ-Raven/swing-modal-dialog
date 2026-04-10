@@ -12,6 +12,7 @@ import raven.modal.utils.ModalMouseMovableListener;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
+import java.awt.image.VolatileImage;
 import java.util.logging.Logger;
 
 /**
@@ -34,6 +35,8 @@ public class ModalController extends AbstractModalController {
     private Dimension animationMinimumSize;
     private Rectangle animationStartRect;
     private Rectangle animationEndRect;
+    // Reusable buffer for live-render + scale to avoid sub-pixel text artifacts
+    private VolatileImage liveScaleBuffer;
 
     public ModalController(AbstractModalContainerLayer modalContainerLayer, ModalContainer modalContainer, Option option) {
         super(option);
@@ -115,6 +118,10 @@ public class ModalController extends AbstractModalController {
                         if (snapshotsImage != null) {
                             snapshotsImage.flush();
                             snapshotsImage = null;
+                        }
+                        if (liveScaleBuffer != null) {
+                            liveScaleBuffer.flush();
+                            liveScaleBuffer = null;
                         }
                     }
                 });
@@ -247,9 +254,37 @@ public class ModalController extends AbstractModalController {
                 try {
                     float scaleValue = option.getLayoutOption().getAnimateScale();
                     if (scaleValue != 0) {
-                        scaleGraphics(g2, scaleValue);
+                        // Rasterize to off-screen buffer first, then scale the image.
+                        // Applying Graphics2D.scale() directly to live Swing components
+                        // causes sub-pixel text rendering artifacts.
+                        Image buffer = getOrCreateLiveScaleBuffer();
+                        if (buffer != null) {
+                            Graphics2D bg = (Graphics2D) buffer.getGraphics();
+                            try {
+                                bg.setBackground(new Color(0, 0, 0, 0));
+                                bg.clearRect(0, 0, getWidth(), getHeight());
+                                super.paint(bg);
+                            } finally {
+                                bg.dispose();
+                            }
+                            if (systemScaleFactor > 1) {
+                                HiDPIUtils.paintAtScale1x(g2, 0, 0, 100, 100,
+                                        (g2d, x2, y2, w2, h2, sf) -> {
+                                            scaleGraphics(g2d, scaleValue);
+                                            g2d.drawImage(buffer, x2, y2, null);
+                                        });
+                            } else {
+                                scaleGraphics(g2, scaleValue);
+                                g2.drawImage(buffer, 0, 0, null);
+                            }
+                        } else {
+                            // fallback if buffer creation fails
+                            scaleGraphics(g2, scaleValue);
+                            super.paint(g2);
+                        }
+                    } else {
+                        super.paint(g2);
                     }
-                    super.paint(g2);
                 } finally {
                     g2.dispose();
                 }
@@ -271,6 +306,19 @@ public class ModalController extends AbstractModalController {
         float y = (height - scaledHeight) / 2f;
         g2.translate(x, y);
         g2.scale(scale, scale);
+    }
+
+    private VolatileImage getOrCreateLiveScaleBuffer() {
+        int w = getWidth();
+        int h = getHeight();
+        if (w <= 0 || h <= 0) return null;
+        if (liveScaleBuffer == null || liveScaleBuffer.getWidth() != w || liveScaleBuffer.getHeight() != h) {
+            if (liveScaleBuffer != null) {
+                liveScaleBuffer.flush();
+            }
+            liveScaleBuffer = createVolatileImage(w, h);
+        }
+        return liveScaleBuffer;
     }
 
     public float getAnimated() {
