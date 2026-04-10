@@ -44,6 +44,22 @@ public class TestModal extends BaseFrame {
             }
         });
 
+        JButton cmdScaleSnapshotOn = new JButton("Scale 0.3 (snapshot ON)");
+        panelModal.add(cmdScaleSnapshotOn);
+        cmdScaleSnapshotOn.addActionListener(e -> {
+            if (!ModalDialog.isIdExist("modal_scale_on")) {
+                showConfiguredModal(panelModal, SimpleMessageModal.Type.SUCCESS, "modal_scale_on", true, 0.3f);
+            }
+        });
+
+        JButton cmdScaleSnapshotOff = new JButton("Scale 0.3 (snapshot OFF)");
+        panelModal.add(cmdScaleSnapshotOff);
+        cmdScaleSnapshotOff.addActionListener(e -> {
+            if (!ModalDialog.isIdExist("modal_scale_off")) {
+                showConfiguredModal(panelModal, SimpleMessageModal.Type.SUCCESS, "modal_scale_off", false, 0.3f);
+            }
+        });
+
         // toast
         JButton cmdToast = new JButton("Show toast");
         panelToast.add(cmdToast);
@@ -91,6 +107,19 @@ public class TestModal extends BaseFrame {
 
     private void showCustomModal(Component com, SimpleMessageModal.Type type) {
         Option option = ModalDialog.createOption();
+        showModal(com, type, "modal_id", option);
+    }
+
+    private void showConfiguredModal(Component com, SimpleMessageModal.Type type, String id,
+                                     boolean snapshotAnimationEnabled, float animateScale) {
+        Option option = ModalDialog.createOption();
+        option.setSnapshotAnimationEnabled(snapshotAnimationEnabled);
+        option.getLayoutOption().setAnimateScale(animateScale);
+        System.out.println("Modal config -> id=" + id + ", snapshot=" + snapshotAnimationEnabled + ", scale=" + animateScale);
+        showModal(com, type, id, option);
+    }
+
+    private void showModal(Component com, SimpleMessageModal.Type type, String id, Option option) {
         String message = "Hello! I hope you're having a wonderful day." +
                 "\nI wanted to take a moment to check in and see how you're doing." +
                 "\nWhether you've been working on any exciting projects," +
@@ -99,7 +128,7 @@ public class TestModal extends BaseFrame {
                 "\nIt's always great to catch up and share our experiences.";
         ModalDialog.showModal(com, new SimpleMessageModal(type, message, "This is a modal custom message", SimpleModalBorder.YES_NO_OPTION, (controller, action) -> {
             System.out.println("Action: " + action);
-        }), option, "modal_id");
+        }), option, id);
     }
 
     private void installDefaultOption() {
@@ -114,6 +143,7 @@ public class TestModal extends BaseFrame {
         modalOption.getLayoutOption()
                 .setMovable(true)
                 .setRelativeToOwner(true)
+                .setAnimateScale(0.3f)
         ;
         modalOption.getBorderOption()
                 .setBorderWidth(1);
