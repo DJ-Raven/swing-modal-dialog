@@ -57,6 +57,25 @@ public class ModalBackground extends JComponent {
         addMouseListener(mouseListener);
     }
 
+    private Point cachedLocationOnScreen;
+
+    @Override
+    public void setBounds(int x, int y, int width, int height) {
+        super.setBounds(x, y, width, height);
+        cachedLocationOnScreen = null;
+    }
+
+    private Point getCachedLocationOnScreen() {
+        if (cachedLocationOnScreen == null) {
+            try {
+                cachedLocationOnScreen = getLocationOnScreen();
+            } catch (IllegalComponentStateException e) {
+                return new Point(0, 0);
+            }
+        }
+        return cachedLocationOnScreen;
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         Option option = modalController.getOption();
@@ -70,7 +89,7 @@ public class ModalBackground extends JComponent {
         } else {
             // fill background with round border
             FlatUIUtils.setRenderingHints(g2);
-            Point point = getLocationOnScreen();
+            Point point = getCachedLocationOnScreen();
             g2.translate(-point.x, -point.y);
             g2.fill(shape);
         }
@@ -87,9 +106,12 @@ public class ModalBackground extends JComponent {
     protected Shape getBackgroundShape() {
         int arc = getWindowRoundBorder();
         if (arc > 0 && parentWindow != null) {
+            // Recompute each paint: parentWindow.getBounds() changes on OS-level
+            // window moves without triggering setBounds() on this component.
+            // Only getLocationOnScreen() is cached since it is the expensive call.
             Rectangle2D windowsRec = FlatUIUtils.subtractInsets(parentWindow.getBounds(), parentWindow.getInsets());
             Shape roundRec = new RoundRectangle2D.Double(windowsRec.getX(), windowsRec.getY(), windowsRec.getWidth(), windowsRec.getHeight(), arc, arc);
-            Rectangle2D componentShape = new Rectangle(getLocationOnScreen(), new Dimension(getWidth(), getHeight()));
+            Rectangle2D componentShape = new Rectangle(getCachedLocationOnScreen(), new Dimension(getWidth(), getHeight()));
             Area area = new Area(roundRec);
             area.intersects(componentShape);
             return area;
