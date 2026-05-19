@@ -11,6 +11,7 @@ import raven.modal.utils.ModalUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Objects;
 
 /**
  * @author Raven
@@ -24,6 +25,14 @@ public class DropShadowBorder extends FlatEmptyBorder {
     private final int round;
     private final Color borderColor;
     private FlatDropShadowBorder shadowBorder;
+
+    private BufferedImage cachedImage;
+    private int cachedWidth = -1;
+    private int cachedHeight = -1;
+    private double cachedScaleFactor = -1;
+    private Color cachedBackground;
+    private Color cachedBorderColor;
+    private boolean cachedLTR;
 
     public DropShadowBorder(int shadowSize, int round) {
         this(new Insets(shadowSize, shadowSize, shadowSize, shadowSize), 0, round);
@@ -83,6 +92,19 @@ public class DropShadowBorder extends FlatEmptyBorder {
     }
 
     private void paintImpl(Component c, Graphics2D g2d, int x, int y, int width, int height, double scaleFactor) {
+        if (width <= 0 || height <= 0) {
+            return;
+        }
+
+        Color background = c.getBackground();
+        Color currentBorderColor = getBorderColor();
+        boolean leftToRight = c.getComponentOrientation().isLeftToRight();
+
+        if (isCacheHit(width, height, scaleFactor, background, currentBorderColor, leftToRight)) {
+            g2d.drawImage(cachedImage, x, y, null);
+            return;
+        }
+
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();
         try {
@@ -98,7 +120,7 @@ public class DropShadowBorder extends FlatEmptyBorder {
             int bottom = shadowSize.bottom;
             int right = shadowSize.right;
 
-            if (!c.getComponentOrientation().isLeftToRight()) {
+            if (!leftToRight) {
                 left = shadowSize.right;
                 right = shadowSize.left;
             }
@@ -112,19 +134,56 @@ public class DropShadowBorder extends FlatEmptyBorder {
             g.translate(lx, ly);
 
             // paint background
-            g.setColor(c.getBackground());
+            g.setColor(background);
             g.fill(FlatUIUtils.createComponentRectangle(0, 0, w, h, arc));
 
             // paint outline
             if (lineWidth > 0) {
-                Color color = getBorderColor();
-                g.setColor(color);
+                g.setColor(currentBorderColor);
                 FlatUIUtils.paintOutline(g, x, y, w, h, lineWidth, arc);
             }
         } finally {
             g.dispose();
         }
+
+        updateCache(image, width, height, scaleFactor, background, currentBorderColor, leftToRight);
         g2d.drawImage(image, x, y, null);
+    }
+
+    private boolean isCacheHit(int width, int height, double scaleFactor, Color background, Color currentBorderColor, boolean leftToRight) {
+        return cachedImage != null
+                && cachedWidth == width
+                && cachedHeight == height
+                && Double.compare(cachedScaleFactor, scaleFactor) == 0
+                && Objects.equals(cachedBackground, background)
+                && Objects.equals(cachedBorderColor, currentBorderColor)
+                && cachedLTR == leftToRight;
+    }
+
+    private void updateCache(BufferedImage image, int width, int height, double scaleFactor, Color background, Color currentBorderColor, boolean leftToRight) {
+        if (cachedImage != null && cachedImage != image) {
+            cachedImage.flush();
+        }
+        cachedImage = image;
+        cachedWidth = width;
+        cachedHeight = height;
+        cachedScaleFactor = scaleFactor;
+        cachedBackground = background;
+        cachedBorderColor = currentBorderColor;
+        cachedLTR = leftToRight;
+    }
+
+    protected void invalidateCache() {
+        if (cachedImage != null) {
+            cachedImage.flush();
+            cachedImage = null;
+        }
+        cachedWidth = -1;
+        cachedHeight = -1;
+        cachedScaleFactor = -1;
+        cachedBackground = null;
+        cachedBorderColor = null;
+        cachedLTR = false;
     }
 
     private int scale(int value, double scaleFactor) {

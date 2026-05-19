@@ -62,7 +62,12 @@ public class ImageSnapshots {
         }
         VolatileImage image = component.createVolatileImage(width, height);
         if (image != null) {
-            component.paint(image.createGraphics());
+            Graphics2D g = image.createGraphics();
+            try {
+                component.paint(g);
+            } finally {
+                g.dispose();
+            }
             return round > 0 ? roundImage(image, round) : image;
         }
         return null;

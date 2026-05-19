@@ -33,6 +33,10 @@ public class Option {
         return animationOnClose;
     }
 
+    public boolean isSnapshotAnimationEnabled() {
+        return snapshotAnimationEnabled;
+    }
+
     public boolean isCloseOnPressedEscape() {
         return closeOnPressedEscape;
     }
@@ -66,6 +70,7 @@ public class Option {
     private BackgroundClickType backgroundClickType = BackgroundClickType.CLOSE_MODAL;
     private boolean animationEnabled = true;
     private boolean animationOnClose = true;
+    private boolean snapshotAnimationEnabled = true;
     private boolean closeOnPressedEscape = true;
     private boolean heavyWeight;
     private Color backgroundLight;
@@ -74,12 +79,13 @@ public class Option {
     private int duration = 200;
     private int sliderDuration = 400;
 
-    private Option(LayoutOption layoutOption, BorderOption borderOption, BackgroundClickType backgroundClickType, boolean animationEnabled, boolean animationOnClose, boolean closeOnPressedEscape, boolean heavyWeight, Color backgroundLight, Color backgroundDark, float opacity, int duration, int sliderDuration) {
+    private Option(LayoutOption layoutOption, BorderOption borderOption, BackgroundClickType backgroundClickType, boolean animationEnabled, boolean animationOnClose, boolean snapshotAnimationEnabled, boolean closeOnPressedEscape, boolean heavyWeight, Color backgroundLight, Color backgroundDark, float opacity, int duration, int sliderDuration) {
         this.layoutOption = layoutOption;
         this.borderOption = borderOption;
         this.backgroundClickType = backgroundClickType;
         this.animationEnabled = animationEnabled;
         this.animationOnClose = animationOnClose;
+        this.snapshotAnimationEnabled = snapshotAnimationEnabled;
         this.closeOnPressedEscape = closeOnPressedEscape;
         this.heavyWeight = heavyWeight;
         this.backgroundLight = backgroundLight;
@@ -109,6 +115,11 @@ public class Option {
 
     public Option setAnimationOnClose(boolean animationOnClose) {
         this.animationOnClose = animationOnClose;
+        return this;
+    }
+
+    public Option setSnapshotAnimationEnabled(boolean snapshotAnimationEnabled) {
+        this.snapshotAnimationEnabled = snapshotAnimationEnabled;
         return this;
     }
 
@@ -154,6 +165,6 @@ public class Option {
     }
 
     public Option copy() {
-        return new Option(layoutOption.copy(), borderOption.copy(), backgroundClickType, animationEnabled, animationOnClose, closeOnPressedEscape, heavyWeight, backgroundLight == null ? null : new Color(backgroundLight.getRGB()), backgroundDark == null ? null : new Color(backgroundDark.getRGB()), opacity, duration, sliderDuration);
+        return new Option(layoutOption.copy(), borderOption.copy(), backgroundClickType, animationEnabled, animationOnClose, snapshotAnimationEnabled, closeOnPressedEscape, heavyWeight, backgroundLight == null ? null : new Color(backgroundLight.getRGB()), backgroundDark == null ? null : new Color(backgroundDark.getRGB()), opacity, duration, sliderDuration);
     }
 }

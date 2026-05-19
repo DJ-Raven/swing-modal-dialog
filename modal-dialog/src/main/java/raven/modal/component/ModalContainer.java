@@ -39,6 +39,7 @@ public class ModalContainer extends JComponent {
     private MouseListener mouseListener;
     private ActionListener escapeAction;
     private ModalLayout modalLayout;
+    private Shape cachedBackgroundShape;
 
     public ModalContainer(AbstractModalContainerLayer modalContainerLayer, Component owner, Option option, String id) {
         this.modalContainerLayer = modalContainerLayer;
@@ -143,6 +144,10 @@ public class ModalContainer extends JComponent {
     }
 
     private Shape getBackgroundShape() {
+        if (cachedBackgroundShape != null) {
+            return cachedBackgroundShape;
+        }
+
         LayoutOption layoutOption = modalController.getOption().getLayoutOption();
         if (modalController.getOption().isHeavyWeight()
                 && layoutOption.isRelativeToOwner()
@@ -155,9 +160,24 @@ public class ModalContainer extends JComponent {
             if (!FlatUIUtils.isInsetsEmpty(padding)) {
                 rec = FlatUIUtils.subtractInsets(rec, UIScale.scale(padding));
             }
-            return rec;
+            cachedBackgroundShape = rec;
+            return cachedBackgroundShape;
         }
-        return new Rectangle(0, 0, getWidth(), getHeight());
+        cachedBackgroundShape = new Rectangle(0, 0, getWidth(), getHeight());
+        return cachedBackgroundShape;
+    }
+
+    @Override
+    public void setBounds(int x, int y, int width, int height) {
+        boolean changed = x != getX() || y != getY() || width != getWidth() || height != getHeight();
+        super.setBounds(x, y, width, height);
+        if (changed) {
+            invalidateBackgroundShapeCache();
+        }
+    }
+
+    private void invalidateBackgroundShapeCache() {
+        cachedBackgroundShape = null;
     }
 
     protected Color getBackgroundColor() {
