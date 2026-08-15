@@ -133,7 +133,8 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                         .subMenu("Slide Pane", FormSlidePane.class),
                 new Item("Swing Pack", "pack.svg")
                         .subMenu("Pagination", FormPagination.class)
-                        .subMenu("MultiSelect", FormMultiSelect.class),
+                        .subMenu("Multi Select", FormMultiSelect.class)
+                        .subMenu("DateTime Field", FormDateTimeField.class),
                 new Item("Email", "email.svg")
                         .subMenu("Inbox")
                         .subMenu(

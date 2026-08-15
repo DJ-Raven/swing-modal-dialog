@@ -13,7 +13,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-@SystemForm(name = "MultiSelect", description = "multi-select user interface component (swing pack)", tags = {"swing pack", "combobox", "multi", "select"})
+@SystemForm(name = "Multi Select", description = "multi-select user interface component (swing pack)", tags = {"swing pack", "combobox", "multi", "select"})
 public class FormMultiSelect extends Form {
 
     public FormMultiSelect() {
@@ -28,7 +28,7 @@ public class FormMultiSelect extends Form {
 
     private JPanel createInfo() {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[fill]"));
-        JLabel title = new JLabel("MultiSelect");
+        JLabel title = new JLabel("Multi Select");
         JTextPane text = new JTextPane();
         text.setText("The JMultiSelectComboBox is a modern Swing component that allows users to select multiple items in a single combo box.\n" +
                 "It supports wrapping, scrolling, and right-to-left (RTL) layouts.");
