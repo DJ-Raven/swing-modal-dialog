@@ -1,5 +1,6 @@
 package raven.modal.component;
 
+import com.formdev.flatlaf.ui.FlatUIUtils;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.option.BorderOption;
 import raven.modal.option.Option;
@@ -167,6 +168,27 @@ public abstract class AbstractModalController extends JPanel implements Controll
             return super.getBackground();
         }
         return panelSlider.getBackground();
+    }
+
+    @Override
+    public boolean contains(int x, int y) {
+        boolean contains = super.contains(x, y);
+        if (contains && !getOption().isHeavyWeight()) {
+            Insets insets = getOption().getBorderOption().getShadowSize();
+            if (insets == null || FlatUIUtils.isInsetsEmpty(insets)) {
+                return contains;
+            }
+            boolean ltr = getComponentOrientation().isLeftToRight();
+            if (!ltr) {
+                int temp = insets.left;
+                insets.left = insets.right;
+                insets.right = temp;
+            }
+            int width = getWidth() - insets.right;
+            int height = getHeight() - insets.bottom;
+            contains = x >= insets.left && x <= width && y >= insets.top && y <= height;
+        }
+        return contains;
     }
 
     private Consumer<?> getOnBackAction() {

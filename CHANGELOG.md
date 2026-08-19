@@ -7,6 +7,15 @@
 - Toast:
     - Add new option `openDuration` and `closeDuration` to control toast open and close animation duration (issue #57)
 
+### Fixe bugs
+
+- Modal dialog:
+    - Fixed the shadow area blocking mouse clicks from reaching the background.
+
+### Demo
+
+- Add new form datetime-field for a swing-pack library
+
 ## [2.6.1] - 2026-03-17
 
 ### New features and improvements
