@@ -7,6 +7,10 @@
 - Toast:
     - Add new option `openDuration` and `closeDuration` to control toast open and close animation duration (issue #57)
 
+### Changed
+
+- FlatLaf: update to `v3.7.2`
+
 ### Fixe bugs
 
 - Toast:
