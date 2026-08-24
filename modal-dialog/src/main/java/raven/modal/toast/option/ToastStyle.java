@@ -3,6 +3,7 @@ package raven.modal.toast.option;
 import raven.modal.Toast;
 
 import javax.swing.*;
+import java.util.Locale;
 
 /**
  * @author Raven
@@ -64,8 +65,8 @@ public class ToastStyle {
             if (labelText != null) {
                 return labelText;
             }
-            String text = type.toString().toLowerCase();
-            return text.substring(0, 1).toUpperCase() + text.substring(1);
+            String text = type.toString().toLowerCase(Locale.ROOT);
+            return text.substring(0, 1).toUpperCase(Locale.ROOT) + text.substring(1);
         }
     }
 
