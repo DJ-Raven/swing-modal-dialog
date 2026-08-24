@@ -9,8 +9,15 @@
 
 ### Fixe bugs
 
+- Toast:
+    - Fixed `IllegalArgumentException: Malformed UnitValue` when the default locale uses a non-Latin
+      numbering system (for example `ar-SA`, `fa-IR`, `ne-NP`, `bn-BD`, `my-MM`). Layout constraints are
+      now formatted with `Locale.ROOT`. (issue #58)
+    - Fixed the default title label text being mangled under the Turkish locale (`Warnıng` instead of
+      `Warning`). Case conversion now uses `Locale.ROOT`. (issue #58)
 - Modal dialog:
     - Fixed the shadow area blocking mouse clicks from reaching the background.
+    - Fixed the same `Malformed UnitValue` failure in `SimpleModalBorder` layout constraints. (issue #58)
 
 ### Demo
 

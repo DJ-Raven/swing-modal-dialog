@@ -9,6 +9,7 @@ import raven.modal.option.ModalBorderOption;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Locale;
 import java.util.function.Consumer;
 
 /**
@@ -82,7 +83,7 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
      */
     @Override
     public void installComponent() {
-        String insets = String.format("insets %d 0 %d 0", option.getPadding().top, option.getPadding().bottom);
+        String insets = String.format(Locale.ROOT, "insets %d 0 %d 0", option.getPadding().top, option.getPadding().bottom);
         setLayout(new MigLayout("wrap,fillx," + insets, "[fill]", "[][fill,grow][]"));
         header = createHeader();
         add(header);
@@ -112,7 +113,7 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
     }
 
     protected JComponent createHeader() {
-        String insets = String.format("insets 0 %d 0 %d", option.getPadding().left, option.getPadding().right);
+        String insets = String.format(Locale.ROOT, "insets 0 %d 0 %d", option.getPadding().left, option.getPadding().right);
         JPanel panel = new JPanel(new MigLayout("novisualpadding,fill," + insets));
         panel.putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:null;");
@@ -148,7 +149,7 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
         if (optionsType == null || optionsType.length == 0) {
             return null;
         }
-        String insets = String.format("insets 3 %d 3 %d", option.getPadding().left, option.getPadding().right);
+        String insets = String.format(Locale.ROOT, "insets 3 %d 3 %d", option.getPadding().left, option.getPadding().right);
         JPanel panel = new JPanel(new MigLayout(insets + ",al trailing"));
         panel.putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:null;");

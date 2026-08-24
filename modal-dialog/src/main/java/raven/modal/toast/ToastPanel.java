@@ -24,6 +24,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Locale;
 
 /**
  * @author Raven
@@ -252,7 +253,7 @@ public class ToastPanel extends JPanel {
     private String getLayoutInsets() {
         Insets padding = toastData.getOption().getStyle().getBorderStyle().getPadding();
         final int add = 7 + ModalUtils.getToastExtraBorderPadding(toastData.getOption());
-        return String.format("insets %d %d %d %d", padding.top + add, padding.left + add, padding.bottom + add, padding.right + add);
+        return String.format(Locale.ROOT, "insets %d %d %d %d", padding.top + add, padding.left + add, padding.bottom + add, padding.right + add);
     }
 
     private String getLayoutColumn(ThemesData themesData) {
