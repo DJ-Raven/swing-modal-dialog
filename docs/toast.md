@@ -1,8 +1,23 @@
+[Docs](README.md) / Toast
+
 # Toast
 
 `Toast` shows small, transient notification messages on top of a window (a `JFrame`, `JDialog` or `JInternalFrame`). It is commonly used for brief, non-intrusive feedback such as "saved successfully" or "connection failed". Toasts stack, animate in/out, and can auto-close after a delay, show a loading/result "promise" sequence, or host completely custom content.
 
 All entry points are static methods on `raven.modal.Toast`.
+
+## Contents
+
+- [Basic usage](#basic-usage)
+- [Toast location](#toast-location)
+- [ToastOption](#toastoption)
+- [Layout option](#layout-option)
+- [Style](#style)
+- [Promise toast](#promise-toast)
+- [Custom toast](#custom-toast)
+- [Events / listener](#events--listener)
+- [Managing toasts](#managing-toasts)
+- [Heavy-weight mode](#heavy-weight-mode)
 
 ## Basic usage
 
@@ -278,3 +293,5 @@ Toast.isReverseOrder();
 
 - [Modal dialog](./modal-dialog.md)
 - [Drawer](./drawer.md)
+- [Extras](./extras.md)
+- [← Back to docs index](./README.md)

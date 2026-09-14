@@ -1,9 +1,12 @@
 # Documentation
 
-Reference documentation for `io.github.dj-raven:modal-dialog`.
+Reference documentation for [`io.github.dj-raven:modal-dialog`](../README.md).
 
-- [Modal Dialog](modal-dialog.md) — show animated, lightweight or heavyweight modal dialogs above a `JFrame`/`JDialog`/`JInternalFrame`.
-- [Toast Notification](toast.md) — transient status/notification popups, including promise-based (loading → success/error) and fully custom toasts.
-- [Drawer](drawer.md) — a responsive, animated navigation side-drawer with a built-in menu, header and footer.
+| Component | Description |
+|---|---|
+| [Modal Dialog](modal-dialog.md) | Animated dialogs, confirmations and custom in-window modals |
+| [Toast Notification](toast.md) | Transient status messages, including promise-based and fully custom toasts |
+| [Drawer](drawer.md) | Responsive navigation side-drawer with nested menus, header and footer |
+| [Extras](extras.md) | Standalone components: `AvatarIcon`, `LightDarkButton`, `SlidePane` |
 
 See the main [README](../README.md) for installation instructions. To see these components in action, run the `demo` module's `raven.modal.demo.Demo` class.

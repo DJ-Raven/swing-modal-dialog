@@ -1,8 +1,23 @@
+[Docs](README.md) / Drawer
+
 # Drawer
 
 A responsive, animated navigation side-drawer for Swing. It installs into the layered pane of a `JFrame`/`JDialog`/`JInternalFrame` and is typically used as an application's main navigation menu, with support for nested submenus, role-based item validation, and automatic collapse into an overlay on small windows.
 
 The drawer is driven by a `raven.modal.drawer.DrawerBuilder` — an interface that supplies the header/menu/footer components and layout options. Most applications don't implement `DrawerBuilder` directly; they extend `raven.modal.drawer.simple.SimpleDrawerBuilder`, a ready-made implementation with a header, a scrollable nested menu, and a footer.
+
+## Contents
+
+- [Quick start](#quick-start)
+- [Showing and hiding the drawer](#showing-and-hiding-the-drawer)
+- [Menu items](#menu-items)
+- [Menu open mode](#menu-open-mode)
+- [Menu style](#menu-style)
+- [Line style renderers](#line-style-renderers)
+- [Menu validation](#menu-validation)
+- [Header and footer](#header-and-footer)
+- [Selecting the active menu item](#selecting-the-active-menu-item)
+- [Responsive behavior](#responsive-behavior)
 
 ## Quick start
 
@@ -280,3 +295,5 @@ When the parent window's width drops to or below this threshold, the drawer deta
 
 - [Modal Dialog](./modal-dialog.md)
 - [Toast](./toast.md)
+- [Extras](./extras.md)
+- [← Back to docs index](./README.md)

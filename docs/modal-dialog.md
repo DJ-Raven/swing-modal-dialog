@@ -1,8 +1,22 @@
+[Docs](README.md) / Modal Dialog
+
 # Modal Dialog
 
 An animated, in-window modal dialog system built on top of `JLayeredPane`. By default a modal renders *inside* the owning window (lightweight), tracks the window's position/resizing, and animates open/close — no separate native window is created. An optional heavyweight mode renders the modal in its own top-level `Window` instead, for cases where content needs to escape the owner window's bounds.
 
 A modal is any `JPanel` subclass extending `raven.modal.component.Modal`. The library ships a ready-made implementation, `SimpleModalBorder`, that adds a title bar, close button and option buttons (Yes/No, OK/Cancel, ...) around any `JComponent`, which covers most use cases without writing a custom `Modal`.
+
+## Contents
+
+- [Creating a modal](#creating-a-modal)
+- [Showing a modal](#showing-a-modal)
+- [Closing a modal](#closing-a-modal)
+- [Stacking modals (push / pop)](#stacking-modals-push--pop)
+- [Option](#option)
+- [Layout option](#layout-option)
+- [Border option](#border-option)
+- [SimpleModalBorder](#simplemodalborder)
+- [Heavy-weight mode](#heavy-weight-mode)
 
 ## Creating a modal
 
@@ -224,3 +238,5 @@ To build your own title-bar style, subclass `SimpleModalBorder` and override `cr
 
 - [Toast](./toast.md)
 - [Drawer](./drawer.md)
+- [Extras](./extras.md)
+- [← Back to docs index](./README.md)
