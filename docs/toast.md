@@ -1,4 +1,4 @@
-[Docs](README.md) / Toast
+[Docs](../README.md#documentation) / Toast
 
 # Toast
 
@@ -289,9 +289,11 @@ Toast.isReverseOrder();
 
 `ToastOption.setHeavyWeight(true)` renders the toast in its own heavyweight top-level window instead of inside the owning `JFrame`'s layered pane. Use it when a toast needs to visually escape the bounds of its owner window, or needs to appear above other heavyweight components that a lightweight (layered-pane) toast can't paint over.
 
+Animation is not supported in this mode: `setAnimationEnabled(boolean)` and the `duration`/`openDuration`/`closeDuration` settings have no effect, and the toast simply appears/disappears instantly.
+
 ## See also
 
 - [Modal dialog](./modal-dialog.md)
 - [Drawer](./drawer.md)
 - [Extras](./extras.md)
-- [← Back to docs index](./README.md)
+- [← Back to README](../README.md)

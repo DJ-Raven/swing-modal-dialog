@@ -3,11 +3,14 @@ package test;
 import net.miginfocom.swing.MigLayout;
 import raven.extras.LightDarkButton;
 import raven.modal.ModalDialog;
+import raven.modal.component.Modal;
 import raven.modal.component.SimpleModalBorder;
 import raven.modal.demo.simple.SimpleInputForms;
 import raven.modal.demo.simple.SimpleInputForms2;
 import raven.modal.option.BorderOption;
+import raven.modal.option.Option;
 import test.base.BaseFrame;
+import test.docs.MyModal;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,37 +21,27 @@ public class Test extends BaseFrame {
         super("Test");
         setLayout(new MigLayout("wrap,al center center"));
         JButton button = new JButton("show");
-        ModalDialog.getDefaultOption()
-                .setOpacity(0f)
-                .setAnimationOnClose(false)
-                .getBorderOption()
-                .setBorderWidth(1)
-                .setShadow(BorderOption.Shadow.MEDIUM);
+        Option option = ModalDialog.createOption();
+        option.setHeavyWeight(true)
+                .setOpacity(0.4f)
+                .setBackgroundClickType(Option.BackgroundClickType.BLOCK);
+        option.getBorderOption().setShadow(BorderOption.Shadow.MEDIUM).setBorderWidth(1);
+        option.getLayoutOption().setMovable(true).setRelativeToOwner(true);
 
 
         button.addActionListener(e -> {
-            SimpleInputForms simpleInputForms = new SimpleInputForms();
-            ModalDialog.showModal(this, new SimpleModalBorder(simpleInputForms, "Input", SimpleModalBorder.YES_NO_OPTION, (controller, action) -> {
-                System.out.println("Action: " + action);
-                if (action == SimpleModalBorder.OPENED) {
-                    simpleInputForms.formOpen();
-                    System.out.println("Form-1 OPENED");
-                } else if (action == SimpleModalBorder.YES_OPTION) {
-                    controller.consume();
-                    SimpleInputForms2 simpleInputForms2 = new SimpleInputForms2();
-                    ModalDialog.pushModal(new SimpleModalBorder(simpleInputForms2, "New Input", SimpleModalBorder.YES_NO_OPTION, (controller1, action1) -> {
-                        if (action1 == SimpleModalBorder.OPENED) {
-                            simpleInputForms2.formOpen();
-                            System.out.println("Form-2 OPENED");
-                        }
-                    }), "input");
-                }
-            }), "input");
+            ModalDialog.showModal(this,
+                    new SimpleModalBorder(new JButton("Hello3333333333333333333333333333333333333333333333333"), "Sample Input Forms", SimpleModalBorder.YES_NO_CANCEL_OPTION,
+                            (controller, action) -> {
+                                if (action == SimpleModalBorder.YES_OPTION) {
+                                    // handle confirm
+                                }
+                            }));
+
         });
+
+
         add(button);
-        LightDarkButton lightDarkButton = new LightDarkButton();
-        lightDarkButton.installAutoLafChangeListener();
-        add(lightDarkButton);
     }
 
     public static void main(String[] args) {

@@ -1,4 +1,4 @@
-[Docs](README.md) / Extras
+[Docs](../README.md#documentation) / Extras
 
 # Extras
 
@@ -121,10 +121,10 @@ lightDarkButton.addModeChangeListener(isDarkMode -> {
 
 ```java
 SlidePane slidePane = new SlidePane();
-slidePane.addSlide(new SimpleInputForms()); // first panel: shown immediately, no animation
+slidePane.addSlide(new StepOnePanel()); // first panel: shown immediately, no animation
 
 button.addActionListener(e -> {
-    Component next = new SimpleInputForms2();
+    Component next = new StepTwoPanel();
     slidePane.addSlide(next, SlidePaneTransition.Type.FORWARD);
 });
 
@@ -189,4 +189,4 @@ public class MyTransition extends SliderTransition {
 - [Modal Dialog](./modal-dialog.md)
 - [Toast](./toast.md)
 - [Drawer](./drawer.md)
-- [← Back to docs index](./README.md)
+- [← Back to README](../README.md)

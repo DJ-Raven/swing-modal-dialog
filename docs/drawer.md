@@ -1,4 +1,4 @@
-[Docs](README.md) / Drawer
+[Docs](../README.md#documentation) / Drawer
 
 # Drawer
 
@@ -296,4 +296,4 @@ When the parent window's width drops to or below this threshold, the drawer deta
 - [Modal Dialog](./modal-dialog.md)
 - [Toast](./toast.md)
 - [Extras](./extras.md)
-- [← Back to docs index](./README.md)
+- [← Back to README](../README.md)

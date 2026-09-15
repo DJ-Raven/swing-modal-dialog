@@ -1,4 +1,4 @@
-[Docs](README.md) / Modal Dialog
+[Docs](../README.md#documentation) / Modal Dialog
 
 # Modal Dialog
 
@@ -16,6 +16,7 @@ A modal is any `JPanel` subclass extending `raven.modal.component.Modal`. The li
 - [Layout option](#layout-option)
 - [Border option](#border-option)
 - [SimpleModalBorder](#simplemodalborder)
+- [Triggering actions from nested content (ModalBorderAction)](#triggering-actions-from-nested-content-modalborderaction)
 - [Heavy-weight mode](#heavy-weight-mode)
 
 ## Creating a modal
@@ -33,12 +34,13 @@ public class MyModal extends Modal {
     }
 
     @Override
-    protected void modalOpened() {
-        // called after the modal has finished its open animation and gained focus
+    public void installComponent() {
+        // called once, the first time the modal is shown; build/attach the UI here
     }
 
-    public void close() {
-        getController().closeModal();
+    @Override
+    protected void modalOpened() {
+        // called after the modal has finished its open animation and gained focus
     }
 }
 ```
@@ -84,17 +86,17 @@ getController().closeModal();
 
 ## Stacking modals (push / pop)
 
-`ModalDialog.pushModal(modal, id)` slides a new modal on top of the one currently shown under `id`, keeping the same window/container and `id`; `ModalDialog.popModal(id)` slides back to the previous one. This is meant for wizard-like flows (e.g. "New Country" sub-form opened from within an input form) where you want a back-navigation animation instead of opening an unrelated second modal:
+`ModalDialog.pushModal(modal, id)` slides a new modal on top of the one currently shown under `id`, keeping the same window/container and `id`; `ModalDialog.popModal(id)` slides back to the previous one. This is meant for wizard-like flows (e.g. a "New Country" sub-form opened from within an input form) where you want a back-navigation animation instead of opening an unrelated second modal. `NEW_COUNTRY` below is a custom action code fired from a combo box buried inside the form content — see [Triggering actions from nested content](#triggering-actions-from-nested-content-modalborderaction) for how it reaches this callback:
 
 ```java
 final String id = "input";
-SimpleInputForms form = new SimpleInputForms();
+InputForm form = new InputForm();
 ModalDialog.showModal(this, new SimpleModalBorder(
-        form, "Sample Input Forms", SimpleModalBorder.YES_NO_CANCEL_OPTION,
+        form, "Input Form", SimpleModalBorder.YES_NO_CANCEL_OPTION,
         (controller, action) -> {
-            if (action == SimpleInputForms.NEW_COUNTRY) {
+            if (action == InputForm.NEW_COUNTRY) {
                 controller.consume(); // keep the current modal open
-                SimpleInputFormsCountry sub = new SimpleInputFormsCountry();
+                CountryForm sub = new CountryForm();
                 ModalDialog.pushModal(new SimpleModalBorder(sub, "New Country", SimpleModalBorder.YES_NO_OPTION,
                         (subController, subAction) -> {
                             if (subAction == SimpleModalBorder.YES_OPTION) {
@@ -228,15 +230,79 @@ By default, after the callback runs, the modal auto-closes. Call `controller.con
 
 Custom option buttons can be added directly instead of a preset `optionType`, via the `Option[] optionsType` constructors, where each `SimpleModalBorder.Option` is a simple `(String text, int type)` pair whose `type` is delivered back through the callback's `action` parameter.
 
-To build your own title-bar style, subclass `SimpleModalBorder` and override `createHeader()`, `createTitleComponent(String)`, `createOptionButton(Option[])` and/or `createButtonOption(Option)` — see `SimpleMessageModal` in the demo module for a themed (success/info/warning/error) example.
+To build your own title-bar style, subclass `SimpleModalBorder` and override `createHeader()`, `createTitleComponent(String)`, `createOptionButton(Option[])` and/or `createButtonOption(Option)` — for example, to swap in a themed icon/color per severity, override `createTitleComponent(String)` to read a `type` field set through your subclass's constructor and pick an icon/foreground color accordingly before delegating to `super.createTitleComponent(title)`.
+
+## Triggering actions from nested content (ModalBorderAction)
+
+`SimpleModalBorder`'s Yes/No/Cancel/close buttons work by calling `doAction(int action)` on themselves, which invokes the modal's `ModalCallback` and then auto-closes unless `controller.consume()` was called — the same mechanism described above. `raven.modal.component.ModalBorderAction` is the interface that exposes this, and `SimpleModalBorder` implements it:
+
+```java
+public interface ModalBorderAction {
+    void doAction(int action);
+
+    static ModalBorderAction getModalBorderAction(Component com);
+}
+```
+
+A component buried deep inside the modal's content (a combo box, a keyboard shortcut, a link inside a nested panel) doesn't have a reference to the enclosing `SimpleModalBorder`. `ModalBorderAction.getModalBorderAction(Component)` walks up the component hierarchy from `com` until it finds the nearest ancestor implementing `ModalBorderAction` (returning `null` if the component isn't inside one), letting any nested component fire the same callback — including with a custom action code the built-in buttons never send:
+
+```java
+public static final int NEW_COUNTRY = 30;
+
+comboCountry.addActionListener(e -> {
+    ModalBorderAction borderAction = ModalBorderAction.getModalBorderAction(this);
+    if (borderAction != null) {
+        borderAction.doAction(NEW_COUNTRY);
+    }
+});
+```
+
+This is exactly how `NEW_COUNTRY` in [Stacking modals](#stacking-modals-push--pop) reaches the outer `SimpleModalBorder`'s `ModalCallback` from a combo box nested inside the form panel.
+
+If you write a fully custom `Modal` (not based on `SimpleModalBorder`) and want the same pattern available to its content, implement `ModalBorderAction` on it directly and call your own `ModalCallback` from `doAction(...)`:
+
+```java
+public class MyModal extends Modal implements ModalBorderAction {
+
+    private final ModalCallback callback;
+
+    public MyModal(Component content, ModalCallback callback) {
+        this.callback = callback;
+        setLayout(new MigLayout("fill,insets 8", "[fill]", "[fill]"));
+        add(content);
+    }
+
+    @Override
+    public void doAction(int action) {
+        if (callback == null) {
+            getController().closeModal();
+            return;
+        }
+        ModalController controller = new ModalController(this) {
+            @Override
+            public void close() {
+                getController().closeModal();
+            }
+        };
+        callback.action(controller, action);
+        if (!controller.getConsume()) {
+            getController().closeModal();
+        }
+    }
+}
+```
+
+This keeps the title-bar-less case consistent with `SimpleModalBorder`: nested content calls `ModalBorderAction.getModalBorderAction(this).doAction(action)` exactly as before, without needing to know whether it's inside a `SimpleModalBorder` or a custom `Modal`.
 
 ## Heavy-weight mode
 
-`option.setHeavyWeight(true)` renders the modal in a real, separate top-level `Window` positioned over the owner, instead of inside the owner window's `JLayeredPane`. Reach for it when a modal needs to render outside the bounds of its owner window (for example `RelativeToOwnerType.RELATIVE_BOUNDLESS`, which requires it), or otherwise needs real top-level-window behavior that an in-window layered pane can't provide. Sliding/push-pop transitions are effectively instantaneous in this mode (`sliderDuration` is treated as `0`).
+`option.setHeavyWeight(true)` renders the modal in a real, separate top-level `Window` positioned over the owner, instead of inside the owner window's `JLayeredPane`. Reach for it when a modal needs to render outside the bounds of its owner window (for example `RelativeToOwnerType.RELATIVE_BOUNDLESS`, which requires it), or otherwise needs real top-level-window behavior that an in-window layered pane can't provide.
+
+Animation is not supported in this mode: `setAnimationEnabled(boolean)`/`setAnimationOnClose(boolean)` have no effect, the modal simply appears/disappears instantly, and push/pop transitions are likewise instantaneous (`sliderDuration` is treated as `0`).
 
 ## See also
 
 - [Toast](./toast.md)
 - [Drawer](./drawer.md)
 - [Extras](./extras.md)
-- [← Back to docs index](./README.md)
+- [← Back to README](../README.md)
