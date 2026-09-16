@@ -70,7 +70,7 @@ public class ToastPanel extends JPanel {
     private Animator animator;
     private boolean showing;
     private float animate = 1f;
-    private Thread threadDelay;
+    private Timer timerDelay;
     private boolean hover;
     private JLabel labelIcon;
     private JSeparator separator;
@@ -78,6 +78,7 @@ public class ToastPanel extends JPanel {
     private ToastPromise toastPromise;
     private ToastPromise.PromiseCallback promiseCallback;
     private boolean available = true;
+    private boolean suppressAnimatorEndCallback;
     private Image snapshotContent;
     private Insets borderSpace;
 
@@ -227,23 +228,27 @@ public class ToastPanel extends JPanel {
             promiseCallback = new ToastPromise.PromiseCallback() {
                 @Override
                 public void update(String message) {
-                    if (available && !toastPromise.isDone()) {
-                        textMessage.setText(message);
-                        updateModalLayout();
-                    }
+                    SwingUtilities.invokeLater(() -> {
+                        if (available && !toastPromise.isDone()) {
+                            textMessage.setText(message);
+                            updateModalLayout();
+                        }
+                    });
                 }
 
                 @Override
                 public void done(Toast.Type type, String message) {
-                    if (available && !toastPromise.isDone()) {
-                        toastPromise.setDone(true);
-                        promiseIcon.stop();
-                        toastPromise = null;
-                        changeType(type, message);
-                        if (toastData.getOption().isAutoClose()) {
-                            delayStop();
+                    SwingUtilities.invokeLater(() -> {
+                        if (available && !toastPromise.isDone()) {
+                            toastPromise.setDone(true);
+                            promiseIcon.stop();
+                            toastPromise = null;
+                            changeType(type, message);
+                            if (toastData.getOption().isAutoClose()) {
+                                delayStop();
+                            }
                         }
-                    }
+                    });
                 }
             };
         }
@@ -329,8 +334,8 @@ public class ToastPanel extends JPanel {
             public void mouseEntered(MouseEvent e) {
                 hover = true;
                 if (toastData.getOption().isPauseDelayOnHover() && toastData.getOption().isAutoClose()) {
-                    if (threadDelay != null) {
-                        threadDelay.interrupt();
+                    if (timerDelay != null) {
+                        timerDelay.stop();
                     }
                 }
             }
@@ -509,16 +514,9 @@ public class ToastPanel extends JPanel {
         if (toastData.getOption().isPauseDelayOnHover() && hover) {
             return;
         }
-        threadDelay = new Thread(() -> {
-            if (showing) {
-                try {
-                    Thread.sleep(toastData.getOption().getDelay());
-                    stop();
-                } catch (InterruptedException ignored) {
-                }
-            }
-        });
-        threadDelay.start();
+        timerDelay = new Timer(toastData.getOption().getDelay(), e -> stop());
+        timerDelay.setRepeats(false);
+        timerDelay.start();
     }
 
     public void stop() {
@@ -531,6 +529,7 @@ public class ToastPanel extends JPanel {
         int duration = getAnimationDuration(false);
         if (duration > 0) {
             if (animator != null && animator.isRunning()) {
+                suppressAnimatorEndCallback = true;
                 animator.stop();
             }
             checkAnimatorOrCreate(duration);
@@ -548,14 +547,11 @@ public class ToastPanel extends JPanel {
     protected void close() {
         available = false;
         showing = false;
-        if (threadDelay != null && threadDelay.isAlive()) {
-            threadDelay.interrupt();
+        if (timerDelay != null && timerDelay.isRunning()) {
+            timerDelay.stop();
         }
-        if (getAnimationDuration(false) > 0) {
-            if (animator != null && animator.isRunning()) {
-                animator.stop();
-            }
-            removeToast();
+        if (animator != null && animator.isRunning()) {
+            animator.stop();
         } else {
             removeToast();
         }
@@ -602,7 +598,7 @@ public class ToastPanel extends JPanel {
         toastPromise = null;
         mouseListener = null;
         animator = null;
-        threadDelay = null;
+        timerDelay = null;
     }
 
     private void createSnapshot() {
@@ -674,6 +670,10 @@ public class ToastPanel extends JPanel {
                 public void end() {
                     repaint();
                     removeSnapshot();
+                    if (suppressAnimatorEndCallback) {
+                        suppressAnimatorEndCallback = false;
+                        return;
+                    }
                     if (showing) {
                         defaultStop();
                     } else {
