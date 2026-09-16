@@ -96,7 +96,6 @@ public class ModalContainerLayer extends AbstractModalContainerLayer {
                     return;
                 }
                 g.drawImage(snapshot, 0, 0, null);
-                g.dispose();
             }
 
             @Override

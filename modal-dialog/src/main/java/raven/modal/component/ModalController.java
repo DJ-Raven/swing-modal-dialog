@@ -12,11 +12,15 @@ import raven.modal.utils.ModalMouseMovableListener;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
+import java.awt.image.VolatileImage;
+import java.util.logging.Logger;
 
 /**
  * @author Raven
  */
 public class ModalController extends AbstractModalController {
+
+    private static final Logger LOGGER = Logger.getLogger(ModalController.class.getName());
 
     private final AbstractModalContainerLayer modalContainerLayer;
     private final ModalContainer modalContainer;
@@ -26,6 +30,13 @@ public class ModalController extends AbstractModalController {
     private float animated;
     private double systemScaleFactor;
     private Image snapshotsImage;
+    // Cached during animation to avoid per-frame MigLayout tree traversal
+    private Dimension animationPreferredSize;
+    private Dimension animationMinimumSize;
+    private Rectangle animationStartRect;
+    private Rectangle animationEndRect;
+    // Reusable buffer for live-render + scale to avoid sub-pixel text artifacts
+    private VolatileImage liveScaleBuffer;
 
     public ModalController(AbstractModalContainerLayer modalContainerLayer, ModalContainer modalContainer, Option option) {
         super(option);
@@ -48,25 +59,55 @@ public class ModalController extends AbstractModalController {
                         animated = showing ? v : 1f - v;
                         modalContainer.repaint();
                         modalContainer.getModalLayout().setAnimate(animated);
-                        modalContainer.doLayout();
+                        if (animationStartRect != null && animationEndRect != null) {
+                            int x = animationStartRect.x + (int)((animationEndRect.x - animationStartRect.x) * animated);
+                            int y = animationStartRect.y + (int)((animationEndRect.y - animationStartRect.y) * animated);
+                            setBounds(x, y, animationEndRect.width, animationEndRect.height);
+                        } else {
+                            // Fallback: rects were not pre-computed (begin() failed to set them).
+                            // This branch should never fire under normal operation.
+                            LOGGER.warning("ModalController: animationStartRect/EndRect is null in timingEvent — falling back to doLayout()");
+                            modalContainer.doLayout();
+                        }
                     }
 
                     @Override
                     public void begin() {
+                        // Cache preferred/minimum size once so timingEvent()
+                        // never calls into MigLayout during the animation loop.
+                        animationPreferredSize = superGetPreferredSize();
+                        animationMinimumSize = superGetMinimumSize();
+                        
+                        raven.modal.option.LayoutOption layoutOption = option.getLayoutOption();
+                        animationStartRect = raven.modal.layout.OptionLayoutUtils.getLayoutLocation(
+                                modalContainer, modalContainer.getOwner(), ModalController.this, 0f, layoutOption);
+                        animationEndRect = raven.modal.layout.OptionLayoutUtils.getLayoutLocation(
+                                modalContainer, modalContainer.getOwner(), ModalController.this, 1f, layoutOption);
+                        
                         modalContainerLayer.animatedBegin();
                         systemScaleFactor = UIScale.getSystemScaleFactor(getGraphicsConfiguration());
-                        Border border = getBorder();
-                        if (border != null) {
-                            snapshotsImage = ImageSnapshots.createSnapshotsImage(panelSlider, ModalController.this, getBorder(), systemScaleFactor);
+                        if (option.isSnapshotAnimationEnabled()) {
+                            Border border = getBorder();
+                            if (border != null) {
+                                snapshotsImage = ImageSnapshots.createSnapshotsImage(panelSlider, ModalController.this, getBorder(), systemScaleFactor);
+                            } else {
+                                snapshotsImage = ImageSnapshots.createSnapshotsImage(panelSlider, 0);
+                            }
+                            panelSlider.setVisible(false);
                         } else {
-                            snapshotsImage = ImageSnapshots.createSnapshotsImage(panelSlider, 0);
+                            snapshotsImage = null;
+                            panelSlider.setVisible(true);
                         }
-                        panelSlider.setVisible(false);
                         display = true;
                     }
 
                     @Override
                     public void end() {
+                        // Release size cache so post-animation layouts use real values.
+                        animationPreferredSize = null;
+                        animationMinimumSize = null;
+                        animationStartRect = null;
+                        animationEndRect = null;
                         modalContainerLayer.animatedEnd();
                         if (!showing) {
                             remove();
@@ -77,6 +118,10 @@ public class ModalController extends AbstractModalController {
                         if (snapshotsImage != null) {
                             snapshotsImage.flush();
                             snapshotsImage = null;
+                        }
+                        if (liveScaleBuffer != null) {
+                            liveScaleBuffer.flush();
+                            liveScaleBuffer = null;
                         }
                     }
                 });
@@ -204,7 +249,45 @@ public class ModalController extends AbstractModalController {
                     g2.dispose();
                 }
             } else {
-                super.paint(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setComposite(AlphaComposite.SrcOver.derive(animated));
+                try {
+                    float scaleValue = option.getLayoutOption().getAnimateScale();
+                    if (scaleValue != 0) {
+                        // Rasterize to off-screen buffer first, then scale the image.
+                        // Applying Graphics2D.scale() directly to live Swing components
+                        // causes sub-pixel text rendering artifacts.
+                        Image buffer = getOrCreateLiveScaleBuffer();
+                        if (buffer != null) {
+                            Graphics2D bg = (Graphics2D) buffer.getGraphics();
+                            try {
+                                bg.setBackground(new Color(0, 0, 0, 0));
+                                bg.clearRect(0, 0, getWidth(), getHeight());
+                                super.paint(bg);
+                            } finally {
+                                bg.dispose();
+                            }
+                            if (systemScaleFactor > 1) {
+                                HiDPIUtils.paintAtScale1x(g2, 0, 0, 100, 100,
+                                        (g2d, x2, y2, w2, h2, sf) -> {
+                                            scaleGraphics(g2d, scaleValue);
+                                            g2d.drawImage(buffer, x2, y2, null);
+                                        });
+                            } else {
+                                scaleGraphics(g2, scaleValue);
+                                g2.drawImage(buffer, 0, 0, null);
+                            }
+                        } else {
+                            // fallback if buffer creation fails
+                            scaleGraphics(g2, scaleValue);
+                            super.paint(g2);
+                        }
+                    } else {
+                        super.paint(g2);
+                    }
+                } finally {
+                    g2.dispose();
+                }
             }
         }
     }
@@ -225,7 +308,45 @@ public class ModalController extends AbstractModalController {
         g2.scale(scale, scale);
     }
 
+    private VolatileImage getOrCreateLiveScaleBuffer() {
+        int w = getWidth();
+        int h = getHeight();
+        if (w <= 0 || h <= 0) return null;
+        if (liveScaleBuffer == null || liveScaleBuffer.getWidth() != w || liveScaleBuffer.getHeight() != h) {
+            if (liveScaleBuffer != null) {
+                liveScaleBuffer.flush();
+            }
+            liveScaleBuffer = createVolatileImage(w, h);
+        }
+        return liveScaleBuffer;
+    }
+
     public float getAnimated() {
         return animated;
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        if (animationPreferredSize != null) {
+            return new Dimension(animationPreferredSize);
+        }
+        return super.getPreferredSize();
+    }
+
+    @Override
+    public Dimension getMinimumSize() {
+        if (animationMinimumSize != null) {
+            return new Dimension(animationMinimumSize);
+        }
+        return super.getMinimumSize();
+    }
+
+    // Call super directly to capture the real layout sizes at animation start.
+    private Dimension superGetPreferredSize() {
+        return super.getPreferredSize();
+    }
+
+    private Dimension superGetMinimumSize() {
+        return super.getMinimumSize();
     }
 }
