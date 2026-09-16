@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.3-SNAPSHOT]
+
+### Fixed bugs
+
+- Toast: Fixed several threading and lifecycle bugs around closing a toast (EDT violations, an NPE on
+  window dispose, and a stray timer). (issue #56)
+
 ## [2.6.2] - 2026-08-24
 
 ### New features and improvements
