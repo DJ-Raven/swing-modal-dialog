@@ -1,7 +1,10 @@
 # Swing Modal Dialog
 
-Java swing library build with flatlaf look and feel for desktop application. This library include more custom components
-and support animation
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.dj-raven/modal-dialog?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.dj-raven/modal-dialog)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+A Java Swing library styled with [FlatLaf](https://github.com/JFormDesigner/FlatLaf) that adds animated, ready-to-use
+components for desktop applications.
 
 - [x] Modal dialog
 - [x] Drawer
@@ -13,9 +16,8 @@ and support animation
 
 ## Installation
 
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.dj-raven/modal-dialog?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.dj-raven/modal-dialog)
-
 Add the dependency
+
 ``` xml
 <dependency>
     <groupId>io.github.dj-raven</groupId>
@@ -25,7 +27,9 @@ Add the dependency
 ```
 
 ### Snapshots
-To get the latest updates before the release, you can use the snapshot version from [Sonatype Central](https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/io/github/dj-raven/modal-dialog/)
+
+To get the latest updates before the release, you can use the snapshot version
+from [Sonatype Central](https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/io/github/dj-raven/modal-dialog/)
 
 ``` xml
 <repositories>
@@ -36,19 +40,22 @@ To get the latest updates before the release, you can use the snapshot version f
     </repository>
 </repositories>
 ```
+
 Add the snapshot version
+
 ``` xml
 <dependency>
     <groupId>io.github.dj-raven</groupId>
     <artifactId>modal-dialog</artifactId>
-    <version>2.6.2-SNAPSHOT</version>
+    <version>2.6.3-SNAPSHOT</version>
 </dependency>
 ```
 
 ## Demo
+
 Get jar file here: [latest-releases](https://github.com/DJ-Raven/swing-modal-dialog/releases/latest)
 
-## Document
+## Documentation
 
 Not yet
 
@@ -56,3 +63,11 @@ Not yet
 
 - [FlatLaf](https://github.com/JFormDesigner/FlatLaf) - FlatLaf library for the modern UI design theme
 - [MigLayout](https://github.com/mikaelgrev/miglayout) - MigLayout library for flexible layout management
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for release notes.
+
+## License
+
+[MIT](LICENSE) © Raven Laing
