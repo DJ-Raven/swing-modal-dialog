@@ -57,7 +57,12 @@ Get jar file here: [latest-releases](https://github.com/DJ-Raven/swing-modal-dia
 
 ## Documentation
 
-Not yet
+| Component                            | Description                                                                |
+|--------------------------------------|----------------------------------------------------------------------------|
+| [Modal Dialog](docs/modal-dialog.md) | Animated dialogs, confirmations and custom in-window modals                |
+| [Toast Notification](docs/toast.md)  | Transient status messages, including promise-based and fully custom toasts |
+| [Drawer](docs/drawer.md)             | Responsive navigation side-drawer with nested menus, header and footer     |
+| [Extras](docs/extras.md)             | Standalone components: `AvatarIcon`, `LightDarkButton`, `SlidePane`        |
 
 ## Library Resources
 
