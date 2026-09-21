@@ -72,6 +72,8 @@ public class HeavyWeightModalController extends AbstractModalController {
 
     @Override
     protected void onShowing() {
+        setFocusCycleRoot(true);
+        modalOpened();
     }
 
     @Override
