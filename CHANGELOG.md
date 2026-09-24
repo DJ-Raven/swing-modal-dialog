@@ -6,6 +6,8 @@
 
 - Toast: Fixed several threading and lifecycle bugs around closing a toast (EDT violations, an NPE on
   window dispose, and a stray timer). (issue #56)
+- Toast: Fixed default border padding. The layout used a hardcoded +7px inset to compensate for
+  the default `Insets(0, 0, 0, 0)`; it now uses a proper default padding of 5px on all sides.
 
 ## [2.6.2] - 2026-08-24
 

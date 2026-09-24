@@ -72,7 +72,7 @@ public class ToastBorderStyle {
     private int lineSize = 3;
     private int borderWidth = 1;
     private Color lineColor;
-    private Insets padding = new Insets(0, 0, 0, 0);
+    private Insets padding = new Insets(5, 5, 5, 5);
 
     public ToastBorderStyle setBorderType(BorderType borderType) {
         this.borderType = borderType;

@@ -257,7 +257,7 @@ public class ToastPanel extends JPanel {
 
     private String getLayoutInsets() {
         Insets padding = toastData.getOption().getStyle().getBorderStyle().getPadding();
-        final int add = 7 + ModalUtils.getToastExtraBorderPadding(toastData.getOption());
+        final int add = ModalUtils.getToastExtraBorderPadding(toastData.getOption());
         return String.format(Locale.ROOT, "insets %d %d %d %d", padding.top + add, padding.left + add, padding.bottom + add, padding.right + add);
     }
 
