@@ -186,7 +186,7 @@ option.getLayoutOption()
 | `setLineSize(int)`                                                         | `int`                                                                              | `3`                    | Thickness of the accent line for `*_LINE` border types |
 | `setBorderWidth(int)`                                                      | `int`                                                                              | `1`                    | Thickness for `OUTLINE`                                |
 | `setLineColor(Color)`                                                      | `Color`                                                                            | `null` (type color)    | Accent line/outline color                              |
-| `setPadding(int)` / `setPadding(int top, int left, int bottom, int right)` | `Insets`                                                                           | `Insets(0, 0, 0, 0)`   | Inner content padding                                  |
+| `setPadding(int)` / `setPadding(int top, int left, int bottom, int right)` | `Insets`                                                                           | `Insets(5, 5, 5, 5)`   | Inner content padding                                  |
 
 ``` java
 ToastOption option = Toast.createOption();
