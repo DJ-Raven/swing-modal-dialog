@@ -319,7 +319,7 @@ public class FormToast extends Form {
         if (Toast.checkPromiseId("raven")) {
             return;
         }
-        Toast.showPromise(this, "Toast with promise please wait", option, getPromiseCallback());
+        Toast.showPromise(this, String.format("Downloading %d%%", 0), option, getPromiseCallback());
     }
 
     private String showPromiseCustom() {
